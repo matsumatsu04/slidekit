@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideKit 構図パターン — グレースケール確認</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans JP',sans-serif;background:#fafafa;color:#333;padding:32px}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{color:#888;font-size:13px;margin-bottom:24px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
+  .item .cap{font-size:13px;margin-bottom:6px}
+  .item .cap b{font-size:14px}
+  .item .cat{display:inline-block;font-size:11px;color:#666;background:#ececec;border-radius:4px;padding:1px 7px;margin-left:6px}
+  .frame{position:relative;width:100%;aspect-ratio:16/9;background:#fff;border:1px solid #ccc}
+  .region{position:absolute;background:#ededed;border:1px solid #cfcfcf;display:flex;align-items:center;justify-content:center;
+          font-size:10px;color:#777;text-align:center;padding:2px;overflow:hidden}
+  .region.em{background:#d8d8d8;border-color:#bcbcbc;color:#555;font-weight:700}
+  .region.line{background:#bdbdbd;border:none}
+</style>
+</head>
+<body>
+  <h1>SlideKit 構図パターン（グレースケール確認）</h1>
+  <div class="sub">色・フォント・実コンテンツは含みません。構図（要素の配置）だけを示しています。現在 <b id="count"></b> パターン。</div>
+  <div class="grid" id="grid"></div>
+
+<script>
+// 各パターンの領域定義（% / SLIDEKIT-LAYOUT-*.md と一致）。em=主役領域, line=区切り/矢印
+const P = [
+  {name:'cover-centered', cat:'cover', r:[
+    {x:12,y:34,w:76,h:8,t:'eyebrow'},{x:12,y:42,w:76,h:22,t:'title',em:1},{x:12,y:66,w:76,h:10,t:'subtitle'}]},
+  {name:'cover-split-left', cat:'cover', r:[
+    {x:7,y:30,w:50,h:40,t:'title-block',em:1},{x:62,y:0,w:38,h:100,t:'visual-band'}]},
+  {name:'agenda-numbered', cat:'agenda', r:[
+    {x:7,y:9,w:86,h:14,t:'title',em:1},{x:7,y:26,w:70,h:66,t:'list（連番項目）'}]},
+  {name:'agenda-two-col', cat:'agenda', r:[
+    {x:7,y:9,w:86,h:14,t:'title',em:1},{x:7,y:26,w:41,h:66,t:'list-left'},{x:52,y:26,w:41,h:66,t:'list-right'}]},
+  {name:'section-divider', cat:'section', r:[
+    {x:9,y:36,w:30,h:14,t:'section-no',em:1},{x:9,y:50,w:70,h:18,t:'section-title'}]},
+  {name:'content-lead-bullets', cat:'content', r:[
+    {x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:24,w:78,h:12,t:'lead'},{x:7,y:38,w:78,h:54,t:'bullets'}]},
+  {name:'content-statement', cat:'content', r:[
+    {x:10,y:32,w:80,h:36,t:'statement',em:1},{x:10,y:70,w:70,h:10,t:'support'}]},
+  {name:'cards-3up', cat:'list', r:[
+    {x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:28,w:27,h:60,t:'card 1'},{x:36.5,y:28,w:27,h:60,t:'card 2'},{x:66,y:28,w:27,h:60,t:'card 3'}]},
+  {name:'cards-2x2', cat:'list', r:[
+    {x:7,y:9,w:86,h:12,t:'title',em:1},{x:7,y:25,w:42,h:32,t:'card TL'},{x:51,y:25,w:42,h:32,t:'card TR'},
+    {x:7,y:60,w:42,h:32,t:'card BL'},{x:51,y:60,w:42,h:32,t:'card BR'}]},
+  {name:'compare-two-col', cat:'comparison', r:[
+    {x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:26,w:41,h:66,t:'col-left'},{x:52,y:26,w:41,h:66,t:'col-right'}]},
+  {name:'kpi-row', cat:'data', r:[
+    {x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:34,w:26,h:40,t:'KPI 1'},{x:37,y:34,w:26,h:40,t:'KPI 2'},{x:67,y:34,w:26,h:40,t:'KPI 3'}]},
+  {name:'process-steps', cat:'process', r:[
+    {x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:38,w:26,h:40,t:'step 1'},{x:37,y:38,w:26,h:40,t:'step 2'},{x:67,y:38,w:26,h:40,t:'step 3'},
+    {x:33,y:56,w:34,h:4,t:'',line:1}]},
+  {name:'quote-center', cat:'quote', r:[
+    {x:14,y:32,w:72,h:32,t:'quote',em:1},{x:14,y:66,w:60,h:10,t:'attribution'}]},
+  {name:'closing-cta', cat:'closing', r:[
+    {x:9,y:28,w:78,h:16,t:'title',em:1},{x:9,y:50,w:60,h:12,t:'CTA'},{x:9,y:78,w:70,h:10,t:'contact'}]},
+];
+const grid=document.getElementById('grid');
+document.getElementById('count').textContent=P.length;
+for(const p of P){
+  const item=document.createElement('div');item.className='item';
+  const cap=document.createElement('div');cap.className='cap';
+  cap.innerHTML='<b>'+p.name+'</b><span class="cat">'+p.cat+'</span>';
+  const fr=document.createElement('div');fr.className='frame';
+  for(const g of p.r){
+    const d=document.createElement('div');
+    d.className='region'+(g.em?' em':'')+(g.line?' line':'');
+    d.style.left=g.x+'%';d.style.top=g.y+'%';d.style.width=g.w+'%';d.style.height=g.h+'%';
+    d.textContent=g.t||'';
+    fr.appendChild(d);
+  }
+  item.appendChild(cap);item.appendChild(fr);grid.appendChild(item);
+}
+</script>
+</body>
+</html>

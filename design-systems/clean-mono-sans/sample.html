@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLIDEKIT-DESIGN — Clean Mono Sans / sample</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-primary:#1A1A1A;
+    --color-secondary:#4A4A4A;
+    --color-accent:#2F6BFF;
+    --color-bg:#FFFFFF;
+    --color-surface:#F4F5F7;
+    --color-text:#1A1A1A;
+    --color-text-muted:#8A8F98;
+    --font:'Noto Sans JP',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E9EAEC;font-family:var(--font);color:var(--color-text);padding:40px 0}
+  .page-wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+  .doc-title{font-size:14px;color:#6b7280;letter-spacing:.04em;margin-bottom:20px;text-align:center}
+  .slide{
+    position:relative;width:1280px;max-width:100%;aspect-ratio:16/9;background:var(--color-bg);
+    margin:0 auto 28px;border:1px solid #dcdfe4;overflow:hidden;
+    padding:64px 88px;display:flex;flex-direction:column;
+  }
+  .label{max-width:1280px;margin:0 auto 6px;font-size:12px;color:#9aa0a6}
+  /* frame */
+  .h2{font-size:36px;font-weight:700;line-height:1.25;color:var(--color-primary);
+      padding-left:18px;border-left:4px solid var(--color-accent)}
+  .pgnum{position:absolute;right:88px;bottom:40px;font-size:14px;color:var(--color-text-muted)}
+  /* cover */
+  .cover{justify-content:center;align-items:flex-start}
+  .cover .eyebrow{font-size:16px;color:var(--color-accent);font-weight:700;letter-spacing:.08em;margin-bottom:18px}
+  .cover h1{font-size:60px;font-weight:700;line-height:1.15;color:var(--color-primary);max-width:900px}
+  .cover .meta{margin-top:28px;font-size:18px;color:var(--color-secondary)}
+  /* body */
+  .body p{font-size:20px;line-height:1.65;color:var(--color-text)}
+  ul.kit{list-style:none;margin-top:18px}
+  ul.kit li{font-size:20px;line-height:1.65;padding-left:26px;position:relative;margin-bottom:14px;max-width:1000px}
+  ul.kit li::before{content:"";position:absolute;left:0;top:12px;width:8px;height:8px;background:var(--color-accent);border-radius:2px}
+  .accent{color:var(--color-accent);font-weight:700}
+  /* two column */
+  .cols{display:flex;gap:32px;margin-top:24px;flex:1}
+  .cols .col{flex:1}
+  .card{background:var(--color-surface);border-radius:12px;padding:28px}
+  .card h3{font-size:22px;margin-bottom:10px;color:var(--color-primary)}
+  .card p{font-size:17px;line-height:1.6;color:var(--color-secondary)}
+  /* data */
+  .stats{display:flex;gap:48px;margin-top:36px;flex:1;align-items:center}
+  .stat .num{font-size:72px;font-weight:700;color:var(--color-accent);line-height:1}
+  .stat .cap{font-size:15px;color:var(--color-text-muted);margin-top:8px}
+  /* agenda */
+  ol.agenda{list-style:none;margin-top:22px;counter-reset:a}
+  ol.agenda li{counter-increment:a;font-size:24px;line-height:1.5;padding:14px 0;border-bottom:1px solid var(--color-surface);
+               display:flex;gap:20px;align-items:baseline}
+  ol.agenda li::before{content:counter(a,decimal-leading-zero);color:var(--color-accent);font-weight:700;font-size:20px;min-width:42px}
+  .lead{font-size:20px;color:var(--color-secondary);margin-top:8px}
+  .spacer{flex:1}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="doc-title">SLIDEKIT-DESIGN — Clean Mono Sans ／ サンプル（6ページ・確認用ダミー）</div>
+
+  <!-- 1 表紙 -->
+  <div class="label">1 / 6  — 表紙</div>
+  <section class="slide cover">
+    <div class="eyebrow">PROPOSAL 2026</div>
+    <h1>静かに伝わる、<br>内容で勝負するスライド</h1>
+    <div class="meta">クリーン・モノ・サンス デザインシステム　｜　2026.06</div>
+  </section>
+
+  <!-- 2 目次 -->
+  <div class="label">2 / 6 — 目次</div>
+  <section class="slide">
+    <div class="h2">目次</div>
+    <ol class="agenda">
+      <li>このデザインの考え方</li>
+      <li>色とフォントの使い分け</li>
+      <li>レイアウトの基本</li>
+      <li>強調のルール</li>
+      <li>まとめ</li>
+    </ol>
+    <div class="pgnum">2 / 6</div>
+  </section>
+
+  <!-- 3 本文 -->
+  <div class="label">3 / 6 — 本文（箇条書き）</div>
+  <section class="slide body">
+    <div class="h2">余白がいちばんのデザイン</div>
+    <ul class="kit">
+      <li>1スライドにつき、伝えるメッセージは<span class="accent">ひとつ</span>に絞る。</li>
+      <li>区切り線ではなく余白で情報を分ける。視線が自然に流れる。</li>
+      <li>アクセント色は「ここを見て」の一点だけに使う。</li>
+      <li>文字は左寄せ、行間は広め。読みやすさを最優先にする。</li>
+    </ul>
+    <div class="spacer"></div>
+    <div class="pgnum">3 / 6</div>
+  </section>
+
+  <!-- 4 2カラム -->
+  <div class="label">4 / 6 — 2カラム</div>
+  <section class="slide">
+    <div class="h2">Before / After</div>
+    <div class="cols">
+      <div class="col card">
+        <h3>Before</h3>
+        <p>多色・装飾枠・影が多く、どこを見ればいいか分からない。情報も詰め込みすぎ。</p>
+      </div>
+      <div class="col card">
+        <h3>After</h3>
+        <p>モノクロ＋単一アクセント。余白で整理され、主張が一目で伝わる。</p>
+      </div>
+    </div>
+    <div class="pgnum">4 / 6</div>
+  </section>
+
+  <!-- 5 データ -->
+  <div class="label">5 / 6 — データ／キーナンバー</div>
+  <section class="slide">
+    <div class="h2">数字は大きく、一点だけ</div>
+    <div class="stats">
+      <div class="stat"><div class="num">3</div><div class="cap">必要なファイルはたった3つ</div></div>
+      <div class="stat"><div class="num">16:9</div><div class="cap">全スライド共通の比率</div></div>
+      <div class="stat"><div class="num">1</div><div class="cap">1スライド1メッセージ</div></div>
+    </div>
+    <div class="pgnum">5 / 6</div>
+  </section>
+
+  <!-- 6 まとめ -->
+  <div class="label">6 / 6 — まとめ</div>
+  <section class="slide">
+    <div class="h2">まとめ</div>
+    <p class="lead">色と構図を分けて定義すれば、デザインはもう「ガチャ」ではなく<span class="accent">再現できる設計</span>になる。</p>
+    <ul class="kit">
+      <li>見た目はデザインシステムが担保する。</li>
+      <li>構図はパターンで再利用する。</li>
+      <li>あとは中身に集中するだけ。</li>
+    </ul>
+    <div class="spacer"></div>
+    <div class="pgnum">6 / 6</div>
+  </section>
+</div>
+</body>
+</html>

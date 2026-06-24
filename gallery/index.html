@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideKit ギャラリー — 構図パターン & デザインシステム</title>
+<meta name="description" content="AIスライド生成のための構図パターンとデザインシステムのギャラリー。各パターンのMarkdownをコピー・ダウンロードして使えます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--accent:#2f6bff;--surface:#f4f5f7}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans JP',sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{padding:56px 0 28px;border-bottom:1px solid var(--line)}
+  header h1{font-size:32px;font-weight:700;letter-spacing:-.01em}
+  header .tag{display:inline-block;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:10px}
+  header p{color:#555;margin-top:8px;max-width:720px}
+  header .links{margin-top:16px;font-size:14px}
+  header .links a{color:var(--accent);text-decoration:none;margin-right:18px}
+  header .links a:hover{text-decoration:underline}
+  section{padding:40px 0}
+  h2{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
+  /* design systems */
+  .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  .ds-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+  .ds-card h3{font-size:18px}
+  .ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
+  .ds-card .swatches{display:flex;gap:6px;margin-bottom:14px}
+  .ds-card .sw{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.06)}
+  .btn{display:inline-block;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--ink);
+       border-radius:8px;padding:7px 12px;cursor:pointer;text-decoration:none;margin-right:8px}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{opacity:.9;color:#fff}
+  /* filters */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .chip{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:#555}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* pattern grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .frame{position:relative;width:100%;aspect-ratio:16/9;background:#fff;border-bottom:1px solid var(--line)}
+  .region{position:absolute;background:#ededed;border:1px solid #cfcfcf;display:flex;align-items:center;justify-content:center;
+          font-size:9px;color:#888;text-align:center;padding:2px;overflow:hidden}
+  .region.em{background:#dadada;border-color:#bcbcbc;color:#555;font-weight:700}
+  .region.line{background:#c7c7c7;border:none}
+  .card .body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card .name{font-size:15px;font-weight:700}
+  .card .cat{display:inline-block;font-size:11px;color:#666;background:var(--surface);border-radius:5px;padding:1px 8px;margin-left:6px}
+  .card .sum{font-size:12.5px;color:#666;flex:1}
+  .card .acts{display:flex;gap:8px;flex-wrap:wrap}
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:24px;z-index:50}
+  .modal.open{display:flex}
+  .modal .box{background:#fff;border-radius:14px;max-width:760px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal .hd{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .modal .hd h3{font-size:16px}
+  .modal pre{margin:0;padding:20px;overflow:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.6;white-space:pre-wrap;background:#fbfbfc}
+  .modal .ft{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
+  .x{border:none;background:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+  footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:13px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;
+         padding:10px 18px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="tag">SLIDEKIT GALLERY</span>
+  <h1>構図パターン &amp; デザインシステム</h1>
+  <p>AIスライド生成のための「構図」と「見た目」のライブラリ。気に入ったパターンの Markdown をコピー／ダウンロードして、SLIDEKIT-DECK に組み込んで使えます。</p>
+  <div class="links">
+    <a id="repoLink" href="#">GitHub リポジトリ ↗</a>
+    <a href="#patterns">構図パターンへ ↓</a>
+    <a href="#designs">デザインシステムへ ↓</a>
+  </div>
+</div></header>
+
+<section id="designs"><div class="wrap">
+  <h2>デザインシステム</h2>
+  <div class="ds-grid" id="dsGrid"></div>
+</div></section>
+
+<section id="patterns"><div class="wrap">
+  <h2>構図パターン（<span id="pcount"></span>）</h2>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<footer><div class="wrap">
+  SlideKit — 色と構図を分けて定義する、AIスライド設計フォーマット。MIT License.
+</div></footer>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="hd"><h3 id="mTitle"></h3><button class="x" onclick="closeModal()">×</button></div>
+    <pre id="mBody"></pre>
+    <div class="ft">
+      <button class="btn" id="mCopy">Markdownをコピー</button>
+      <a class="btn primary" id="mDl" download>ダウンロード</a>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== リポジトリURL（公開後に差し替え）=====
+const REPO_URL = "https://github.com/matsumatsu04/slidekit";
+
+// ===== デザインシステム =====
+const DESIGNS = [
+  { name:'clean-mono-sans', mood:'静か / 知的 / 余白多め / ミニマル',
+    swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
+    md:'/design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md',
+    sample:'/design-systems/clean-mono-sans/sample.html' },
+];
+
+// ===== 構図パターン（プレビュー用の領域データ。.md が中身の正）=====
+const PATTERNS = [
+  {name:'cover-centered',cat:'cover',sum:'タイトルを中央に大きく置く最小構図の表紙',r:[{x:12,y:34,w:76,h:8,t:'eyebrow'},{x:12,y:42,w:76,h:22,t:'title',em:1},{x:12,y:66,w:76,h:10,t:'subtitle'}]},
+  {name:'cover-split-left',cat:'cover',sum:'左にタイトル・右に視覚帯の分割表紙',r:[{x:7,y:30,w:50,h:40,t:'title',em:1},{x:62,y:0,w:38,h:100,t:'visual'}]},
+  {name:'agenda-numbered',cat:'agenda',sum:'連番付きで縦に並べる目次',r:[{x:7,y:9,w:86,h:14,t:'title',em:1},{x:7,y:26,w:70,h:66,t:'list'}]},
+  {name:'agenda-two-col',cat:'agenda',sum:'連番項目を左右2カラムに分けた目次',r:[{x:7,y:9,w:86,h:14,t:'title',em:1},{x:7,y:26,w:41,h:66,t:'left'},{x:52,y:26,w:41,h:66,t:'right'}]},
+  {name:'section-divider',cat:'section',sum:'章番号＋章タイトルの中扉',r:[{x:9,y:36,w:30,h:14,t:'no',em:1},{x:9,y:50,w:70,h:18,t:'title'}]},
+  {name:'content-lead-bullets',cat:'content',sum:'見出し＋リード＋箇条書きの標準本文',r:[{x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:24,w:78,h:12,t:'lead'},{x:7,y:38,w:78,h:54,t:'bullets'}]},
+  {name:'content-statement',cat:'content',sum:'短い一文を画面いっぱいに見せる主張',r:[{x:10,y:32,w:80,h:36,t:'statement',em:1},{x:10,y:70,w:70,h:10,t:'support'}]},
+  {name:'cards-3up',cat:'list',sum:'横並び3枚のカードで均等に見せる',r:[{x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:28,w:27,h:60,t:'1'},{x:36.5,y:28,w:27,h:60,t:'2'},{x:66,y:28,w:27,h:60,t:'3'}]},
+  {name:'cards-2x2',cat:'list',sum:'2行2列の4枚カードで整理する',r:[{x:7,y:9,w:86,h:12,t:'title',em:1},{x:7,y:25,w:42,h:32,t:'TL'},{x:51,y:25,w:42,h:32,t:'TR'},{x:7,y:60,w:42,h:32,t:'BL'},{x:51,y:60,w:42,h:32,t:'BR'}]},
+  {name:'compare-two-col',cat:'comparison',sum:'左右2カラムで対比（Before/After等）',r:[{x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:26,w:41,h:66,t:'left'},{x:52,y:26,w:41,h:66,t:'right'}]},
+  {name:'kpi-row',cat:'data',sum:'主要数値を横並びで大きく見せる',r:[{x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:34,w:26,h:40,t:'KPI1'},{x:37,y:34,w:26,h:40,t:'KPI2'},{x:67,y:34,w:26,h:40,t:'KPI3'}]},
+  {name:'process-steps',cat:'process',sum:'左→右に流れる横並びのステップフロー',r:[{x:7,y:9,w:86,h:13,t:'title',em:1},{x:7,y:38,w:26,h:40,t:'1'},{x:37,y:38,w:26,h:40,t:'2'},{x:67,y:38,w:26,h:40,t:'3'},{x:33,y:56,w:34,h:4,line:1}]},
+  {name:'quote-center',cat:'quote',sum:'引用・お客様の声を中央に大きく',r:[{x:14,y:32,w:72,h:32,t:'quote',em:1},{x:14,y:66,w:60,h:10,t:'attribution'}]},
+  {name:'closing-cta',cat:'closing',sum:'まとめ＋次の行動を示す締め',r:[{x:9,y:28,w:78,h:16,t:'title',em:1},{x:9,y:50,w:60,h:12,t:'CTA'},{x:9,y:78,w:70,h:10,t:'contact'}]},
+];
+const mdPath = p => `/patterns/${p.cat}/SLIDEKIT-LAYOUT-${p.name}.md`;
+
+// ===== render: design systems =====
+document.getElementById('repoLink').href = REPO_URL;
+const dsGrid = document.getElementById('dsGrid');
+for(const d of DESIGNS){
+  const sw = d.swatches.map(c=>`<span class="sw" style="background:${c}"></span>`).join('');
+  const el = document.createElement('div'); el.className='ds-card';
+  el.innerHTML = `<h3>${d.name}</h3><div class="mood">${d.mood}</div>
+    <div class="swatches">${sw}</div>
+    <a class="btn primary" href="${d.sample}" target="_blank" rel="noopener">サンプルを見る</a>
+    <a class="btn" href="${d.md}" download>SLIDEKIT-DESIGN.md</a>`;
+  dsGrid.appendChild(el);
+}
+
+// ===== render: filters =====
+const cats = ['all', ...Array.from(new Set(PATTERNS.map(p=>p.cat)))];
+const filters = document.getElementById('filters');
+let active = 'all';
+for(const c of cats){
+  const b = document.createElement('button');
+  b.className='chip'+(c==='all'?' active':''); b.textContent = c==='all'?'すべて':c;
+  b.onclick = ()=>{active=c; [...filters.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderGrid();};
+  filters.appendChild(b);
+}
+document.getElementById('pcount').textContent = PATTERNS.length;
+
+// ===== render: pattern grid =====
+const grid = document.getElementById('grid');
+function previewHTML(p){
+  return p.r.map(g=>`<div class="region${g.em?' em':''}${g.line?' line':''}" style="left:${g.x}%;top:${g.y}%;width:${g.w}%;height:${g.h}%">${g.t||''}</div>`).join('');
+}
+function renderGrid(){
+  grid.innerHTML='';
+  for(const p of PATTERNS){
+    if(active!=='all' && p.cat!==active) continue;
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `<div class="frame">${previewHTML(p)}</div>
+      <div class="body">
+        <div class="name">${p.name}<span class="cat">${p.cat}</span></div>
+        <div class="sum">${p.sum}</div>
+        <div class="acts">
+          <button class="btn" onclick="viewMd('${p.name}','${p.cat}')">.md を見る</button>
+          <a class="btn" href="${mdPath(p)}" download>DL</a>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  }
+}
+renderGrid();
+
+// ===== modal / copy / download =====
+const modal=document.getElementById('modal'), mTitle=document.getElementById('mTitle'),
+      mBody=document.getElementById('mBody'), mCopy=document.getElementById('mCopy'), mDl=document.getElementById('mDl');
+async function viewMd(name,cat){
+  const path = `/patterns/${cat}/SLIDEKIT-LAYOUT-${name}.md`;
+  mTitle.textContent = `SLIDEKIT-LAYOUT-${name}.md`;
+  mDl.href = path;
+  mBody.textContent = '読み込み中…';
+  modal.classList.add('open');
+  try{
+    const res = await fetch(path);
+    const txt = res.ok ? await res.text() : '（読み込みに失敗しました。「ダウンロード」からご利用ください）';
+    mBody.textContent = txt;
+    mCopy.onclick = ()=>{ navigator.clipboard.writeText(txt).then(()=>toast('コピーしました')); };
+  }catch(e){
+    mBody.textContent = '（このページをサーバー経由で開くと内容を表示できます。ローカルファイルで開いている場合は「ダウンロード」をご利用ください）';
+    mCopy.onclick = ()=>toast('コピーできません（DLをご利用ください）');
+  }
+}
+function closeModal(){ modal.classList.remove('open'); }
+modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+const toastEl=document.getElementById('toast');
+function toast(m){ toastEl.textContent=m; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),1600); }
+</script>
+</body>
+</html>
