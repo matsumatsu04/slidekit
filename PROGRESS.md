@@ -15,7 +15,10 @@
 - [x] **Phase 4** — 構図パターンを99種に（sho-ai-magic/slide.md = MIT を、ライセンス・著作権表示を保持して取り込み）。ギャラリーを実物HTMLプレビュー表示に刷新。クレジット明記（README/footer/patterns/CREDITS.md/UPSTREAM-LICENSE.txt）
 
 > ★ 3スキル（slidekit-design / slidekit-layout / slidekit-assemble）= 当初の主目的、完成。
-> ★ 構図パターン= 上流(MIT)を取り込み済み。**上流の SLIDE-PATTERN 形式と SlideKit の SPEC/スキル(SLIDEKIT-LAYOUT形式)の整合は今後の調整事項**（ユーザー方針: あとで調整）。
+> ★ 構図パターン= 上流(MIT)を取り込み済み。
+- [x] **形式の整合** — SPEC を 1.1 に更新し、構図を `SLIDE-PATTERN` 形式・`patterns/` ライブラリに統一。
+  `slidekit-layout`（新規パターンも SLIDE-PATTERN 形式で作成＋INDEX/manifest更新）・`slidekit-assemble`（INDEX/manifestから実在99種・12カテゴリを選択して埋め込み）・デモDECK（実在パターン名）を全て整合。旧 SLIDEKIT-LAYOUT 参照は一掃。
+- [x] **ギャラリー色付け** — 閲覧者がカラーコード選択でプレビューをティント（mix-blend-mode・default ブルー）。
 
 ## 決定事項
 - 命名: SlideKit。ファイル= `SLIDEKIT-DESIGN.md` / `SLIDEKIT-LAYOUT-{name}.md` / `SLIDEKIT-DECK.md`。スキル= `slidekit-design` / `slidekit-layout` / `slidekit-assemble`
