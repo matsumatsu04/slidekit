@@ -12,7 +12,6 @@
 - **tone:** 落ち着いた・論理的・余白多め
 
 ## Design System
-`design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md` を**丸ごと（逐語で）埋め込み**。
 
 ### Meta
 - **name:** clean-mono-sans
