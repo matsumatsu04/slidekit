@@ -11,7 +11,7 @@
 - [x] **Phase 3** — スキル③ `slidekit-assemble`（ヒアリング→設計書生成）＋ デモ（examples/sample-proposal/SLIDEKIT-DECK.md）
 - [x] **Phase 5** — ギャラリーサイト（gallery/index.html・14構図＋デザイン一覧/プレビュー/コピー/DL）＋ README/LICENSE/.gitignore ＋ ルートindex.html
 - [x] **Phase 6a** — GitHub public リポジトリ作成＋push 完了 → https://github.com/matsumatsu04/slidekit
-- [ ] **Phase 6b** — Vercel import でギャラリー公開（ユーザー操作）→ 公開URL確定後、READMEのギャラリーURLを差し替え
+- [x] **Phase 6b** — Vercel公開完了 → https://slidekit-sigma.vercel.app/gallery/ （READMEのギャラリーURL差し替え済み）
 - [ ] **Phase 4（最後に）** — 構図パターンを ~100 まで拡張 ＋ 汎用デザインシステム追加
 
 > ★ 3スキル（slidekit-design / slidekit-layout / slidekit-assemble）= 当初の主目的、完成。
