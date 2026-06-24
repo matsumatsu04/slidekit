@@ -68,75 +68,72 @@
 - ❌ 1 スライドに情報を詰め込む（分割する）。
 
 ## Slide Plan
-| # | 種類 | 構図パターン | 内容（1行） |
+| # | 種類 | 構図パターン（SLIDE-PATTERN） | 内容（1行） |
 |---|---|---|---|
-| 1 | 表紙 | cover-centered | タイトル・対象・日付 |
-| 2 | 目次 | agenda-numbered | 本日の流れ |
-| 3 | 主張 | content-statement | 課題提起のキーメッセージ |
-| 4 | 本文 | content-lead-bullets | 現状と3つの課題 |
-| 5 | プロセス | process-steps | 解決アプローチ3ステップ |
-| 6 | データ | kpi-row | 期待される効果（数値） |
-| 7 | 比較 | compare-two-col | 導入前 / 導入後 |
-| 8 | 締め | closing-cta | まとめと承認のお願い |
+| 1 | 表紙 | cover-title-center | タイトル・対象・日付 |
+| 2 | 目次 | agenda-toc | 本日の流れ |
+| 3 | 主張 | key-message-single | 課題提起のキーメッセージ |
+| 4 | 本文 | numbered-list-with-body | 現状と3つの課題 |
+| 5 | プロセス | three-stage-circle-flow | 解決アプローチ3ステップ |
+| 6 | データ | three-kpi-big-number | 期待される効果（数値） |
+| 7 | 比較 | before-after-two-col | 導入前 / 導入後 |
+| 8 | 締め | closing-slide | まとめと連絡先 |
 
 ## Slides
 
-### Slide 1 — 表紙（cover-centered）
-**Structure:** eyebrow{x12,y34,w76,h8} / title{x12,y42,w76,h22} / subtitle{x12,y66,w76,h10}
+### Slide 1 — 表紙（cover-title-center）
+**Structure:** full-slide-centered ／ 背景=装飾グラフィック ／ 中央に main-title(大) + sub-title(中)
 **Content:**
-- eyebrow: 社内提案 2026
-- title: 資料作成を、もっと速く・きれいに
-- subtitle: 営業企画部　｜　2026年6月
+- main-title: 資料作成を、もっと速く・きれいに
+- sub-title: 営業企画部　｜　2026年6月
 
-### Slide 2 — 目次（agenda-numbered）
-**Structure:** title{x7,y9,w86,h14} / list{x7,y26,w70,h66}
+### Slide 2 — 目次（agenda-toc）
+**Structure:** セクションラベル + タイトル(H1) ／ 各行=番号(01〜) + 項目名 + 点線リーダー + ページ番号
 **Content:**
-- title: 本日の流れ
-- list: ①いま起きている問題 ②現状と3つの課題 ③解決のアプローチ ④期待できる効果 ⑤ご承認のお願い
+- セクションラベル: AGENDA
+- タイトル: 本日の流れ
+- 項目: 01 いま起きている問題 / 02 現状と3つの課題 / 03 解決のアプローチ / 04 期待できる効果 / 05 ご承認のお願い
 
-### Slide 3 — 主張（content-statement）
-**Structure:** statement{x10,y32,w80,h36} / support{x10,y70,w70,h10}
+### Slide 3 — 主張（key-message-single）
+**Structure:** 上部区切り線 ／ キーメッセージ(大・太) ／ 下部区切り線 ／ 補足テキスト(小)
 **Content:**
-- statement: 資料作成に、毎週1人あたり **6時間** が消えている。
-- support: その大半は「デザインの調整」に費やされています。
+- キーメッセージ: 資料作成に、毎週1人あたり 6時間 が消えている。
+- 補足テキスト: その大半は「デザインの調整」に費やされています。
 
-### Slide 4 — 本文（content-lead-bullets）
-**Structure:** title{x7,y9,w86,h13} / lead{x7,y24,w78,h12} / bullets{x7,y38,w78,h54}
+### Slide 4 — 本文（numbered-list-with-body）
+**Structure:** 各項目 = 番号バッジ + 見出し(H2) + 本文(1〜3行) ／ 区切り線
 **Content:**
-- title: 現状と課題
-- lead: 各自がゼロから作るため、品質も時間もバラついています。
-- bullets: ①体裁を整える作業に時間が取られ中身の検討が後回し ②人によって **見た目がバラバラ** で統一感がない ③使い回しで情報が古いまま提出される
+- 項目1: 【01 体裁づくりに時間】整える作業に追われ、中身の検討が後回しになる
+- 項目2: 【02 バラバラな見た目】人によって体裁が違い、組織としての統一感がない
+- 項目3: 【03 古い情報の流用】使い回しで情報が更新されないまま提出される
 
-### Slide 5 — プロセス（process-steps）
-**Structure:** title{x7,y9,w86,h13} / step-1{x7,y38,w26,h40} / step-2{x37,y38,w26,h40} / step-3{x67,y38,w26,h40} / connectors{x33,y56,w34,h4}
+### Slide 5 — プロセス（three-stage-circle-flow）
+**Structure:** 円形ノード3つを横並び ／ 各ノード = ステージ名 + 見出し
 **Content:**
-- title: 解決のアプローチ
-- step-1: 整える｜デザインの基準を1つに決める（色・フォント・余白）
-- step-2: 選ぶ｜よく使う構図をパターンとして用意する
-- step-3: 任せる｜中身を渡せばAIが体裁を整えて出力する
-- connectors: →（左から右へ）
+- ステージ1: 整える｜デザインの基準を1つに決める（色・フォント・余白）
+- ステージ2: 選ぶ｜よく使う構図をパターンとして用意する
+- ステージ3: 任せる｜中身を渡せばAIが体裁を整えて出力する
 
-### Slide 6 — データ（kpi-row）
-**Structure:** title{x7,y9,w86,h13} / kpi-1{x7,y34,w26,h40} / kpi-2{x37,y34,w26,h40} / kpi-3{x67,y34,w26,h40}
+### Slide 6 — データ（three-kpi-big-number）
+**Structure:** KPIを3つ横並び ／ 各KPI = ラベル + 大きな数字 + 単位 + 説明
 **Content:**
-- title: 期待できる効果
-- kpi-1: **-70%**｜資料作成にかかる時間
-- kpi-2: **100%**｜全社で統一されたデザイン
-- kpi-3: **0円**｜追加ツール費用（既存環境で完結）
+- KPI1: 資料作成時間 ／ -70% ／ 体裁づくりの工数を削減
+- KPI2: デザイン統一率 ／ 100% ／ 全社で同じ基準
+- KPI3: 追加ツール費用 ／ 0円 ／ 既存環境で完結
 
-### Slide 7 — 比較（compare-two-col）
-**Structure:** title{x7,y9,w86,h13} / col-left{x7,y26,w41,h66} / col-right{x52,y26,w41,h66}
+### Slide 7 — 比較（before-after-two-col）
+**Structure:** 左=BEFORE（×リスト）／ 中央=矢印(→) ／ 右=AFTER（○リスト）
 **Content:**
-- title: 導入前 / 導入後
-- col-left: 【導入前】毎回ゼロから体裁を調整 ／ 見た目が人によって違う ／ 中身より見栄えに時間
-- col-right: 【導入後】基準に沿って自動で整う ／ 全社で統一された見た目 ／ 中身の検討に集中できる
+- BEFORE: 毎回ゼロから体裁を調整 ／ 見た目が人によって違う ／ 中身より見栄えに時間
+- AFTER: 基準に沿って自動で整う ／ 全社で統一された見た目 ／ 中身の検討に集中できる
 
-### Slide 8 — 締め（closing-cta）
-**Structure:** title{x9,y28,w78,h16} / cta{x9,y50,w60,h12} / contact{x9,y78,w70,h10}
+### Slide 8 — 締め（closing-slide）
+**Structure:** アクセント線 ／ メインメッセージ ／ サブメッセージ ／ 区切り線 ／ 発表者情報 ／ 連絡先
 **Content:**
-- title: 中身に集中できる環境を、つくりませんか。
-- cta: まずは1部署で1ヶ月、試験導入させてください。
-- contact: 詳細資料・デモは営業企画部までお問い合わせください
+- メインメッセージ: 中身に集中できる環境を、つくりませんか。
+- サブメッセージ: Let's focus on what matters.
+- 発表者情報: 営業企画部
+- 連絡先情報: planning@example.com
 
 ## Generation Instructions
 - このファイルを Claude のデザイン機能（claude.ai/design の Slides）または NotebookLM 等にアップロードし、

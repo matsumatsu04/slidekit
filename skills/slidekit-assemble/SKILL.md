@@ -2,7 +2,7 @@
 name: slidekit-assemble
 description: >-
   プレゼンの目的・対象・枚数と内容をヒアリングし、用意済みのデザインシステム（SLIDEKIT-DESIGN.md）と
-  構図パターン（SLIDEKIT-LAYOUT-{name}.md）を組み合わせて、スライド構成案を提示・承認の上、最終設計書
+  構図パターンライブラリ（patterns/SLIDE-PATTERN-*）を組み合わせて、スライド構成案を提示・承認の上、最終設計書
   SLIDEKIT-DECK.md を1ファイルで生成するスキル。SLIDEKIT形式でスライドを作る・DECKまで組み上げる場面で発動する
   （単なるアウトライン案だけが欲しい場合は対象外）。このファイル1枚をスライド生成AI（Claudeのデザイン機能・
   NotebookLM等）に渡せばスライドが完成する。「設計書を作って」「プレゼンを組み立てて」「SLIDEKIT-DECK を作って」
@@ -64,38 +64,46 @@ N. [締め]      まとめと次の一歩
 
 ### 5. 構図パターンを割り当てる（承認ゲート）
 各スライドに `patterns/` の構図パターンを割り当て、表で提示する。
-「種類（日本語）」と category（英語）の対応は次の通り。
+**パターンは必ず `patterns/SLIDE-PATTERN-INDEX.md`（または `patterns/manifest.json`）から実在するものを選ぶ**
+（名前を創作しない。全99種・12カテゴリ）。各スライドの内容に最も合うカテゴリ→パターンを選ぶ。
 
-| 種類（日本語） | category | 代表パターン |
-|---|---|---|
-| 表紙 | cover | cover-centered / cover-split-left |
-| 目次 | agenda | agenda-numbered / agenda-two-col |
-| セクション/中扉 | section | section-divider |
-| 本文 | content | content-lead-bullets / content-statement |
-| 一覧/カード | list | cards-3up / cards-2x2 |
-| 比較 | comparison | compare-two-col |
-| データ/数値 | data | kpi-row |
-| プロセス/手順 | process | process-steps |
-| 引用/声 | quote | quote-center |
-| 締め | closing | closing-cta |
+カテゴリと代表パターン（INDEX 参照。これ以外にも多数あるので INDEX を必ず見る）：
+
+| カテゴリ | 代表パターン例 |
+|---|---|
+| 表紙・セクション | cover-title-center / cover-with-image-left / section-divider / closing-slide |
+| 目次 | agenda-toc / numbered-toc / two-column-toc |
+| コンテンツ（本文） | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
+| テキストリスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
+| フロー・ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / staircase-roadmap |
+| 図解・ダイアグラム | cycle-diagram-with-labels / hub-spoke-diagram / org-chart-tree / four-quadrant-center-circle |
+| カード・グリッド | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
+| グラフ・データ | bar-chart-full / chart-left-text-right / pie-chart-left-list-right |
+| テーブル・比較 | before-after-two-col / comparison-matrix-table / pricing-comparison-table / problem-solution |
+| KPI・まとめ | three-kpi-big-number / goal-kgi-kpi-dashboard / summary-three-points / action-items-list |
+| Q&A・FAQ | faq-grid / faq-single-column |
+| プロフィール | profile-bio / team-org-with-photo |
+
+割り当て表の例：
 
 | # | 種類 | 割り当てパターン |
 |---|---|---|
-| 1 | 表紙 | cover-centered |
-| 2 | 目次 | agenda-numbered |
-| 4 | 本文 | content-lead-bullets |
+| 1 | 表紙 | cover-title-center |
+| 2 | 目次 | agenda-toc |
+| 4 | 本文 | key-message-single |
 | … | … | … |
-気に入らない割り当ては変更を受ける（「4枚目を compare-two-col に」等）。**ここでも承認を取る。**
+気に入らない割り当ては変更を受ける（「4枚目を before-after-two-col に」等）。**ここでも承認を取る。**
 
-> **フォールバック：** 必要な category のパターンが `patterns/` に無い場合は、
-> 近い既存パターンで代替するか、`slidekit-layout` で新規に作るかをユーザーに確認する（黙って妥協しない）。
+> **フォールバック：** 内容に合うパターンが INDEX に無い場合は、近い既存パターンで代替するか、
+> `slidekit-layout` で新規に作る（その場合 INDEX/manifest も更新）かをユーザーに確認する（黙って妥協しない）。
 
 ### 6. SLIDEKIT-DECK.md を生成する
 承認された構成で、`SPEC.md` の形式に従って 1 ファイルを生成する。
 - `Brief`（title/audience/purpose/slide-count/tone）
 - `Design System`：選んだ `SLIDEKIT-DESIGN.md` の中身を**丸ごと埋め込む**
-- `Slide Plan`：番号・種類・パターン・1行内容の表
-- `Slides`：各スライドを **SPEC の「固定テンプレート」**（`### Slide {n} — {種類}（{pattern}）` ＋ `Structure:` ＋ `Content:`）で書く。各スロットを実際の文言で埋める。
+- `Slide Plan`：番号・種類・パターン（実在の SLIDE-PATTERN 名）・1行内容の表
+- `Slides`：各スライドを **SPEC の「固定テンプレート」**（`### Slide {n} — {種類}（{pattern}）` ＋ `Structure:` ＋ `Content:`）で書く。
+  割り当てた `patterns/SLIDE-PATTERN-{name}/SLIDE-PATTERN-{name}.md` を読み、その **Structure/Elements を要約して `Structure:` に埋め込み**、各要素を実際の文言で `Content:` に埋める。
 - `Generation Instructions`：どのAIに渡すか、出力形式（PDF推奨）の指示
 
 > **長文スロットの扱い：** パターンの推奨文字数を超える内容は、**要約して収める**か、**スライドを分割**する。
