@@ -72,7 +72,8 @@ Claude Code で話しかけます。
 ## 同梱物
 
 - **デザインシステム**: `design-systems/`（汎用・ブランド中立のサンプル）
-- **構図パターン**: `patterns/`（10カテゴリ・現在14種。[ギャラリー](https://slidekit-sigma.vercel.app/gallery/)で一覧・コピー・DL可）
+- **構図パターン**: `patterns/`（12カテゴリ・99種。[ギャラリー](https://slidekit-sigma.vercel.app/gallery/)で一覧・プレビュー・DL可）
+  - ※ 構図パターンライブラリは [sho-ai-magic/slide.md](https://github.com/sho-ai-magic/slide.md)（MIT License）を利用しています（[クレジット](./patterns/CREDITS.md)）
 - **設計書の例**: `examples/sample-proposal/SLIDEKIT-DECK.md`
 
 ## リポジトリ構成
@@ -88,6 +89,7 @@ slidekit/
 └─ index.html              # ルート → /gallery/ へ
 ```
 
-## ライセンス
+## ライセンス / クレジット
 
-[MIT License](./LICENSE)
+- 本リポジトリ（スキル・仕様・デザインシステム・ギャラリー）: [MIT License](./LICENSE)
+- 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）: [sho-ai-magic/slide.md](https://github.com/sho-ai-magic/slide.md) © 2026 sho-ai-magic（MIT License。[全文](./patterns/UPSTREAM-LICENSE.txt) / [クレジット](./patterns/CREDITS.md)）
