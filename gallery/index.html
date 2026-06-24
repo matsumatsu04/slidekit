@@ -112,6 +112,11 @@ const mdPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.md`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
 let TINT=null; // null = グレーのまま
+function openView(name,cat){
+  const t=TINT?TINT.replace('#',''):'';
+  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'');
+  window.open(u,'_blank');
+}
 function applyTint(){
   // mix-blend-mode:color のオーバーレイで、輝度を保ったまま選択色の色相・彩度を適用（忠実な色付け）
   document.querySelectorAll('.tintlay').forEach(o=>o.style.background=TINT||'transparent');
@@ -163,7 +168,7 @@ function render(){
   for(const p of list){
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
-      <div class="thumb" onclick="window.open('${htmlPath(p.name)}','_blank')">
+      <div class="thumb" onclick="openView('${p.name}','${p.category}')">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}"></iframe>
         <div class="tintlay"></div>
         <div class="open"><span>拡大して開く ↗</span></div>
@@ -173,7 +178,7 @@ function render(){
         <div class="name">${p.name}</div>
         <div class="sum">${p.summary||''}</div>
         <div class="acts">
-          <a class="btn" href="${htmlPath(p.name)}" target="_blank" rel="noopener">プレビュー</a>
+          <button class="btn" onclick="openView('${p.name}','${p.category}')">プレビュー</button>
           <a class="btn primary" href="${mdPath(p.name)}" download>.md DL</a>
         </div>
       </div>`;
