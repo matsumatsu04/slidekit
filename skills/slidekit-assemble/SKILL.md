@@ -74,7 +74,7 @@ N. [締め]      まとめと次の一歩
 | 表紙 | cover-title-center / cover-with-image-left / cover-center-presenter-badge |
 | セクション | section-divider / closing-slide |
 | 目次 | agenda-toc / numbered-toc / two-column-toc |
-| コンテンツ（本文） | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
+| 本文 | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
 | ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / staircase-roadmap |
 | 図解・ダイアグラム | cycle-diagram-with-labels / hub-spoke-diagram / org-chart-tree / four-quadrant-center-circle |
