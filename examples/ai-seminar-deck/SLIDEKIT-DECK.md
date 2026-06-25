@@ -48,7 +48,7 @@
 ## Slide Plan
 | # | 種類 | 構図パターン | 見出し | 内容（1行） |
 |---|---|---|---|---|
-| 1 | 表紙 | cover-title-center | なし | タイトル・サブタイトル・日付 |
+| 1 | 表紙 | cover-gradient-text-bottom | なし | タイトル・サブタイトル・日付 |
 | 2 | 目次 | agenda-toc | なし | 本日のアジェンダ（4項目） |
 | 3 | セクション | section-divider | なし | 01 なぜ今、生成AIなのか |
 | 4 | 本文 | key-message-single | あり | 差を広げるのは「使うかどうか」 |
@@ -62,15 +62,15 @@
 | 12 | セクション | section-divider | なし | 03 始め方と成功のコツ |
 | 13 | まとめ | summary-three-points | あり | 成功のための3原則 |
 | 14 | FAQ | faq-single-column | あり | よくあるご質問 |
-| 15 | 締め | closing-slide | なし | まとめ・次の一歩・連絡先 |
+| 15 | 締め | key-message-single | なし | まとめ・次の一歩・連絡先 |
 
 ---
 
 ## Slides
 
-### Slide 1 — 表紙（cover-title-center）
+### Slide 1 — 表紙（cover-gradient-text-bottom）
 **見出し:** なし
-**Structure:** 中央寄せの表紙。背景に淡い水色(#E1EFFA)の装飾円を配置。中央に小ラベル＋大タイトル＋サブタイトル。
+**Structure:** グラデーション背景をフルスクリーンに使い、左下に小ラベル＋大型タイトル、その下にサブ情報・日付を配置。
 **Content:**
 - eyebrow: AI UTILIZATION SEMINAR
 - main-title: 中小企業のための生成AI活用入門
@@ -180,9 +180,9 @@
 - qa-2: Q. 情報漏えいが心配です。／A. 機密情報の入力ルールを最初に決め、対応サービスを選べば安全に使えます。
 - qa-3: Q. どれくらいで効果が出ますか？／A. 1業務に絞れば、多くは2〜4週間で時間短縮を実感できます。
 
-### Slide 15 — 締め（closing-slide）
+### Slide 15 — 締め（key-message-single）
 **見出し:** なし
-**Structure:** 中央寄せの締めスライド。大きなメッセージ＋アクセント色のCTAボタン＋連絡先（muted）。
+**Structure:** 中央に大きな締めメッセージ1文。その下にアクセント色のCTAと連絡先（muted）を補足配置。
 **Content:**
 - main-message: 今日の小さな一歩が、来年の大きな差になる。
 - cta: まずは「1つの業務」から試してみましょう

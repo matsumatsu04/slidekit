@@ -48,7 +48,7 @@
 ## Slide Plan
 | # | 種類 | 構図パターン | 見出し | 内容（1行） |
 |---|---|---|---|---|
-| 1 | 表紙 | cover-title-center | なし | サービス名・キャッチ・日付 |
+| 1 | 表紙 | cover-gradient-text-bottom | なし | サービス名・キャッチ・日付 |
 | 2 | 目次 | numbered-toc | なし | 本日の流れ（5項目） |
 | 3 | セクション | section-divider | なし | 01 現状の課題 |
 | 4 | 本文（リスト） | numbered-list-with-body | あり | 現状の3つの課題 |
@@ -57,15 +57,15 @@
 | 7 | ステップ | three-stage-circle-flow | あり | 導入はかんたん3ステップ |
 | 8 | データ | three-kpi-big-number | あり | 期待できる効果（3指標） |
 | 9 | カード | three-column-icon-card | あり | 選ばれる理由（3点） |
-| 10 | 締め | closing-slide | なし | まとめ・CTA・連絡先 |
+| 10 | 締め | key-message-single | なし | まとめ・CTA・連絡先 |
 
 ---
 
 ## Slides
 
-### Slide 1 — 表紙（cover-title-center）
+### Slide 1 — 表紙（cover-gradient-text-bottom）
 **見出し:** なし
-**Structure:** 中央寄せの表紙。背景に淡い水色(#E1EFFA)の装飾円を配置。中央に小ラベル＋大タイトル＋サブタイトル。
+**Structure:** グラデーション背景をフルスクリーンに使い、左下に小ラベル＋大型タイトル、その下にサブ情報・日付を配置。
 **Content:**
 - eyebrow: SERVICE INTRODUCTION
 - main-title: 商談を、もっと成約に。
@@ -137,9 +137,9 @@
 - card-2: 自動でナレッジ化｜商談が自動で資産になり、チーム全体の底上げにつながります。
 - card-3: 安心のサポート｜専任担当が定着まで伴走。運用設計から改善まで支援します。
 
-### Slide 10 — 締め（closing-slide）
+### Slide 10 — 締め（key-message-single）
 **見出し:** なし
-**Structure:** 中央寄せの締めスライド。大きなメッセージ＋アクセント色のCTAボタン＋連絡先（muted）。
+**Structure:** 中央に大きな締めメッセージ1文。その下にアクセント色のCTAと連絡先（muted）を補足配置。
 **Content:**
 - main-message: 商談を「成果」に変える仕組みを、一緒に始めませんか。
 - cta: まずは無料デモをご体験ください
