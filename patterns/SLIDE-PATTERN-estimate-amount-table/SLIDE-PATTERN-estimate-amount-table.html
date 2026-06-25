@@ -11,28 +11,28 @@
 
   /* 章見出しエリア（章番号＋タイトル＋全幅ライン）※実テキストはSLIDE.mdのFrameが入れる */
   .titlebar { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
-  .titlebar .no { font-size: 16px; font-weight: bold; color: #333333; }
-  .titlebar .ttl { font-size: 27px; font-weight: bold; color: #222222; }
-  .title-rule { height: 2px; background: #333333; margin-top: 9px; }
+  .titlebar .no { font-size: 16px; font-weight: bold; color: var(--sk-ink,#333333); }
+  .titlebar .ttl { font-size: 27px; font-weight: bold; color: var(--sk-ink,#222222); }
+  .title-rule { height: 2px; background: var(--sk-ink,#333333); margin-top: 9px; }
 
   /* 金額：バッジ＋大型金額 */
   .amount-row { display: flex; align-items: center; gap: 28px; margin-top: 30px; }
-  .amount-badge { background: #2B2B2B; color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 11px 34px; }
-  .amount-figure { font-size: 44px; font-weight: 800; color: #333333; }
+  .amount-badge { background: var(--sk-ink,#2B2B2B); color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 11px 34px; }
+  .amount-figure { font-size: 44px; font-weight: 800; color: var(--sk-ink,#333333); }
 
   /* 内訳見出し：テキストの「下」に短い太バー */
   .subhead { margin-top: 26px; }
-  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; padding-left: 28px; }
-  .subhead .bar { width: 150px; height: 4px; background: #333333; margin-top: 7px; }
+  .subhead .txt { font-size: 22px; font-weight: bold; color: var(--sk-ink,#333333); padding-left: 28px; }
+  .subhead .bar { width: 150px; height: 4px; background: var(--sk-ink,#333333); margin-top: 7px; }
 
   /* 明細テーブル */
   table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
-  thead th { background: #2B2B2B; color: #FFFFFF; font-weight: bold; padding: 9px 12px; }
+  thead th { background: var(--sk-ink,#2B2B2B); color: #FFFFFF; font-weight: bold; padding: 9px 12px; }
   th.item, td.item { text-align: left; }
   th.num, td.num { text-align: center; width: 88px; }
   tbody td { padding: 9px 12px; border-bottom: 1px solid #DDDDDD; color: #444444; }
-  tbody td.item { font-weight: bold; color: #333333; }
-  tr.total td { background: #2B2B2B; color: #FFFFFF; font-weight: bold; border: none; }
+  tbody td.item { font-weight: bold; color: var(--sk-ink,#333333); }
+  tr.total td { background: var(--sk-ink,#2B2B2B); color: #FFFFFF; font-weight: bold; border: none; }
 </style>
 </head>
 <body>

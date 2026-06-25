@@ -65,23 +65,25 @@ N. [締め]      まとめと次の一歩
 ### 5. 構図パターンを割り当てる（承認ゲート）
 各スライドに `patterns/` の構図パターンを割り当て、表で提示する。
 **パターンは必ず `patterns/SLIDE-PATTERN-INDEX.md`（または `patterns/manifest.json`）から実在するものを選ぶ**
-（名前を創作しない。全99種・12カテゴリ）。各スライドの内容に最も合うカテゴリ→パターンを選ぶ。
+（名前を創作しない。INDEX/manifest の全パターン・14カテゴリ）。各スライドの内容に最も合うカテゴリ→パターンを選ぶ。
 
 カテゴリと代表パターン（INDEX 参照。これ以外にも多数あるので INDEX を必ず見る）：
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙・セクション | cover-title-center / cover-with-image-left / section-divider / closing-slide |
+| 表紙 | cover-title-center / cover-with-image-left / cover-center-presenter-badge |
+| セクション | section-divider / closing-slide |
 | 目次 | agenda-toc / numbered-toc / two-column-toc |
 | コンテンツ（本文） | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
-| テキストリスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
-| フロー・ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / staircase-roadmap |
+| リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
+| ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / staircase-roadmap |
 | 図解・ダイアグラム | cycle-diagram-with-labels / hub-spoke-diagram / org-chart-tree / four-quadrant-center-circle |
-| カード・グリッド | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
-| グラフ・データ | bar-chart-full / chart-left-text-right / pie-chart-left-list-right |
-| テーブル・比較 | before-after-two-col / comparison-matrix-table / pricing-comparison-table / problem-solution |
-| KPI・まとめ | three-kpi-big-number / goal-kgi-kpi-dashboard / summary-three-points / action-items-list |
-| Q&A・FAQ | faq-grid / faq-single-column |
+| カード | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
+| グラフ | bar-chart-full / chart-left-text-right / pie-chart-left-list-right |
+| テーブル | before-after-two-col / comparison-matrix-table / estimate-amount-table / line-item-table |
+| KPI | three-kpi-big-number / goal-kgi-kpi-dashboard |
+| まとめ | summary-three-points / action-items-list |
+| FAQ | faq-grid / faq-single-column |
 | プロフィール | profile-bio / team-org-with-photo |
 
 割り当て表の例：
