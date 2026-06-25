@@ -40,8 +40,7 @@
   </div>
   <div class="stage">
     <div class="holder" id="holder">
-      <iframe id="frame" title="preview"></iframe>
-      <div class="tintlay" id="lay"></div>
+      <iframe id="frame" title="preview" onload="apply()"></iframe>
     </div>
   </div>
 
@@ -57,13 +56,19 @@ if(!cat) document.getElementById('pcat').style.display='none';
 document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
-const lay=document.getElementById('lay'),ti=document.getElementById('tint'),th=document.getElementById('tintHex');
-function apply(){ lay.style.background=tint||'transparent'; if(tint){ti.value=tint;th.value=tint.toUpperCase();} }
+const frame=document.getElementById('frame'),ti=document.getElementById('tint'),th=document.getElementById('tintHex');
+function apply(){
+  // スライド内の濃いコンテンツ色(--sk-ink)だけを差し替え。背景・装飾(薄いグレー)はそのまま。
+  try{
+    const root=frame.contentDocument&&frame.contentDocument.documentElement;
+    if(root){ if(tint) root.style.setProperty('--sk-ink',tint); else root.style.removeProperty('--sk-ink'); }
+  }catch(e){}
+  if(tint){ti.value=tint;th.value=tint.toUpperCase();}
+}
 function set(hex){ if(!/^#?[0-9a-fA-F]{6}$/.test(hex))return; tint=hex[0]==='#'?hex:'#'+hex; apply(); }
 ti.addEventListener('input',e=>set(e.target.value));
 th.addEventListener('input',e=>set(e.target.value.trim()));
 document.getElementById('reset').addEventListener('click',()=>{tint='';apply();});
-if(tint) apply(); // 受け取った色を初期反映（無ければグレーのまま）
 
 // 画面に合わせてスケール
 function fit(){

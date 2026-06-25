@@ -112,9 +112,17 @@ function openView(name,cat){
   const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'');
   window.open(u,'_blank');
 }
+function skInk(fr){
+  // スライド内の「濃いコンテンツ色(--sk-ink)」だけを選択色に差し替える。背景・装飾(薄いグレー)はそのまま。
+  try{
+    const root = fr && fr.contentDocument && fr.contentDocument.documentElement;
+    if(!root) return;
+    if(TINT) root.style.setProperty('--sk-ink', TINT);
+    else root.style.removeProperty('--sk-ink');
+  }catch(e){}
+}
 function applyTint(){
-  // mix-blend-mode:color のオーバーレイで、輝度を保ったまま選択色の色相・彩度を適用（忠実な色付け）
-  document.querySelectorAll('.tintlay').forEach(o=>o.style.background=TINT||'transparent');
+  document.querySelectorAll('.thumb iframe').forEach(skInk);
 }
 function setTint(hex){
   if(!/^#?[0-9a-fA-F]{6}$/.test(hex)) return;
@@ -164,8 +172,7 @@ function render(){
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
       <div class="thumb" onclick="openView('${p.name}','${p.category}')">
-        <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}"></iframe>
-        <div class="tintlay"></div>
+        <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
         <div class="open"><span>拡大して開く ↗</span></div>
       </div>
       <div class="body">

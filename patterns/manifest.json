@@ -3,48 +3,48 @@
  "patterns": [
   {
    "name": "cover-title-center",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "大きなタイトルテキストとサブタイトルをスライド中央に配置し、装飾的な背景グラフィック（グラデーション・波形・図形）を組み合わせたカバースライドレイアウト"
   },
   {
    "name": "cover-with-image-left",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "左半分（約45%）に画像、右半分（約55%）にカテゴリラベル・メインタイトル・説明文・日付などのメタ情報を縦に並べる表紙レイアウト。"
   },
   {
    "name": "cover-gradient-text-bottom",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "グラデーション背景をフルスクリーンに使い、左下にロゴと大型テキストを配置するカバーページ。企業情報を下部に集約。"
   },
   {
    "name": "cover-logo-mark-centered",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "ロゴマーク・企業名・発表日・上場市場情報を中央揃えで垂直配置したシンプルなカバーページ。フォーマル感が強い。"
   },
   {
    "name": "cover-fullbg-text-left",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "左側55%に企画・発表者・所属情報を配置し、右側45%を背景画像エリアとする2分割カバーページ。テキストは左下寄せ。"
   },
   {
    "name": "cover-minimal-disclaimer",
-   "category": "表紙・セクション",
+   "category": "表紙",
    "summary": "ロゴと企業名をヘッダーに配置し、中央にタイトル・発表者を、フッターに免責事項を記載するカバーページ。金融・投資向け。"
   },
   {
+   "name": "cover-center-presenter-badge",
+   "category": "表紙",
+   "summary": "メインタイトルを中央に置き、左上に宛名ラベル、タイトル下に英文サブタイトル、右下に発表者名の塗りバッジを配置した提案書向けカバー。背景はドットとウェーブで装飾。"
+  },
+  {
    "name": "section-divider",
-   "category": "表紙・セクション",
+   "category": "セクション",
    "summary": "チャプター区切りスライド。左端に太い縦線、その右に大きなセクション番号・セクションタイトル・サブタイトルを縦に並べ、余白を活かしたシンプルな構成。"
   },
   {
    "name": "closing-slide",
-   "category": "表紙・セクション",
+   "category": "セクション",
    "summary": "プレゼンテーションの最終スライド。お礼メッセージ、会社名/発表者名、連絡先を中央に配置する締めくくりのスライド。"
-  },
-  {
-   "name": "cover-center-presenter-badge",
-   "category": "表紙・セクション",
-   "summary": "メインタイトルを中央に置き、左上に宛名ラベル、タイトル下に英文サブタイトル、右下に発表者名の塗りバッジを配置した提案書向けカバー。背景はドットとウェーブで装飾。"
   },
   {
    "name": "agenda-toc",
@@ -103,117 +103,117 @@
   },
   {
    "name": "numbered-list-with-body",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "3つの項目を縦に並べ、各項目に番号バッジ（または図形アイコン）・見出し・本文を配置する縦リストレイアウト"
   },
   {
    "name": "numbered-list-hexagon-badge",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "左側に六角形の番号バッジ、右側に見出しと説明文のテキストブロックを横並びにしたリスト行を縦に積み重ねるレイアウト"
   },
   {
    "name": "numbered-two-col-row",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "3〜4項目を横幅全体のロー（行）として縦に積み、各ローを左カラム（番号バッジ＋見出し）と右カラム（箇条書き詳細）の2列に分割したレイアウト"
   },
   {
    "name": "numbered-two-col-row-with-accent",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "左側に番号入りアクセントブロック（斜めカット装飾あり）、右側に見出しと箇条書きを持つテキストエリア、行右端に縦アクセントバーを配置したリスト行レイアウト"
   },
   {
    "name": "numbered-row-full-width",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "番号付きの横長バナー行を縦に並べるリストレイアウト。各行は「番号バッジ＋アイコン」「見出し」「説明文」の3ゾーンで構成され、幅いっぱいに広がる。"
   },
   {
    "name": "icon-left-text-list",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "3〜4つの項目を縦に並べ、各行の左にアイコン（画像・シンボル）、右に見出しと本文を配置する横展開リストレイアウト"
   },
   {
    "name": "icon-left-text-list-detailed",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "縦に3行並ぶリスト形式のレイアウト。各行は左側に大きめのアイコン、右側にアクセントカラーの見出し＋複数行の説明テキストを配置する。行全体に薄いグレーの背景を適用する。"
   },
   {
    "name": "three-tier-segment-list",
-   "category": "テキストリスト",
+   "category": "リスト",
    "summary": "左側（約25%）に括り見出しテキスト、右側（75%）に3段のセグメント（各段にアイコン円＋見出し＋箇条書き）を縦に配置するセグメント分類レイアウト。左側の括り見出しが3つのセグメント全体に対するラベルとして機能する。"
   },
   {
    "name": "four-step-flow",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "上部に中央揃えのタイトルを配置し、下部に4枚の等幅カードを横並びにしたフロー図レイアウト。各カードは番号バッジ・ラベル・イラストで構成され、カード間の矢印でステップの流れを示す。"
   },
   {
    "name": "four-step-flow-with-callout",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "4つのステップカードを横並びに配置し、右端に補足情報・注意事項のコールアウトボックスを2段で積み重ねたフロー図レイアウト"
   },
   {
    "name": "four-step-card-flow",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "上部のリード文と概要説明を配置し、中央にドット付きタイムライン線を横断させた上で、4つの角丸カードを横並びに配置するフローレイアウト"
   },
   {
    "name": "two-feature-with-result",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "上部に説明テキスト、中段に2つの機能カード（横並び）、下部に矢印と結果ボックスを配置する機能→結果フローレイアウト。2つの要素・機能・施策がどのような結果・成果につながるかを視覚的に示す。"
   },
   {
    "name": "horizontal-timeline-cards",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "上部に水平タイムライン（点線＋ドットマーカー）を配置し、各マーカー下にステップカード（STEP番号・見出し・詳細）を縦に並べるレイアウト"
   },
   {
    "name": "milestone-timeline",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "横軸に時間軸を引き、マイルストーンをマーカーで表示するタイムラインスライド。完了済みと予定のマーカーを視覚的に区別する。"
   },
   {
    "name": "three-stage-circle-flow",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "3つの大きな円形ステージを矢印で水平に接続し、各ステージに見出し・説明・箇条書きを配置する導入フローレイアウト。"
   },
   {
    "name": "circle-node-step-flow",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "大きな円形ノードを5段階で水平方向に配置し、コネクタで接続したシンプルなステップフロー。最後のステップ（ゴール）は色を変えて強調。"
   },
   {
    "name": "vertical-step-flow",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "4〜6つのステップを縦方向（上から下）に流れ矢印でつなぎ、各ステップに番号・見出し・説明を配置するフローチャートレイアウト"
   },
   {
    "name": "vertical-step-flow-with-sidebar",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "左サイドバーにセクションラベルを置き、右側にSTEPラベル付きの縦並びフローを表示するレイアウト。各STEPは「ステップ番号ボックス＋内容ボックス」の横並びペアで構成され、下矢印でつながれる。"
   },
   {
    "name": "vertical-step-three-col",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "左側にステップバッジ、中央にステップ名、右側に詳細説明を配置した3列の縦型ステップフロー。5段階まで対応。"
   },
   {
    "name": "vertical-timeline-label-list",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "縦方向に並んだステップ・フロー項目を、左にステップラベル（見出し）、右に説明テキストボックスとして配置するタイムライン形式のリストレイアウト。左列のステップ間はラインで繋がれ、各ステップのドットがアクセントカラーで強調される。"
   },
   {
    "name": "staircase-roadmap",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "左から右へ段階的に高くなる階段形状で4つのフェーズ・ステップを表現するロードマップレイアウト"
   },
   {
    "name": "staircase-roadmap-layered",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "左下から右上に向かって階段状に積み上がる矢印ブロックで時系列ロードマップを表現し、各ステージの下に複数の累積レイヤー帯（横長テキスト行）を重ねるレイアウト"
   },
   {
    "name": "staircase-roadmap-with-icons",
-   "category": "フロー・ステップ",
+   "category": "ステップ",
    "summary": "左下から右上に向かって階段状に積み上がるステップ図。各ステップの上にアイコン付き丸バッジとステップ番号・ラベルを配置し、右方向への進行（矢印）と上昇イメージを同時に表現するロードマップレイアウト。"
   },
   {
@@ -278,217 +278,217 @@
   },
   {
    "name": "four-card-2x2",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "4つの項目を2列×2行のカードグリッドに配置し、各カードに番号ヘッダー・見出し・本文を入れるレイアウト"
   },
   {
    "name": "six-card-two-column",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "6つの項目を2列×3行のカードグリッドに配置し、各カードに番号・見出し・本文を入れるレイアウト"
   },
   {
    "name": "six-card-2x3-grid",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "左サイドバーと右グリッドで分けた6カード（2行×3列）レイアウト。各カードはアイコン＋見出し＋説明で構成。"
   },
   {
    "name": "eight-card-2x4-grid",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "8つのカード（2行×4列）に番号バッジと説明文を配置する全幅グリッドレイアウト。重点施策・実装項目の一覧列挙に最適。"
   },
   {
    "name": "three-column-icon-card",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3つの項目を等幅カードで横並びにし、各カードの上部にアイコン・下部に見出し・本文を配置する3列アイコンカードレイアウト"
   },
   {
    "name": "three-col-icon-card-header-band",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3列カードの上部にカラーの帯（ヘッダーバンド）を持ち、六角形などのアイコン・見出し・箇条書きテキスト・CTAボタンで構成されるカードレイアウト。"
   },
   {
    "name": "three-col-icon-card-with-cta",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3列に円形アイコン・強調見出し・説明テキストを並べるカードレイアウト。カード背景は白で、アイコンは円形の枠で強調する。スライド上部に太字のリード文を持つ。"
   },
   {
    "name": "three-col-icon-card-body-text",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3列のカードに大きめのイラスト/アイコン・見出し（2行）・CTAボタンを縦に積んだシンプルなカードレイアウト。カード全体が白の枠線で囲まれている。"
   },
   {
    "name": "three-col-large-icon-card",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3列均等に並んだカードレイアウト。各カードは上部にアイコン＋見出しのヘッダーゾーン（アクセントカラー背景）と、下部に箇条書きリストのボディゾーンで構成される2段構造。"
   },
   {
    "name": "three-col-numbered-card",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "3列カードの上部にカラーのラベルバンドを持ち、大きな連番数字・下線・見出し・箇条書きで構成されるカードレイアウト。"
   },
   {
    "name": "three-card-icon-with-subheading",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "上部に区切り見出しと説明、下部に3つのカード（見出し＋アイコン＋説明）を横並びで配置する強み訴求レイアウト。"
   },
   {
    "name": "feature-metrics-four-cells",
-   "category": "カード・グリッド",
+   "category": "カード",
    "summary": "4つの機能・特徴をカード形式で横並びに配置し、各カード内に機能説明と複数の定量指標（KPI）をセットで見せるレイアウト。"
   },
   {
    "name": "bar-chart-full",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "コンテンツエリアの大半を棒グラフ（または棒＋折れ線の複合グラフ）が占め、右上にKPI数値バッジを配置する全幅グラフレイアウト"
   },
   {
    "name": "kpi-bar-chart",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "左側に大きなKPI数値と補足テキストを配置し、右側に棒グラフ（成長推移）を並べる2カラムレイアウト"
   },
   {
    "name": "chart-left-text-right",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "左側にグラフ（折れ線・棒など）、右側にグラフの各系列やポイントの詳細説明を配置する2カラムレイアウト"
   },
   {
    "name": "chart-with-callout",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "上部に本文テキスト、下部左に円グラフ（ラベル付き）、下部右に吹き出しコールアウトボックスを配置するデータ解説レイアウト"
   },
   {
    "name": "pie-chart-left-list-right",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "コンテンツエリアを左右2カラムに分割し、左側に円グラフ（中央に数値やラベルを表示するドーナツ型も可）、右側に凡例または詳細リストを縦に並べるレイアウト。"
   },
   {
    "name": "donut-chart-left-icon-list-right",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "左側（45%）にドーナツ型グラフ＋テキスト見出し、右側（55%）にアイコン付き縦リスト4項目を配置するデータ可視化レイアウト。グラフで全体像を示しながら、右側の詳細リストで各要素を補足説明する。"
   },
   {
    "name": "donut-left-kpi-bar-right",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "左側40%にドーナツグラフ（進捗率）、右側60%に3つのKPIセル＋5本の横棒グラフを配置。統計情報を2段構成で表現。"
   },
   {
    "name": "headline-three-donut-charts",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "上部に大見出しエリア、下部に3つのドーナツグラフを横並びで配置。達成率・進捗率の複数指標を同時表現。"
   },
   {
    "name": "text-body-left-donut-right",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "左側55%に大見出し＋説明文＋2カラムリスト、右側45%にドーナツグラフを配置。テキスト情報と1つのグラフの組み合わせ。"
   },
   {
    "name": "three-col-kpi-with-chart",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "3つのKPI（重要指標）を縦長カードで横並びに配置し、各カード内に大きな数値・補足説明・グラフ（棒グラフ・折れ線グラフ・ドーナツグラフなど）をセットで見せるレイアウト。"
   },
   {
    "name": "two-col-list-and-chart",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "上部に概要テキスト（リード文）を置き、その下を左右2カラムに分割する。左カラムにはアイコン付きのリスト項目を縦に並べ、右カラムにはドーナツチャートと凡例・注釈を組み合わせたデータビジュアライゼーションを配置するレイアウト。"
   },
   {
    "name": "two-chart-panel",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "2つのグラフパネルを左右配置（左：ドーナツ＋凡例リスト、右：ドーナツ2点横並び）するカテゴリ比較レイアウト。"
   },
   {
    "name": "headline-three-chart-grid",
-   "category": "グラフ・データ",
+   "category": "グラフ",
    "summary": "上部に大見出しと説明文、下部に3つのグラフパネル（横棒・縦棒・折れ線）を横並びで配置する複合チャートレイアウト。"
   },
   {
    "name": "comparison-matrix-table",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "複数の比較軸（行）と複数の対象（列）を持つマトリクス表で、特定列をハイライトで強調する比較レイアウト"
   },
   {
    "name": "comparison-table-with-highlight",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "複数のプラン・選択肢を列で比較する表形式レイアウト。ヘッダー行をアクセントカラーで塗りつぶし、特定セルの数値などをハイライトカラーで強調する。"
   },
   {
    "name": "pricing-plan-cards",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "3つの料金プランを横3列のカードで並べ、中央プランを「おすすめ」として強調表示する料金比較レイアウト"
   },
   {
    "name": "pricing-comparison-table",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "複数プランの料金・仕様を比較できる表形式レイアウト。左列に比較項目ラベルを縦並びで置き、右側に各プランの列を横並びにした格子状のテーブル構造。推奨プランを視覚的に強調できる。"
   },
   {
    "name": "status-progress-table",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "プロジェクトや施策の一覧を表形式で示し、各行にステータスアイコン（完了/進行中/遅延など）と日程・備考を表示する進捗管理レイアウト"
   },
   {
    "name": "before-after-two-col",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "「Before（課題・現状）」と「After（改善後・目標）」を左右2カラムで対比するパターン。中央の矢印で変化の方向を明示する。"
   },
   {
    "name": "problem-solution",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "「課題」を左側に、「解決策」を右側に示し、中央の大きな矢印で繋ぐ2カラムパターン。課題と解決策が対応関係にあることを視覚的に伝える。"
   },
   {
    "name": "risk-matrix-2x2",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "影響度（縦軸）×発生確率（横軸）の2×2マトリクスでリスクを4象限に分類・整理するスライド。各セルにリスク項目をバッジ形式で表示する。"
   },
   {
    "name": "estimate-amount-table",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "上部に「金額」反転バッジと合計金額を大きく示し、下に内訳明細テーブル（項目・単価・数量・単位・金額／ヘッダーと合計行を反転強調）を配置する見積レイアウト。"
   },
   {
    "name": "line-item-table",
-   "category": "テーブル・比較",
+   "category": "テーブル",
    "summary": "「内訳」見出しの下に項目・単価・数量・単位・金額の明細テーブルのみを配置するシンプルな一覧。合計行なし・行間広め。"
   },
   {
    "name": "three-kpi-big-number",
-   "category": "KPI・まとめ",
+   "category": "KPI",
    "summary": "3つのKPI（重要指標）を大きな数字で横並びに表示する実績・成果報告スライド。インパクトある数字を前面に出すことで成果を印象付ける。"
   },
   {
    "name": "goal-kgi-kpi-dashboard",
-   "category": "KPI・まとめ",
+   "category": "KPI",
    "summary": "4層の階層構造（目標→KGI→KPI→施策）を上下に積層したダッシュボード。目標設定の全体像を体系化。"
   },
   {
    "name": "summary-three-points",
-   "category": "KPI・まとめ",
+   "category": "まとめ",
    "summary": "「まとめ」スライド用のシンプルな3点ポイントリスト。チェックマーク付きで視認性が高く、プレゼンのクロージングに最適。"
   },
   {
    "name": "action-items-list",
-   "category": "KPI・まとめ",
+   "category": "まとめ",
    "summary": "アクションアイテム（次のステップ・タスク一覧）を番号付きリストで示すスライド。担当者・期限カラムを持ち、会議の締めや計画発表に使いやすい。"
   },
   {
    "name": "faq-grid",
-   "category": "Q&A・FAQ",
+   "category": "FAQ",
    "summary": "6つのよくある質問（Q&A）を3列×2行のグリッドに配置するレイアウト。各セルに番号・質問・回答を収める"
   },
   {
    "name": "faq-three-column-grid",
-   "category": "Q&A・FAQ",
+   "category": "FAQ",
    "summary": "FAQ（よくある質問と回答）を3列×2行のグリッドに整列して配置するレイアウト。各セルは「Q番号バッジ」「質問テキスト（太字）」「回答テキスト」で構成される。"
   },
   {
    "name": "faq-single-column",
-   "category": "Q&A・FAQ",
+   "category": "FAQ",
    "summary": "3つのQ&Aを縦一列に並べ、各質問と回答をひとつのボックスにまとめた1列FAQレイアウト"
   },
   {
    "name": "faq-stacked-qa-boxes",
-   "category": "Q&A・FAQ",
+   "category": "FAQ",
    "summary": "Q&Aのペアをひとつのボックスにまとめ、複数ボックスをコンテンツエリアに縦に積み重ねるFAQレイアウト。「Q.」の質問文はアクセントカラーで強調し、「A.」の回答文はその下にやや大きめのフォントで続ける。"
   },
   {
