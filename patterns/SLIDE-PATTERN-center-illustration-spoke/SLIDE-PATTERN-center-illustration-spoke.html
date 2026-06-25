@@ -15,15 +15,20 @@
   .spoke-label { font-size: 11px; color: #333333; text-align: center; font-weight: 600; }
   .center-hub { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
   .center-bg { width: 160px; height: 130px; background: var(--sk-soft,#F0F0F0); border-radius: 50% 50% 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+
+/* === 共通見出し（Frame title-area）: data-heading / data-hstyle で制御 === */
+.sk-head{display:none}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;gap:12px;padding:14px 40px 12px;border-bottom:2px solid var(--sk-accent,#333333);flex-shrink:0;}
+.sk-head .sk-head-no{font-size:15px;font-weight:bold;color:#333333;flex-shrink:0;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{border-bottom:none;border-left:5px solid var(--sk-accent,#333333);padding-left:18px;}
+html[data-heading="on"][data-hstyle="b"] .sk-head .sk-head-no{color:var(--sk-accent,#333333);}
 </style>
 </head>
 <body>
 <p class="slide-label">[center-illustration-spoke]</p>
 <div class="slide">
-  <div class="title-area">
-    <div class="area-label">Title Area — SLIDE.md 参照</div>
-    <div style="font-size:16px; color:#CCCCCC; margin-top:4px;">スライドタイトルが入ります</div>
-  </div>
+  <div class="sk-head"><span class="sk-head-no">02</span><span class="sk-head-ttl">セクションタイトル</span></div>
   <div class="content-area">
     <!-- 中央ハブ -->
     <div class="center-hub">
