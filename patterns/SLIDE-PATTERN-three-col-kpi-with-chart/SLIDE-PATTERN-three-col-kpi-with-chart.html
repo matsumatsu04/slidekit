@@ -33,9 +33,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     /* コンテンツエリア */
     .content-area {
@@ -66,7 +66,7 @@
     .card {
       flex: 1;
       background: var(--sk-soft,#F0F0F0);
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       border-radius: 6px;
       display: flex;
       flex-direction: column;
@@ -88,7 +88,7 @@
     .kpi-value {
       font-size: 36px;
       font-weight: bold;
-      color: #333333;
+      color: var(--sk-accent,#333333);
       line-height: 1.1;
     }
     .kpi-unit {
@@ -101,7 +101,7 @@
       color: #333333;
       line-height: 1.5;
       text-align: center;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       padding-bottom: 8px;
       margin-bottom: 8px;
       flex-shrink: 0;
@@ -123,7 +123,7 @@
     .chart-placeholder {
       flex: 1;
       background: #E4E4E4;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       border-radius: 3px;
       display: flex;
       align-items: center;

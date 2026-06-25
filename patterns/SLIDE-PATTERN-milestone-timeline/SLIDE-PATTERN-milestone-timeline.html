@@ -24,7 +24,7 @@
       width: 960px;
       height: 540px;
       background: #FFFFFF;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -32,9 +32,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .area-label {
       font-size: 11px;
@@ -59,16 +59,16 @@
     /* フェーズラベル行 */
     .phase-row {
       display: flex;
-      border: 1px solid var(--sk-soft,#E0E0E0);
+      border: 1px solid var(--sk-accent,#E0E0E0);
       border-bottom: none;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .phase-cell {
       flex: 1;
       padding: 4px 8px;
       font-size: 11px;
       color: #999;
-      border-right: 1px solid var(--sk-soft,#E0E0E0);
+      border-right: 1px solid var(--sk-accent,#E0E0E0);
       text-align: center;
     }
     .phase-cell:last-child {
@@ -78,7 +78,7 @@
     .timeline-container {
       position: relative;
       height: 140px;
-      border: 1px solid var(--sk-soft,#E0E0E0);
+      border: 1px solid var(--sk-accent,#E0E0E0);
       border-top: none;
       border-bottom: none;
     }
@@ -157,7 +157,7 @@
       align-items: center;
       gap: 16px;
       padding-top: 8px;
-      border: 1px solid var(--sk-soft,#E0E0E0);
+      border: 1px solid var(--sk-accent,#E0E0E0);
       border-top: none;
       padding: 6px 16px;
     }

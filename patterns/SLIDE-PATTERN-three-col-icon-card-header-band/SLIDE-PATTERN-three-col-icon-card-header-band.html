@@ -24,9 +24,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .title-area .title-dummy {
       font-size: 16px;
@@ -45,7 +45,7 @@
     }
     /* リード文エリア */
     .lead-area {
-      border: 1px dashed #CCCCCC;
+      border: 1px dashed var(--sk-accent,#CCCCCC);
       background: var(--sk-soft,#F0F0F0);
       padding: 8px 14px;
       margin-bottom: 14px;
@@ -68,7 +68,7 @@
     /* 各カード */
     .card {
       flex: 1;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       border-radius: 4px;
       display: flex;
       flex-direction: column;
@@ -100,7 +100,7 @@
       width: 44px;
       height: 44px;
       background: var(--sk-soft,#E0E0E0);
-      border: 2px solid #CCCCCC;
+      border: 2px solid var(--sk-accent,#CCCCCC);
       clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
       display: flex;
       align-items: center;
@@ -125,7 +125,7 @@
       color: #333333;
       text-align: center;
       padding-bottom: 5px;
-      border-bottom: 2px solid #CCCCCC;
+      border-bottom: 2px solid var(--sk-accent,#CCCCCC);
       margin-bottom: 8px;
     }
     .card-heading .area-label {

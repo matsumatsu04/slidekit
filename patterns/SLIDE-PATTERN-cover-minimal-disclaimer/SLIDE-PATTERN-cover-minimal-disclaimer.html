@@ -18,16 +18,16 @@
       width: 960px;
       height: 540px;
       background: #FFFFFF;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
     .title-area {
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
       padding: 10px 40px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       font-size: 11px;
       color: #999;
       text-transform: uppercase;
@@ -47,7 +47,7 @@
     <div style="flex:1; display:flex; flex-direction:column; padding:0 52px;">
       <!-- ヘッダー：ロゴ+会社名 -->
       <div style="padding-top:20px; display:flex; align-items:center; gap:12px; flex-shrink:0;">
-        <div style="width:44px; height:44px; background:var(--sk-soft,#F0F0F0); border:1px dashed #CCCCCC; display:flex; align-items:center; justify-content:center; font-size:10px; color:#AAAAAA; border-radius:4px;">LOGO</div>
+        <div style="width:44px; height:44px; background:var(--sk-soft,#F0F0F0); border:1px dashed var(--sk-accent,#CCCCCC); display:flex; align-items:center; justify-content:center; font-size:10px; color:#AAAAAA; border-radius:4px;">LOGO</div>
         <div>
           <div style="font-size:11px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px;">Header — Logo / Company</div>
           <div style="font-size:13px; font-weight:bold; color: #333333;">会社名</div>
@@ -62,7 +62,7 @@
         <div style="font-size:13px; color: #333333; margin-bottom:4px;">2025年X月X日 イベント名</div>
       </div>
       <!-- フッター：免責事項 -->
-      <div style="flex-shrink:0; border-top:1px solid var(--sk-soft,#EEEEEE); padding:10px 0 16px;">
+      <div style="flex-shrink:0; border-top:1px solid var(--sk-accent,#EEEEEE); padding:10px 0 16px;">
         <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Footer — Disclaimer</div>
         <div style="font-size:10px; color:#999; line-height:1.7;">
           <span style="font-weight:600; color: #333333;">商号等</span>　〇〇〇〇株式会社　〇〇商品取引業者　〇〇財務局長（〇〇）第XXXX号<br>
