@@ -25,20 +25,19 @@
   .bullet-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #333333; line-height: 1.6; }
   .bullet-icon { color: #AAAAAA; font-size: 12px; flex-shrink: 0; margin-top: 3px; }
 
-/* === 共通見出し（Frame title-area）: data-heading / data-hstyle で制御 === */
+/* === 共通見出し v2（番号なし・固定metrics）=== */
 .sk-head{display:none}
-html[data-heading="on"] .sk-head{display:flex;align-items:baseline;gap:12px;padding:14px 40px 12px;border-bottom:2px solid var(--sk-accent,#333333);flex-shrink:0;}
-.sk-head .sk-head-no{font-size:15px;font-weight:bold;color:#333333;flex-shrink:0;}
-.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;}
-html[data-heading="on"][data-hstyle="b"] .sk-head{border-bottom:none;border-left:5px solid var(--sk-accent,#333333);padding-left:18px;}
-html[data-heading="on"][data-hstyle="b"] .sk-head .sk-head-no{color:var(--sk-accent,#333333);}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:84px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:48px;right:48px;padding:32px 0 14px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:26px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:5px solid var(--sk-accent,#333333);padding:30px 0 0 16px;align-items:center;}
 </style>
 </head>
 <body>
 <p class="slide-label">[image-left-text-right]</p>
 <div class="slide">
   <!-- タイトルエリア -->
-  <div class="sk-head"><span class="sk-head-no">02</span><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
   <!-- コンテンツエリア -->
   <div class="content-area">
     <!-- 左カラム：画像プレースホルダー -->
