@@ -23,9 +23,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .title-placeholder {
       font-size: 16px;
@@ -46,7 +46,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      border-right: 1px solid var(--sk-soft,#EEEEEE);
+      border-right: 1px solid var(--sk-accent,#EEEEEE);
       position: relative;
     }
     .profile-list > .area-label {
@@ -56,7 +56,7 @@
     }
     .profile-divider {
       border: none;
-      border-top: 1px solid #CCCCCC;
+      border-top: 1px solid var(--sk-accent,#CCCCCC);
       margin-bottom: 14px;
     }
     /* 各プロフィール行 */
@@ -113,7 +113,7 @@
       height: 140px;
       border-radius: 50%;
       background: var(--sk-soft,#E0E0E0);
-      border: 2px solid #CCCCCC;
+      border: 2px solid var(--sk-accent,#CCCCCC);
       display: flex;
       align-items: center;
       justify-content: center;

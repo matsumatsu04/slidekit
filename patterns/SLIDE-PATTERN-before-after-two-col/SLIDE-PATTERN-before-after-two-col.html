@@ -24,7 +24,7 @@
       width: 960px;
       height: 540px;
       background: #FFFFFF;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -32,9 +32,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .area-label {
       font-size: 11px;
@@ -59,7 +59,7 @@
     .col-before,
     .col-after {
       flex: 1;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       display: flex;
       flex-direction: column;
     }
@@ -75,7 +75,7 @@
     }
     .col-after .col-header {
       background: var(--sk-soft,#E8E8E8);
-      border-bottom: 1px solid #CCCCCC;
+      border-bottom: 1px solid var(--sk-accent,#CCCCCC);
     }
     .col-body {
       padding: 16px 20px;

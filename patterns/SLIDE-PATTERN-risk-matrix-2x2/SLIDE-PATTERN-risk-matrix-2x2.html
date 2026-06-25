@@ -24,7 +24,7 @@
       width: 960px;
       height: 540px;
       background: #FFFFFF;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -32,9 +32,9 @@
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
-      border-bottom: 1px dashed #CCCCCC;
+      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
-      background: var(--sk-soft,#FAFAFA);
+      background: #FFFFFF;
     }
     .area-label {
       font-size: 11px;
@@ -99,16 +99,16 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 0;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
     }
     .matrix-cell {
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    .cell-top-left  { background: var(--sk-soft,#F5F5F5); }
+    .cell-top-left  { background: #FFFFFF; }
     .cell-top-right { background: var(--sk-soft,#EEEEEE); }
     .cell-bot-left  { background: #FFFFFF; }
     .cell-bot-right { background: var(--sk-soft,#F0F0F0); }
@@ -134,7 +134,7 @@
       font-size: 11px;
       color: #333333;
       border-radius: 2px;
-      border: 1px solid #D8D8D8;
+      border: 1px solid var(--sk-accent,#D8D8D8);
     }
     /* X軸ラベル */
     .x-axis-wrapper {
@@ -188,7 +188,7 @@
     .legend-swatch {
       width: 20px;
       height: 14px;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       flex-shrink: 0;
     }
     .legend-text {
@@ -284,7 +284,7 @@
           </div>
         </div>
         <div class="legend-item">
-          <div class="legend-swatch" style="background: var(--sk-soft,#F5F5F5);"></div>
+          <div class="legend-swatch" style="background: #FFFFFF;"></div>
           <div>
             <div class="legend-text">重点管理</div>
             <div class="legend-sub">高影響・低確率</div>

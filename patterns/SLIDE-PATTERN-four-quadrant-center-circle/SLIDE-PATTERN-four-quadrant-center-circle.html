@@ -6,21 +6,21 @@
 <style>
   body { background: var(--sk-soft,#E8E8E8); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
   .slide-label { font-size: 12px; color: #333333; margin-bottom: 6px; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; display: flex; flex-direction: column; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
   .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; }
   /* タイトルエリア */
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed #CCCCCC; flex-shrink: 0; background: var(--sk-soft,#FAFAFA); }
+  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   /* コンテンツエリア */
   .content-area { position: relative; flex: 1; padding: 12px 48px; }
   /* 中央の円（絶対配置） */
-  .center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-radius: 50%; border: 2px solid #CCCCCC; background: var(--sk-soft,#F8F8F8); display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2; }
+  .center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--sk-accent,#CCCCCC); background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 2; }
   .center-text { font-size: 11px; color: #888; text-align: center; line-height: 1.5; }
   /* 4象限グリッド */
   .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; width: 100%; height: 100%; gap: 8px; }
   /* 各象限セル */
-  .quadrant { display: flex; flex-direction: column; padding: 12px; gap: 6px; border: 1px dashed var(--sk-soft,#E8E8E8); }
+  .quadrant { display: flex; flex-direction: column; padding: 12px; gap: 6px; border: 1px dashed var(--sk-accent,#E8E8E8); }
   /* アイコンプレースホルダー */
-  .icon-placeholder { width: 40px; height: 40px; background: var(--sk-soft,#F0F0F0); border-radius: 50%; border: 1px dashed #CCCCCC; flex-shrink: 0; }
+  .icon-placeholder { width: 40px; height: 40px; background: var(--sk-soft,#F0F0F0); border-radius: 50%; border: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; }
   /* 見出し */
   .quadrant-heading { font-size: 13px; font-weight: bold; color: #333333; line-height: 1.4; }
   /* 説明テキスト */

@@ -24,7 +24,7 @@
       width: 960px;
       height: 540px;
       background: #FFFFFF;
-      border: 1px solid #CCCCCC;
+      border: 1px solid var(--sk-accent,#CCCCCC);
       overflow: hidden;
       margin-bottom: 8px;
       display: flex;
@@ -39,7 +39,7 @@
     }
     .placeholder-box {
       background: var(--sk-soft,#F0F0F0);
-      border: 1px dashed #CCCCCC;
+      border: 1px dashed var(--sk-accent,#CCCCCC);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -54,7 +54,7 @@
 <div class="slide">
 
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
-  <div style="padding: 14px 40px 12px; border-bottom: 1px dashed #CCCCCC; flex-shrink: 0; background: var(--sk-soft,#FAFAFA);">
+  <div style="padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF;">
     <div class="area-label">Title Area — SLIDE.md 参照</div>
     <div style="font-size: 16px; color: #CCCCCC; margin-top: 4px;">スライドタイトルが入ります</div>
   </div>
@@ -63,7 +63,7 @@
   <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
 
     <!-- 上段：本文テキスト（全幅） -->
-    <div style="padding: 16px 40px 12px; border-bottom: 1px solid var(--sk-soft,#E8E8E8); flex-shrink: 0;">
+    <div style="padding: 16px 40px 12px; border-bottom: 1px solid var(--sk-accent,#E8E8E8); flex-shrink: 0;">
       <div class="area-label">Body Text</div>
       <div style="font-size: 14px; color: #333333; line-height: 1.7;">
         本文テキストが入ります。データの背景や主張を2〜3行で説明します。<br>
@@ -75,7 +75,7 @@
     <div style="display: flex; flex: 1; overflow: hidden;">
 
       <!-- 左：円グラフエリア -->
-      <div style="width: 60%; padding: 20px 24px; display: flex; flex-direction: column; border-right: 1px solid var(--sk-soft,#E8E8E8);">
+      <div style="width: 60%; padding: 20px 24px; display: flex; flex-direction: column; border-right: 1px solid var(--sk-accent,#E8E8E8);">
         <div class="area-label">Chart Area（円グラフ）</div>
         <div class="placeholder-box" style="flex: 1; flex-direction: column; gap: 12px;">
           <!-- 円グラフのプレースホルダー -->
@@ -88,7 +88,7 @@
       <!-- 右：コールアウトエリア -->
       <div style="width: 40%; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center;">
         <div class="area-label">Callout Box</div>
-        <div style="border: 2px solid #CCCCCC; border-radius: 8px; padding: 20px 24px; background: var(--sk-soft,#F8F8F8);">
+        <div style="border: 2px solid var(--sk-accent,#CCCCCC); border-radius: 8px; padding: 20px 24px; background: #FFFFFF;">
           <div style="font-size: 14px; font-weight: bold; color: #333333; line-height: 1.6; text-align: center;">
             強調したいデータや<br>メッセージが入ります
           </div>
