@@ -7,7 +7,7 @@
 <style>
   /* スライド全体のリセットと基本設定 */
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #E0E0E0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
 
   /* スライド本体：960×540px固定 */
   .slide {
@@ -21,13 +21,6 @@
   }
 
   /* エリアラベル共通スタイル */
-  .area-label {
-    font-size: 11px;
-    color: #999999;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 2px;
-  }
 
   /* タイトルエリア */
   .title-area {
@@ -47,15 +40,6 @@
   }
 
   /* コンテンツラベル */
-  .content-area-label-overlay {
-    position: absolute;
-    top: 6px;
-    left: 12px;
-    font-size: 11px;
-    color: #BBBBBB;
-    text-transform: uppercase;
-    z-index: 10;
-  }
 
   /* 左列：大円ハブエリア */
   .left-column {
@@ -191,7 +175,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
   <!-- コンテンツエリア：circle-hub-list-right pattern -->
   <div class="content-area">
-    <div class="content-area-label-overlay">Content Area — circle-hub-list-right pattern</div>
 
     <!-- 左列：大円ハブ -->
     <div class="left-column">

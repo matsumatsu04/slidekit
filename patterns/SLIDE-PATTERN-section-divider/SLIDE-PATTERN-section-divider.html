@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-section-divider</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; }
   /* タイトルエリア */
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   /* コンテンツエリア */
@@ -26,7 +25,6 @@
 <div class="slide">
   <!-- タイトルエリア -->
   <div class="title-area">
-    <div class="area-label">Title Area — SLIDE.md 参照</div>
     <div style="font-size:16px; color:#CCCCCC; margin-top:4px;">スライドタイトルが入ります</div>
   </div>
   <!-- コンテンツエリア -->
@@ -35,11 +33,8 @@
     <div class="left-accent"></div>
     <!-- セクション番号・タイトル・サブタイトル -->
     <div class="main-content">
-      <div class="area-label" style="margin-bottom: 2px;">Section Number</div>
       <div class="section-number">02</div>
-      <div class="area-label" style="margin-top: 4px; margin-bottom: 2px;">Section Title</div>
       <div class="section-title">セクションタイトルが入ります</div>
-      <div class="area-label" style="margin-top: 4px; margin-bottom: 2px;">Sub Title</div>
       <div class="section-subtitle">このセクションの内容を補足するサブタイトルが入ります</div>
     </div>
     <!-- 下部ページ範囲テキスト（任意） -->

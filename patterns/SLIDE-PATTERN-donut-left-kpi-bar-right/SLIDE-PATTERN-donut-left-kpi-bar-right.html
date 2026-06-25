@@ -6,15 +6,7 @@
   <title>SLIDE-PATTERN-donut-left-kpi-bar-right</title>
   <style>
     /* ページ背景・中央寄せ */
-    body {
-      background: #E8E8E8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      font-family: sans-serif;
-      margin: 0;
-    }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
 
     /* スライドラベル */
 
@@ -67,12 +59,6 @@
       border-right: 1px solid var(--sk-accent,#E0E0E0);
     }
 
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
 
     /* 凡例行 */
     .legend-row {
@@ -203,7 +189,7 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 左：ドーナツグラフ -->
       <div class="left-area">
-        <span class="area-label">ドーナツグラフ</span>
+        
 
         <!-- ドーナツSVG（2分割：90% / 10%） -->
         <svg width="140" height="140" viewBox="0 0 140 140">
@@ -266,7 +252,7 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
         <!-- 右下：横棒グラフ -->
         <div class="bar-area">
-          <span class="area-label">棒グラフ（フェーズ別）</span>
+          
 
           <!-- 棒1 -->
           <div class="bar-row">

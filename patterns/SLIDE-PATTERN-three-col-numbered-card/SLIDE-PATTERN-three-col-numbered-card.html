@@ -15,12 +15,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -40,10 +34,7 @@
       display: flex;
       flex-direction: column;
     }
-    .content-area > .area-label {
-      margin-bottom: 6px;
-    }
-    /* リード文エリア */
+    .content-area >    /* リード文エリア */
     .lead-area {
       border: 1px dashed var(--sk-accent,#CCCCCC);
       background: var(--sk-soft,#F0F0F0);
@@ -52,10 +43,7 @@
       border-radius: 3px;
       flex-shrink: 0;
     }
-    .lead-area .area-label {
-      margin-bottom: 3px;
-    }
-    .lead-area .lead-text {
+    .lead-area    .lead-area .lead-text {
       font-size: 11px;
       color: #333333;
     }
@@ -84,10 +72,7 @@
       align-items: center;
       justify-content: center;
     }
-    .card-label-band .area-label {
-      color: #888;
-    }
-    .card-label-band .label-text {
+    .card-label-band    .card-label-band .label-text {
       font-size: 11px;
       color: #888;
       font-weight: bold;
@@ -100,10 +85,7 @@
       flex-direction: column;
       align-items: center;
     }
-    .card-number-area .area-label {
-      margin-bottom: 4px;
-    }
-    .card-number {
+    .card-number-area    .card-number {
       font-size: 44px;
       font-weight: bold;
       color: #CCCCCC;
@@ -122,10 +104,7 @@
       text-align: center;
       flex-shrink: 0;
     }
-    .card-heading .area-label {
-      margin-bottom: 4px;
-    }
-    .card-heading .heading-text {
+    .card-heading    .card-heading .heading-text {
       font-size: 12px;
       font-weight: bold;
       color: #333333;
@@ -139,10 +118,7 @@
       margin: 0 8px 10px;
       border-radius: 3px;
     }
-    .card-bullets-area .area-label {
-      margin-bottom: 5px;
-    }
-    .bullet-item {
+    .card-bullets-area    .bullet-item {
       padding: 3px 0 3px 14px;
       position: relative;
       color: #333333;
@@ -171,11 +147,9 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
   <!-- コンテンツエリア -->
   <div class="content-area">
-    <div class="area-label">Content Area</div>
 
     <!-- リード文 -->
     <div class="lead-area">
-      <div class="area-label">Lead Text</div>
       <div class="lead-text">スライドの補足説明・文脈を示すリード文が入ります。1〜2行程度でスライド全体の意図を説明します。</div>
     </div>
 
@@ -186,19 +160,16 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <div class="card">
         <div class="card-label-band">
           <span class="label-text">reason</span>
-          <span class="area-label" style="margin-left:6px;">Label Band</span>
+          
         </div>
         <div class="card-number-area">
-          <div class="area-label">Large Number</div>
           <div class="card-number">1</div>
         </div>
         <div class="card-divider"></div>
         <div class="card-heading">
-          <div class="area-label">Heading</div>
           <div class="heading-text">カードの見出し<br>テキスト（2行まで）</div>
         </div>
         <div class="card-bullets-area">
-          <div class="area-label">Bullet List</div>
           <div class="bullet-item">説明テキスト（1項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（2項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（3項目目）の内容が入ります。</div>
@@ -209,19 +180,16 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <div class="card">
         <div class="card-label-band">
           <span class="label-text">reason</span>
-          <span class="area-label" style="margin-left:6px;">Label Band</span>
+          
         </div>
         <div class="card-number-area">
-          <div class="area-label">Large Number</div>
           <div class="card-number">2</div>
         </div>
         <div class="card-divider"></div>
         <div class="card-heading">
-          <div class="area-label">Heading</div>
           <div class="heading-text">カードの見出し<br>テキスト（2行まで）</div>
         </div>
         <div class="card-bullets-area">
-          <div class="area-label">Bullet List</div>
           <div class="bullet-item">説明テキスト（1項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（2項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（3項目目）の内容が入ります。</div>
@@ -232,19 +200,16 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <div class="card">
         <div class="card-label-band">
           <span class="label-text">reason</span>
-          <span class="area-label" style="margin-left:6px;">Label Band</span>
+          
         </div>
         <div class="card-number-area">
-          <div class="area-label">Large Number</div>
           <div class="card-number">3</div>
         </div>
         <div class="card-divider"></div>
         <div class="card-heading">
-          <div class="area-label">Heading</div>
           <div class="heading-text">カードの見出し<br>テキスト（2行まで）</div>
         </div>
         <div class="card-bullets-area">
-          <div class="area-label">Bullet List</div>
           <div class="bullet-item">説明テキスト（1項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（2項目目）の内容が入ります。</div>
           <div class="bullet-item">説明テキスト（3項目目）の内容が入ります。</div>

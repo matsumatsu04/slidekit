@@ -6,7 +6,6 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { width: 960px; height: 540px; overflow: hidden; font-family: sans-serif; background: #FFFFFF; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.05em; }
 
 /* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
 .sk-head{display:none}
@@ -25,7 +24,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
   <!-- サマリー箇条書き -->
   <div style="flex-shrink:0;">
-    <div class="area-label" style="margin-bottom:6px;">Summary Bullets</div>
     <div style="background:var(--sk-soft,#F0F0F0); border:1px solid var(--sk-accent,#CCCCCC); border-radius:4px; padding:8px 14px; display:flex; flex-direction:column; gap:4px;">
       <div style="font-size:10px; color: #333333; display:flex; gap:6px;"><span>•</span><span>サマリーポイント1：スライドの要点を簡潔に記述するテキストが入ります。</span></div>
       <div style="font-size:10px; color: #333333; display:flex; gap:6px;"><span>•</span><span>サマリーポイント2：補足情報や背景説明のテキストが入ります。</span></div>
@@ -34,7 +32,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
   <!-- ロードマップエリア -->
   <div style="flex:1; display:flex; flex-direction:column; gap:6px; min-height:0;">
-    <div class="area-label">Roadmap Area</div>
 
     <!-- 年度ラベル行 -->
     <div style="display:flex; align-items:flex-end; gap:4px; padding:0 0 0 0; flex-shrink:0;">
@@ -58,7 +55,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- ブロック1（最低） -->
       <div style="flex:1; background:var(--sk-soft,#F0F0F0); border:1px solid var(--sk-accent,#CCCCCC); border-radius:4px 4px 0 0; height:60px; padding:6px 8px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:4px; left:6px; font-size:8px; color:#999; text-transform:uppercase;">Step 1</div>
         <div style="font-size:9px; color: #333333; font-weight:bold; line-height:1.4;">ファースト<br>ステップ名</div>
         <!-- 右向き矢印 -->
         <div style="position:absolute; right:-8px; top:50%; transform:translateY(-50%); width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:8px solid var(--sk-accent,#CCCCCC); z-index:2;"></div>
@@ -66,21 +62,18 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- ブロック2 -->
       <div style="flex:1; background:var(--sk-soft,#E8E8E8); border:1px solid var(--sk-accent,#CCCCCC); border-radius:4px 4px 0 0; height:90px; padding:6px 8px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:4px; left:6px; font-size:8px; color:#999; text-transform:uppercase;">Step 2</div>
         <div style="font-size:9px; color: #333333; font-weight:bold; line-height:1.4;">セカンド<br>ステップ名</div>
         <div style="position:absolute; right:-8px; top:50%; transform:translateY(-50%); width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:8px solid var(--sk-accent,#CCCCCC); z-index:2;"></div>
       </div>
 
       <!-- ブロック3（強調） -->
       <div style="flex:1; background:#DDDDDD; border:1px solid #BBBBBB; border-radius:4px 4px 0 0; height:120px; padding:6px 8px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:4px; left:6px; font-size:8px; color:#888; text-transform:uppercase;">Step 3（現在）</div>
         <div style="font-size:9px; color: #333333; font-weight:bold; line-height:1.4;">サード<br>ステップ名</div>
         <div style="position:absolute; right:-8px; top:50%; transform:translateY(-50%); width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:8px solid #BBBBBB; z-index:2;"></div>
       </div>
 
       <!-- ブロック4（最高・最も目立つ） -->
       <div style="flex:1; background:#C8C8C8; border:1px solid #AAAAAA; border-radius:4px 4px 0 0; height:150px; padding:8px 8px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:4px; left:6px; font-size:8px; color: #333333; text-transform:uppercase;">Step 4（目標）</div>
         <div style="font-size:10px; color: #333333; font-weight:bold; line-height:1.4;">フォース<br>ステップ名</div>
         <!-- 末尾矢印（右向き） -->
         <div style="position:absolute; right:-10px; top:50%; transform:translateY(-50%); width:0; height:0; border-top:14px solid transparent; border-bottom:14px solid transparent; border-left:10px solid #AAAAAA; z-index:2;"></div>
@@ -90,7 +83,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- 累積レイヤー帯 -->
     <div style="display:flex; flex-direction:column; gap:3px; flex-shrink:0;">
-      <div class="area-label" style="font-size:9px;">Layer Bands（累積施策帯）</div>
 
       <!-- レイヤー1（最上段・最も狭い） -->
       <div style="background:var(--sk-soft,#F0F0F0); border:1px solid var(--sk-accent,#CCCCCC); border-radius:2px; padding:3px 10px; display:flex; align-items:center;">

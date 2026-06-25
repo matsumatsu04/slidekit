@@ -5,15 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN-numbered-toc</title>
   <style>
-    body {
-      background: #E8E8E8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      font-family: sans-serif;
-      margin: 0;
-    }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
     .slide {
       width: 960px;
       height: 540px;
@@ -23,13 +15,6 @@
       margin-bottom: 8px;
       display: flex;
       flex-direction: column;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
     }
     .toc-row {
       display: flex;
@@ -67,13 +52,11 @@
 
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div style="padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF;">
-    <div class="area-label">Title Area — SLIDE.md 参照</div>
     <div style="font-size: 16px; color: #CCCCCC; margin-top: 4px;">スライドタイトルが入ります</div>
   </div>
 
   <!-- コンテンツエリア（このパターンが定義する領域） -->
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px 80px;">
-    <div class="area-label">Numbered TOC List</div>
 
     <div class="toc-row">
       <span class="toc-number">1.</span>

@@ -6,14 +6,7 @@
   <title>SLIDE-PATTERN-three-col-kpi-with-chart</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: sans-serif;
-      background: #E0E0E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
     /* スライド本体：960×540px固定 */
     .slide {
       width: 960px;
@@ -22,13 +15,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
     }
     /* タイトルエリア */
     .title-area {
@@ -194,13 +180,6 @@
     }
     .legend-dot.dark { background: var(--sk-accent,#666666); }
     /* カードのエリアラベル */
-    .card-area-label {
-      font-size: 9px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      text-align: right;
-    }
   
 /* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
 .sk-head{display:none}
@@ -217,7 +196,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- コンテンツエリア -->
     <div class="content-area">
-      <div class="area-label">Content Area</div>
 
       <!-- リード文 -->
       <div class="lead-area">
@@ -231,7 +209,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
         <!-- カード1：ドーナツグラフ -->
         <div class="card">
-          <div class="card-area-label">KPI Card 01</div>
           <div class="card-top">
             <div class="kpi-label">国内対象企業数</div>
             <div class="kpi-value">約42<span class="kpi-unit">万社</span></div>
@@ -257,7 +234,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
         <!-- カード2：棒グラフ -->
         <div class="card">
-          <div class="card-area-label">KPI Card 02</div>
           <div class="card-top">
             <div class="kpi-label">当社浸透率</div>
             <div class="kpi-value">0.6<span class="kpi-unit">%</span></div>
@@ -288,7 +264,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
         <!-- カード3：折れ線グラフ（SVG） -->
         <div class="card">
-          <div class="card-area-label">KPI Card 03</div>
           <div class="card-top">
             <div class="kpi-label">AI導入率成長</div>
             <div class="kpi-value">+18<span class="kpi-unit">%</span></div>

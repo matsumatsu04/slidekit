@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-cover-center-presenter-badge</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; position: relative; }
-  .area-label { font-size: 11px; color: #BBBBBB; text-transform: uppercase; letter-spacing: 0.08em; }
 
   /* 背景装飾：左上ハーフトーン（ドット）＋下部ウェーブ（グレースケール） */
   .deco-dots { position: absolute; top: 0; left: 0; width: 380px; height: 300px;
@@ -30,8 +29,7 @@
   .center .title { font-size: 46px; font-weight: 800; color: #333333; line-height: 1.35; }
   .center .subtitle { margin-top: 14px; font-size: 18px; letter-spacing: 0.14em; color: #333333; }
   .center .subtitle .dash { color: #999999; }
-  .center .area-label { margin-bottom: 10px; }
-
+  .center
   /* 右下：発表者バッジ */
   .presenter { position: absolute; right: 64px; bottom: 60px; z-index: 2;
     background: var(--sk-accent,#2B2B2B); color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 10px 22px; }
@@ -48,13 +46,11 @@
 
   <!-- 左上：宛名ラベル -->
   <div class="client">
-    <div class="area-label">Client label</div>
     <div class="txt">（お客様名）</div>
   </div>
 
   <!-- 中央：タイトル＋英文サブタイトル -->
   <div class="center">
-    <div class="area-label">Main title</div>
     <div class="title">メインタイトルが<br>ここに入ります</div>
     <div class="subtitle"><span class="dash">—</span>&nbsp; ENGLISH SUBTITLE &nbsp;<span class="dash">—</span></div>
   </div>

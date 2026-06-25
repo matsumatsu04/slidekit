@@ -6,14 +6,7 @@
   <title>SLIDE-PATTERN-pricing-comparison-table</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: sans-serif;
-      background: #E0E0E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
     /* スライド本体：960×540px固定 */
     .slide {
       width: 960px;
@@ -22,13 +15,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
     }
     /* タイトルエリア */
     .title-area {
@@ -160,13 +146,6 @@
       font-weight: bold;
     }
     /* エリアラベル */
-    .table-area-label {
-      font-size: 9px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-    }
   
 /* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
 .sk-head{display:none}
@@ -183,7 +162,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- コンテンツエリア -->
     <div class="content-area">
-      <div class="area-label">Content Area</div>
 
       <!-- リード文エリア -->
       <div class="lead-area">
@@ -193,7 +171,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 比較テーブル -->
       <div class="table-wrapper">
-        <div class="table-area-label">Comparison Table Area</div>
         <table class="compare-table">
           <!-- 推奨バッジ行 -->
           <tr class="badge-row">

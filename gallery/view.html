@@ -21,8 +21,8 @@
   .bar .btn:hover{border-color:#2f6bff;color:#2f6bff}
   .bar .btn.gray{color:var(--muted)}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px}
-  .holder{position:relative;width:1000px;height:660px;transform-origin:center center}
-  .holder iframe{position:absolute;inset:0;width:1000px;height:660px;border:0;background:#e8e8e8}
+  .holder{position:relative;width:960px;height:540px;transform-origin:center center}
+  .holder iframe{position:absolute;inset:0;width:960px;height:540px;border:0;background:#e8e8e8}
   .holder .tintlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color;background:transparent}
 </style>
 </head>
@@ -82,7 +82,7 @@ document.getElementById('reset').addEventListener('click',()=>{tint='';apply();}
 function fit(){
   const stage=document.querySelector('.stage'),h=document.getElementById('holder');
   const sw=stage.clientWidth-48, sh=stage.clientHeight-48;
-  const s=Math.min(sw/1000, sh/660, 1.4);
+  const s=Math.min(sw/960, sh/540, 1.4);
   h.style.transform=`scale(${s})`;
 }
 window.addEventListener('resize',fit); window.addEventListener('load',fit); fit();

@@ -6,14 +6,7 @@
   <title>SLIDE-PATTERN-sidebar-toc-panel</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: sans-serif;
-      background: #E0E0E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
     /* スライド本体：960×540px固定 */
     .slide {
       width: 960px;
@@ -22,13 +15,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
     }
     /* タイトルエリア */
     .title-area {
@@ -129,7 +115,6 @@
   <div class="slide">
     <!-- タイトルエリア（SLIDE.mdで定義） -->
     <div class="title-area">
-      <div class="area-label">Title Area — SLIDE.md 参照</div>
       <div style="font-size:16px; color:#CCCCCC; margin-top:4px;">スライドタイトルが入ります</div>
     </div>
 

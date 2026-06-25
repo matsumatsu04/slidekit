@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-profile-bio</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   .content-area { flex: 1; display: flex; overflow: hidden; }
   .left-panel { width: 32%; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--sk-accent,#EEEEEE); }
@@ -36,12 +35,10 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
   <!-- コンテンツエリア -->
   <div class="content-area">
     <div class="left-panel">
-      <div class="area-label">写真エリア</div>
       <div class="photo-placeholder">[PHOTO]<br>顔写真</div>
       <div class="photo-caption">氏名（よみがな）</div>
     </div>
     <div class="right-panel">
-      <div class="area-label">プロフィール情報</div>
       <div class="profile-name">氏名　太郎</div>
       <div class="profile-position">株式会社○○　代表取締役社長</div>
       <table class="profile-table">

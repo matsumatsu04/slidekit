@@ -5,15 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN-agenda-toc</title>
   <style>
-    body {
-      background: #E8E8E8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      font-family: sans-serif;
-      margin: 0;
-    }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
 
 
     .slide {
@@ -29,13 +21,6 @@
       flex-direction: column;
     }
 
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
-    }
 
     /* ヘッダーエリア */
     .header-area {
@@ -113,12 +98,6 @@
     }
 
     /* エリアラベル用のラッパー */
-    .area-label-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 2px;
-    }
   </style>
 </head>
 <body>
@@ -128,9 +107,7 @@
 
     <!-- ヘッダーエリア -->
     <div class="header-area">
-      <div class="area-label">Section Label</div>
       <div class="section-label-text">AGENDA</div>
-      <div class="area-label" style="margin-top:6px;">Title (H1)</div>
       <div class="title-text">目次</div>
     </div>
 
@@ -138,7 +115,6 @@
     <div class="list-area">
 
       <div>
-        <div class="area-label" style="margin-bottom:4px;">TOC Row (× 項目数)</div>
       </div>
 
       <!-- 行 01 -->

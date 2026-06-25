@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-circle-bilateral-flow</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   .content-area { flex: 1; display: flex; align-items: center; padding: 12px 32px 8px; gap: 0; overflow: hidden; }
   .big-circle { width: 190px; height: 190px; border-radius: 50%; background: var(--sk-soft,#F0F0F0); border: 1px dashed var(--sk-accent,#CCCCCC); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; gap: 6px; }
@@ -31,7 +30,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
     <!-- 左大円 -->
     <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
       <div class="big-circle">
-        <div class="area-label">Left Entity</div>
         <div style="font-size:13px; font-weight:bold; color: #333333; text-align:center;">主体A名<br>（補足情報）</div>
         <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; padding:0 16px;">
           <div class="sub-tag">要素1</div>
@@ -55,7 +53,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
     <!-- 右大円 -->
     <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
       <div class="big-circle">
-        <div class="area-label">Right Entity</div>
         <div style="font-size:13px; font-weight:bold; color: #333333; text-align:center;">主体B名<br>（補足情報）</div>
         <div style="display:flex; flex-direction:column; gap:5px; align-items:center; padding:0 16px;">
           <div class="sub-tag">要素A</div>
