@@ -71,8 +71,8 @@ N. [締め]      まとめと次の一歩
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙 | cover-title-center / cover-with-image-left / cover-center-presenter-badge |
-| セクション | section-divider / closing-slide |
+| 表紙 | cover-with-image-left / cover-gradient-text-bottom / cover-fullbg-text-left |
+| セクション | section-divider |
 | 目次 | agenda-toc / numbered-toc / two-column-toc |
 | 本文 | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
@@ -84,13 +84,13 @@ N. [締め]      まとめと次の一歩
 | KPI | three-kpi-big-number / goal-kgi-kpi-dashboard |
 | まとめ | summary-three-points / action-items-list |
 | FAQ | faq-grid / faq-single-column |
-| プロフィール | profile-bio / team-org-with-photo |
+| プロフィール | profile-bio / profile-bio-photo-right |
 
 割り当て表の例（**使用した構図パターン名を必ず列に含める**。見出しの有無も示す）：
 
 | # | 種類 | 構図パターン（SLIDE-PATTERN名） | 見出し | 内容（1行） |
 |---|---|---|---|---|
-| 1 | 表紙 | cover-title-center | なし | タイトル・対象・日付 |
+| 1 | 表紙 | cover-with-image-left | なし | タイトル・対象・日付 |
 | 2 | 目次 | agenda-toc | なし | 本日の流れ |
 | 4 | 本文 | key-message-single | あり | 現状の課題 |
 | … | … | … | … | … |

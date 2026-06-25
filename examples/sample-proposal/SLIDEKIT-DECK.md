@@ -69,19 +69,19 @@
 ## Slide Plan
 | # | 種類 | 構図パターン（SLIDE-PATTERN） | 内容（1行） |
 |---|---|---|---|
-| 1 | 表紙 | cover-title-center | タイトル・対象・日付 |
+| 1 | 表紙 | cover-gradient-text-bottom | タイトル・対象・日付 |
 | 2 | 目次 | agenda-toc | 本日の流れ |
 | 3 | 主張 | key-message-single | 課題提起のキーメッセージ |
 | 4 | 本文 | numbered-list-with-body | 現状と3つの課題 |
 | 5 | プロセス | three-stage-circle-flow | 解決アプローチ3ステップ |
 | 6 | データ | three-kpi-big-number | 期待される効果（数値） |
 | 7 | 比較 | before-after-two-col | 導入前 / 導入後 |
-| 8 | 締め | closing-slide | まとめと連絡先 |
+| 8 | 締め | key-message-single | まとめと連絡先 |
 
 ## Slides
 
-### Slide 1 — 表紙（cover-title-center）
-**Structure:** full-slide-centered ／ 背景=装飾グラフィック ／ 中央に main-title(大) + sub-title(中)
+### Slide 1 — 表紙（cover-gradient-text-bottom）
+**Structure:** グラデーション背景 ／ 左下に大型タイトル ／ 下部にサブ情報・日付
 **Content:**
 - main-title: 資料作成を、もっと速く・きれいに
 - sub-title: 営業企画部　｜　2026年6月
@@ -126,8 +126,8 @@
 - BEFORE: 毎回ゼロから体裁を調整 ／ 見た目が人によって違う ／ 中身より見栄えに時間
 - AFTER: 基準に沿って自動で整う ／ 全社で統一された見た目 ／ 中身の検討に集中できる
 
-### Slide 8 — 締め（closing-slide）
-**Structure:** アクセント線 ／ メインメッセージ ／ サブメッセージ ／ 区切り線 ／ 発表者情報 ／ 連絡先
+### Slide 8 — 締め（key-message-single）
+**Structure:** 中央に大きな締めメッセージ1文 ／ その下にサブメッセージ・発表者情報・連絡先（muted）を補足
 **Content:**
 - メインメッセージ: 中身に集中できる環境を、つくりませんか。
 - サブメッセージ: Let's focus on what matters.

@@ -178,7 +178,7 @@ DESIGN 側の Frame で定義する旨を記す）
 ## Slide Plan
 | # | 種類 | 構図パターン | 内容（1行） |
 |---|---|---|---|
-| 1 | 表紙 | cover-title-center | タイトル・対象・日付 |
+| 1 | 表紙 | cover-gradient-text-bottom | タイトル・対象・日付 |
 | 2 | 目次 | agenda-toc | 本日の流れ |
 | … | … | … | … |
 
@@ -196,8 +196,8 @@ DESIGN 側の Frame で定義する旨を記す）
 
 例：
 ```markdown
-### Slide 1 — 表紙（cover-title-center）
-**Structure:** full-slide-centered ／ 背景=装飾グラフィック ／ 中央に main-title(大) + sub-title(中)
+### Slide 1 — 表紙（cover-gradient-text-bottom）
+**Structure:** グラデーション背景 ／ 左下に大型タイトル ／ 下部にサブ情報・日付
 **Content:**
 - main-title: 資料作成を、もっと速く・きれいに
 - sub-title: 営業企画部　｜　2026年6月
