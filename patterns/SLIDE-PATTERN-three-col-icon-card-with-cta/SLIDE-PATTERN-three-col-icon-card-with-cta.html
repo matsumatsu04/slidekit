@@ -34,7 +34,7 @@
       display: flex;
       flex-direction: column;
     }
-    .content-area >    /* リード文エリア（2段） */
+    /* リード文エリア（2段） */
     .lead-area {
       border: 1px dashed var(--sk-accent,#CCCCCC);
       background: var(--sk-soft,#F0F0F0);
@@ -44,7 +44,7 @@
       flex-shrink: 0;
       text-align: center;
     }
-    .lead-area    .lead-line1 {
+    .lead-line1 {
       font-size: 11px;
       color: #333333;
       margin-bottom: 4px;
@@ -54,7 +54,7 @@
       font-weight: bold;
       color: #333333;
     }
-    .lead-line2    /* カードグループ */
+    /* カードグループ */
     .cards-wrapper {
       flex: 1;
       display: flex;
@@ -82,13 +82,13 @@
       margin-bottom: 12px;
       flex-shrink: 0;
     }
-    .card-icon-wrap    /* 主見出し */
+    /* 主見出し */
     .card-heading-primary {
       text-align: center;
       margin-bottom: 2px;
       width: 100%;
     }
-    .card-heading-primary    .heading-primary-text {
+    .heading-primary-text {
       font-size: 15px;
       font-weight: bold;
       color: #888;
@@ -100,7 +100,7 @@
       margin-bottom: 8px;
       width: 100%;
     }
-    .card-heading-secondary    .heading-secondary-text {
+    .heading-secondary-text {
       font-size: 11px;
       color: #999;
     }
@@ -112,7 +112,7 @@
       padding: 8px 10px;
       border-radius: 3px;
     }
-    .card-description    .description-text {
+    .description-text {
       font-size: 10px;
       color: #333333;
       text-align: center;
@@ -137,7 +137,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
     <div class="lead-area">
       <div class="lead-line1">
         通常テキスト：前提・状況を説明するリード文（1行目）が入ります。
-        
       </div>
       <div class="lead-line2">
         太字・強調テキスト：主要な訴求内容が入ります。
