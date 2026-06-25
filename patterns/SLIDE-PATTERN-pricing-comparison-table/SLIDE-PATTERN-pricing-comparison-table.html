@@ -8,7 +8,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: sans-serif;
-      background: #E0E0E0;
+      background: var(--sk-soft,#E0E0E0);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -35,7 +35,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     /* コンテンツエリア */
     .content-area {
@@ -53,12 +53,12 @@
     .sub-heading {
       font-size: 14px;
       font-weight: bold;
-      color: var(--sk-ink,#333333);
+      color: #333333;
       margin-bottom: 4px;
     }
     .lead-text {
       font-size: 11px;
-      color: var(--sk-ink,#555555);
+      color: #333333;
       line-height: 1.5;
     }
     /* テーブルラッパー */
@@ -83,7 +83,7 @@
     }
     .recommended-badge {
       display: inline-block;
-      background: var(--sk-ink,#555555);
+      background: var(--sk-accent,#555555);
       color: #FFFFFF;
       font-size: 10px;
       font-weight: bold;
@@ -96,8 +96,8 @@
       text-align: center;
       font-size: 14px;
       font-weight: bold;
-      color: var(--sk-ink,#333333);
-      background: #EBEBEB;
+      color: #333333;
+      background: var(--sk-soft,#EBEBEB);
       border: 1px solid #CCCCCC;
     }
     .plan-header td.row-label-cell {
@@ -108,38 +108,38 @@
     .price-row td {
       padding: 10px 10px;
       text-align: center;
-      background: #F5F5F5;
+      background: var(--sk-soft,#F5F5F5);
       border: 1px solid #CCCCCC;
       border-top: none;
     }
     .price-row td.row-label-cell {
-      background: #E0E0E0;
+      background: var(--sk-soft,#E0E0E0);
       border: 1px solid #CCCCCC;
       border-top: none;
     }
     .price-large {
       font-size: 28px;
       font-weight: bold;
-      color: var(--sk-ink,#222222);
+      color: #333333;
       line-height: 1;
     }
     .price-unit {
       font-size: 12px;
-      color: var(--sk-ink,#555555);
+      color: #333333;
     }
     /* 比較項目行 */
     .compare-row td {
       padding: 7px 10px;
       text-align: center;
       font-size: 11px;
-      color: var(--sk-ink,#444444);
+      color: #333333;
       border: 1px solid #CCCCCC;
       border-top: none;
       vertical-align: middle;
       line-height: 1.4;
     }
     .compare-row:nth-child(odd) td {
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .compare-row:nth-child(even) td {
       background: #F2F2F2;
@@ -149,14 +149,14 @@
       text-align: left !important;
       font-weight: bold;
       font-size: 11px;
-      color: var(--sk-ink,#444444);
-      background: #E8E8E8 !important;
+      color: #333333;
+      background: var(--sk-soft,#E8E8E8) !important;
       padding-left: 14px !important;
       border: 1px solid #CCCCCC;
     }
     /* 推奨列ハイライト */
     .highlight-col {
-      background: #E0E0E0 !important;
+      background: var(--sk-soft,#E0E0E0) !important;
       font-weight: bold;
     }
     /* エリアラベル */

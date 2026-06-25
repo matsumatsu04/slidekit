@@ -10,7 +10,7 @@
       height: 540px;
       font-family: sans-serif;
       background: #FFFFFF;
-      color: var(--sk-ink,#333333);
+      color: #333333;
       overflow: hidden;
     }
     .slide {
@@ -24,7 +24,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -92,7 +92,7 @@
     .donut-center-value {
       font-size: 28px;
       font-weight: bold;
-      color: var(--sk-ink,#444444);
+      color: #333333;
       line-height: 1;
     }
     .donut-center-sub {
@@ -135,8 +135,8 @@
       flex-shrink: 0;
       margin-top: 3px;
     }
-    .dot-1 { background: var(--sk-ink,#444444); }
-    .dot-2 { background: var(--sk-ink,#777777); }
+    .dot-1 { background: var(--sk-accent,#444444); }
+    .dot-2 { background: var(--sk-accent,#777777); }
     .dot-3 { background: #999999; }
     .dot-4 { background: #BBBBBB; }
     /* 凡例テキスト */
@@ -144,17 +144,17 @@
     .legend-name {
       font-size: 13px;
       font-weight: bold;
-      color: var(--sk-ink,#333333);
+      color: #333333;
     }
     .legend-value {
       font-size: 16px;
       font-weight: bold;
-      color: var(--sk-ink,#555555);
+      color: #333333;
       margin-left: 8px;
     }
     .legend-desc {
       font-size: 11px;
-      color: var(--sk-ink,#777777);
+      color: #333333;
       margin-top: 2px;
     }
     .value-label {
@@ -185,7 +185,7 @@
             <!-- ドーナツグラフ（SVGで表現） -->
             <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
               <!-- 背景の円 -->
-              <circle cx="110" cy="110" r="80" fill="none" stroke="#EEEEEE" stroke-width="32"/>
+              <circle cx="110" cy="110" r="80" fill="none" stroke="var(--sk-soft,#EEEEEE)" stroke-width="32"/>
               <!--
                 各区分をstroke-dasharrayで描画
                 円周 = 2πr = 2 × 3.14159 × 80 ≈ 502.65
@@ -196,13 +196,13 @@
               -->
               <!-- 区分1（暗いグレー・40%） 開始: -90度（上から） -->
               <circle cx="110" cy="110" r="80"
-                fill="none" stroke="var(--sk-ink,#444444)" stroke-width="32"
+                fill="none" stroke="var(--sk-accent,#444444)" stroke-width="32"
                 stroke-dasharray="201 502"
                 stroke-dashoffset="126"
                 transform="rotate(-90 110 110)"/>
               <!-- 区分2（中グレー・30%）: 区分1の後 -->
               <circle cx="110" cy="110" r="80"
-                fill="none" stroke="var(--sk-ink,#777777)" stroke-width="32"
+                fill="none" stroke="var(--sk-accent,#777777)" stroke-width="32"
                 stroke-dasharray="151 502"
                 stroke-dashoffset="-75"
                 transform="rotate(-90 110 110)"/>

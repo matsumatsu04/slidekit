@@ -6,7 +6,7 @@
   <title>SLIDE-PATTERN: cover-fullbg-text-left</title>
   <style>
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -25,7 +25,7 @@
     }
     .title-area {
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       padding: 10px 40px;
       border-bottom: 1px dashed #CCCCCC;
       font-size: 11px;
@@ -48,14 +48,14 @@
       <!-- 左：テキストエリア -->
       <div style="width:55%; padding:32px 40px 40px 52px; display:flex; flex-direction:column; justify-content:flex-end;">
         <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Main Title</div>
-        <div style="font-size:28px; font-weight:bold; color:var(--sk-ink,#333); line-height:1.3; margin-bottom:16px;">タイトルが<br>ここに入ります<br>複数行対応</div>
+        <div style="font-size:28px; font-weight:bold; color: #333333; line-height:1.3; margin-bottom:16px;">タイトルが<br>ここに入ります<br>複数行対応</div>
         <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Subtitle / Presenter / Affiliation</div>
-        <div style="font-size:13px; color:var(--sk-ink,#555); margin-bottom:6px;">イベント名 YYYY/MM/DD</div>
-        <div style="font-size:14px; font-weight:600; color:var(--sk-ink,#444); margin-bottom:4px;">発表者名 (@SNSハンドル)</div>
-        <div style="font-size:12px; color:var(--sk-ink,#777);">所属会社名</div>
+        <div style="font-size:13px; color: #333333; margin-bottom:6px;">イベント名 YYYY/MM/DD</div>
+        <div style="font-size:14px; font-weight:600; color: #333333; margin-bottom:4px;">発表者名 (@SNSハンドル)</div>
+        <div style="font-size:12px; color: #333333;">所属会社名</div>
       </div>
       <!-- 右：背景画像エリア -->
-      <div style="width:45%; background:#F0F0F0; border-left:1px dashed #CCCCCC; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
+      <div style="width:45%; background:var(--sk-soft,#F0F0F0); border-left:1px dashed #CCCCCC; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
         <div style="font-size:11px; color:#AAAAAA; text-transform:uppercase; letter-spacing:0.08em;">Background</div>
         <div style="font-size:11px; color:#AAAAAA;">Image / Texture</div>
       </div>

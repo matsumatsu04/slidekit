@@ -6,7 +6,7 @@
   <title>SLIDE-PATTERN-four-step-flow</title>
   <style>
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -59,7 +59,7 @@
     .title-text {
       font-size: 26px;
       font-weight: bold;
-      color: var(--sk-ink,#333333);
+      color: #333333;
     }
 
     /* カードエリア */
@@ -93,7 +93,7 @@
     .badge {
       width: 36px;
       height: 36px;
-      background: #E0E0E0;
+      background: var(--sk-soft,#E0E0E0);
       border: 2px solid #CCCCCC;
       border-radius: 50%;
       display: flex;
@@ -101,7 +101,7 @@
       justify-content: center;
       font-size: 16px;
       font-weight: bold;
-      color: var(--sk-ink,#666666);
+      color: #333333;
       position: absolute;
       top: 0;
       z-index: 1;
@@ -110,7 +110,7 @@
     /* カード本体 */
     .card {
       width: 100%;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       border: 1px solid #CCCCCC;
       border-radius: 8px;
       padding: 36px 16px 20px;
@@ -129,7 +129,7 @@
     .card .step-text {
       font-size: 15px;
       font-weight: bold;
-      color: var(--sk-ink,#333333);
+      color: #333333;
       text-align: center;
       line-height: 1.5;
       margin-bottom: 16px;
@@ -140,7 +140,7 @@
     }
 
     .placeholder-box {
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
       border: 1px dashed #CCCCCC;
       display: flex;
       align-items: center;

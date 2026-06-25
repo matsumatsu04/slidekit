@@ -10,7 +10,7 @@
       height: 540px;
       font-family: sans-serif;
       background: #FFFFFF;
-      color: var(--sk-ink,#333333);
+      color: #333333;
       overflow: hidden;
     }
     .slide {
@@ -24,7 +24,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -60,7 +60,7 @@
       border: 1px solid #CCCCCC;
     }
     .comparison-table th {
-      background: var(--sk-ink,#555555);
+      background: var(--sk-accent,#555555);
       color: #FFFFFF;
       font-size: 13px;
       font-weight: bold;
@@ -77,19 +77,19 @@
     }
     /* 行ラベル（第1列） */
     .comparison-table td:first-child {
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
       font-weight: bold;
     }
     /* 通常データ行：背景交互 */
     .row-even td { background: #FFFFFF; }
-    .row-odd td { background: #F8F8F8; }
+    .row-odd td { background: var(--sk-soft,#F8F8F8); }
     .row-even td:first-child,
-    .row-odd td:first-child { background: #F0F0F0; }
+    .row-odd td:first-child { background: var(--sk-soft,#F0F0F0); }
     /* ハイライトセル（価格等の強調値） */
     .highlight-value {
       font-size: 18px;
       font-weight: bold;
-      color: var(--sk-ink,#555555);
+      color: #333333;
     }
     /* ハイライトラベル */
     .highlight-label {
