@@ -5,15 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN-category-toc-with-image</title>
   <style>
-    body {
-      background: #E8E8E8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      font-family: sans-serif;
-      margin: 0;
-    }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
     .slide {
       width: 960px;
       height: 540px;
@@ -23,13 +15,6 @@
       margin-bottom: 8px;
       display: flex;
       flex-direction: column;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
     }
     .category-heading {
       font-size: 22px;
@@ -71,7 +56,6 @@
 
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div style="padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF;">
-    <div class="area-label">Title Area — SLIDE.md 参照</div>
     <div style="font-size: 16px; color: #CCCCCC; margin-top: 4px;">スライドタイトルが入ります</div>
   </div>
 
@@ -80,7 +64,6 @@
 
     <!-- 左：カテゴリ別目次（70%） -->
     <div style="width: 70%; padding: 20px 40px; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
-      <div class="area-label">Category TOC List</div>
 
       <!-- カテゴリ1 -->
       <div>
@@ -149,11 +132,9 @@
 
     <!-- 右：装飾イメージ（30%） -->
     <div style="width: 30%; background: var(--sk-soft,#F0F0F0); border-left: 1px dashed var(--sk-accent,#CCCCCC); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-      <div class="area-label" style="text-align: center;">Decorative Image</div>
       <div style="width: 140px; height: 140px; background: var(--sk-soft,#E0E0E0); border: 1px dashed var(--sk-accent,#CCCCCC); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #AAAAAA; font-size: 12px; text-align: center;">
         装飾イラスト<br>または画像
       </div>
-      <div style="font-size: 11px; color: #BBBBBB; text-align: center;">（薄め処理で配置）</div>
     </div>
 
   </div>

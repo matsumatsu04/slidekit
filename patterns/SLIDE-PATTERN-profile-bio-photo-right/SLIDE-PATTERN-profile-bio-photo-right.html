@@ -14,12 +14,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -49,12 +43,7 @@
       border-right: 1px solid var(--sk-accent,#EEEEEE);
       position: relative;
     }
-    .profile-list > .area-label {
-      position: absolute;
-      top: 8px;
-      left: 12px;
-    }
-    .profile-divider {
+    .profile-list >    .profile-divider {
       border: none;
       border-top: 1px solid var(--sk-accent,#CCCCCC);
       margin-bottom: 14px;
@@ -102,12 +91,7 @@
       padding: 20px 24px;
       position: relative;
     }
-    .photo-area > .area-label {
-      position: absolute;
-      top: 8px;
-      left: 12px;
-    }
-    /* 円形写真プレースホルダー */
+    .photo-area >    /* 円形写真プレースホルダー */
     .photo-circle {
       width: 140px;
       height: 140px;
@@ -152,7 +136,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- 左：プロフィールリスト -->
     <div class="profile-list">
-      <div class="area-label">Profile List — label-value rows（左：ラベル固定幅 / 右：値）</div>
       <hr class="profile-divider">
 
       <div class="profile-row">
@@ -197,7 +180,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- 右：フォト＋氏名 -->
     <div class="photo-area">
-      <div class="area-label">Photo Area — 円形写真 ＋ 氏名・役職</div>
 
       <!-- 円形写真プレースホルダー -->
       <div class="photo-circle">写真</div>

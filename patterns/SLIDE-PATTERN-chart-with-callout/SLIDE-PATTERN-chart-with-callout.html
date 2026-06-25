@@ -5,15 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN-chart-with-callout</title>
   <style>
-    body {
-      background: #E8E8E8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      font-family: sans-serif;
-      margin: 0;
-    }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
     .slide {
       width: 960px;
       height: 540px;
@@ -23,13 +15,6 @@
       margin-bottom: 8px;
       display: flex;
       flex-direction: column;
-    }
-    .area-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
     }
     .placeholder-box {
       background: var(--sk-soft,#F0F0F0);
@@ -61,7 +46,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- 上段：本文テキスト（全幅） -->
     <div style="padding: 16px 40px 12px; border-bottom: 1px solid var(--sk-accent,#E8E8E8); flex-shrink: 0;">
-      <div class="area-label">Body Text</div>
       <div style="font-size: 14px; color: #333333; line-height: 1.7;">
         本文テキストが入ります。データの背景や主張を2〜3行で説明します。<br>
         ここにスライドのメインメッセージを記述します。ボトムラインファースト形式が効果的です。
@@ -73,25 +57,21 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 左：円グラフエリア -->
       <div style="width: 60%; padding: 20px 24px; display: flex; flex-direction: column; border-right: 1px solid var(--sk-accent,#E8E8E8);">
-        <div class="area-label">Chart Area（円グラフ）</div>
         <div class="placeholder-box" style="flex: 1; flex-direction: column; gap: 12px;">
           <!-- 円グラフのプレースホルダー -->
           <div style="width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(#AAAAAA 0% 27%, #BBBBBB 27% 52%, #CCCCCC 52% 70%, #DDDDDD 70% 86%, #C8C8C8 86% 100%); position: relative;">
           </div>
-          <div style="font-size: 11px; color: #999;">引き出し線＋ラベルが各セグメントに付く</div>
         </div>
       </div>
 
       <!-- 右：コールアウトエリア -->
       <div style="width: 40%; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center;">
-        <div class="area-label">Callout Box</div>
         <div style="border: 2px solid var(--sk-accent,#CCCCCC); border-radius: 8px; padding: 20px 24px; background: #FFFFFF;">
           <div style="font-size: 14px; font-weight: bold; color: #333333; line-height: 1.6; text-align: center;">
             強調したいデータや<br>メッセージが入ります
           </div>
         </div>
         <div style="margin-top: 12px;">
-          <div class="area-label">Label（オプション）</div>
           <div style="font-size: 13px; font-weight: bold; color: #333333; text-align: center;">ラベルテキスト</div>
         </div>
       </div>

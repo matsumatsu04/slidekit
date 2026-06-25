@@ -45,7 +45,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
   .thumb{position:relative;width:100%;overflow:hidden;background:#e8e8e8;border-bottom:1px solid var(--line);cursor:pointer}
-  .thumb iframe{position:absolute;top:0;left:0;width:1000px;height:660px;border:0;transform-origin:top left;pointer-events:none;background:#e8e8e8}
+  .thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none;background:#e8e8e8}
   .tintlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color;background:transparent;z-index:2}
   .thumb .open{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;
         opacity:0;transition:opacity .15s;background:linear-gradient(transparent 60%,rgba(0,0,0,.18))}
@@ -180,8 +180,8 @@ let DATA=[],active='all';
 const grid=document.getElementById('grid'),filters=document.getElementById('filters');
 function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
-    const w=t.clientWidth,s=w/1000;
-    t.style.height=(660*s)+'px';
+    const w=t.clientWidth,s=w/960;
+    t.style.height=(540*s)+'px';
     const f=t.querySelector('iframe'); if(f) f.style.transform=`scale(${s})`;
   });
 }

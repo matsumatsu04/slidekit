@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-bar-chart-full</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
   .placeholder-box { background: var(--sk-soft,#F0F0F0); border: 1px dashed var(--sk-accent,#CCCCCC); display: flex; align-items: center; justify-content: center; color: #AAAAAA; font-size: 13px; }
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   .content-area { flex: 1; padding: 20px 32px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -40,13 +39,11 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
   <!-- コンテンツエリア -->
   <div class="content-area">
     <div class="annotation-row">
-      <div class="area-label" style="margin-bottom:0;">単位・凡例エリア</div>
       <div class="legend-item"><div class="legend-dot" style="background:#C0C0C0;"></div>系列A</div>
       <div class="legend-item"><div class="legend-dot" style="background:#999;"></div>系列B（折れ線）</div>
     </div>
     <div class="chart-area">
       <div class="kpi-badge">
-        <div class="area-label" style="margin-bottom:2px;">KPI Badge</div>
         <div class="kpi-value">51,899</div>
         <div class="kpi-sub">YoY +19.4%</div>
       </div>

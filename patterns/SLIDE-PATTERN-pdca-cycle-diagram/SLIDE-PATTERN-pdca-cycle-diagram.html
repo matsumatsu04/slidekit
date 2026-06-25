@@ -14,12 +14,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -46,10 +40,7 @@
       padding: 10px 0 8px;
       position: relative;
     }
-    .lead-area .area-label {
-      margin-bottom: 4px;
-    }
-    .lead-text {
+    .lead-area    .lead-text {
       font-size: 12px;
       color: #333333;
       line-height: 1.6;
@@ -82,10 +73,7 @@
       justify-content: flex-start;
       position: relative;
     }
-    .phase-block .area-label {
-      margin-bottom: 4px;
-    }
-    .phase-title {
+    .phase-block    .phase-title {
       font-size: 14px;
       font-weight: bold;
       color: #333333;
@@ -120,7 +108,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- リード文 -->
     <div class="lead-area">
-      <div class="area-label">Lead Text — スライドの概要・主旨（1〜2文）</div>
       <div class="lead-text">
         PDCAサイクルは仕事と業務改善を継続的に進めるための基本フレームです。まず目標を定めて計画を立て、実行し、結果を検証して改善策を反映します。このフローを活性化させることで成果の再現性を高めていきます。
       </div>
@@ -131,7 +118,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 左上：Action -->
       <div class="phase-block action-block">
-        <div class="area-label">phase-block / top-left</div>
         <div class="phase-title">Action（対策・改善）</div>
         <div class="phase-desc">
           Check段階で得られた検証結果から、気付きや課題などを元に改善策を考えていきます。次のPlanサイクルへとつなげる行動を定めます。
@@ -140,7 +126,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 右上：Plan -->
       <div class="phase-block plan-block">
-        <div class="area-label">phase-block / top-right</div>
         <div class="phase-title">Plan（計画）</div>
         <div class="phase-desc">
           まず目標や目的を明確に設定し、それらを達成するための具体的な行動計画（アクションプラン）を作成します。
@@ -149,7 +134,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 中央：円形サイクル図 -->
       <div class="diagram-center">
-        <div class="area-label" style="position:absolute; top:4px; left:50%; transform:translateX(-50%); white-space:nowrap;">circular cycle diagram</div>
         <!-- SVGによる4分割ドーナツ型サイクル -->
         <svg width="160" height="160" viewBox="0 0 160 160">
           <!-- 外枠円 -->
@@ -191,7 +175,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 左下：Check -->
       <div class="phase-block check-block">
-        <div class="area-label">phase-block / bottom-left</div>
         <div class="phase-title">Check（評価）</div>
         <div class="phase-desc">
           設定した目標やアクションプランに対する達成度や進捗を検証・評価します。結果だけでなく、その結果に至った原因を分析することが重要です。
@@ -200,7 +183,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 右下：Do -->
       <div class="phase-block do-block">
-        <div class="area-label">phase-block / bottom-right</div>
         <div class="phase-title">Do（実行）</div>
         <div class="phase-desc">
           Planで立てた計画を実行します。「やりっぱなし」にならないよう記録を残し、次のCheckフェーズで振り返れるようにします。

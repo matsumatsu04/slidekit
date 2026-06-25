@@ -14,12 +14,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -46,8 +40,7 @@
       margin-bottom: 8px;
       position: relative;
     }
-    .lead-area .area-label { margin-bottom: 3px; }
-    .lead-text {
+    .lead-area    .lead-text {
       font-size: 11.5px;
       color: #333333;
       line-height: 1.6;
@@ -211,7 +204,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- リード文 -->
     <div class="lead-area">
-      <div class="area-label">Lead Text — 全幅・概要テキスト（1〜2文）</div>
       <div class="lead-text">
         対象市場は、需要の拡大を背景に成長を続けています。当社は独自ポジションにより、中堅企業を中心に導入を拡大しています。
       </div>
@@ -222,7 +214,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 左：アイコン付きリスト -->
       <div class="left-col">
-        <div class="area-label" style="position:absolute;top:6px;right:8px;">left-col / icon-list</div>
         <div class="col-title">市場背景</div>
         <div class="list-subtitle">市場成長に関連した4つの背景</div>
 
@@ -262,7 +253,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
       <!-- 右：チャートエリア -->
       <div class="right-col">
-        <div class="area-label" style="position:absolute;top:6px;right:8px;">right-col / chart-area</div>
         <div class="col-title">市場シェア（国内）</div>
 
         <div class="chart-row">
@@ -274,7 +264,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
             <div class="metric-unit">※推計値</div>
 
             <div style="margin-top:10px;">
-              <div class="area-label" style="margin-bottom:4px;">シェア拡大の要因</div>
               <div style="font-size:11px; color: #333333; line-height:1.6;">
                 1. AI提案書生成<br>
                 　提案資料を自動化し、生産性向上<br>
@@ -284,7 +273,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
             </div>
 
             <div style="margin-top:10px;">
-              <div class="area-label" style="margin-bottom:4px;">legend</div>
               <div class="legend-item">
                 <div class="legend-dot" style="background:var(--sk-accent,#555555);"></div>
                 <span>当社　12.8%</span>
@@ -298,7 +286,6 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
           <!-- ドーナツチャート（SVG） -->
           <div style="display:flex; align-items:center; justify-content:center; flex:1;">
-            <div class="area-label" style="position:absolute; bottom:30px; right:20px;">donut-chart</div>
             <svg width="150" height="150" viewBox="0 0 150 150">
               <!--
                 ドーナツチャート：自社 12.8%（約46°）、その他 87.2%（約314°）

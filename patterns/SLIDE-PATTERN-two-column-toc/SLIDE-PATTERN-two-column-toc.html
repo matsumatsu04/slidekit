@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-column-toc</title>
 <style>
-  body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .area-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   .content-area { flex: 1; display: flex; padding: 24px 60px; gap: 40px; }
   .toc-col { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
@@ -22,13 +21,11 @@
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="title-area">
-    <div class="area-label">Title Area — SLIDE.md 参照</div>
     <div style="font-size:16px; color:#CCCCCC; margin-top:4px;">スライドタイトルが入ります</div>
   </div>
   <!-- コンテンツエリア -->
   <div class="content-area">
     <div class="toc-col">
-      <div class="area-label">左列（項目1〜5）</div>
       <div class="toc-item">
         <div class="toc-num">1.</div>
         <div class="toc-name">目次項目1が入ります</div>
@@ -62,7 +59,6 @@
     </div>
     <div class="col-divider"></div>
     <div class="toc-col">
-      <div class="area-label">右列（項目6〜10）</div>
       <div class="toc-item">
         <div class="toc-num">6.</div>
         <div class="toc-name">目次項目6が入ります</div>

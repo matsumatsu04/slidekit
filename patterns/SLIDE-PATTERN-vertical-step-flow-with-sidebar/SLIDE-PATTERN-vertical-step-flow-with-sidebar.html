@@ -14,12 +14,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -51,12 +45,7 @@
       padding: 12px;
       position: relative;
     }
-    .sidebar .area-label {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-    }
-    .sidebar-label {
+    .sidebar    .sidebar-label {
       font-size: 17px;
       color: #333333;
       font-weight: bold;
@@ -74,12 +63,7 @@
       gap: 0;
       position: relative;
     }
-    .main-area > .area-label {
-      position: absolute;
-      top: 8px;
-      left: 12px;
-    }
-    /* 各ステップ行 */
+    .main-area >    /* 各ステップ行 */
     .step-row {
       display: flex;
       align-items: stretch;
@@ -153,13 +137,11 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
     <!-- 左サイドバー -->
     <div class="sidebar">
-      <div class="area-label">sidebar label</div>
       <div class="sidebar-label">選考フロー</div>
     </div>
 
     <!-- 右メインエリア：縦並びフロー -->
     <div class="main-area">
-      <div class="area-label">Step Flow — 各ステップ行（step-badge ＋ content-box）を縦に並べる</div>
 
       <!-- STEP 1 -->
       <div class="step-row">

@@ -15,12 +15,6 @@
       display: flex;
       flex-direction: column;
     }
-    .area-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
     /* タイトルエリア */
     .title-area {
       padding: 14px 40px 12px;
@@ -40,10 +34,7 @@
       display: flex;
       flex-direction: column;
     }
-    .content-area > .area-label {
-      margin-bottom: 8px;
-    }
-    /* リード文エリア */
+    .content-area >    /* リード文エリア */
     .lead-area {
       border: 1px dashed var(--sk-accent,#CCCCCC);
       background: var(--sk-soft,#F0F0F0);
@@ -52,10 +43,7 @@
       border-radius: 3px;
       flex-shrink: 0;
     }
-    .lead-area .area-label {
-      margin-bottom: 4px;
-    }
-    .lead-text {
+    .lead-area    .lead-text {
       font-size: 11px;
       color: #333333;
       line-height: 1.7;
@@ -91,10 +79,7 @@
       margin-bottom: 12px;
       min-height: 120px;
     }
-    .card-illustration .area-label {
-      margin-bottom: 4px;
-    }
-    .illustration-placeholder {
+    .card-illustration    .illustration-placeholder {
       font-size: 28px;
       color: #CCCCCC;
     }
@@ -104,10 +89,7 @@
       margin-bottom: 12px;
       flex-shrink: 0;
     }
-    .card-heading .area-label {
-      margin-bottom: 3px;
-    }
-    .heading-text {
+    .card-heading    .heading-text {
       font-size: 13px;
       font-weight: bold;
       color: #333333;
@@ -118,11 +100,7 @@
       flex-shrink: 0;
       width: 100%;
     }
-    .card-label-btn .area-label {
-      margin-bottom: 4px;
-      text-align: center;
-    }
-    .label-button {
+    .card-label-btn    .label-button {
       display: block;
       background: #CCCCCC;
       color: #333333;
@@ -146,11 +124,9 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
 
   <!-- コンテンツエリア -->
   <div class="content-area">
-    <div class="area-label">Content Area</div>
 
     <!-- リード文 -->
     <div class="lead-area">
-      <div class="area-label">Lead Text</div>
       <div class="lead-text">スライドの補足説明・状況を示すリード文が入ります。<br>2行以内でスライドの前提や文脈を説明します。</div>
     </div>
 
@@ -160,15 +136,12 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <!-- カード1 -->
       <div class="card">
         <div class="card-illustration">
-          <div class="area-label">Illustration / Icon (Large)</div>
           <div class="illustration-placeholder">[ アイコン ]</div>
         </div>
         <div class="card-heading">
-          <div class="area-label">Heading (2-line)</div>
           <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
         </div>
         <div class="card-label-btn">
-          <div class="area-label" style="text-align:center;">Category Label Button</div>
           <div class="label-button">カテゴリラベル</div>
         </div>
       </div>
@@ -176,15 +149,12 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <!-- カード2 -->
       <div class="card">
         <div class="card-illustration">
-          <div class="area-label">Illustration / Icon (Large)</div>
           <div class="illustration-placeholder">[ アイコン ]</div>
         </div>
         <div class="card-heading">
-          <div class="area-label">Heading (2-line)</div>
           <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
         </div>
         <div class="card-label-btn">
-          <div class="area-label" style="text-align:center;">Category Label Button</div>
           <div class="label-button">カテゴリラベル</div>
         </div>
       </div>
@@ -192,15 +162,12 @@ html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bo
       <!-- カード3 -->
       <div class="card">
         <div class="card-illustration">
-          <div class="area-label">Illustration / Icon (Large)</div>
           <div class="illustration-placeholder">[ アイコン ]</div>
         </div>
         <div class="card-heading">
-          <div class="area-label">Heading (2-line)</div>
           <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
         </div>
         <div class="card-label-btn">
-          <div class="area-label" style="text-align:center;">Category Label Button</div>
           <div class="label-button">カテゴリラベル</div>
         </div>
       </div>
