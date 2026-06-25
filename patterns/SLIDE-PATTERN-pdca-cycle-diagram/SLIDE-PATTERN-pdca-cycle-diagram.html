@@ -88,12 +88,12 @@
     .phase-title {
       font-size: 14px;
       font-weight: bold;
-      color: #555555;
+      color: var(--sk-ink,#555555);
       margin-bottom: 5px;
     }
     .phase-desc {
       font-size: 11px;
-      color: #444444;
+      color: var(--sk-ink,#444444);
       line-height: 1.55;
     }
     /* 配置指定 */
@@ -164,7 +164,7 @@
           <circle cx="80" cy="80" r="32" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1"/>
 
           <!-- 中央テキスト -->
-          <text x="80" y="76" text-anchor="middle" font-size="11" fill="#555" font-family="sans-serif">PDCA</text>
+          <text x="80" y="76" text-anchor="middle" font-size="11" fill="var(--sk-ink,#555)" font-family="sans-serif">PDCA</text>
           <text x="80" y="90" text-anchor="middle" font-size="9" fill="#888" font-family="sans-serif">サイクル</text>
 
           <!-- 各象限のラベル -->
@@ -175,13 +175,13 @@
 
           <!-- 時計回り矢印（外周の矢印マーカー代わりに小三角形） -->
           <!-- 右：→ -->
-          <polygon points="148,76 148,84 155,80" fill="#777" />
+          <polygon points="148,76 148,84 155,80" fill="var(--sk-ink,#777)" />
           <!-- 下：↓ -->
-          <polygon points="76,148 84,148 80,155" fill="#777" />
+          <polygon points="76,148 84,148 80,155" fill="var(--sk-ink,#777)" />
           <!-- 左：← -->
-          <polygon points="12,76 12,84 5,80" fill="#777" />
+          <polygon points="12,76 12,84 5,80" fill="var(--sk-ink,#777)" />
           <!-- 上：↑ -->
-          <polygon points="76,12 84,12 80,5" fill="#777" />
+          <polygon points="76,12 84,12 80,5" fill="var(--sk-ink,#777)" />
         </svg>
       </div>
 

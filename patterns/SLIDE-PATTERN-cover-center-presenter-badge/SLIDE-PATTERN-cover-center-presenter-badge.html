@@ -5,7 +5,7 @@
 <title>SLIDE-PATTERN-cover-center-presenter-badge</title>
 <style>
   body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
-  .slide-label { font-size: 12px; color: #666; margin-bottom: 6px; }
+  .slide-label { font-size: 12px; color: var(--sk-ink,#666); margin-bottom: 6px; }
   .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; position: relative; }
   .area-label { font-size: 11px; color: #BBBBBB; text-transform: uppercase; letter-spacing: 0.08em; }
 
@@ -23,13 +23,13 @@
 
   /* 左上：宛名ラベル */
   .client { position: absolute; top: 56px; left: 64px; z-index: 2; }
-  .client .txt { font-size: 22px; font-weight: bold; color: #555555; }
+  .client .txt { font-size: 22px; font-weight: bold; color: var(--sk-ink,#555555); }
 
   /* 中央：タイトル＋英文サブ */
   .center { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2;
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 80px; }
   .center .title { font-size: 46px; font-weight: 800; color: var(--sk-ink,#333333); line-height: 1.35; }
-  .center .subtitle { margin-top: 14px; font-size: 18px; letter-spacing: 0.14em; color: #777777; }
+  .center .subtitle { margin-top: 14px; font-size: 18px; letter-spacing: 0.14em; color: var(--sk-ink,#777777); }
   .center .subtitle .dash { color: #999999; }
   .center .area-label { margin-bottom: 10px; }
 
