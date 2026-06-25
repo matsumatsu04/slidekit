@@ -7,7 +7,7 @@
   <style>
     /* ページ全体のスタイル */
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,14 +39,14 @@
     .slide-title {
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       flex-shrink: 0;
     }
 
     .slide-title h1 {
       font-size: 15px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 0;
     }
 
@@ -80,7 +80,7 @@
     .left-heading {
       font-size: 18px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 0;
     }
 
@@ -92,7 +92,7 @@
 
     .left-desc {
       font-size: 13px;
-      color: var(--sk-ink,#555);
+      color: #333333;
       line-height: 1.7;
       margin: 0;
     }
@@ -118,9 +118,9 @@
 
     .list-item {
       font-size: 12px;
-      color: var(--sk-ink,#555);
+      color: #333333;
       padding: 2px 0;
-      border-bottom: 1px dotted #E0E0E0;
+      border-bottom: 1px dotted var(--sk-soft,#E0E0E0);
     }
 
     /* 右エリア（45%） */
@@ -220,7 +220,7 @@
             <!-- 背景円（40%のグレー） -->
             <circle cx="75" cy="75" r="58"
               fill="none"
-              stroke="#EEEEEE"
+              stroke="var(--sk-soft,#EEEEEE)"
               stroke-width="24"/>
             <!-- 前景円（60%の濃いグレー） -->
             <!-- 円周 = 2π×58 ≈ 364.4 / 60% = 218.5 / offset = 364.4×0.25 = 91.1 -->
@@ -235,7 +235,7 @@
             <!-- 中央テキスト -->
             <text x="75" y="70" text-anchor="middle" font-size="11" fill="#888">円グラフの</text>
             <text x="75" y="84" text-anchor="middle" font-size="11" fill="#888">利用率</text>
-            <text x="75" y="102" text-anchor="middle" font-size="22" fill="var(--sk-ink,#333)" font-weight="bold">60%</text>
+            <text x="75" y="102" text-anchor="middle" font-size="22" fill="var(--sk-accent,#333)" font-weight="bold">60%</text>
           </svg>
         </div>
 
@@ -246,7 +246,7 @@
             <span>利用中（60%）</span>
           </div>
           <div class="legend-item">
-            <div class="legend-dot" style="background:#EEEEEE;"></div>
+            <div class="legend-dot" style="background:var(--sk-soft,#EEEEEE);"></div>
             <span>未利用（40%）</span>
           </div>
         </div>

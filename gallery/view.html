@@ -33,8 +33,8 @@
     <span class="cat" id="pcat"></span>
     <span class="sp"></span>
     <span class="lab">色</span>
-    <input type="color" id="tint" value="#2F6BFF">
-    <input type="text" id="tintHex" value="#2F6BFF" maxlength="7">
+    <input type="color" id="tint" value="#5AA9E6">
+    <input type="text" id="tintHex" value="#5AA9E6" maxlength="7">
     <button class="btn gray" id="reset">グレーに戻す</button>
     <a class="btn" id="dl" download>.md DL</a>
   </div>
@@ -57,11 +57,15 @@ document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
 const frame=document.getElementById('frame'),ti=document.getElementById('tint'),th=document.getElementById('tintHex');
+function lightMix(hex,ratio){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');return '#'+m(r)+m(g)+m(b);}
 function apply(){
-  // スライド内の濃いコンテンツ色(--sk-ink)だけを差し替え。背景・装飾(薄いグレー)はそのまま。
+  // テキストは黒#333固定。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
   try{
     const root=frame.contentDocument&&frame.contentDocument.documentElement;
-    if(root){ if(tint) root.style.setProperty('--sk-ink',tint); else root.style.removeProperty('--sk-ink'); }
+    if(root){
+      if(tint){ root.style.setProperty('--sk-accent',tint); root.style.setProperty('--sk-soft',lightMix(tint,0.18)); }
+      else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
+    }
   }catch(e){}
   if(tint){ti.value=tint;th.value=tint.toUpperCase();}
 }

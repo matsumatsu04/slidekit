@@ -7,7 +7,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
       display: flex;
       flex-direction: column;
@@ -34,7 +34,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -59,16 +59,16 @@
     /* フェーズラベル行 */
     .phase-row {
       display: flex;
-      border: 1px solid #E0E0E0;
+      border: 1px solid var(--sk-soft,#E0E0E0);
       border-bottom: none;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .phase-cell {
       flex: 1;
       padding: 4px 8px;
       font-size: 11px;
       color: #999;
-      border-right: 1px solid #E0E0E0;
+      border-right: 1px solid var(--sk-soft,#E0E0E0);
       text-align: center;
     }
     .phase-cell:last-child {
@@ -78,7 +78,7 @@
     .timeline-container {
       position: relative;
       height: 140px;
-      border: 1px solid #E0E0E0;
+      border: 1px solid var(--sk-soft,#E0E0E0);
       border-top: none;
       border-bottom: none;
     }
@@ -141,13 +141,13 @@
     }
     .marker-label {
       font-size: 12px;
-      color: var(--sk-ink,#333);
+      color: #333333;
       font-weight: bold;
       white-space: nowrap;
     }
     .marker-desc {
       font-size: 11px;
-      color: var(--sk-ink,#666);
+      color: #333333;
       white-space: nowrap;
     }
     /* 凡例エリア */
@@ -157,7 +157,7 @@
       align-items: center;
       gap: 16px;
       padding-top: 8px;
-      border: 1px solid #E0E0E0;
+      border: 1px solid var(--sk-soft,#E0E0E0);
       border-top: none;
       padding: 6px 16px;
     }

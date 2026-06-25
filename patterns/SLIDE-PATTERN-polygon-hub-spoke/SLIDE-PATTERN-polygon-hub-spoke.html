@@ -7,7 +7,7 @@
 <style>
   /* スライド全体のリセットと基本設定 */
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #E0E0E0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; }
+  body { background: var(--sk-soft,#E0E0E0); display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; }
 
   /* スライド本体：960×540px固定 */
   .slide {
@@ -34,7 +34,7 @@
     padding: 14px 40px 12px;
     border-bottom: 1px dashed #CCCCCC;
     flex-shrink: 0;
-    background: #FAFAFA;
+    background: var(--sk-soft,#FAFAFA);
   }
 
   /* コンテンツエリア */
@@ -71,13 +71,13 @@
   .text-block-heading {
     font-size: 11px;
     font-weight: bold;
-    color: var(--sk-ink,#444444);
+    color: #333333;
     margin-top: 2px;
   }
 
   .text-block-body {
     font-size: 10px;
-    color: var(--sk-ink,#666666);
+    color: #333333;
     line-height: 1.5;
     margin-top: 2px;
     max-width: 160px;
@@ -89,14 +89,14 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #F0F0F0;
+    background: var(--sk-soft,#F0F0F0);
     border: 1.5px solid #BBBBBB;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
     font-weight: bold;
-    color: var(--sk-ink,#444444);
+    color: #333333;
     z-index: 5;
   }
 </style>
@@ -129,12 +129,12 @@
       <!-- ペンタゴン塗り -->
       <polygon
         points="480,115 585,185 548,308 412,308 375,185"
-        fill="#F5F5F5"
+        fill="var(--sk-soft,#F5F5F5)"
         stroke="#CCCCCC"
         stroke-width="1.5"
       />
       <!-- 中央テーマラベル -->
-      <text x="480" y="218" text-anchor="middle" font-size="13" font-weight="bold" fill="var(--sk-ink,#444444)">中心テーマ</text>
+      <text x="480" y="218" text-anchor="middle" font-size="13" font-weight="bold" fill="var(--sk-accent,#444444)">中心テーマ</text>
       <text x="480" y="236" text-anchor="middle" font-size="10" fill="#888888">center theme</text>
 
       <!-- スポーク接続線（バッジ → テキストブロック方向） -->

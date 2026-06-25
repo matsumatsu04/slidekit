@@ -7,7 +7,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
       display: flex;
       flex-direction: column;
@@ -34,7 +34,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -79,7 +79,7 @@
     }
     .y-axis-label {
       font-size: 12px;
-      color: var(--sk-ink,#666);
+      color: #333333;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
       white-space: nowrap;
@@ -108,15 +108,15 @@
       flex-direction: column;
       gap: 4px;
     }
-    .cell-top-left  { background: #F5F5F5; }
-    .cell-top-right { background: #EEEEEE; }
+    .cell-top-left  { background: var(--sk-soft,#F5F5F5); }
+    .cell-top-right { background: var(--sk-soft,#EEEEEE); }
     .cell-bot-left  { background: #FFFFFF; }
-    .cell-bot-right { background: #F0F0F0; }
+    .cell-bot-right { background: var(--sk-soft,#F0F0F0); }
 
     .cell-label {
       font-size: 12px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
     }
     .cell-description {
       font-size: 10px;
@@ -129,10 +129,10 @@
       gap: 4px;
     }
     .badge {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       padding: 2px 8px;
       font-size: 11px;
-      color: var(--sk-ink,#555);
+      color: #333333;
       border-radius: 2px;
       border: 1px solid #D8D8D8;
     }
@@ -146,7 +146,7 @@
     }
     .x-axis-label {
       font-size: 12px;
-      color: var(--sk-ink,#666);
+      color: #333333;
       letter-spacing: 0.05em;
     }
     .x-axis-arrows {
@@ -193,7 +193,7 @@
     }
     .legend-text {
       font-size: 12px;
-      color: var(--sk-ink,#555);
+      color: #333333;
     }
     .legend-sub {
       font-size: 10px;
@@ -277,21 +277,21 @@
       <div class="legend-area">
         <div class="legend-title">凡例</div>
         <div class="legend-item">
-          <div class="legend-swatch" style="background: #EEEEEE;"></div>
+          <div class="legend-swatch" style="background: var(--sk-soft,#EEEEEE);"></div>
           <div>
             <div class="legend-text">最優先対応</div>
             <div class="legend-sub">高影響・高確率</div>
           </div>
         </div>
         <div class="legend-item">
-          <div class="legend-swatch" style="background: #F5F5F5;"></div>
+          <div class="legend-swatch" style="background: var(--sk-soft,#F5F5F5);"></div>
           <div>
             <div class="legend-text">重点管理</div>
             <div class="legend-sub">高影響・低確率</div>
           </div>
         </div>
         <div class="legend-item">
-          <div class="legend-swatch" style="background: #F0F0F0;"></div>
+          <div class="legend-swatch" style="background: var(--sk-soft,#F0F0F0);"></div>
           <div>
             <div class="legend-text">対応計画</div>
             <div class="legend-sub">低影響・高確率</div>

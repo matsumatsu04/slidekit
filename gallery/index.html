@@ -82,8 +82,8 @@
   <h2>構図パターン（<span id="pcount">…</span>）</h2>
   <div class="toolbar">
     <span class="lab">プレビューの色</span>
-    <input type="color" id="tint" value="#2F6BFF" aria-label="プレビューの色">
-    <input type="text" id="tintHex" value="#2F6BFF" maxlength="7" aria-label="カラーコード">
+    <input type="color" id="tint" value="#5AA9E6" aria-label="プレビューの色">
+    <input type="text" id="tintHex" value="#5AA9E6" maxlength="7" aria-label="カラーコード">
     <div class="swatches" id="swatches"></div>
     <button class="reset" id="tintReset">グレーに戻す</button>
   </div>
@@ -112,13 +112,18 @@ function openView(name,cat){
   const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'');
   window.open(u,'_blank');
 }
+function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=元色の割合）
+  const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');
+  return '#'+m(r)+m(g)+m(b);
+}
 function skInk(fr){
-  // スライド内の「濃いコンテンツ色(--sk-ink)」だけを選択色に差し替える。背景・装飾(薄いグレー)はそのまま。
+  // テキストは黒#333固定（HTML側）。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
   try{
     const root = fr && fr.contentDocument && fr.contentDocument.documentElement;
     if(!root) return;
-    if(TINT) root.style.setProperty('--sk-ink', TINT);
-    else root.style.removeProperty('--sk-ink');
+    if(TINT){ root.style.setProperty('--sk-accent', TINT); root.style.setProperty('--sk-soft', lightMix(TINT,0.18)); }
+    else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
   }catch(e){}
 }
 function applyTint(){
@@ -134,7 +139,7 @@ function setTint(hex){
 }
 (function initTint(){
   const sw=document.getElementById('swatches');
-  ['#2F6BFF','#12A150','#8B3FA8','#E2641F','#0EA5B5','#E11D74'].forEach(c=>{
+  ['#5AA9E6','#2F6BFF','#12A150','#8B3FA8','#E2641F','#0EA5B5','#E11D74'].forEach(c=>{
     const b=document.createElement('span'); b.className='swatch'; b.dataset.c=c; b.style.background=c;
     b.onclick=()=>setTint(c); sw.appendChild(b);
   });
@@ -200,7 +205,7 @@ fetch('/patterns/manifest.json').then(r=>r.json()).then(j=>{
     filters.appendChild(b);
   });
   render();
-  setTint('#2F6BFF'); // デフォルト：ブルー
+  setTint('#5AA9E6'); // デフォルト：水色
 }).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
 window.addEventListener('resize',()=>requestAnimationFrame(fit));
 window.addEventListener('load',()=>requestAnimationFrame(fit));

@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,7 +34,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -66,19 +66,19 @@
       padding: 6px 16px;
       font-size: 13px;
       font-weight: bold;
-      color: var(--sk-ink,#555);
+      color: #333333;
       letter-spacing: 0.04em;
     }
     .col-left .col-header {
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
     }
     .col-right .col-header {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
     }
     .col-body {
       flex: 1;
-      background: #FAFAFA;
-      border: 1px solid #E0E0E0;
+      background: var(--sk-soft,#FAFAFA);
+      border: 1px solid var(--sk-soft,#E0E0E0);
       border-top: none;
       padding: 16px 20px;
       display: flex;
@@ -91,12 +91,12 @@
       gap: 12px;
       font-size: 13px;
       line-height: 1.55;
-      color: var(--sk-ink,#444);
+      color: #333333;
     }
     .number-badge {
       width: 22px;
       height: 22px;
-      background: #EEEEEE;
+      background: var(--sk-soft,#EEEEEE);
       border: 1px solid #CCCCCC;
       border-radius: 50%;
       display: flex;
@@ -104,7 +104,7 @@
       justify-content: center;
       font-size: 11px;
       font-weight: bold;
-      color: var(--sk-ink,#666);
+      color: #333333;
       flex-shrink: 0;
       margin-top: 1px;
     }

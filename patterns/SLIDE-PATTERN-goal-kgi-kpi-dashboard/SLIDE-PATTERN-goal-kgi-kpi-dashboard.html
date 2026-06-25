@@ -7,7 +7,7 @@
   <style>
     /* ページ全体のスタイル */
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,14 +39,14 @@
     .slide-title {
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       flex-shrink: 0;
     }
 
     .slide-title h1 {
       font-size: 15px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 0;
     }
 
@@ -71,7 +71,7 @@
 
     /* 第1層：目標 */
     .layer-goal {
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
       border: 1px solid #CCCCCC;
       padding: 6px 16px;
       text-align: center;
@@ -81,7 +81,7 @@
     .goal-text {
       font-size: 13px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 0;
     }
 
@@ -95,7 +95,7 @@
 
     .kgi-cell {
       flex: 1;
-      border: 1px solid #E0E0E0;
+      border: 1px solid var(--sk-soft,#E0E0E0);
       padding: 8px 12px;
       display: flex;
       flex-direction: column;
@@ -104,23 +104,23 @@
 
     .badge {
       font-size: 10px;
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       padding: 2px 6px;
       display: inline-block;
-      color: var(--sk-ink,#555);
+      color: #333333;
       width: fit-content;
     }
 
     .kgi-number {
       font-size: 22px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       line-height: 1.2;
     }
 
     .kgi-unit {
       font-size: 11px;
-      color: var(--sk-ink,#555);
+      color: #333333;
     }
 
     .kgi-deadline {
@@ -138,14 +138,14 @@
 
     .kpi-cell {
       flex: 1;
-      border: 1px solid #E0E0E0;
+      border: 1px solid var(--sk-soft,#E0E0E0);
       padding: 8px 12px;
     }
 
     .kpi-label {
       font-size: 11px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 4px 0;
     }
 
@@ -172,7 +172,7 @@
 
     .strategy-box {
       flex: 1;
-      background: #F5F5F5;
+      background: var(--sk-soft,#F5F5F5);
       border: 1px solid #CCCCCC;
       padding: 8px 12px;
     }
@@ -180,7 +180,7 @@
     .strategy-text {
       font-size: 12px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 4px 0 0;
     }
   </style>
@@ -215,7 +215,7 @@
           <span class="badge">KGI①</span>
           <div class="kgi-number">120<span class="kgi-unit"> 億円</span></div>
           <div class="kgi-deadline">2025年3月末達成</div>
-          <div style="font-size:11px; color:var(--sk-ink,#555);">売上高目標</div>
+          <div style="font-size:11px; color: #333333;">売上高目標</div>
         </div>
 
         <!-- KGI② -->
@@ -223,7 +223,7 @@
           <span class="badge">KGI②</span>
           <div class="kgi-number">85<span class="kgi-unit"> %</span></div>
           <div class="kgi-deadline">通期維持</div>
-          <div style="font-size:11px; color:var(--sk-ink,#555);">顧客継続率</div>
+          <div style="font-size:11px; color: #333333;">顧客継続率</div>
         </div>
 
         <!-- KGI③ -->
@@ -231,7 +231,7 @@
           <span class="badge">KGI③</span>
           <div class="kgi-number">500<span class="kgi-unit"> 社</span></div>
           <div class="kgi-deadline">年度末累計</div>
-          <div style="font-size:11px; color:var(--sk-ink,#555);">新規契約社数</div>
+          <div style="font-size:11px; color: #333333;">新規契約社数</div>
         </div>
 
       </div><!-- /.layer-kgi -->

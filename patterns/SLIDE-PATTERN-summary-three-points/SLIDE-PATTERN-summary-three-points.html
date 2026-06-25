@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,7 +34,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     .area-label {
       font-size: 11px;
@@ -69,7 +69,7 @@
       align-items: flex-start;
       gap: 20px;
       padding: 14px 0;
-      border-bottom: 1px solid #F0F0F0;
+      border-bottom: 1px solid var(--sk-soft,#F0F0F0);
     }
     .check-icon {
       width: 28px;
@@ -88,12 +88,12 @@
     .point-heading {
       font-size: 15px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       line-height: 1.4;
     }
     .point-body {
       font-size: 13px;
-      color: var(--sk-ink,#666);
+      color: #333333;
       margin-top: 4px;
       line-height: 1.5;
     }

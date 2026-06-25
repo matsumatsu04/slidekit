@@ -6,7 +6,7 @@
   <title>SLIDE-PATTERN: cover-gradient-text-bottom</title>
   <style>
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -25,7 +25,7 @@
     }
     .title-area {
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       padding: 10px 40px;
       border-bottom: 1px dashed #CCCCCC;
       font-size: 11px;
@@ -44,7 +44,7 @@
 <body>
   <div class="slide">
     <div class="title-area">Title Area — SLIDE.md 参照</div>
-    <div class="content-area" style="flex:1; position:relative; background: linear-gradient(135deg, #D0D0D0 0%, #F5F5F5 60%, #E8E8E8 100%); overflow:hidden;">
+    <div class="content-area" style="flex:1; position:relative; background: linear-gradient(135deg, #D0D0D0 0%, var(--sk-soft,#F5F5F5) 60%, var(--sk-soft,#E8E8E8) 100%); overflow:hidden;">
       <!-- ロゴ右上 -->
       <div style="position:absolute; top:20px; right:28px; width:72px; height:28px; background:#CCCCCC; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#888;">
         LOGO
@@ -53,10 +53,10 @@
       <!-- テキスト左下 -->
       <div style="position:absolute; bottom:48px; left:52px;">
         <div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Main Title</div>
-        <div style="font-size:34px; font-weight:bold; color:var(--sk-ink,#333); line-height:1.2; margin-bottom:14px;">メインタイトルが<br>ここに入ります</div>
+        <div style="font-size:34px; font-weight:bold; color: #333333; line-height:1.2; margin-bottom:14px;">メインタイトルが<br>ここに入ります</div>
         <div style="font-size:11px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Company / Date</div>
-        <div style="font-size:13px; color:var(--sk-ink,#555); margin-bottom:6px;">会社名 ｜ 証券コード：XXXX</div>
-        <div style="font-size:12px; color:var(--sk-ink,#666);">2025年X月X日</div>
+        <div style="font-size:13px; color: #333333; margin-bottom:6px;">会社名 ｜ 証券コード：XXXX</div>
+        <div style="font-size:12px; color: #333333;">2025年X月X日</div>
       </div>
     </div>
   </div>

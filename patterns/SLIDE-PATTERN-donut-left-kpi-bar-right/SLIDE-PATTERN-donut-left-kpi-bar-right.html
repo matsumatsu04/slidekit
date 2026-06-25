@@ -7,7 +7,7 @@
   <style>
     /* ページ背景・中央寄せ */
     body {
-      background: #E8E8E8;
+      background: var(--sk-soft,#E8E8E8);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,13 +39,13 @@
     .slide-title {
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
       flex-shrink: 0;
     }
     .slide-title h2 {
       font-size: 18px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       margin: 0;
     }
     .slide-title p {
@@ -70,7 +70,7 @@
       justify-content: center;
       gap: 8px;
       padding: 0 16px;
-      border-right: 1px solid #E0E0E0;
+      border-right: 1px solid var(--sk-soft,#E0E0E0);
     }
 
     .area-label {
@@ -110,7 +110,7 @@
       display: flex;
       gap: 12px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #E8E8E8;
+      border-bottom: 1px solid var(--sk-soft,#E8E8E8);
     }
     .kpi-cell {
       display: flex;
@@ -122,7 +122,7 @@
     .kpi-icon {
       width: 32px;
       height: 32px;
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -133,7 +133,7 @@
     .kpi-value {
       font-size: 20px;
       font-weight: bold;
-      color: var(--sk-ink,#333);
+      color: #333333;
       line-height: 1;
     }
     .kpi-unit {
@@ -161,14 +161,14 @@
     .bar-label {
       width: 80px;
       font-size: 11px;
-      color: var(--sk-ink,#555);
+      color: #333333;
       flex-shrink: 0;
       text-align: right;
     }
     .bar-track {
       flex: 1;
       height: 16px;
-      background: #F0F0F0;
+      background: var(--sk-soft,#F0F0F0);
       border-radius: 2px;
       overflow: hidden;
     }
@@ -179,7 +179,7 @@
     }
     .bar-value {
       font-size: 11px;
-      color: var(--sk-ink,#555);
+      color: #333333;
       width: 36px;
       flex-shrink: 0;
     }
@@ -207,7 +207,7 @@
         <!-- ドーナツSVG（2分割：90% / 10%） -->
         <svg width="140" height="140" viewBox="0 0 140 140">
           <!-- ベース円（残り分） -->
-          <circle cx="70" cy="70" r="54" fill="none" stroke="#E0E0E0" stroke-width="24"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="var(--sk-soft,#E0E0E0)" stroke-width="24"/>
           <!-- データ部分（90%） -->
           <circle cx="70" cy="70" r="54" fill="none" stroke="#CCCCCC" stroke-width="24"
             stroke-dasharray="305.4 339.29" stroke-dashoffset="84.82"/>
@@ -215,7 +215,7 @@
           <circle cx="70" cy="70" r="42" fill="#FFFFFF"/>
           <!-- 中央テキスト -->
           <text x="70" y="65" text-anchor="middle" font-size="10" fill="#999">メイン指標</text>
-          <text x="70" y="80" text-anchor="middle" font-size="24" fill="var(--sk-ink,#333)" font-weight="bold">90%</text>
+          <text x="70" y="80" text-anchor="middle" font-size="24" fill="var(--sk-accent,#333)" font-weight="bold">90%</text>
         </svg>
 
         <!-- 凡例 -->
@@ -224,7 +224,7 @@
             <span class="legend-dot" style="background:#CCCCCC;"></span>達成済
           </span>
           <span>
-            <span class="legend-dot" style="background:#E0E0E0;"></span>未達成
+            <span class="legend-dot" style="background:var(--sk-soft,#E0E0E0);"></span>未達成
           </span>
         </div>
       </div>

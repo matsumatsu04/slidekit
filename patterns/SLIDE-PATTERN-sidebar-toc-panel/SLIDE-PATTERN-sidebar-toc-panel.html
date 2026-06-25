@@ -8,7 +8,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: sans-serif;
-      background: #E0E0E0;
+      background: var(--sk-soft,#E0E0E0);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -35,7 +35,7 @@
       padding: 14px 40px 12px;
       border-bottom: 1px dashed #CCCCCC;
       flex-shrink: 0;
-      background: #FAFAFA;
+      background: var(--sk-soft,#FAFAFA);
     }
     /* コンテンツエリア（左右分割） */
     .content-area {
@@ -96,7 +96,7 @@
       align-items: center;
       gap: 20px;
       padding: 12px 0;
-      border-bottom: 1px solid #EEEEEE;
+      border-bottom: 1px solid var(--sk-soft,#EEEEEE);
     }
     .toc-item:last-child {
       border-bottom: none;
@@ -118,7 +118,7 @@
     /* 目次テキスト */
     .toc-text {
       font-size: 16px;
-      color: var(--sk-ink,#333333);
+      color: #333333;
       font-weight: 500;
       line-height: 1.3;
     }
