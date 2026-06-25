@@ -1,5 +1,5 @@
 {
- "count": 99,
+ "count": 100,
  "patterns": [
   {
    "name": "cover-title-center",
@@ -40,6 +40,11 @@
    "name": "closing-slide",
    "category": "表紙・セクション",
    "summary": "プレゼンテーションの最終スライド。お礼メッセージ、会社名/発表者名、連絡先を中央に配置する締めくくりのスライド。"
+  },
+  {
+   "name": "cover-center-presenter-badge",
+   "category": "表紙・セクション",
+   "summary": "メインタイトルを中央に置き、左上に宛名ラベル、タイトル下に英文サブタイトル、右下に発表者名の塗りバッジを配置した提案書向けカバー。背景はドットとウェーブで装飾。"
   },
   {
    "name": "agenda-toc",
