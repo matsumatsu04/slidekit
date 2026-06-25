@@ -206,7 +206,15 @@
       text-align: right;
       margin-top: 4px;
     }
-  </style>
+  
+/* === 共通見出し（Frame title-area）: data-heading / data-hstyle で制御 === */
+.sk-head{display:none}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;gap:12px;padding:14px 40px 12px;border-bottom:2px solid var(--sk-accent,#333333);flex-shrink:0;}
+.sk-head .sk-head-no{font-size:15px;font-weight:bold;color:#333333;flex-shrink:0;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{border-bottom:none;border-left:5px solid var(--sk-accent,#333333);padding-left:18px;}
+html[data-heading="on"][data-hstyle="b"] .sk-head .sk-head-no{color:var(--sk-accent,#333333);}
+</style>
 </head>
 <body>
 
@@ -215,6 +223,7 @@
 
   <!-- スライド本体 -->
   <div class="slide">
+  <div class="sk-head"><span class="sk-head-no">02</span><span class="sk-head-ttl">セクションタイトル</span></div>
 
     <!-- タイトルエリア -->
     <div class="slide-title">

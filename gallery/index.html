@@ -86,6 +86,11 @@
     <input type="text" id="tintHex" value="#5AA9E6" maxlength="7" aria-label="カラーコード">
     <div class="swatches" id="swatches"></div>
     <button class="reset" id="tintReset">グレーに戻す</button>
+    <span style="width:1px;height:24px;background:var(--line);margin:0 4px"></span>
+    <label class="lab" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
+    <span class="lab">見出しデザイン</span>
+    <button class="chip" id="hA" data-h="a">A：番号＋下線</button>
+    <button class="chip" id="hB" data-h="b">B：縦バー</button>
   </div>
   <div class="filters" id="filters"></div>
   <div class="grid" id="grid"></div>
@@ -109,7 +114,7 @@ const mdPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.md`;
 let TINT=null; // null = グレーのまま
 function openView(name,cat){
   const t=TINT?TINT.replace('#',''):'';
-  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'');
+  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'')+`&head=${HEADING?'on':'off'}&hstyle=${HSTYLE}`;
   window.open(u,'_blank');
 }
 function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=元色の割合）
@@ -117,6 +122,7 @@ function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=
   const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');
   return '#'+m(r)+m(g)+m(b);
 }
+let HEADING=true, HSTYLE='a';
 function skInk(fr){
   // テキストは黒#333固定（HTML側）。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
   try{
@@ -124,6 +130,8 @@ function skInk(fr){
     if(!root) return;
     if(TINT){ root.style.setProperty('--sk-accent', TINT); root.style.setProperty('--sk-soft', lightMix(TINT,0.18)); }
     else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
+    root.dataset.heading = HEADING ? 'on' : 'off';   // 見出しON/OFF
+    root.dataset.hstyle  = HSTYLE;                    // 見出しデザインA/B
   }catch(e){}
 }
 function applyTint(){
@@ -146,6 +154,13 @@ function setTint(hex){
   document.getElementById('tint').addEventListener('input',e=>setTint(e.target.value));
   document.getElementById('tintHex').addEventListener('input',e=>setTint(e.target.value.trim()));
   document.getElementById('tintReset').addEventListener('click',()=>{TINT=null;[...document.querySelectorAll('.swatch')].forEach(s=>s.classList.remove('active'));applyTint();});
+  // 見出し: ON/OFF と デザインA/B
+  const hA=document.getElementById('hA'), hB=document.getElementById('hB');
+  function syncH(){ hA.classList.toggle('active',HSTYLE==='a'); hB.classList.toggle('active',HSTYLE==='b'); applyTint(); }
+  document.getElementById('headOn').addEventListener('change',e=>{HEADING=e.target.checked; applyTint();});
+  hA.addEventListener('click',()=>{HSTYLE='a'; syncH();});
+  hB.addEventListener('click',()=>{HSTYLE='b'; syncH();});
+  syncH();
 })();
 
 // design systems（本リポジトリのオリジナル）

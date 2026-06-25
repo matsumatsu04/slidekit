@@ -48,6 +48,8 @@
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
 let tint=qs.get('tint')||''; if(tint && tint[0]!=='#') tint='#'+tint;
+let heading=qs.get('head')!=='off'; // 既定ON
+let hstyle=qs.get('hstyle')==='b'?'b':'a';
 const cat=qs.get('cat')||'';
 const base=`/patterns/SLIDE-PATTERN-${name}`;
 document.getElementById('pname').textContent=name||'(指定なし)';
@@ -65,6 +67,8 @@ function apply(){
     if(root){
       if(tint){ root.style.setProperty('--sk-accent',tint); root.style.setProperty('--sk-soft',lightMix(tint,0.18)); }
       else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
+      root.dataset.heading = heading ? 'on':'off';
+      root.dataset.hstyle  = hstyle;
     }
   }catch(e){}
   if(tint){ti.value=tint;th.value=tint.toUpperCase();}
