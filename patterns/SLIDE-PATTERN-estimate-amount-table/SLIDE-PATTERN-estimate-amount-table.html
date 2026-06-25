@@ -6,24 +6,30 @@
 <style>
   body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
   .slide-label { font-size: 12px; color: #666; margin-bottom: 6px; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; position: relative; padding: 40px 56px; box-sizing: border-box; }
-  .area-label { font-size: 11px; color: #BBBBBB; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; position: relative; padding: 36px 50px 30px; box-sizing: border-box; }
+  .area-label { font-size: 10px; color: #C4C4C4; text-transform: uppercase; letter-spacing: 0.08em; }
 
-  /* 上段：金額バッジ＋大型金額 */
-  .amount-row { display: flex; align-items: center; gap: 28px; margin-top: 6px; }
-  .amount-badge { background: #2B2B2B; color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 10px 30px; }
-  .amount-figure { font-size: 46px; font-weight: 800; color: #333333; }
+  /* 章見出しエリア（章番号＋タイトル＋全幅ライン）※実テキストはSLIDE.mdのFrameが入れる */
+  .titlebar { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
+  .titlebar .no { font-size: 16px; font-weight: bold; color: #333333; }
+  .titlebar .ttl { font-size: 27px; font-weight: bold; color: #222222; }
+  .title-rule { height: 2px; background: #333333; margin-top: 9px; }
 
-  /* 中段：内訳見出し（下線アクセント） */
+  /* 金額：バッジ＋大型金額 */
+  .amount-row { display: flex; align-items: center; gap: 28px; margin-top: 30px; }
+  .amount-badge { background: #2B2B2B; color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 11px 34px; }
+  .amount-figure { font-size: 44px; font-weight: 800; color: #333333; }
+
+  /* 内訳見出し：テキストの「下」に短い太バー */
   .subhead { margin-top: 26px; }
-  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; display: inline-block; }
-  .subhead .rule { width: 120px; height: 3px; background: #555555; margin-bottom: 6px; }
+  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; padding-left: 28px; }
+  .subhead .bar { width: 150px; height: 4px; background: #333333; margin-top: 7px; }
 
-  /* 下段：明細テーブル */
-  table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+  /* 明細テーブル */
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
   thead th { background: #2B2B2B; color: #FFFFFF; font-weight: bold; padding: 9px 12px; }
   th.item, td.item { text-align: left; }
-  th.num, td.num { text-align: center; width: 90px; }
+  th.num, td.num { text-align: center; width: 88px; }
   tbody td { padding: 9px 12px; border-bottom: 1px solid #DDDDDD; color: #444444; }
   tbody td.item { font-weight: bold; color: #333333; }
   tr.total td { background: #2B2B2B; color: #FFFFFF; font-weight: bold; border: none; }
@@ -32,20 +38,24 @@
 <body>
 <p class="slide-label">[estimate-amount-table]</p>
 <div class="slide">
-  <!-- 上段：金額バッジ＋大型金額 -->
-  <div class="area-label">Amount</div>
+  <!-- 章見出しエリア（SLIDE.mdのFrameで表示。ここはプレースホルダ） -->
+  <div class="area-label">Title Area — SLIDE.md（章番号・タイトル）</div>
+  <div class="titlebar"><span class="no">02</span><span class="ttl">セクションタイトル</span></div>
+  <div class="title-rule"></div>
+
+  <!-- 金額：バッジ＋大型金額 -->
   <div class="amount-row">
     <span class="amount-badge">金額</span>
     <span class="amount-figure">00,000円</span>
   </div>
 
-  <!-- 中段：内訳見出し -->
+  <!-- 内訳見出し（バーはテキストの下） -->
   <div class="subhead">
-    <div class="rule"></div>
-    <span class="txt">内訳</span>
+    <div class="txt">内訳</div>
+    <div class="bar"></div>
   </div>
 
-  <!-- 下段：明細テーブル -->
+  <!-- 明細テーブル -->
   <table>
     <thead>
       <tr>
@@ -57,7 +67,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td class="item">明細項目テキスト</td><td class="num">00,000</td><td class="num">1</td><td class="num">式</td><td class="num">00,000</td></tr>
+      <tr><td class="item">明細項目テキスト（基本構成など）</td><td class="num">00,000</td><td class="num">1</td><td class="num">式</td><td class="num">00,000</td></tr>
       <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">4</td><td class="num">点</td><td class="num">00,000</td></tr>
       <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
       <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>

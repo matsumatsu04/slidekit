@@ -6,30 +6,41 @@
 <style>
   body { background: #E8E8E8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: sans-serif; }
   .slide-label { font-size: 12px; color: #666; margin-bottom: 6px; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; position: relative; padding: 44px 56px; box-sizing: border-box; }
-  .area-label { font-size: 11px; color: #BBBBBB; text-transform: uppercase; letter-spacing: 0.08em; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid #CCCCCC; overflow: hidden; position: relative; padding: 36px 50px 30px; box-sizing: border-box; }
+  .area-label { font-size: 10px; color: #C4C4C4; text-transform: uppercase; letter-spacing: 0.08em; }
 
-  /* 内訳見出し（下線アクセント） */
-  .subhead { margin-top: 4px; }
-  .subhead .rule { width: 120px; height: 3px; background: #555555; margin-bottom: 6px; }
-  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; }
+  /* 章見出しエリア（章番号＋タイトル＋全幅ライン）※実テキストはSLIDE.mdのFrameが入れる */
+  .titlebar { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
+  .titlebar .no { font-size: 16px; font-weight: bold; color: #333333; }
+  .titlebar .ttl { font-size: 27px; font-weight: bold; color: #222222; }
+  .title-rule { height: 2px; background: #333333; margin-top: 9px; }
+
+  /* 内訳見出し：テキストの「下」に短い太バー */
+  .subhead { margin-top: 30px; }
+  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; padding-left: 28px; }
+  .subhead .bar { width: 150px; height: 4px; background: #333333; margin-top: 7px; }
 
   /* 明細テーブル（合計行なし・行間広め） */
   table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
   thead th { background: #2B2B2B; color: #FFFFFF; font-weight: bold; padding: 11px 12px; }
   th.item, td.item { text-align: left; }
-  th.num, td.num { text-align: center; width: 90px; }
-  tbody td { padding: 20px 12px; border-bottom: 1px solid #DDDDDD; color: #444444; }
+  th.num, td.num { text-align: center; width: 88px; }
+  tbody td { padding: 22px 12px; border-bottom: 1px solid #DDDDDD; color: #444444; }
   tbody td.item { font-weight: bold; color: #333333; }
 </style>
 </head>
 <body>
 <p class="slide-label">[line-item-table]</p>
 <div class="slide">
-  <!-- 内訳見出し -->
+  <!-- 章見出しエリア（SLIDE.mdのFrameで表示。ここはプレースホルダ） -->
+  <div class="area-label">Title Area — SLIDE.md（章番号・タイトル）</div>
+  <div class="titlebar"><span class="no">02</span><span class="ttl">セクションタイトル</span></div>
+  <div class="title-rule"></div>
+
+  <!-- 内訳見出し（バーはテキストの下） -->
   <div class="subhead">
-    <div class="rule"></div>
-    <span class="txt">内訳</span>
+    <div class="txt">内訳</div>
+    <div class="bar"></div>
   </div>
 
   <!-- 明細テーブル（合計行なし） -->
@@ -44,8 +55,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">点</td><td class="num">0,000</td></tr>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">点</td><td class="num">0,000</td></tr>
+      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">ページ</td><td class="num">0,000</td></tr>
+      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">ページ</td><td class="num">0,000</td></tr>
       <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
       <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
     </tbody>
