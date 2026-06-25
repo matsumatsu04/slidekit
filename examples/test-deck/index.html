@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideKit テストデッキ（10枚）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --text:#333333; --muted:#8A8F98;
+    --accent:#5AA9E6; --soft:#E1EFFA; --line:#E6E7EA;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E9EAEC;font-family:'Noto Sans JP',sans-serif;color:var(--text);padding:32px 0}
+  .doc{max-width:980px;margin:0 auto;padding:0 10px}
+  .doc h1{font-size:18px;color:#555;margin-bottom:14px;text-align:center}
+  .lbl{font-size:11px;color:#9aa0a6;margin:14px 0 5px}
+  .slide{position:relative;width:960px;max-width:100%;aspect-ratio:16/9;background:var(--bg);
+    border:1px solid #d8dadd;margin:0 auto;overflow:hidden}
+  /* 共通見出し（番号なし・全幅下線・固定位置）*/
+  .head{position:absolute;top:0;left:48px;right:48px;padding:32px 0 14px;border-bottom:2px solid var(--accent)}
+  .head .t{font-size:26px;font-weight:700;color:var(--text);line-height:1.2}
+  .body{position:absolute;top:104px;left:48px;right:48px;bottom:40px}
+  .pgn{position:absolute;right:40px;bottom:18px;font-size:12px;color:var(--muted)}
+  /* cover */
+  .cv{display:flex;flex-direction:column;justify-content:center;padding:0 64px}
+  .cv .ey{color:var(--accent);font-weight:700;font-size:15px;letter-spacing:.08em;margin-bottom:14px}
+  .cv h2{font-size:46px;font-weight:900;line-height:1.18;color:var(--text)}
+  .cv .sub{margin-top:18px;font-size:18px;color:var(--muted)}
+  .cv .deco{position:absolute;border-radius:50%;background:var(--soft)}
+  /* agenda */
+  .ag{display:flex;flex-direction:column;justify-content:center;padding:0 70px;gap:0}
+  .ag .ti{font-size:30px;font-weight:900;margin-bottom:18px}
+  .ag .it{display:flex;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:20px}
+  .ag .it b{color:var(--accent);font-weight:700;font-size:18px;min-width:34px}
+  /* section */
+  .sec{display:flex;flex-direction:column;justify-content:center;padding:0 70px;background:var(--accent)}
+  .sec .n{font-size:90px;font-weight:900;color:rgba(255,255,255,.5);line-height:.9}
+  .sec h2{font-size:40px;font-weight:900;color:#fff;margin-top:6px}
+  /* content lead+bullets */
+  .lead{font-size:20px;line-height:1.7;color:var(--text)}
+  ul.bl{list-style:none;margin-top:18px}
+  ul.bl li{font-size:19px;line-height:1.7;padding-left:26px;position:relative;margin-bottom:13px}
+  ul.bl li::before{content:"";position:absolute;left:0;top:11px;width:9px;height:9px;background:var(--accent);border-radius:2px}
+  .accent{color:var(--accent);font-weight:700}
+  /* before/after */
+  .ba{display:flex;gap:22px;align-items:stretch;height:100%}
+  .ba .col{flex:1;border:1px solid var(--accent);border-radius:8px;padding:22px}
+  .ba .col h3{font-size:16px;font-weight:700;display:inline-block;border-bottom:3px solid var(--accent);padding-bottom:6px;margin-bottom:14px}
+  .ba .col p{font-size:15px;line-height:1.9;color:var(--text)}
+  .ba .arrow{align-self:center;color:var(--accent);font-size:30px;font-weight:700}
+  /* steps */
+  .steps{display:flex;gap:0;align-items:center;height:100%}
+  .steps .st{flex:1;text-align:center;padding:10px}
+  .steps .st .c{width:54px;height:54px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:22px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+  .steps .st h3{font-size:17px;font-weight:700;margin-bottom:6px}
+  .steps .st p{font-size:13px;color:var(--muted);line-height:1.6}
+  .steps .ar{color:var(--accent);font-size:24px;font-weight:700;flex:0 0 24px}
+  /* kpi */
+  .kpis{display:flex;gap:30px;height:100%;align-items:center}
+  .kpis .k{flex:1;border:1px solid var(--accent);border-radius:10px;padding:20px;text-align:center}
+  .kpis .k .lab{font-size:14px;color:var(--muted);margin-bottom:8px}
+  .kpis .k .num{font-size:50px;font-weight:900;color:var(--accent);line-height:1}
+  .kpis .k .num span{font-size:22px}
+  .kpis .k .d{font-size:12px;color:var(--text);margin-top:10px}
+  /* cards */
+  .cards{display:flex;gap:20px;height:100%;align-items:stretch}
+  .cards .cd{flex:1;border:1px solid var(--accent);border-radius:8px;padding:22px}
+  .cards .cd .ic{width:40px;height:40px;border-radius:8px;background:var(--soft);margin-bottom:14px}
+  .cards .cd h3{font-size:18px;font-weight:700;margin-bottom:8px}
+  .cards .cd p{font-size:14px;color:var(--text);line-height:1.7}
+  /* closing */
+  .cl{display:flex;flex-direction:column;justify-content:center;padding:0 64px}
+  .cl h2{font-size:34px;font-weight:900;line-height:1.3}
+  .cl .cta{display:inline-block;align-self:flex-start;margin-top:24px;background:var(--accent);color:#fff;font-weight:700;
+    font-size:17px;border-radius:8px;padding:12px 26px}
+  .cl .ct{margin-top:22px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="doc">
+  <h1>SlideKit テストデッキ — 架空サービス「ConeMeet」紹介（10枚）</h1>
+
+  <!-- 1 表紙（見出しなし）-->
+  <div class="lbl">1 / 10 — 表紙</div>
+  <section class="slide cv">
+    <div class="deco" style="width:240px;height:240px;top:-70px;right:-60px"></div>
+    <div class="deco" style="width:300px;height:300px;bottom:-120px;left:-90px"></div>
+    <div class="ey">SERVICE INTRODUCTION</div>
+    <h2>商談を、もっと成約に。</h2>
+    <div class="sub">オンライン商談支援ツール「ConeMeet」のご紹介　｜　2026.06</div>
+  </section>
+
+  <!-- 2 目次（見出しなし）-->
+  <div class="lbl">2 / 10 — 目次</div>
+  <section class="slide ag">
+    <div class="ti">本日の流れ</div>
+    <div class="it"><b>01</b>現状の課題</div>
+    <div class="it"><b>02</b>ConeMeetでできること</div>
+    <div class="it"><b>03</b>導入の流れ</div>
+    <div class="it"><b>04</b>期待できる効果</div>
+    <div class="it"><b>05</b>選ばれる理由とご相談</div>
+  </section>
+
+  <!-- 3 セクション（見出しなし）-->
+  <div class="lbl">3 / 10 — セクション</div>
+  <section class="slide sec">
+    <div class="n">01</div>
+    <h2>現状の課題</h2>
+  </section>
+
+  <!-- 4 本文（見出しON）-->
+  <div class="lbl">4 / 10 — 本文（見出しON）</div>
+  <section class="slide">
+    <div class="head"><div class="t">商談の「やりっぱなし」が成約を遠ざける</div></div>
+    <div class="body">
+      <div class="lead">多くの営業現場では、商談後の振り返りや情報共有が属人的になり、<span class="accent">改善が回らない</span>状態に陥っています。</div>
+      <ul class="bl">
+        <li>商談内容が記録されず、ナレッジが個人に閉じてしまう</li>
+        <li>次のアクションが曖昧で、フォローが遅れて失注につながる</li>
+        <li>成功・失敗の要因が共有されず、チーム全体の質が上がらない</li>
+      </ul>
+    </div>
+    <div class="pgn">4 / 10</div>
+  </section>
+
+  <!-- 5 Before/After（見出しON）-->
+  <div class="lbl">5 / 10 — 比較（見出しON）</div>
+  <section class="slide">
+    <div class="head"><div class="t">導入で変わること</div></div>
+    <div class="body">
+      <div class="ba">
+        <div class="col"><h3>Before</h3><p>商談はその場限り／記録は手作業<br>フォロー漏れが発生<br>成功要因が共有されない</p></div>
+        <div class="arrow">→</div>
+        <div class="col"><h3>After</h3><p>商談を自動で記録・要約<br>次アクションを自動リマインド<br>勝ちパターンをチームで共有</p></div>
+      </div>
+    </div>
+    <div class="pgn">5 / 10</div>
+  </section>
+
+  <!-- 6 セクション（見出しなし）-->
+  <div class="lbl">6 / 10 — セクション</div>
+  <section class="slide sec">
+    <div class="n">02</div>
+    <h2>解決策とご利用の流れ</h2>
+  </section>
+
+  <!-- 7 ステップ（見出しON）-->
+  <div class="lbl">7 / 10 — ステップ（見出しON）</div>
+  <section class="slide">
+    <div class="head"><div class="t">導入はかんたん3ステップ</div></div>
+    <div class="body">
+      <div class="steps">
+        <div class="st"><div class="c">1</div><h3>つなぐ</h3><p>普段の会議ツールに連携するだけ。設定は5分。</p></div>
+        <div class="ar">→</div>
+        <div class="st"><div class="c">2</div><h3>記録する</h3><p>商談を自動で文字起こし・要約・タスク化。</p></div>
+        <div class="ar">→</div>
+        <div class="st"><div class="c">3</div><h3>活かす</h3><p>チームで共有し、次の商談の質を高める。</p></div>
+      </div>
+    </div>
+    <div class="pgn">7 / 10</div>
+  </section>
+
+  <!-- 8 KPI（見出しON）-->
+  <div class="lbl">8 / 10 — データ（見出しON）</div>
+  <section class="slide">
+    <div class="head"><div class="t">期待できる効果</div></div>
+    <div class="body">
+      <div class="kpis">
+        <div class="k"><div class="lab">商談振り返り時間</div><div class="num">-60<span>%</span></div><div class="d">記録・共有の手間を自動化</div></div>
+        <div class="k"><div class="lab">フォロー実施率</div><div class="num">2.1<span>倍</span></div><div class="d">自動リマインドで抜け漏れ防止</div></div>
+        <div class="k"><div class="lab">成約率</div><div class="num">+18<span>%</span></div><div class="d">勝ちパターンの横展開</div></div>
+      </div>
+    </div>
+    <div class="pgn">8 / 10</div>
+  </section>
+
+  <!-- 9 カード（見出しON）-->
+  <div class="lbl">9 / 10 — カード（見出しON）</div>
+  <section class="slide">
+    <div class="head"><div class="t">選ばれる理由</div></div>
+    <div class="body">
+      <div class="cards">
+        <div class="cd"><div class="ic"></div><h3>すぐ使える</h3><p>既存ツールに連携するだけ。導入の負担がほとんどありません。</p></div>
+        <div class="cd"><div class="ic"></div><h3>自動でナレッジ化</h3><p>商談が自動で資産になり、チーム全体の底上げにつながります。</p></div>
+        <div class="cd"><div class="ic"></div><h3>安心のサポート</h3><p>専任担当が定着まで伴走。運用設計から改善まで支援します。</p></div>
+      </div>
+    </div>
+    <div class="pgn">9 / 10</div>
+  </section>
+
+  <!-- 10 締め（見出しなし）-->
+  <div class="lbl">10 / 10 — 締め</div>
+  <section class="slide cl">
+    <h2>商談を「成果」に変える仕組みを、<br>一緒に始めませんか。</h2>
+    <span class="cta">まずは無料デモをご体験ください</span>
+    <div class="ct">お問い合わせ：contact@example.com　｜　ConeMeet 営業担当</div>
+  </section>
+
+</div>
+</body>
+</html>
