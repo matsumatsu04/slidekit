@@ -1,5 +1,5 @@
 {
- "count": 100,
+ "count": 102,
  "patterns": [
   {
    "name": "cover-title-center",
@@ -440,6 +440,16 @@
    "name": "risk-matrix-2x2",
    "category": "テーブル・比較",
    "summary": "影響度（縦軸）×発生確率（横軸）の2×2マトリクスでリスクを4象限に分類・整理するスライド。各セルにリスク項目をバッジ形式で表示する。"
+  },
+  {
+   "name": "estimate-amount-table",
+   "category": "テーブル・比較",
+   "summary": "上部に「金額」反転バッジと合計金額を大きく示し、下に内訳明細テーブル（項目・単価・数量・単位・金額／ヘッダーと合計行を反転強調）を配置する見積レイアウト。"
+  },
+  {
+   "name": "line-item-table",
+   "category": "テーブル・比較",
+   "summary": "「内訳」見出しの下に項目・単価・数量・単位・金額の明細テーブルのみを配置するシンプルな一覧。合計行なし・行間広め。"
   },
   {
    "name": "three-kpi-big-number",
