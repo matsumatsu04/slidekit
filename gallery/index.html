@@ -178,8 +178,12 @@ function setTint(hex){
 })();
 
 // design systems（本リポジトリのオリジナル）
-const DESIGNS=[{name:'clean-mono-sans',mood:'静か / 知的 / 余白多め / ミニマル',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
-   md:'/design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md',sample:'/design-systems/clean-mono-sans/sample.html'}];
+const DESIGNS=[
+  {name:'clean-mono-sans',mood:'静か / 知的 / 余白多め / ミニマル',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
+   md:'/design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md',sample:'/design-systems/clean-mono-sans/sample.html'},
+  {name:'consulting-navy',mood:'信頼感 / 論理的 / フォーマル / 結論先行',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
+   md:'/design-systems/consulting-navy/SLIDEKIT-DESIGN.md',sample:'/design-systems/consulting-navy/sample.html'},
+];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
   const sw=d.swatches.map(c=>`<span class="sw" style="background:${c}"></span>`).join('');
