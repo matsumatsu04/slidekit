@@ -63,18 +63,18 @@ const R = {
     s.addText(c.title, { x:0.55, y:3.3, w:8.9, h:1.0, fontSize:33, bold:true, color:T.text, fontFace:FONT, margin:0 });
     if (c.subtitle) s.addText(c.subtitle, { x:0.55, y:4.4, w:8.9, h:0.4, fontSize:13, color:T.muted, fontFace:FONT, margin:0 });
   },
-  // 目次
+  // 目次（R15: 薄色帯ストライプ。6項目以下向け）
   "agenda-toc"(s, c) {
     s.addText(c.title || "アジェンダ", { x:1.0, y:0.55, w:8, h:0.5, fontSize:22, bold:true, color:T.text, fontFace:FONT, margin:0 });
     const items = c.items || [];
-    const rowH = Math.min(0.85, 3.6/items.length);
+    const gap = 0.14, bandH = Math.min(0.62, (3.7-gap*(items.length-1))/items.length);
     let y = 1.45;
     for (const it of items) {
       const [no, ...rest] = it.split(/\s+/); const label = rest.join(" ");
-      s.addText(no, { x:1.0, y, w:0.75, h:rowH-0.2, fontSize:17, bold:true, color:T.accent, fontFace:FONT, valign:"middle", margin:0 });
-      s.addText(label, { x:1.85, y, w:7.1, h:rowH-0.2, fontSize:15, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
-      s.addShape(pres.shapes.LINE, { x:1.0, y:y+rowH-0.15, w:8.0, h:0, line:{ color:T.soft, width:1 } });
-      y += rowH;
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:1.0, y, w:8.0, h:bandH, rectRadius:0.04, fill:{ color:T.soft }, line:{ type:"none" } });
+      s.addText(no, { x:1.3, y, w:0.75, h:bandH, fontSize:15, bold:true, color:T.accent, fontFace:FONT, valign:"middle", margin:0 });
+      s.addText(label, { x:2.1, y, w:6.6, h:bandH, fontSize:14, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
+      y += bandH + gap;
     }
   },
   // 中扉
@@ -119,9 +119,9 @@ const R = {
     cards.forEach((cd, i) => {
       const x = MX + i*(cw+gap);
       card(s, x, cy, cw, ch);
-      s.addShape(pres.shapes.LINE, { x:x+0.3, y:cy+0.4, w:0.5, h:0, line:{ color:T.accent, width:2.5 } });
-      s.addText(cd.title, { x:x+0.3, y:cy+0.55, w:cw-0.5, h:0.42, fontSize:15, bold:true, color:T.text, fontFace:FONT, margin:0 });
-      s.addText(cd.body, { x:x+0.3, y:cy+1.0, w:cw-0.5, h:ch-1.25, fontSize:12, color:T.text, fontFace:FONT, margin:0, valign:"top" });
+      s.addShape(pres.shapes.LINE, { x:x+cw/2-0.25, y:cy+0.44, w:0.5, h:0, line:{ color:T.accent, width:2.5 } });
+      s.addText(cd.title, { x:x+0.2, y:cy+0.6, w:cw-0.4, h:0.42, fontSize:15, bold:true, color:T.text, fontFace:FONT, align:"center", margin:0 });
+      s.addText(cd.body, { x:x+0.25, y:cy+1.1, w:cw-0.5, h:ch-1.35, fontSize:12, color:T.muted, fontFace:FONT, align:"center", margin:0, valign:"top" });
     });
     if (c.note) s.addText(c.note, { x:MX, y:cy+ch+0.25, w:W-MX*2, h:0.4, fontSize:12, color:T.muted, fontFace:FONT, align:"center", margin:0 });
   },
@@ -191,16 +191,17 @@ const R = {
         s.addText("→", { x:MX+span*(i+1)-0.25, y:cy0+0.35, w:0.5, h:0.5, fontSize:20, bold:true, color:T.accent, fontFace:FONT, align:"center", margin:0 });
     });
   },
-  // アイコン左テキストリスト
+  // アイコン左テキストリスト（R9: 薄色帯の縦積み行）
   "icon-left-text-list"(s, c) {
     const items = c.items || [];
-    const rowH = Math.min(0.72, (H-BODY_Y-0.8)/items.length);
-    let y = BODY_Y + 0.35;
+    const gap = 0.12;
+    const rowH = Math.min(0.66, (H-BODY_Y-0.75-gap*(items.length-1))/items.length);
+    let y = BODY_Y + 0.3;
     for (const it of items) {
-      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:MX+0.3, y:y+0.05, w:0.3, h:0.3, rectRadius:0.06, fill:{ color:T.accent }, line:{ type:"none" } });
-      s.addText(it, { x:MX+0.85, y, w:W-MX*2-1.1, h:rowH-0.12, fontSize:13.5, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
-      s.addShape(pres.shapes.LINE, { x:MX+0.3, y:y+rowH-0.06, w:W-MX*2-0.6, h:0, line:{ color:T.soft, width:1 } });
-      y += rowH;
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:MX, y, w:W-MX*2, h:rowH, rectRadius:0.05, fill:{ color:T.soft }, line:{ type:"none" } });
+      s.addShape(pres.shapes.OVAL, { x:MX+0.25, y:y+rowH/2-0.1, w:0.2, h:0.2, fill:{ color:T.accent }, line:{ type:"none" } });
+      s.addText(it, { x:MX+0.7, y, w:W-MX*2-1.0, h:rowH, fontSize:13.5, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
+      y += rowH + gap;
     }
   },
   // Before/After 2カラム
@@ -211,13 +212,16 @@ const R = {
     const arrow = 0.6, gap = 0.15, cw = (W-MX*2-arrow-gap*2)/2;
     [["Before", c.before], ["After", c.after]].forEach(([label, items], i) => {
       const x = MX + i*(cw+arrow+gap*2);
-      card(s, x, cy, cw, ch);
-      s.addText(label, { x:x+0.3, y:cy+0.22, w:2, h:0.4, fontSize:14, bold:true, color:T.text, fontFace:FONT, margin:0 });
-      s.addShape(pres.shapes.LINE, { x:x+0.3, y:cy+0.64, w:1.0, h:0, line:{ color:T.accent, width:2.5 } });
+      const tone = i===0 ? "9AA0A6" : T.accent;   // R17: Before=無彩色 / After=アクセント
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y:cy, w:cw, h:ch, rectRadius:0.06,
+        fill:{ color:T.surface }, line:{ color:tone, width:1 } });
+      s.addText(label, { x:x+0.3, y:cy+0.22, w:2, h:0.4, fontSize:14, bold:true, color:(i===0?T.muted:T.accent), fontFace:FONT, margin:0 });
+      s.addShape(pres.shapes.LINE, { x:x+0.3, y:cy+0.64, w:1.0, h:0, line:{ color:tone, width:2.5 } });
       s.addText((items||[]).map(t=>({ text:t, options:{ bullet:{ characterCode:"2022", indent:10 }, color:T.text, breakLine:true } })),
         { x:x+0.35, y:cy+0.82, w:cw-0.6, h:ch-1.0, fontSize:12.5, fontFace:FONT, margin:0, paraSpaceAfter:8, valign:"top" });
     });
-    s.addText("→", { x:MX+cw+gap, y:cy+ch/2-0.3, w:arrow, h:0.6, fontSize:26, bold:true, color:T.accent, fontFace:FONT, align:"center", valign:"middle", margin:0 });
+    s.addShape(pres.shapes.ISOSCELES_TRIANGLE, { x:MX+cw+gap+0.08, y:cy+ch/2-0.22, w:0.44, h:0.44, rotate:90,
+      fill:{ color:T.accent }, line:{ type:"none" } });
   },
   // KPI 3枚
   "three-kpi-big-number"(s, c) {
@@ -240,10 +244,10 @@ const R = {
     let y = BODY_Y + 0.3;
     const rowH = Math.min(1.35, (H-y-0.4)/items.length);
     for (const qa of items) {
-      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:MX+0.2, y, w:0.42, h:0.42, rectRadius:0.08, fill:{ color:T.accent }, line:{ type:"none" } });
-      s.addText("Q", { x:MX+0.2, y, w:0.42, h:0.42, fontSize:14, bold:true, color:"FFFFFF", fontFace:FONT, align:"center", valign:"middle", margin:0 });
-      s.addText(qa.q, { x:MX+0.85, y, w:W-MX*2-1.1, h:0.42, fontSize:13.5, bold:true, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
-      s.addText(qa.a, { x:MX+0.85, y:y+0.5, w:W-MX*2-1.1, h:rowH-0.6, fontSize:12, color:T.text, fontFace:FONT, margin:0, valign:"top" });
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:MX, y, w:W-MX*2, h:0.46, rectRadius:0.05, fill:{ color:T.soft }, line:{ type:"none" } });
+      s.addText("Q.", { x:MX+0.2, y, w:0.45, h:0.46, fontSize:14, bold:true, color:T.accent, fontFace:FONT, valign:"middle", margin:0 });
+      s.addText(qa.q, { x:MX+0.7, y, w:W-MX*2-1.0, h:0.46, fontSize:13.5, bold:true, color:T.text, fontFace:FONT, valign:"middle", margin:0 });
+      s.addText(qa.a, { x:MX+0.7, y:y+0.56, w:W-MX*2-1.0, h:rowH-0.66, fontSize:12, color:T.text, fontFace:FONT, margin:0, valign:"top" });
       y += rowH;
     }
   },
