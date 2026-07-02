@@ -2,37 +2,65 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>consulting-navy — sample</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{ --primary:#1F3A5F; --secondary:#4A6A8F; --surface:#EEF2F7; --text:#333333; --muted:#8A8F98; }
+  :root{ --primary:#1F3A5F; --secondary:#4A6A8F; --surface:#EEF2F7; --text:#333333; --muted:#8A8F98; --line:#E2E6EC; }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#E9EAEC;font-family:'Noto Sans JP',sans-serif;color:var(--text);padding:24px 0}
-  .lbl{max-width:960px;margin:0 auto 6px;font-size:11px;color:#9aa0a6}
-  .slide{position:relative;width:960px;max-width:100%;aspect-ratio:16/9;background:#fff;border:1px solid #d8dadd;margin:0 auto 26px;overflow:hidden}
+  body{background:#E9EAEC;font-family:'Noto Sans JP',sans-serif;color:var(--text);padding:24px 0;min-width:1000px}
+  .doc{max-width:1000px;margin:0 auto;padding:0 10px}
+  .doc h1{font-size:16px;color:#555;margin-bottom:14px;text-align:center}
+  .lbl{font-size:11px;color:#9aa0a6;margin:16px 0 5px}
+  .slide{position:relative;width:960px;max-width:100%;aspect-ratio:16/9;background:#fff;border:1px solid #d8dadd;margin:0 auto;overflow:hidden}
   /* 共通見出し（デザインA）+ メッセージライン */
   .head{position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;border-bottom:2px solid var(--primary)}
   .head .t{font-size:24px;font-weight:700;line-height:1.2;white-space:nowrap}
-  .head-msg{position:absolute;top:82px;left:40px;right:40px;font-size:16px;line-height:1.5;color:var(--text)}
+  .head-msg{position:absolute;top:82px;left:40px;right:40px;font-size:16px;line-height:1.5}
   .body{position:absolute;top:128px;left:64px;right:64px;bottom:40px}
+  .body.nomsg{top:88px}
   .pgn{position:absolute;right:40px;bottom:16px;font-size:12px;color:var(--muted)}
-  /* cover */
+  /* 1. cover */
   .cv{display:flex;flex-direction:column;justify-content:center;padding:0 64px}
   .cv .ey{color:var(--primary);font-weight:700;font-size:14px;letter-spacing:.1em;margin-bottom:14px}
   .cv h2{font-size:44px;font-weight:900;line-height:1.2}
   .cv .sub{margin-top:16px;font-size:16px;color:var(--muted)}
   .cv .bar{position:absolute;left:0;bottom:0;width:100%;height:10px;background:var(--primary)}
-  /* KPI */
+  /* 2. section */
+  .sec{display:flex;flex-direction:column;justify-content:center;padding:0 72px;background:var(--primary)}
+  .sec .n{font-size:88px;font-weight:900;color:rgba(255,255,255,.35);line-height:.9}
+  .sec h2{font-size:36px;font-weight:900;color:#fff;margin-top:8px}
+  /* 3. numbered list */
+  .nl .it{display:flex;gap:20px;margin-bottom:26px}
+  .nl .no{flex:0 0 40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .nl h3{font-size:17px;font-weight:700;margin-bottom:4px}
+  .nl p{font-size:14px;line-height:1.6}
+  /* 4. KPI */
   .kpis{display:flex;gap:28px;height:100%;align-items:center}
   .kpis .k{flex:1;border:1px solid var(--primary);border-radius:8px;padding:20px;text-align:center;background:#fff}
   .kpis .k .lab{font-size:13px;color:var(--muted);margin-bottom:8px}
   .kpis .k .num{font-size:46px;font-weight:900;color:var(--primary);line-height:1}
   .kpis .k .num span{font-size:20px}
   .kpis .k .d{font-size:12px;margin-top:10px}
+  /* 5. before/after */
+  .ba{display:flex;gap:18px;align-items:stretch;height:100%}
+  .ba .col{flex:1;border:1px solid var(--primary);border-radius:8px;padding:22px;background:#fff}
+  .ba .col h3{font-size:15px;font-weight:700;display:inline-block;border-bottom:3px solid var(--primary);padding-bottom:6px;margin-bottom:14px}
+  .ba .col li{font-size:14px;line-height:1.9;list-style:none;padding-left:18px;position:relative}
+  .ba .col li::before{content:"";position:absolute;left:0;top:12px;width:7px;height:7px;background:var(--primary);border-radius:2px}
+  .ba .arrow{align-self:center;color:var(--primary);font-size:28px;font-weight:700}
+  /* 6. closing */
+  .cl{display:flex;flex-direction:column;justify-content:center;padding:0 72px}
+  .cl h2{font-size:32px;font-weight:900;line-height:1.35}
+  .cl .ct{margin-top:26px;font-size:14px;color:var(--muted)}
+  .cl .rule{width:56px;height:3px;background:var(--primary);margin-bottom:22px}
 </style>
 </head>
 <body>
-  <div class="lbl">consulting-navy — 表紙</div>
+<div class="doc">
+  <h1>consulting-navy — サンプル（6枚）</h1>
+
+  <div class="lbl">1 / 6 — 表紙</div>
   <section class="slide cv">
     <div class="ey">PROPOSAL</div>
     <h2>営業生産性を、<br>仕組みで2倍にする。</h2>
@@ -40,7 +68,41 @@
     <div class="bar"></div>
   </section>
 
-  <div class="lbl">consulting-navy — 本文（アクションタイトル＋KPI）</div>
+  <div class="lbl">2 / 6 — セクション中扉</div>
+  <section class="slide sec">
+    <div class="n">01</div>
+    <h2>現状の課題と構造</h2>
+  </section>
+
+  <div class="lbl">3 / 6 — 本文（アクションタイトル＋番号リスト）</div>
+  <section class="slide">
+    <div class="head"><div class="t">営業活動を圧迫する3つの構造</div></div>
+    <div class="head-msg">ボトルネックは「人手」ではなく、記録・共有・引き継ぎに費やす時間にある</div>
+    <div class="body">
+      <div class="nl">
+        <div class="it"><div class="no">1</div><div><h3>記録に時間を取られる</h3><p>商談後の入力・報告に1件あたり30分。1日の20%が事務作業に消える</p></div></div>
+        <div class="it"><div class="no">2</div><div><h3>ナレッジが個人に閉じる</h3><p>勝ちパターンが共有されず、同じ失敗がチームで繰り返される</p></div></div>
+        <div class="it"><div class="no">3</div><div><h3>引き継ぎで文脈が消える</h3><p>担当交代のたびに関係構築がリセットされ、成約率が落ちる</p></div></div>
+      </div>
+    </div>
+    <div class="pgn">5 / 16</div>
+  </section>
+
+  <div class="lbl">4 / 6 — 比較（Before / After）</div>
+  <section class="slide">
+    <div class="head"><div class="t">導入で変わる仕事の流れ</div></div>
+    <div class="head-msg">仕事の起点が「ゼロから書く」から「たたき台を直す」に変わる</div>
+    <div class="body">
+      <div class="ba">
+        <div class="col"><h3>Before</h3><ul><li>商談記録は手作業で30分</li><li>提案書は毎回ゼロから作成</li><li>ナレッジは個人のメモ止まり</li></ul></div>
+        <div class="arrow">→</div>
+        <div class="col"><h3>After</h3><ul><li>記録・要約は自動で数分</li><li>たたき台から着手し半分の時間で</li><li>勝ちパターンをチームで共有</li></ul></div>
+      </div>
+    </div>
+    <div class="pgn">9 / 16</div>
+  </section>
+
+  <div class="lbl">5 / 6 — KPI（アクションタイトル＋大きな数字）</div>
   <section class="slide">
     <div class="head"><div class="t">期待できる効果</div></div>
     <div class="head-msg">1業務への集中導入だけで、月20時間の営業時間が創出できる</div>
@@ -51,7 +113,16 @@
         <div class="k"><div class="lab">月あたり創出時間</div><div class="num">+20<span>h</span></div><div class="d">定型業務の削減で生まれる余白</div></div>
       </div>
     </div>
-    <div class="pgn">8 / 16</div>
+    <div class="pgn">12 / 16</div>
   </section>
+
+  <div class="lbl">6 / 6 — 締め</div>
+  <section class="slide cl">
+    <div class="rule"></div>
+    <h2>小さく始めて、確実に積み上げる。<br>最初の2週間をご一緒させてください。</h2>
+    <div class="ct">お問い合わせ：sales@example.com　｜　担当：サンプル太郎</div>
+  </section>
+
+</div>
 </body>
 </html>
