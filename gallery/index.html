@@ -63,6 +63,10 @@
   .card .body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
   .card .name{font-size:14px;font-weight:700;word-break:break-all}
   .card .cat{display:inline-block;font-size:11px;color:#666;background:var(--surf);border-radius:5px;padding:1px 8px;margin-bottom:4px}
+  .card .tier{display:inline-block;font-size:10.5px;border-radius:5px;padding:1px 7px;margin-left:5px;font-weight:700}
+  .tier.high{color:#0d7a43;background:#e5f6ec}
+  .tier.mid{color:#8a6100;background:#fdf3d7}
+  .tier.low{color:#a33;background:#fdeaea}
   .card .sum{font-size:12px;color:#777;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .card .acts{display:flex;gap:8px}
   .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
@@ -229,7 +233,7 @@ function render(){
         <div class="open"><span>拡大して開く ↗</span></div>
       </div>
       <div class="body">
-        <div><span class="cat">${p.category}</span></div>
+        <div><span class="cat">${p.category}</span><span class="tier ${p.tier||'mid'}" title="スライド生成AIでの再現性">${{high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'}[p.tier]||''}</span></div>
         <div class="name">${p.name}</div>
         <div class="sum">${p.summary||''}</div>
         <div class="acts">
@@ -242,7 +246,7 @@ function render(){
   applyTint();
   requestAnimationFrame(fit);
 }
-fetch('/patterns/manifest.json').then(r=>r.json()).then(j=>{
+fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   DATA=j.patterns;
   document.getElementById('pcount').textContent=DATA.length;
   document.getElementById('loading').style.display='none';
