@@ -21,18 +21,21 @@ const T = Object.assign(
   deck.theme || {});
 const FONT = T.font;
 const W = 10, H = 5.625, PX = 128;           // 1280x720px 基準
-const MX = 48/PX;                             // コンテンツ左右マージン(48px)
-const BODY_Y = 76/PX;                         // 共通見出し下の本文開始(76px)
+const MX = 64/PX;                             // コンテンツ左右マージン(64px＝全幅の5%)
+const BODY_Y0 = 76/PX;                        // 共通見出し下の本文開始(76px)
+let BODY_Y = BODY_Y0;                         // メッセージライン有無でスライドごとに可変
 const pres = new pptxgen();
 pres.layout = "LAYOUT_16x9";
 pres.title = deck.meta?.title || "SlideKit Deck";
 
 // ---------- 共通部品 ----------
 // 共通見出し デザインA: 24px太字 + 全幅下線(アクセント2px・左右40px)
-function headerA(s, title) {
+function headerA(s, title, message) {
   const m = 40/PX, top = 24/PX;
   s.addText(title, { x:m, y:top, w:W-m*2, h:0.36, fontSize:18, bold:true, color:T.text, fontFace:FONT, margin:0 });
   s.addShape(pres.shapes.LINE, { x:m, y:top+0.42, w:W-m*2, h:0, line:{ color:T.accent, width:2 } });
+  if (message)  // メッセージライン: このスライドの結論1行（アクションタイトル）
+    s.addText(message, { x:m, y:top+0.52, w:W-m*2, h:0.34, fontSize:12, color:T.text, fontFace:FONT, margin:0 });
 }
 function pageNo(s, n, total) {
   s.addText(`${n} / ${total}`, { x:W-1.2, y:H-0.38, w:0.9, h:0.3, fontSize:9, color:T.muted, fontFace:FONT, align:"right", margin:0 });
@@ -260,7 +263,8 @@ deck.slides.forEach((sl, i) => {
   s.background = { color: T.bg };
   const render = R[sl.pattern] || R.bullets;
   if (!R[sl.pattern]) console.warn(`[warn] no renderer for pattern "${sl.pattern}" — fallback to bullets`);
-  if (sl.heading) headerA(s, sl.heading);
+  BODY_Y = BODY_Y0 + (sl.heading && sl.message ? 0.4 : 0);
+  if (sl.heading) headerA(s, sl.heading, sl.message);
   render(s, sl.content || {}, sl);
   if (!NO_PAGENO.has(sl.pattern)) pageNo(s, i+1, total);
 });
