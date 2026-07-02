@@ -1,13 +1,3 @@
-# OS / editor
-.DS_Store
-Thumbs.db
-*.swp
-.idea/
-.vscode/
-
-# Node / Vercel (将来ビルドを足す場合用)
 node_modules/
-.vercel/
-
-# 進捗メモは公開リポジトリに含めない場合はコメント解除
-# PROGRESS.md
+*.pdf
+tools/pptx/out/
