@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>webcareer-brand — sample</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2F62A6; --secondary:#2B4894; --accent:#D72550;
+    --surface:#E8EEF7; --text:#333333; --muted:#5B6577;
+    --blue-grad:linear-gradient(25deg,#2F62A6 0%,#2B4894 100%);
+    --pink-grad:linear-gradient(25deg,#A7629D 0%,#D72550 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E9EAEC;font-family:'Noto Sans JP',sans-serif;color:var(--text);padding:24px 0;min-width:1000px}
+  .doc{max-width:1000px;margin:0 auto;padding:0 8px}
+  .doc h1{font-size:16px;color:#555;margin-bottom:16px;text-align:center}
+  .lbl{font-size:11px;color:#9aa0a6;margin:16px 0 4px}
+  .slide{position:relative;width:960px;max-width:100%;aspect-ratio:16/9;background:#fff;border:1px solid #d8dadd;margin:0 auto;overflow:hidden}
+  .rounded{font-family:'M PLUS Rounded 1c',sans-serif}
+  .num{font-family:'Poppins','Noto Sans JP',sans-serif}
+  /* 共通見出し（デザインA）+ メッセージライン */
+  .head{position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;border-bottom:2px solid var(--secondary)}
+  .head .t{font-family:'M PLUS Rounded 1c',sans-serif;font-size:24px;font-weight:700;line-height:1.25;white-space:nowrap}
+  .head-msg{position:absolute;top:80px;left:40px;right:40px;font-size:16px;line-height:1.5}
+  .body{position:absolute;top:128px;left:64px;right:64px;bottom:40px}
+  .pgn{position:absolute;right:40px;bottom:16px;font-size:12px;color:var(--muted)}
+  /* 1. cover */
+  .cv{display:flex;flex-direction:column;justify-content:center;padding:0 64px;background:linear-gradient(25deg,#2F62A6 0%,#2B4894 100%);color:#fff}
+  .cv .deco1{position:absolute;top:-80px;right:-64px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .cv .deco2{position:absolute;bottom:64px;right:120px;width:160px;height:160px;border-radius:50%;background:rgba(215,37,80,.16)}
+  .cv h2{font-family:'M PLUS Rounded 1c',sans-serif;font-size:44px;font-weight:500;line-height:1.25}
+  .cv .sub{margin-top:16px;font-size:16px;color:rgba(255,255,255,.85)}
+  .cv .logo{position:absolute;right:48px;bottom:40px;font-family:'Poppins',sans-serif;font-size:28px;font-weight:600;color:#fff;letter-spacing:.02em}
+  /* 2. section */
+  .sec{display:flex;align-items:center;gap:24px;padding:0 64px;background:linear-gradient(25deg,#2F62A6 0%,#2B4894 100%)}
+  .sec .n{font-family:'Poppins',sans-serif;font-size:88px;font-weight:600;color:#fff;line-height:1}
+  .sec .vbar{width:2px;height:72px;background:rgba(255,255,255,.7)}
+  .sec h2{font-family:'M PLUS Rounded 1c',sans-serif;font-size:32px;font-weight:700;color:#fff}
+  /* 3. numbered list */
+  .nl .it{display:flex;gap:20px;margin-bottom:24px}
+  .nl .no{flex:0 0 40px;height:40px;border-radius:50%;background:var(--secondary);color:#fff;font-family:'Poppins',sans-serif;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .nl h3{font-family:'M PLUS Rounded 1c',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px}
+  .nl p{font-size:14px;line-height:1.6}
+  /* 4. 3カラムカード */
+  .cards{display:flex;gap:24px;height:100%;align-items:stretch}
+  .cards .c{position:relative;flex:1;border:1px solid var(--secondary);border-radius:16px;padding:28px 20px 20px;background:#fff;box-shadow:0 4px 16px rgba(43,72,148,.12)}
+  .cards .c h3{font-family:'M PLUS Rounded 1c',sans-serif;font-size:17px;font-weight:700;color:var(--secondary);margin-bottom:12px}
+  .cards .c p{font-size:14px;line-height:1.7}
+  .cards .badge{position:absolute;top:-12px;left:20px;height:24px;padding:0 12px;border-radius:999px;background:linear-gradient(25deg,#A7629D 0%,#D72550 100%);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center}
+  /* 5. KPI */
+  .kpis{display:flex;gap:28px;height:100%;align-items:center}
+  .kpis .k{flex:1;background:var(--surface);border-radius:16px;padding:24px 20px;text-align:center}
+  .kpis .k .lab{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .kpis .k .kn{font-family:'Poppins',sans-serif;font-size:48px;font-weight:600;color:var(--secondary);line-height:1}
+  .kpis .k .kn span{font-family:'Noto Sans JP',sans-serif;font-size:20px}
+  .kpis .k .d{font-size:12px;margin-top:12px}
+  /* 6. closing */
+  .cl{display:flex;flex-direction:column;justify-content:center;padding:0 64px;background:linear-gradient(25deg,#2F62A6 0%,#2B4894 100%);color:#fff}
+  .cl h2{font-family:'M PLUS Rounded 1c',sans-serif;font-size:32px;font-weight:500;line-height:1.5}
+  .cl .cta{margin-top:32px;height:56px;width:280px;border-radius:999px;background:linear-gradient(25deg,#A7629D 0%,#D72550 100%);color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .cl .ct{margin-top:24px;font-size:13px;color:rgba(255,255,255,.8)}
+</style>
+</head>
+<body>
+<div class="doc">
+  <h1>webcareer-brand — サンプル（6枚）</h1>
+
+  <div class="lbl">1 / 6 — 表紙（Blueグラデ25°＋WebCareer）</div>
+  <section class="slide cv">
+    <div class="deco1"></div>
+    <div class="deco2"></div>
+    <h2>未経験から、<br>Web制作でキャリアを前へ。</h2>
+    <div class="sub">ウェブキャリ講座説明会　｜　2026年7月</div>
+    <div class="logo">WebCareer</div>
+  </section>
+
+  <div class="lbl">2 / 6 — セクション中扉（Blueグラデ＋白章タイトル）</div>
+  <section class="slide sec">
+    <div class="n num">01</div>
+    <div class="vbar"></div>
+    <h2>ウェブキャリが選ばれる理由</h2>
+  </section>
+
+  <div class="lbl">3 / 6 — 本文（アクションタイトル＋番号リスト）</div>
+  <section class="slide">
+    <div class="head"><div class="t">独学がつまずく3つの壁</div></div>
+    <div class="head-msg">挫折の原因はスキル不足ではなく、「順番・添削・案件」の3つが欠けていること</div>
+    <div class="body">
+      <div class="nl">
+        <div class="it"><div class="no">1</div><div><h3>学ぶ順番がわからない</h3><p>教材が多すぎて迷子になり、遠回りの学習で時間だけが過ぎていく</p></div></div>
+        <div class="it"><div class="no">2</div><div><h3>添削してくれる人がいない</h3><p>自分の制作物の良し悪しが判断できず、実務レベルに届かないまま停滞する</p></div></div>
+        <div class="it"><div class="no">3</div><div><h3>案件の取り方を教わらない</h3><p>スキルはあっても営業・提案の型がなく、最初の1件が取れずに諦めてしまう</p></div></div>
+      </div>
+    </div>
+    <div class="pgn">5 / 16</div>
+  </section>
+
+  <div class="lbl">4 / 6 — 3カラムカード（白面＋Blue枠線・Pinkバッジは1箇所）</div>
+  <section class="slide">
+    <div class="head"><div class="t">学習を支える3つのサポート</div></div>
+    <div class="head-msg">教材・添削・営業支援がそろっているから、最初の案件獲得まで迷わず進める</div>
+    <div class="body">
+      <div class="cards">
+        <div class="c"><h3>順番どおりの教材</h3><p>未経験からのロードマップに沿って、迷わず学べるカリキュラムを提供</p></div>
+        <div class="c"><div class="badge">いちばん人気</div><h3>現役講師の添削</h3><p>制作物を実務基準でレビュー。改善点が具体的にわかり、成長が速い</p></div>
+        <div class="c"><h3>案件獲得サポート</h3><p>提案文の型と営業の進め方を伝授。最初の1件までを伴走する</p></div>
+      </div>
+    </div>
+    <div class="pgn">8 / 16</div>
+  </section>
+
+  <div class="lbl">5 / 6 — KPI（大きな数字はBlue）</div>
+  <section class="slide">
+    <div class="head"><div class="t">受講生の成果</div></div>
+    <div class="head-msg">受講開始から6ヶ月以内に、多くの受講生が初案件を獲得している</div>
+    <div class="body">
+      <div class="kpis">
+        <div class="k"><div class="lab">初案件までの平均</div><div class="kn">4<span>ヶ月</span></div><div class="d">添削×営業支援で最短ルートへ</div></div>
+        <div class="k"><div class="lab">添削回数</div><div class="kn num">無制限</div><div class="d">納得いくまで何度でも提出できる</div></div>
+        <div class="k"><div class="lab">累計サポート受講生</div><div class="kn">300<span>名+</span></div><div class="d">未経験スタートが約8割</div></div>
+      </div>
+    </div>
+    <div class="pgn">12 / 16</div>
+  </section>
+
+  <div class="lbl">6 / 6 — 締め（CTAにPink Gradient）</div>
+  <section class="slide cl">
+    <h2>キャリアの一歩目を、<br>ウェブキャリと一緒に。</h2>
+    <div class="cta">無料相談に申し込む</div>
+    <div class="ct">お問い合わせ：info@example.com　｜　WebCareer 運営事務局</div>
+  </section>
+
+</div>
+</body>
+</html>

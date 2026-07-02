@@ -4,7 +4,7 @@
 // deck.json スキーマ:
 // {
 //   "meta":  { "title": "..." },
-//   "theme": { "accent":"5AA9E6","soft":"E1EFFA","text":"333333","muted":"8A8F98","bg":"FFFFFF","font":"Noto Sans JP" },
+//   "theme": { "accent":"5AA9E6","soft":"E1EFFA","text":"333333","muted":"8A8F98","bg":"FFFFFF","surface":"FFFFFF","font":"Noto Sans JP" },
 //   "slides":[ { "pattern":"<pattern-name>", "heading":"見出し or null", "content":{...} }, ... ]
 // }
 // 変換規約（docs/pptx-generation.md 準拠）:
@@ -17,7 +17,7 @@ if (!deckPath || !outPath) { console.error("usage: node build-pptx.mjs <deck.jso
 const deck = JSON.parse(readFileSync(deckPath, "utf8"));
 
 const T = Object.assign(
-  { accent:"5AA9E6", soft:"E1EFFA", text:"333333", muted:"8A8F98", bg:"FFFFFF", font:"Noto Sans JP" },
+  { accent:"5AA9E6", soft:"E1EFFA", text:"333333", muted:"8A8F98", bg:"FFFFFF", surface:"FFFFFF", font:"Noto Sans JP" },
   deck.theme || {});
 const FONT = T.font;
 const W = 10, H = 5.625, PX = 128;           // 1280x720px 基準
@@ -43,7 +43,7 @@ function pageNo(s, n, total) {
 // カード（白面＋アクセント枠・角丸）
 function card(s, x, y, w, h) {
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius:0.06,
-    fill:{ color:"FFFFFF" }, line:{ color:T.accent, width:1 } });
+    fill:{ color:T.surface }, line:{ color:T.accent, width:1 } });
 }
 // リッチテキスト: 文字列 or [{text, accent?, bold?}] を pptxgenjs runs に
 function runs(v, base = {}) {
