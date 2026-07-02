@@ -39,9 +39,18 @@
   .swatch.active{box-shadow:0 0 0 2px var(--ink)}
   .toolbar .reset{margin-left:auto;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
   .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;position:sticky;top:0;z-index:20;
-           background:rgba(250,250,250,.94);backdrop-filter:blur(8px);padding:12px 0}
+           background:rgba(250,250,250,.94);backdrop-filter:blur(8px);padding:12px 0;align-items:center}
   .chip{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:#555;white-space:nowrap}
   .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip small{opacity:.55;font-size:11px;margin-left:3px}
+  .search{position:relative;margin-left:auto}
+  .search input{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 32px;width:220px;background:#fff}
+  .search input:focus{outline:none;border-color:var(--brand)}
+  .search::before{content:"🔍";position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.5}
+  .noresult{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
+  .totop{position:fixed;right:22px;bottom:22px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+    background:#fff;color:#555;font-size:17px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.10);display:none}
+  .totop:hover{border-color:var(--brand);color:var(--brand)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
   .thumb{position:relative;width:100%;overflow:hidden;background:#e8e8e8;border-bottom:1px solid var(--line);cursor:pointer}
@@ -75,6 +84,7 @@
     <a id="repoLink" href="#">GitHub リポジトリ ↗</a>
     <a href="#patterns">構図パターンへ ↓</a>
     <a href="#designs">デザインシステムへ ↓</a>
+    <a href="/gallery/deck-review.html">デッキレビュー ↗</a>
   </div>
 </div></header>
 
@@ -92,9 +102,13 @@
     <button class="chip" id="hA" data-h="a">A：番号＋下線</button>
     <button class="chip" id="hB" data-h="b">B：縦バー</button>
   </div>
-  <div class="filters" id="filters"></div>
+  <div class="filters" id="filters">
+    <span class="search"><input type="search" id="q" placeholder="パターン名・説明で検索" aria-label="パターン検索"></span>
+  </div>
   <div class="grid" id="grid"></div>
+  <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
   <div class="loading" id="loading">読み込み中…</div>
+  <button class="totop" id="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
 </div></section>
 
 <section id="designs"><div class="wrap">
@@ -176,8 +190,14 @@ for(const d of DESIGNS){
   dsGrid.appendChild(el);
 }
 
-let DATA=[],active='all';
+let DATA=[],active='all',QUERY='';
 const grid=document.getElementById('grid'),filters=document.getElementById('filters');
+function matches(p){
+  if(active!=='all'&&p.category!==active) return false;
+  if(!QUERY) return true;
+  const q=QUERY.toLowerCase();
+  return p.name.toLowerCase().includes(q)||(p.summary||'').toLowerCase().includes(q)||p.category.includes(QUERY);
+}
 function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
     const w=t.clientWidth,s=w/960;
@@ -187,7 +207,8 @@ function fit(){
 }
 function render(){
   grid.innerHTML='';
-  const list=DATA.filter(p=>active==='all'||p.category===active);
+  const list=DATA.filter(matches);
+  document.getElementById('noresult').style.display=list.length?'none':'block';
   for(const p of list){
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
@@ -213,12 +234,21 @@ fetch('/patterns/manifest.json').then(r=>r.json()).then(j=>{
   DATA=j.patterns;
   document.getElementById('pcount').textContent=DATA.length;
   document.getElementById('loading').style.display='none';
+  const counts={};DATA.forEach(p=>counts[p.category]=(counts[p.category]||0)+1);
   const cats=['all',...Array.from(new Set(DATA.map(p=>p.category)))];
+  const searchBox=document.querySelector('.search');
   cats.forEach((c,i)=>{
-    const b=document.createElement('button');b.className='chip'+(i===0?' active':'');b.textContent=c==='all'?`すべて (${DATA.length})`:c;
-    b.onclick=()=>{active=c;[...filters.children].forEach(x=>x.classList.remove('active'));b.classList.add('active');render();};
-    filters.appendChild(b);
+    const b=document.createElement('button');b.className='chip'+(i===0?' active':'');
+    b.innerHTML=c==='all'?`すべて<small>${DATA.length}</small>`:`${c}<small>${counts[c]}</small>`;
+    b.onclick=()=>{active=c;[...filters.querySelectorAll('.chip')].forEach(x=>x.classList.remove('active'));b.classList.add('active');render();};
+    filters.insertBefore(b,searchBox);
   });
+  // 検索（入力のたびに絞り込み）
+  document.getElementById('q').addEventListener('input',e=>{QUERY=e.target.value.trim();render();});
+  // トップに戻る
+  const totop=document.getElementById('totop');
+  window.addEventListener('scroll',()=>{totop.style.display=window.scrollY>600?'block':'none'});
+  totop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   render();
   setTint('#5AA9E6'); // デフォルト：水色
 }).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
