@@ -137,15 +137,30 @@ cd tools/pptx && node build-pptx.mjs <deck.jsonのパス> <出力.pptx>
 ```
 - deck.json スキーマ・実装済みレンダラ一覧・変換の約束事は **`docs/pptx-generation.md`** を必ず読む。
 - パターン割り当て時は、**レンダラ実装済みパターンを優先**する（未実装はbulletsフォールバックになり構図が失われる）。
-- 生成後は **レンダリングQA（soffice→pdftoppm→生成に関与していない別エージェントの視覚QA・1サイクル）** を必ず行う。
-  QA画像は `/gallery/deck-review.html?base=...&count=N` で通し確認できる。
-- 納品は **Google Slides 変換が第一候補**（google-drive MCP `uploadFile` + `convertToGoogleFormat`。
-  詳細は docs/pptx-generation.md「納品」節）。PowerPointで直接編集できる形式を維持する。
+- 生成後は **レンダリングQA（soffice→pdftoppm→視覚チェック・1サイクル）** を必ず行う（QAのやり方は下の「環境適応」参照）。
+- 納品は **Google Slides 変換が第一候補**（詳細は docs/pptx-generation.md「納品」節）。
+  PowerPointで直接編集できる形式（テキスト・図形がオブジェクトのまま）を必ず維持する。
 
 ### 8. 使い方を伝える
 - 既定: 生成した pptx / Google Slides リンクを渡す（編集可能形式）。
 - 代替: `SLIDEKIT-DECK.md` をスライド生成AI（Claudeのデザイン機能等）に渡す従来ルートも案内できる
   （画像ベースになり後から文字修正できないため既定にしない。pptx生成ツールがない環境のみ）。
+
+## 環境適応（どのAI・どの環境でも動かすための分岐）
+
+このスキルは Claude Code 以外（Codex CLI・他のエージェント環境）でも使う。
+**特定ツールが無くても止まらず、下の表の代替に切り替えて完走すること。**
+
+| 依存 | ある場合 | ない場合の代替 |
+|---|---|---|
+| サブエージェント機構（Agent tool / spawn_agent 等） | 生成に関与していない別エージェントに視覚QAさせる | **自分でQA画像を1枚ずつ開いて客観チェック**（観点: はみ出し/重なり/語中折返し/整列ズレ/余白の偏り）。1サイクルで止める |
+| Google Drive 連携（MCP等） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→ダブルクリックでGoogle Slidesとして編集可」と一言案内 |
+| Node.js + pptxgenjs（`tools/pptx`） | deck.json→build-pptx.mjs（既定） | `SLIDEKIT-DECK.md` をスライド生成AIに渡す代替ルート（編集不可になる旨を明示） |
+| LibreOffice/Poppler（QAレンダリング） | soffice→pdftoppm でQA画像化 | pptxを直接開ける環境なら目視、無理ならQAスキップを**正直に報告**（黙って省略しない） |
+| ローカルWebサーバー（デッキレビューア） | `/gallery/deck-review.html` で通し確認 | QA画像ファイルを直接開いて確認（レビューアは任意の補助） |
+
+- パスは正本リポジトリからの相対（`tools/pptx/` `docs/` `patterns/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
+- 承認ゲート・自己検証・成果物提示の表形式など**このSKILLの手順自体は環境によらず同一**。
 
 ## 完了基準（Definition of Done）
 - `SLIDEKIT-DECK.md` が `SPEC.md` の全セクションを満たす。
