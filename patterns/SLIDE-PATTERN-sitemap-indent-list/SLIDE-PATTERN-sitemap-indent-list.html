@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-sitemap-indent-list</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 24px 64px; display: flex; flex-direction: column; }
+  .top-node { display: flex; align-items: center; gap: 16px; background: var(--sk-accent,#D0D0D0); padding: 12px 20px; }
+  .top-node .top-label { font-size: 14px; font-weight: bold; color: #333333; border: 2px solid #333333; padding: 2px 10px; }
+  .top-node .top-name { font-size: 16px; font-weight: bold; color: #333333; flex: 1; }
+  .top-node .top-supplement { font-size: 12px; color: #333333; }
+  .child-wrap { margin-left: 40px; border-left: 2px solid var(--sk-accent,#BBBBBB); padding-left: 24px; margin-top: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .child-row { position: relative; display: flex; align-items: center; gap: 16px; background: var(--sk-soft,#EFEFEF); padding: 12px 20px; }
+  .child-row::before { content: ""; position: absolute; left: -24px; top: 50%; width: 24px; height: 2px; background: var(--sk-accent,#BBBBBB); }
+  .child-name { font-size: 15px; font-weight: bold; color: #333333; width: 160px; flex-shrink: 0; }
+  .child-desc { font-size: 12px; color: #333333; flex: 1; line-height: 1.5; }
+  .child-supplement { font-size: 12px; font-weight: bold; color: #333333; flex-shrink: 0; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="top-node">
+      <span class="top-label">TOP</span>
+      <span class="top-name">トップページ名が入ります</span>
+      <span class="top-supplement">1ページ</span>
+    </div>
+    <div class="child-wrap">
+      <div class="child-row">
+        <div class="child-name">ページ名が入ります</div>
+        <div class="child-desc">このページに載る内容の説明が入ります。</div>
+        <div class="child-supplement">1ページ</div>
+      </div>
+      <div class="child-row">
+        <div class="child-name">ページ名が入ります</div>
+        <div class="child-desc">このページに載る内容の説明が入ります。</div>
+        <div class="child-supplement">1ページ</div>
+      </div>
+      <div class="child-row">
+        <div class="child-name">ページ名が入ります</div>
+        <div class="child-desc">このページに載る内容の説明が入ります。</div>
+        <div class="child-supplement">3ページ</div>
+      </div>
+      <div class="child-row">
+        <div class="child-name">ページ名が入ります</div>
+        <div class="child-desc">このページに載る内容の説明が入ります。</div>
+        <div class="child-supplement">1ページ</div>
+      </div>
+      <div class="child-row">
+        <div class="child-name">ページ名が入ります</div>
+        <div class="child-desc">このページに載る内容の説明が入ります。</div>
+        <div class="child-supplement">1ページ</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

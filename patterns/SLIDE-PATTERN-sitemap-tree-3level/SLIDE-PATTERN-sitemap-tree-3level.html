@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-sitemap-tree-3level</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 64px; display: flex; align-items: center; }
+  .top-node { width: 128px; background: var(--sk-accent,#D0D0D0); border: 2px solid #333333; padding: 16px 8px; text-align: center; font-size: 16px; font-weight: bold; color: #333333; flex-shrink: 0; }
+  .h-line { width: 32px; height: 2px; background: var(--sk-accent,#BBBBBB); flex-shrink: 0; }
+  .bus { width: 2px; height: 296px; background: var(--sk-accent,#BBBBBB); flex-shrink: 0; }
+  .rows { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+  .row { display: flex; align-items: center; }
+  .stub { width: 32px; height: 2px; background: var(--sk-accent,#BBBBBB); flex-shrink: 0; }
+  .lv2 { width: 224px; border: 2px solid var(--sk-accent,#999999); background: #FFFFFF; padding: 12px 16px; flex-shrink: 0; }
+  .lv2 .name { font-size: 15px; font-weight: bold; color: #333333; }
+  .lv2 .note { font-size: 11px; color: #333333; margin-top: 4px; }
+  .lv3 { border: 1px solid var(--sk-accent,#BBBBBB); background: var(--sk-soft,#EFEFEF); padding: 12px 16px; font-size: 13px; color: #333333; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="top-node">TOP</div>
+    <div class="h-line"></div>
+    <div class="bus"></div>
+    <div class="rows">
+      <div class="row">
+        <div class="stub"></div>
+        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
+        <div class="stub"></div>
+        <div class="lv3">下層ページ名（ほか2ページ）</div>
+      </div>
+      <div class="row">
+        <div class="stub"></div>
+        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
+        <div class="stub"></div>
+        <div class="lv3">下層ページ名（ほか3ページ）</div>
+      </div>
+      <div class="row">
+        <div class="stub"></div>
+        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
+      </div>
+      <div class="row">
+        <div class="stub"></div>
+        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -83,10 +83,10 @@ N. [締め]      まとめと次の一歩
 | 目次 | agenda-toc / numbered-toc / two-column-toc |
 | 本文 | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
-| ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / staircase-roadmap |
-| 図解・ダイアグラム | cycle-diagram-with-labels / hub-spoke-diagram / org-chart-tree / four-quadrant-center-circle |
+| ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow |
+| 図解・ダイアグラム | two-column-split-boxes / two-col-icon-list-comparison / four-quadrant-center-circle |
 | カード | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
-| グラフ | bar-chart-full / chart-left-text-right / pie-chart-left-list-right |
+| グラフ | bar-chart-full / kpi-bar-chart / chart-left-text-right |
 | テーブル | before-after-two-col / comparison-matrix-table / estimate-amount-table / line-item-table |
 | KPI | three-kpi-big-number / goal-kgi-kpi-dashboard |
 | まとめ | summary-three-points / action-items-list |
@@ -112,6 +112,11 @@ N. [締め]      まとめと次の一歩
 > **情報量→レイアウト変換規則（`docs/polish-rules.md` 参照）：** パターン選定は情報量から決める。
 > テキスト量が**少ない**→横並び（カード・ステップ）／**多い**→縦積みの帯行リスト／
 > **比較項目が多い**→表。図解は「この情報量ならどの型か」を先に判定してから選ぶ。
+
+> **ストーリー設計（`docs/slideland-notes.md` 参照）：** 課題スライドと解決スライドは**同一パターンの配色違い**
+> （課題=グレートーン、解決=アクセント）で作ると「対応できる」が伝わる（N16）。
+> 比較表は**推し列を1列だけ**目立たせる（N8）。Web制作の提案では sitemap-indent-list（サイト構成）・
+> gantt-schedule-bands（工程）・price-total-highlight（見積）を活用する。
 
 ### 6. SLIDEKIT-DECK.md を生成する
 承認された構成で、`SPEC.md` の形式に従って 1 ファイルを生成する。

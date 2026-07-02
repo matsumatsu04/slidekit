@@ -53,7 +53,7 @@
 | 3 | セクション | section-divider | なし | 01 なぜ今、生成AIなのか |
 | 4 | 本文 | key-message-single | あり | 差を広げるのは「使うかどうか」 |
 | 5 | リスト | numbered-list-with-body | あり | 中小企業が抱える3つの壁 |
-| 6 | 図解 | pdca-cycle-diagram | あり | 小さく回すほど効くAI活用 |
+| 6 | ステップ | four-step-flow | あり | 小さく回すほど効くAI活用 |
 | 7 | セクション | section-divider | なし | 02 どこで使えるのか |
 | 8 | カード | four-card-2x2 | あり | まず狙う4つの活用領域 |
 | 9 | テーブル | before-after-two-col | あり | 導入で何が変わるか |
@@ -109,7 +109,7 @@
 - item-2: 【専門人材がいない】ITやマーケに詳しい担当を採用・育成しづらい
 - item-3: 【日々に追われる】改善したいのに、目の前の業務で手一杯になる
 
-### Slide 6 — 図解（pdca-cycle-diagram）
+### Slide 6 — ステップ（four-step-flow）
 **見出し:** あり（デザインA）／見出しテキスト：小さく回すほど効くAI活用
 **Structure:** 4つのフェーズを円環状に配置し矢印で接続。各フェーズはアクセント色の見出し＋短い説明。
 **Content:**

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-price-total-highlight</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 24px 64px 32px; display: flex; flex-direction: column; }
+  /* 内訳リスト（縦罫のみ・表の檻なし） */
+  .breakdown { display: flex; flex-direction: column; }
+  .b-row { display: flex; align-items: center; gap: 20px; padding: 12px 8px; border-bottom: 1px solid var(--sk-soft,#E8E8E8); }
+  .b-name { width: 200px; flex-shrink: 0; font-size: 15px; font-weight: bold; color: #333333; }
+  .b-div { width: 1px; align-self: stretch; background: var(--sk-accent,#CCCCCC); }
+  .b-desc { flex: 1; font-size: 12px; color: #333333; line-height: 1.5; }
+  .b-price { width: 140px; flex-shrink: 0; text-align: right; font-size: 15px; font-weight: bold; color: #333333; }
+  /* 合計バンド */
+  .total-band { margin-top: auto; padding-top: 20px; border-top: 2px solid var(--sk-accent,#CCCCCC); display: flex; align-items: baseline; justify-content: center; gap: 16px; }
+  .t-label { font-size: 18px; font-weight: bold; color: #333333; }
+  .t-amount { font-size: 64px; font-weight: bold; color: var(--sk-accent,#888888); line-height: 1; }
+  .t-unit { font-size: 24px; font-weight: bold; color: var(--sk-accent,#888888); }
+  .t-note { font-size: 12px; color: #333333; }
+  .note-line { text-align: center; font-size: 11px; color: #333333; margin-top: 8px; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="breakdown">
+      <div class="b-row">
+        <div class="b-name">項目名が入ります</div>
+        <div class="b-div"></div>
+        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
+        <div class="b-price">000,000円</div>
+      </div>
+      <div class="b-row">
+        <div class="b-name">項目名が入ります</div>
+        <div class="b-div"></div>
+        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
+        <div class="b-price">000,000円</div>
+      </div>
+      <div class="b-row">
+        <div class="b-name">項目名が入ります</div>
+        <div class="b-div"></div>
+        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
+        <div class="b-price">000,000円</div>
+      </div>
+    </div>
+    <div class="total-band">
+      <span class="t-label">合計</span>
+      <span class="t-amount">000</span>
+      <span class="t-unit">万円</span>
+      <span class="t-note">（税別）</span>
+    </div>
+    <div class="note-line">お見積り有効期限：発行日より1ヶ月　／　お支払い条件：着手時50%・納品時50%</div>
+  </div>
+</div>
+</body>
+</html>
