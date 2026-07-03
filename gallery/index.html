@@ -96,8 +96,8 @@
   <h2>構図パターン（<span id="pcount">…</span>）</h2>
   <div class="toolbar">
     <span class="lab">プレビューの色</span>
-    <input type="color" id="tint" value="#5AA9E6" aria-label="プレビューの色">
-    <input type="text" id="tintHex" value="#5AA9E6" maxlength="7" aria-label="カラーコード">
+    <input type="color" id="tint" value="#1E2E53" aria-label="プレビューの色">
+    <input type="text" id="tintHex" value="#1E2E53" maxlength="7" aria-label="カラーコード">
     <div class="swatches" id="swatches"></div>
     <button class="reset" id="tintReset">グレーに戻す</button>
     <span style="width:1px;height:24px;background:var(--line);margin:0 4px"></span>
@@ -164,7 +164,7 @@ function setTint(hex){
 }
 (function initTint(){
   const sw=document.getElementById('swatches');
-  ['#5AA9E6','#2F6BFF','#12A150','#8B3FA8','#E2641F','#0EA5B5','#E11D74'].forEach(c=>{
+  ['#1E2E53','#5AA9E6','#2F6BFF','#12A150','#8B3FA8','#E2641F','#0EA5B5','#E11D74'].forEach(c=>{
     const b=document.createElement('span'); b.className='swatch'; b.dataset.c=c; b.style.background=c;
     b.onclick=()=>setTint(c); sw.appendChild(b);
   });
@@ -261,7 +261,7 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   window.addEventListener('scroll',()=>{totop.style.display=window.scrollY>600?'block':'none'});
   totop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   render();
-  setTint('#5AA9E6'); // デフォルト：水色
+  setTint('#1E2E53'); // デフォルト：brand-bネイビー（ブランドガイド navy）
 }).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
 window.addEventListener('resize',()=>requestAnimationFrame(fit));
 window.addEventListener('load',()=>requestAnimationFrame(fit));
