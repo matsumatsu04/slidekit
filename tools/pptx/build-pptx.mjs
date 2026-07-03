@@ -68,7 +68,8 @@ const R = {
     s.addText(c.title || "アジェンダ", { x:1.0, y:0.55, w:8, h:0.5, fontSize:22, bold:true, color:T.text, fontFace:FONT, margin:0 });
     const items = c.items || [];
     const gap = 0.14, bandH = Math.min(0.62, (3.7-gap*(items.length-1))/items.length);
-    let y = 1.45;
+    const totalH = bandH*items.length + gap*(items.length-1);
+    let y = 1.45 + Math.max(0, (H-0.5-1.45-totalH)/2);   // 残り領域の垂直センター
     for (const it of items) {
       const [no, ...rest] = it.split(/\s+/); const label = rest.join(" ");
       s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x:1.0, y, w:8.0, h:bandH, rectRadius:0.04, fill:{ color:T.soft }, line:{ type:"none" } });
@@ -180,15 +181,15 @@ const R = {
   "three-stage-circle-flow"(s, c) {
     const steps = c.steps || [];
     const d = 1.15, span = (W-MX*2)/steps.length;
-    const cy0 = 1.55;                                  // 全体を垂直センター寄りに
+    const cy0 = 1.7;                                   // 全体を垂直センター寄りに
     steps.forEach((st, i) => {
       const cxm = MX + span*i + span/2;
       s.addShape(pres.shapes.OVAL, { x:cxm-d/2, y:cy0, w:d, h:d, fill:{ color:T.accent }, line:{ type:"none" } });
       s.addText(String(i+1), { x:cxm-d/2, y:cy0, w:d, h:d, fontSize:26, bold:true, color:"FFFFFF", fontFace:FONT, align:"center", valign:"middle", margin:0 });
       s.addText(st.title, { x:cxm-span/2+0.1, y:cy0+1.35, w:span-0.2, h:0.42, fontSize:15, bold:true, color:T.text, fontFace:FONT, align:"center", margin:0 });
-      s.addText(st.body, { x:cxm-span/2+0.08, y:cy0+1.8, w:span-0.16, h:1.3, fontSize:11.5, color:T.text, fontFace:FONT, align:"center", margin:0 });
+      s.addText(st.body, { x:cxm-span/2+0.08, y:cy0+1.76, w:span-0.16, h:1.3, fontSize:11.5, color:T.text, fontFace:FONT, align:"center", margin:0 });
       if (i < steps.length-1)
-        s.addText("→", { x:MX+span*(i+1)-0.25, y:cy0+0.35, w:0.5, h:0.5, fontSize:20, bold:true, color:T.accent, fontFace:FONT, align:"center", margin:0 });
+        s.addText("▶", { x:MX+span*(i+1)-0.25, y:cy0+0.4, w:0.5, h:0.4, fontSize:16, bold:true, color:T.accent, fontFace:FONT, align:"center", margin:0 });
     });
   },
   // アイコン左テキストリスト（R9: 薄色帯の縦積み行）
@@ -212,10 +213,10 @@ const R = {
     const arrow = 0.6, gap = 0.15, cw = (W-MX*2-arrow-gap*2)/2;
     [["Before", c.before], ["After", c.after]].forEach(([label, items], i) => {
       const x = MX + i*(cw+arrow+gap*2);
-      const tone = i===0 ? "9AA0A6" : T.accent;   // R17: Before=無彩色 / After=アクセント
+      const tone = i===0 ? "6B7280" : T.accent;   // R17: Before=無彩色(濃いめ) / After=アクセント
       s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y:cy, w:cw, h:ch, rectRadius:0.06,
         fill:{ color:T.surface }, line:{ color:tone, width:1 } });
-      s.addText(label, { x:x+0.3, y:cy+0.22, w:2, h:0.4, fontSize:14, bold:true, color:(i===0?T.muted:T.accent), fontFace:FONT, margin:0 });
+      s.addText(label, { x:x+0.3, y:cy+0.22, w:2, h:0.4, fontSize:14, bold:true, color:(i===0?"6B7280":T.accent), fontFace:FONT, margin:0 });
       s.addShape(pres.shapes.LINE, { x:x+0.3, y:cy+0.64, w:1.0, h:0, line:{ color:tone, width:2.5 } });
       s.addText((items||[]).map(t=>({ text:t, options:{ bullet:{ characterCode:"2022", indent:10 }, color:T.text, breakLine:true } })),
         { x:x+0.35, y:cy+0.82, w:cw-0.6, h:ch-1.0, fontSize:12.5, fontFace:FONT, margin:0, paraSpaceAfter:8, valign:"top" });
