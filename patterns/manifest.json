@@ -1,479 +1,537 @@
 {
- "count": 79,
+ "count": 76,
  "patterns": [
   {
    "name": "cover-with-image-left",
    "category": "表紙",
    "summary": "左半分（約45%）に画像、右半分（約55%）にカテゴリラベル・メインタイトル・説明文・日付などのメタ情報を縦に並べる表紙レイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P001"
   },
   {
    "name": "cover-gradient-text-bottom",
    "category": "表紙",
    "summary": "グラデーション背景をフルスクリーンに使い、左下にロゴと大型テキストを配置するカバーページ。企業情報を下部に集約。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P002"
   },
   {
    "name": "cover-fullbg-text-left",
    "category": "表紙",
    "summary": "左側55%に企画・発表者・所属情報を配置し、右側45%を背景画像エリアとする2分割カバーページ。テキストは左下寄せ。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P003"
   },
   {
    "name": "cover-minimal-disclaimer",
    "category": "表紙",
    "summary": "ロゴと企業名をヘッダーに配置し、中央にタイトル・発表者を、フッターに免責事項を記載するカバーページ。金融・投資向け。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P004"
   },
   {
    "name": "section-divider",
    "category": "セクション",
    "summary": "チャプター区切りスライド。左端に太い縦線、その右に大きなセクション番号・セクションタイトル・サブタイトルを縦に並べ、余白を活かしたシンプルな構成。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P005"
   },
   {
    "name": "agenda-toc",
    "category": "目次",
    "summary": "左上にセクションラベルとタイトルを配置し、その下に番号付き目次リストを縦に並べた1カラムレイアウト。各行は大きな番号・縦線・項目名・点線・ページ番号で構成される。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P006"
   },
   {
    "name": "numbered-toc",
    "category": "目次",
    "summary": "番号・項目名・点線・ページ番号を横一列に並べたリスト行を縦積みで表示する目次レイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P007"
   },
   {
    "name": "two-column-toc",
    "category": "目次",
    "summary": "目次項目を左右2列に分割して表示し、各項目に点線リーダーとページ番号を付ける2カラム目次レイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P008"
   },
   {
    "name": "sidebar-toc-panel",
    "category": "目次",
    "summary": "スライド全体を左右に二分割し、左側に「INDEX」などのセクション見出しを縦書きまたは横書きで大きく置き、右側に番号付き目次項目を縦に並べる目次専用レイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P009"
   },
   {
    "name": "category-toc-simple",
    "category": "目次",
    "summary": "カテゴリ見出し（英語太字大文字＋日本語サブタイトル）と縦線付き箇条書き項目を縦積みしたシンプルな全幅目次レイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P010"
   },
   {
    "name": "category-toc-with-image",
    "category": "目次",
    "summary": "カテゴリ見出し（英語大文字＋日本語サブタイトル）と縦線付き箇条書き項目を縦積みした目次を左側に、装飾イメージを右側に配置する2カラムレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P011"
   },
   {
    "name": "key-message-single",
    "category": "本文",
    "summary": "1つの大きなキーメッセージをコンテンツエリア中央に配置する強調スライド。上下に細い区切り線を置き、さらに下部に補足テキストを表示する。余白が多くシンプルで印象に残りやすい。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P012"
   },
   {
    "name": "two-col-text-body",
    "category": "本文",
    "summary": "左右2カラムにそれぞれ「見出し + 本文テキスト」を配置する基本的な本文スライド。比較・対比・2つのトピックの並列説明に最適。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P013"
   },
   {
    "name": "two-section-stacked-text",
    "category": "本文",
    "summary": "コンテンツエリアを上下2セクションに分け、各セクションに見出し＋本文テキスト＋リストを配置する積み重ねテキストレイアウト。上段は見出し＋本文テキスト、下段は見出し＋本文テキスト＋番号付きリストの構成。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P014"
   },
   {
    "name": "image-left-text-right",
    "category": "本文",
    "summary": "左側（約38%）に画像プレースホルダー、右側（約62%）にエリアラベル・見出し・区切り線・箇条書きリストを配置する説明系スライド。",
-   "tier": "high"
-  },
-  {
-   "name": "quote-large-center",
-   "category": "本文",
-   "summary": "大きな引用符と引用テキストを中央に配置する視覚的インパクトのあるスライド。名言・統計・重要メッセージを強調したいときに使用する。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P015"
   },
   {
    "name": "numbered-list-with-body",
    "category": "リスト",
    "summary": "3つの項目を縦に並べ、各項目に番号バッジ（または図形アイコン）・見出し・本文を配置する縦リストレイアウト",
-   "tier": "high"
-  },
-  {
-   "name": "numbered-list-hexagon-badge",
-   "category": "リスト",
-   "summary": "左側に六角形の番号バッジ、右側に見出しと説明文のテキストブロックを横並びにしたリスト行を縦に積み重ねるレイアウト",
-   "tier": "mid"
+   "tier": "high",
+   "id": "P016"
   },
   {
    "name": "numbered-two-col-row",
    "category": "リスト",
    "summary": "3〜4項目を横幅全体のロー（行）として縦に積み、各ローを左カラム（番号バッジ＋見出し）と右カラム（箇条書き詳細）の2列に分割したレイアウト",
-   "tier": "high"
-  },
-  {
-   "name": "numbered-two-col-row-with-accent",
-   "category": "リスト",
-   "summary": "左側に番号入りアクセントブロック（斜めカット装飾あり）、右側に見出しと箇条書きを持つテキストエリア、行右端に縦アクセントバーを配置したリスト行レイアウト",
-   "tier": "mid"
+   "tier": "high",
+   "id": "P017"
   },
   {
    "name": "numbered-row-full-width",
    "category": "リスト",
    "summary": "番号付きの横長バナー行を縦に並べるリストレイアウト。各行は「番号バッジ＋アイコン」「見出し」「説明文」の3ゾーンで構成され、幅いっぱいに広がる。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P018"
   },
   {
    "name": "icon-left-text-list",
    "category": "リスト",
    "summary": "3〜4つの項目を縦に並べ、各行の左にアイコン（画像・シンボル）、右に見出しと本文を配置する横展開リストレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P019"
   },
   {
    "name": "icon-left-text-list-detailed",
    "category": "リスト",
    "summary": "縦に3行並ぶリスト形式のレイアウト。各行は左側に大きめのアイコン、右側にアクセントカラーの見出し＋複数行の説明テキストを配置する。行全体に薄いグレーの背景を適用する。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P020"
   },
   {
    "name": "three-tier-segment-list",
    "category": "リスト",
    "summary": "左側（約25%）に括り見出しテキスト、右側（75%）に3段のセグメント（各段にアイコン円＋見出し＋箇条書き）を縦に配置するセグメント分類レイアウト。左側の括り見出しが3つのセグメント全体に対するラベルとして機能する。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P021"
   },
   {
    "name": "four-step-flow",
    "category": "ステップ",
    "summary": "上部に中央揃えのタイトルを配置し、下部に4枚の等幅カードを横並びにしたフロー図レイアウト。各カードは番号バッジ・ラベル・イラストで構成され、カード間の矢印でステップの流れを示す。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P022"
   },
   {
    "name": "four-step-flow-with-callout",
    "category": "ステップ",
    "summary": "4つのステップカードを横並びに配置し、右端に補足情報・注意事項のコールアウトボックスを2段で積み重ねたフロー図レイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P023"
   },
   {
    "name": "four-step-card-flow",
    "category": "ステップ",
    "summary": "上部のリード文と概要説明を配置し、中央にドット付きタイムライン線を横断させた上で、4つの角丸カードを横並びに配置するフローレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P024"
   },
   {
    "name": "two-feature-with-result",
    "category": "ステップ",
    "summary": "上部に説明テキスト、中段に2つの機能カード（横並び）、下部に矢印と結果ボックスを配置する機能→結果フローレイアウト。2つの要素・機能・施策がどのような結果・成果につながるかを視覚的に示す。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P025"
   },
   {
    "name": "horizontal-timeline-cards",
    "category": "ステップ",
    "summary": "上部に水平タイムライン（点線＋ドットマーカー）を配置し、各マーカー下にステップカード（STEP番号・見出し・詳細）を縦に並べるレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P026"
   },
   {
    "name": "milestone-timeline",
    "category": "ステップ",
    "summary": "横軸に時間軸を引き、マイルストーンをマーカーで表示するタイムラインスライド。完了済みと予定のマーカーを視覚的に区別する。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P027"
   },
   {
    "name": "three-stage-circle-flow",
    "category": "ステップ",
    "summary": "3つの大きな円形ステージを矢印で水平に接続し、各ステージに見出し・説明・箇条書きを配置する導入フローレイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P028"
   },
   {
    "name": "circle-node-step-flow",
    "category": "ステップ",
    "summary": "大きな円形ノードを5段階で水平方向に配置し、コネクタで接続したシンプルなステップフロー。最後のステップ（ゴール）は色を変えて強調。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P029"
   },
   {
    "name": "vertical-step-flow",
    "category": "ステップ",
    "summary": "4〜6つのステップを縦方向（上から下）に流れ矢印でつなぎ、各ステップに番号・見出し・説明を配置するフローチャートレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P030"
   },
   {
    "name": "vertical-step-flow-with-sidebar",
    "category": "ステップ",
    "summary": "左サイドバーにセクションラベルを置き、右側にSTEPラベル付きの縦並びフローを表示するレイアウト。各STEPは「ステップ番号ボックス＋内容ボックス」の横並びペアで構成され、下矢印でつながれる。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P031"
   },
   {
    "name": "vertical-step-three-col",
    "category": "ステップ",
    "summary": "左側にステップバッジ、中央にステップ名、右側に詳細説明を配置した3列の縦型ステップフロー。5段階まで対応。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P032"
   },
   {
    "name": "vertical-timeline-label-list",
    "category": "ステップ",
    "summary": "縦方向に並んだステップ・フロー項目を、左にステップラベル（見出し）、右に説明テキストボックスとして配置するタイムライン形式のリストレイアウト。左列のステップ間はラインで繋がれ、各ステップのドットがアクセントカラーで強調される。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P033"
   },
   {
    "name": "two-circle-bilateral-flow",
    "category": "図解・ダイアグラム",
    "summary": "左右に大きな円を配置し、中央に双方向フロー（2つの矢印バンド）で接続。相互関係・交換・連携を表現するダイアグラムレイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P034"
   },
   {
    "name": "four-quadrant-center-circle",
    "category": "図解・ダイアグラム",
    "summary": "スライド中央に大きな円を配置し、四隅（左上・右上・左下・右下）に各1つずつアイコン＋見出し＋説明テキストを配置する4象限レイアウト。中央の円が4つの要素を結びつけるハブの役割を持つ。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P035"
   },
   {
    "name": "two-column-split-boxes",
    "category": "図解・ダイアグラム",
    "summary": "同等サイズの2つのボックスを横に並べ、中央に接続シンボル（矢印・円など）を配置する対比・対照レイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P036"
   },
   {
    "name": "two-col-icon-list-comparison",
    "category": "図解・ダイアグラム",
    "summary": "コンテンツエリアを左右2カラムに分割し、各カラムに「カラーアイコン＋テキスト」のリストを縦に並べた比較レイアウト。コンテンツエリア上部にリード文を1〜2行置き、2カラムのそれぞれに見出しと3〜4項目のアイコン付きリストを配置する。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P037"
   },
   {
    "name": "four-card-2x2",
    "category": "カード",
    "summary": "4つの項目を2列×2行のカードグリッドに配置し、各カードに番号ヘッダー・見出し・本文を入れるレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P038"
   },
   {
    "name": "six-card-two-column",
    "category": "カード",
    "summary": "6つの項目を2列×3行のカードグリッドに配置し、各カードに番号・見出し・本文を入れるレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P039"
   },
   {
    "name": "six-card-2x3-grid",
    "category": "カード",
    "summary": "左サイドバーと右グリッドで分けた6カード（2行×3列）レイアウト。各カードはアイコン＋見出し＋説明で構成。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P040"
   },
   {
    "name": "eight-card-2x4-grid",
    "category": "カード",
    "summary": "8つのカード（2行×4列）に番号バッジと説明文を配置する全幅グリッドレイアウト。重点施策・実装項目の一覧列挙に最適。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P041"
   },
   {
    "name": "three-column-icon-card",
    "category": "カード",
    "summary": "3つの項目を等幅カードで横並びにし、各カードの上部にアイコン・下部に見出し・本文を配置する3列アイコンカードレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P042"
   },
   {
    "name": "three-col-icon-card-header-band",
    "category": "カード",
    "summary": "3列カードの上部にカラーの帯（ヘッダーバンド）を持ち、六角形などのアイコン・見出し・箇条書きテキスト・CTAボタンで構成されるカードレイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P043"
   },
   {
    "name": "three-col-icon-card-with-cta",
    "category": "カード",
    "summary": "3列に円形アイコン・強調見出し・説明テキストを並べるカードレイアウト。カード背景は白で、アイコンは円形の枠で強調する。スライド上部に太字のリード文を持つ。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P044"
   },
   {
    "name": "three-col-icon-card-body-text",
    "category": "カード",
    "summary": "3列のカードに大きめのイラスト/アイコン・見出し（2行）・CTAボタンを縦に積んだシンプルなカードレイアウト。カード全体が白の枠線で囲まれている。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P045"
   },
   {
    "name": "three-col-large-icon-card",
    "category": "カード",
    "summary": "3列均等に並んだカードレイアウト。各カードは上部にアイコン＋見出しのヘッダーゾーン（アクセントカラー背景）と、下部に箇条書きリストのボディゾーンで構成される2段構造。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P046"
   },
   {
    "name": "three-col-numbered-card",
    "category": "カード",
    "summary": "3列カードの上部にカラーのラベルバンドを持ち、大きな連番数字・下線・見出し・箇条書きで構成されるカードレイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P047"
   },
   {
    "name": "three-card-icon-with-subheading",
    "category": "カード",
    "summary": "上部に区切り見出しと説明、下部に3つのカード（見出し＋アイコン＋説明）を横並びで配置する強み訴求レイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P048"
   },
   {
    "name": "feature-metrics-four-cells",
    "category": "カード",
    "summary": "4つの機能・特徴をカード形式で横並びに配置し、各カード内に機能説明と複数の定量指標（KPI）をセットで見せるレイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P049"
   },
   {
    "name": "bar-chart-full",
    "category": "グラフ",
    "summary": "コンテンツエリアの大半を棒グラフ（または棒＋折れ線の複合グラフ）が占め、右上にKPI数値バッジを配置する全幅グラフレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P050"
   },
   {
    "name": "kpi-bar-chart",
    "category": "グラフ",
    "summary": "左側に大きなKPI数値と補足テキストを配置し、右側に棒グラフ（成長推移）を並べる2カラムレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P051"
   },
   {
    "name": "chart-left-text-right",
    "category": "グラフ",
    "summary": "左側にグラフ（折れ線・棒など）、右側にグラフの各系列やポイントの詳細説明を配置する2カラムレイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P052"
   },
   {
    "name": "comparison-matrix-table",
    "category": "テーブル",
    "summary": "複数の比較軸（行）と複数の対象（列）を持つマトリクス表で、特定列をハイライトで強調する比較レイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P053"
   },
   {
    "name": "comparison-table-with-highlight",
    "category": "テーブル",
    "summary": "複数のプラン・選択肢を列で比較する表形式レイアウト。ヘッダー行をアクセントカラーで塗りつぶし、特定セルの数値などをハイライトカラーで強調する。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P054"
   },
   {
    "name": "pricing-plan-cards",
    "category": "テーブル",
    "summary": "3つの料金プランを横3列のカードで並べ、中央プランを「おすすめ」として強調表示する料金比較レイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P055"
   },
   {
    "name": "pricing-comparison-table",
    "category": "テーブル",
    "summary": "複数プランの料金・仕様を比較できる表形式レイアウト。左列に比較項目ラベルを縦並びで置き、右側に各プランの列を横並びにした格子状のテーブル構造。推奨プランを視覚的に強調できる。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P056"
   },
   {
    "name": "status-progress-table",
    "category": "テーブル",
    "summary": "プロジェクトや施策の一覧を表形式で示し、各行にステータスアイコン（完了/進行中/遅延など）と日程・備考を表示する進捗管理レイアウト",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P057"
   },
   {
    "name": "before-after-two-col",
    "category": "テーブル",
    "summary": "「Before（課題・現状）」と「After（改善後・目標）」を左右2カラムで対比するパターン。中央の矢印で変化の方向を明示する。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P058"
   },
   {
    "name": "problem-solution",
    "category": "テーブル",
    "summary": "「課題」を左側に、「解決策」を右側に示し、中央の大きな矢印で繋ぐ2カラムパターン。課題と解決策が対応関係にあることを視覚的に伝える。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P059"
   },
   {
    "name": "risk-matrix-2x2",
    "category": "テーブル",
    "summary": "影響度（縦軸）×発生確率（横軸）の2×2マトリクスでリスクを4象限に分類・整理するスライド。各セルにリスク項目をバッジ形式で表示する。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P060"
   },
   {
    "name": "estimate-amount-table",
    "category": "テーブル",
    "summary": "上部に「金額」反転バッジと合計金額を大きく示し、下に内訳明細テーブル（項目・単価・数量・単位・金額／ヘッダーと合計行を反転強調）を配置する見積レイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P061"
   },
   {
    "name": "line-item-table",
    "category": "テーブル",
    "summary": "「内訳」見出しの下に項目・単価・数量・単位・金額の明細テーブルのみを配置するシンプルな一覧。合計行なし・行間広め。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P062"
   },
   {
    "name": "three-kpi-big-number",
    "category": "KPI",
    "summary": "3つのKPI（重要指標）を大きな数字で横並びに表示する実績・成果報告スライド。インパクトある数字を前面に出すことで成果を印象付ける。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P063"
   },
   {
    "name": "goal-kgi-kpi-dashboard",
    "category": "KPI",
    "summary": "4層の階層構造（目標→KGI→KPI→施策）を上下に積層したダッシュボード。目標設定の全体像を体系化。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P064"
   },
   {
    "name": "summary-three-points",
    "category": "まとめ",
    "summary": "「まとめ」スライド用のシンプルな3点ポイントリスト。チェックマーク付きで視認性が高く、プレゼンのクロージングに最適。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P065"
   },
   {
    "name": "action-items-list",
    "category": "まとめ",
    "summary": "アクションアイテム（次のステップ・タスク一覧）を番号付きリストで示すスライド。担当者・期限カラムを持ち、会議の締めや計画発表に使いやすい。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P066"
   },
   {
    "name": "faq-grid",
    "category": "FAQ",
    "summary": "6つのよくある質問（Q&A）を3列×2行のグリッドに配置するレイアウト。各セルに番号・質問・回答を収める",
-   "tier": "high"
+   "tier": "high",
+   "id": "P067"
   },
   {
    "name": "faq-three-column-grid",
    "category": "FAQ",
    "summary": "FAQ（よくある質問と回答）を3列×2行のグリッドに整列して配置するレイアウト。各セルは「Q番号バッジ」「質問テキスト（太字）」「回答テキスト」で構成される。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P068"
   },
   {
    "name": "faq-single-column",
    "category": "FAQ",
    "summary": "3つのQ&Aを縦一列に並べ、各質問と回答をひとつのボックスにまとめた1列FAQレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P069"
   },
   {
    "name": "faq-stacked-qa-boxes",
    "category": "FAQ",
    "summary": "Q&Aのペアをひとつのボックスにまとめ、複数ボックスをコンテンツエリアに縦に積み重ねるFAQレイアウト。「Q.」の質問文はアクセントカラーで強調し、「A.」の回答文はその下にやや大きめのフォントで続ける。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P070"
   },
   {
    "name": "profile-bio",
    "category": "プロフィール",
    "summary": "左側に顔写真と氏名キャプション、右側に名前・役職・経歴情報テーブルを配置した自己紹介・プロフィールレイアウト",
-   "tier": "high"
+   "tier": "high",
+   "id": "P071"
   },
   {
    "name": "profile-bio-photo-right",
    "category": "プロフィール",
    "summary": "左側に「ラベル＋値」形式のプロフィール項目リストを縦に並べ、右側に円形切り抜きの顔写真と氏名・役職を配置する自己紹介スライドのレイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P072"
   },
   {
    "name": "sitemap-indent-list",
    "category": "図解・ダイアグラム",
    "summary": "左上にTOPノード、その下に第2階層ページをインデント＋縦ガイド線で縦積みする「インデント型サイトマップ」。各行に階層名・内容説明・補足（ページ数等）を持つ帯行リスト構造。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P073"
   },
   {
    "name": "sitemap-tree-3level",
    "category": "図解・ダイアグラム",
    "summary": "左にTOPノード→中央に第2階層→右に第3階層を直角の接続線で結ぶ横ツリー型サイトマップ。矩形と直線のみで構成（ノード最大10）。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P074"
   },
   {
    "name": "gantt-schedule-bands",
    "category": "ステップ",
    "summary": "上部に週/月の目盛り行、左に工程名（要件定義〜公開等）、各行に期間を示す横帯を置くシンプルな工程スケジュール（ガント）レイアウト。",
-   "tier": "mid"
+   "tier": "mid",
+   "id": "P075"
   },
   {
    "name": "price-total-highlight",
    "category": "テーブル",
    "summary": "上部に見積内訳（項目名｜説明｜金額を縦罫1本で区切る3〜4行）、下部に合計金額を特大数字＋単位・税注記で提示する金額サマリーレイアウト。",
-   "tier": "high"
+   "tier": "high",
+   "id": "P076"
   }
  ]
 }

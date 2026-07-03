@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SlideKit ギャラリー — 構図パターン & デザインシステム</title>
-<meta name="description" content="AIスライド生成のための構図パターン79種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<meta name="description" content="AIスライド生成のための構図パターン76種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -62,6 +62,7 @@
   .thumb .open span{background:#fff;border-radius:6px;font-size:11px;padding:3px 8px;color:#333}
   .card .body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
   .card .name{font-size:14px;font-weight:700;word-break:break-all}
+  .card .pid{font-size:11px;font-weight:700;color:#fff;background:var(--ink);border-radius:5px;padding:1px 7px;margin-right:6px;letter-spacing:.02em}
   .card .cat{display:inline-block;font-size:11px;color:#666;background:var(--surf);border-radius:5px;padding:1px 8px;margin-bottom:4px}
   .card .tier{display:inline-block;font-size:10.5px;border-radius:5px;padding:1px 7px;margin-left:5px;font-weight:700}
   .tier.high{color:#0d7a43;background:#e5f6ec}
@@ -107,7 +108,7 @@
     <button class="chip" id="hB" data-h="b">B：縦バー</button>
   </div>
   <div class="filters" id="filters">
-    <span class="search"><input type="search" id="q" placeholder="パターン名・説明で検索" aria-label="パターン検索"></span>
+    <span class="search"><input type="search" id="q" placeholder="パターン名・ID(P001)・説明で検索" aria-label="パターン検索"></span>
   </div>
   <div class="grid" id="grid"></div>
   <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
@@ -130,9 +131,9 @@ const mdPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.md`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
 let TINT=null; // null = グレーのまま
-function openView(name,cat){
+function openView(name,cat,id){
   const t=TINT?TINT.replace('#',''):'';
-  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}`+(t?`&tint=${t}`:'')+`&head=${HEADING?'on':'off'}&hstyle=${HSTYLE}`;
+  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}&id=${encodeURIComponent(id||'')}`+(t?`&tint=${t}`:'')+`&head=${HEADING?'on':'off'}&hstyle=${HSTYLE}`;
   window.open(u,'_blank');
 }
 function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=元色の割合）
@@ -212,7 +213,7 @@ function matches(p){
   if(active!=='all'&&p.category!==active) return false;
   if(!QUERY) return true;
   const q=QUERY.toLowerCase();
-  return p.name.toLowerCase().includes(q)||(p.summary||'').toLowerCase().includes(q)||p.category.includes(QUERY);
+  return p.name.toLowerCase().includes(q)||(p.summary||'').toLowerCase().includes(q)||p.category.includes(QUERY)||(p.id||'').toLowerCase()===q;
 }
 function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
@@ -228,16 +229,16 @@ function render(){
   for(const p of list){
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
-      <div class="thumb" onclick="openView('${p.name}','${p.category}')">
+      <div class="thumb" onclick="openView('${p.name}','${p.category}','${p.id||''}')">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
         <div class="open"><span>拡大して開く ↗</span></div>
       </div>
       <div class="body">
         <div><span class="cat">${p.category}</span><span class="tier ${p.tier||'mid'}" title="スライド生成AIでの再現性">${{high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'}[p.tier]||''}</span></div>
-        <div class="name">${p.name}</div>
+        <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
         <div class="acts">
-          <button class="btn" onclick="openView('${p.name}','${p.category}')">プレビュー</button>
+          <button class="btn" onclick="openView('${p.name}','${p.category}','${p.id||''}')">プレビュー</button>
           <a class="btn primary" href="${mdPath(p.name)}" download>.md DL</a>
         </div>
       </div>`;

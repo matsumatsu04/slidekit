@@ -81,7 +81,7 @@ N. [締め]      まとめと次の一歩
 | 表紙 | cover-with-image-left / cover-gradient-text-bottom / cover-fullbg-text-left |
 | セクション | section-divider |
 | 目次 | agenda-toc / numbered-toc / two-column-toc |
-| 本文 | key-message-single / two-col-text-body / image-left-text-right / quote-large-center |
+| 本文 | key-message-single / two-col-text-body / image-left-text-right / two-section-stacked-text |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
 | ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow |
 | 図解・ダイアグラム | two-column-split-boxes / two-col-icon-list-comparison / four-quadrant-center-circle |
