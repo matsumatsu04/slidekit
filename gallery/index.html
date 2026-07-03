@@ -69,7 +69,6 @@
   .tier.mid{color:#8a6100;background:#fdf3d7}
   .tier.low{color:#a33;background:#fdeaea}
   .card .sum{font-size:12px;color:#777;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .card .acts{display:flex;gap:8px}
   .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
   .ds-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
   .ds-card h3{font-size:18px}.ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
@@ -127,7 +126,6 @@ const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html`;
-const mdPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.md`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
 let TINT=null; // null = グレーのまま
@@ -237,10 +235,6 @@ function render(){
         <div><span class="cat">${p.category}</span><span class="tier ${p.tier||'mid'}" title="スライド生成AIでの再現性">${{high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'}[p.tier]||''}</span></div>
         <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
-        <div class="acts">
-          <button class="btn" onclick="openView('${p.name}','${p.category}','${p.id||''}')">プレビュー</button>
-          <a class="btn primary" href="${mdPath(p.name)}" download>.md DL</a>
-        </div>
       </div>`;
     grid.appendChild(card);
   }
