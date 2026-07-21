@@ -38,6 +38,11 @@ const DEFAULT_THEME = {
 // 同じ見た目になるよう対応させている。詳細は SPEC.md の「共通見出し」節を参照。
 const HEADING_STYLES = ['a', 'b', 'c', 'd', 'e', 'f'];
 
+// Font Awesome 6 のアイコンスタイル一覧。solid/regular はFree CDNで有効。
+// light/thin/duotone/sharp はPro Kit導入時のみ有効（詳細は docs/html-deck-generation.md）。
+const ICON_STYLES = ['solid', 'regular', 'light', 'thin', 'duotone', 'sharp'];
+const ICON_STYLES_PRO = ['light', 'thin', 'duotone', 'sharp'];
+
 function fail(message) {
   console.error(`[build-html-deck] エラー: ${message}`);
   process.exit(1);
@@ -64,6 +69,11 @@ function main() {
       `[build-html-deck] 警告: headingStyle "${rawConfig.headingStyle}" は未対応です（a〜fのいずれかを指定）。"a" にフォールバックします。`
     );
   }
+  if (rawConfig.iconStyle && !ICON_STYLES.includes(rawConfig.iconStyle)) {
+    console.error(
+      `[build-html-deck] 警告: iconStyle "${rawConfig.iconStyle}" は未対応です（${ICON_STYLES.join('/')}のいずれかを指定）。"solid" にフォールバックします。`
+    );
+  }
 
   const config = {
     title: rawConfig.title || 'SlideKit Deck',
@@ -72,7 +82,14 @@ function main() {
     pageNumbers: rawConfig.pageNumbers !== false,
     noPageNoOn: Array.isArray(rawConfig.noPageNoOn) ? rawConfig.noPageNoOn : [],
     headingStyle: HEADING_STYLES.includes(rawConfig.headingStyle) ? rawConfig.headingStyle : 'a',
+    iconStyle: ICON_STYLES.includes(rawConfig.iconStyle) ? rawConfig.iconStyle : 'solid',
   };
+
+  if (ICON_STYLES_PRO.includes(config.iconStyle)) {
+    console.error(
+      `[build-html-deck] 警告: iconStyle "${config.iconStyle}" はFont Awesome Proのスタイルです。Free CDNのままではアイコンが表示されません（Pro Kit導入時のみ有効。docs/html-deck-generation.md参照）。`
+    );
+  }
 
   const slidesDir = path.join(deckDir, 'slides');
   if (!fs.existsSync(slidesDir) || !fs.statSync(slidesDir).isDirectory()) {
@@ -123,8 +140,11 @@ function main() {
       }
     });
 
-    // 4. ページ番号注入
-    const finalSection = maybeInjectPageNumber(sectionWithAssets, n, N, config);
+    // 4. アイコンスタイル変換（deck-config.jsonのiconStyleに応じてfa-solidを一括変換）
+    const sectionWithIconStyle = applyIconStyle(sectionWithAssets, config.iconStyle);
+
+    // 5. ページ番号注入
+    const finalSection = maybeInjectPageNumber(sectionWithIconStyle, n, N, config);
 
     processedSections.push(finalSection);
   });
@@ -233,6 +253,22 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
   });
 
   return { html, copied };
+}
+
+// フラグメントは常に `<i class="fa-solid fa-xxx">` の形（fa-solid固定）で書かれる前提
+// （docs/html-deck-generation.md の「アイコンの使用ルール」）。iconStyleがsolid以外の
+// 場合のみ、"fa-solid" トークンを対象スタイルのクラスに一括置換する。
+// duotone/sharpはFA6の命名規則によりweight（既定=solid）との複合クラスになる。
+function iconStyleClasses(style) {
+  if (style === 'duotone') return 'fa-duotone fa-solid';
+  if (style === 'sharp') return 'fa-sharp fa-solid';
+  return `fa-${style}`;
+}
+
+function applyIconStyle(sectionHtml, iconStyle) {
+  if (!iconStyle || iconStyle === 'solid') return sectionHtml;
+  const replacement = iconStyleClasses(iconStyle);
+  return sectionHtml.replace(/\bfa-solid\b/g, replacement);
 }
 
 function maybeInjectPageNumber(sectionHtml, n, total, config) {

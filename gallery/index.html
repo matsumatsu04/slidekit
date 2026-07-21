@@ -69,6 +69,9 @@
   .chip-btn{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#555;white-space:nowrap}
   .chip-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
   label.chk{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+  .pro-tag{font-size:8px;font-weight:700;color:var(--muted);margin-left:3px;vertical-align:super}
+  .chip-btn.active .pro-tag{color:rgba(255,255,255,.7)}
+  .fa-note{font-size:11.5px;color:#b5541a;white-space:nowrap}
 
   .content{padding:22px 28px 60px}
   .content-head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
@@ -247,6 +250,15 @@
         <button class="chip-btn" id="hD" data-h="d">D：2トーン</button>
         <button class="chip-btn" id="hE" data-h="e">E：ショートバー</button>
         <button class="chip-btn" id="hF" data-h="f">F：ラベル</button>
+        <span class="divider"></span>
+        <span class="lab">アイコン</span>
+        <button class="chip-btn" data-fa="solid">Solid</button>
+        <button class="chip-btn" data-fa="regular">Regular</button>
+        <button class="chip-btn" data-fa="light">Light<sup class="pro-tag">Pro</sup></button>
+        <button class="chip-btn" data-fa="thin">Thin<sup class="pro-tag">Pro</sup></button>
+        <button class="chip-btn" data-fa="duotone">Duotone<sup class="pro-tag">Pro</sup></button>
+        <button class="chip-btn" data-fa="sharp">Sharp<sup class="pro-tag">Pro</sup></button>
+        <span class="fa-note" id="faFallbackNote" style="display:none">Pro未導入のためSolid表示</span>
       </div>
     </div>
 
@@ -302,8 +314,9 @@
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v6';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v7';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
+const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro導入時はパターン/デッキ側のCDN linkもKit URLに差し替える。docs/html-deck-generation.md参照）
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
 let TINT=null; // null = グレーのまま
@@ -319,6 +332,109 @@ let HEADING=true, HSTYLE=(function(){
 })();
 // ===== モーダルプレビューの状態（初期化はIIFEより前に必要）=====
 let LAST_LIST=[], MODAL_LIST=[], MODAL_IDX=-1, MODAL_OPEN=false;
+
+// ===== Font Awesome アイコンスタイル切替 =====
+// Free CDNで有効なのは solid（全部）と regular（一部のアイコンのみ）。
+// light / thin / duotone / sharp はFont Awesome Pro限定のスタイル（Pro Kit導入時のみ有効）。
+const FA_STYLE_LIST=['solid','regular','light','thin','duotone','sharp'];
+const FA_STYLE_PREFIXES=['fa-solid','fa-regular','fa-light','fa-thin','fa-duotone','fa-sharp'];
+const FA_STYLE_PRO_ONLY=['light','thin','duotone','sharp'];
+let FA_STYLE=(function(){
+  const saved=localStorage.getItem('sk-fastyle');
+  return FA_STYLE_LIST.includes(saved) ? saved : 'solid';
+})();
+let FA_FALLBACK=false; // 直近の適用でPro未導入フォールバックが発生したか（UI通知のトリガー）
+function faClassesFor(style, iconNameCls){
+  // FA6の命名規則: duotone/sharpは weight（既定=solid）との複合クラスになる
+  if(style==='duotone') return ['fa-duotone','fa-solid',iconNameCls];
+  if(style==='sharp')   return ['fa-sharp','fa-solid',iconNameCls];
+  return ['fa-'+style, iconNameCls];
+}
+function styleMarkerClass(style){
+  if(style==='duotone') return 'fa-duotone';
+  if(style==='sharp')   return 'fa-sharp';
+  return 'fa-'+style;
+}
+// スタイルの「素のマーカークラス単体」（fa-solidと組み合わせない）でFontAwesome系フォントが
+// 実際に解決されるかを判定する。duotone/sharpは運用上 `fa-duotone fa-solid` のように
+// fa-solidと複合させるため、複合クラスのまま判定すると常にfa-solidの効果で「使える」ように
+// 見えてしまいPro未導入を検出できない。マーカークラス単体で判定することで、
+// Free CDNのみの環境ではlight/thin/duotone/sharpのいずれも正しく「未対応」と判定できる。
+function isFaStyleAvailable(doc, style){
+  const probe=doc.createElement('i');
+  probe.className=styleMarkerClass(style)+' fa-star';
+  probe.style.cssText='position:absolute;visibility:hidden;left:-9999px;top:-9999px;';
+  doc.body.appendChild(probe);
+  const fam=getComputedStyle(probe).fontFamily||'';
+  doc.body.removeChild(probe);
+  return /Font Awesome/i.test(fam);
+}
+// アイコン<i>の ::before に実際にグリフが乗っているかを、canvasでの実測幅で判定する。
+// スタイル自体は有効（isFaStyleAvailable=true）でも、たとえばFree CDNのfa-regularは
+// 一部アイコン（fa-usersやfa-chart-line等）のグリフを含んでいないことがある。
+// そこで「同じ文字コードをsolid（Freeで全アイコンを含む＝必ず正しく描ける基準）で
+// 描画した幅」と比較し、ズレていればそのアイコンだけグリフが存在しないと判定して
+// 無言でsolidに戻す（スタイル自体は有効なのでPro未導入の通知は出さない）。
+function measureGlyphWidth(icon, ctx){
+  const cs=getComputedStyle(icon, '::before');
+  const raw=cs.content;
+  const m=/^["'](.*)["']$/.exec(raw||'');
+  const ch=m?m[1]:'';
+  if(!ch) return null;
+  ctx.font=`${cs.fontWeight||'400'} ${cs.fontSize||'16px'} ${cs.fontFamily||'sans-serif'}`;
+  return ctx.measureText(ch).width;
+}
+function applyFaStyle(fr){
+  try{
+    const doc = fr && fr.contentDocument;
+    if(!doc) return;
+    const icons = [...doc.querySelectorAll('i[class*="fa-"]')];
+    if(!icons.length) return;
+    icons.forEach(icon=>{
+      // アイコン名クラス（例: fa-star）を初回だけdata属性に保存しておき、以後の切替の起点にする
+      if(!icon.dataset.faIcon){
+        const nameCls=[...icon.classList].find(c=>c.indexOf('fa-')===0 && !FA_STYLE_PREFIXES.includes(c));
+        if(nameCls) icon.dataset.faIcon=nameCls;
+      }
+    });
+    const targets=icons.filter(i=>i.dataset.faIcon);
+    if(!targets.length) return;
+
+    if(FA_STYLE==='solid'){
+      targets.forEach(icon=>{ icon.className=faClassesFor('solid', icon.dataset.faIcon).join(' '); });
+      FA_FALLBACK=false;
+      updateFaFallbackNote();
+      return;
+    }
+
+    // 1段階目: スタイル自体（マーカークラス単体）が有効かを判定
+    if(!isFaStyleAvailable(doc, FA_STYLE)){
+      targets.forEach(icon=>{ icon.className=faClassesFor('solid', icon.dataset.faIcon).join(' '); });
+      FA_FALLBACK = FA_STYLE_PRO_ONLY.includes(FA_STYLE); // Proスタイル未導入時のみUI通知
+      updateFaFallbackNote();
+      return;
+    }
+
+    // 2段階目: スタイルは有効 → アイコン単位でグリフの有無を実測幅で確認
+    const canvas=doc.createElement('canvas');
+    const ctx=canvas.getContext('2d');
+    targets.forEach(icon=>{
+      icon.className=faClassesFor(FA_STYLE, icon.dataset.faIcon).join(' ');
+      const targetW=measureGlyphWidth(icon, ctx);
+      icon.className=faClassesFor('solid', icon.dataset.faIcon).join(' ');
+      const solidW=measureGlyphWidth(icon, ctx);
+      const ok = targetW!=null && solidW!=null && Math.abs(targetW-solidW) < 1;
+      if(ok) icon.className=faClassesFor(FA_STYLE, icon.dataset.faIcon).join(' '); // 目的のスタイルへ戻す
+      // ok===false の場合はそのアイコンだけsolidのまま（regularの対象外アイコン等・無言フォールバック）
+    });
+    FA_FALLBACK=false; // スタイル自体は有効なのでPro未導入通知は出さない
+    updateFaFallbackNote();
+  }catch(e){}
+}
+function updateFaFallbackNote(){
+  const note=document.getElementById('faFallbackNote');
+  if(note) note.style.display = FA_FALLBACK ? 'inline' : 'none';
+}
 function skInk(fr){
   // テキストは黒#333固定（HTML側）。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
   try{
@@ -329,6 +445,7 @@ function skInk(fr){
     root.dataset.heading = HEADING ? 'on' : 'off';   // 見出しON/OFF
     root.dataset.hstyle  = HSTYLE;                    // 見出しデザインA/B
   }catch(e){}
+  applyFaStyle(fr);
 }
 function applyTint(){
   document.querySelectorAll('.thumb iframe').forEach(skInk);
@@ -366,6 +483,23 @@ function setTint(hex){
     hBtns[v].addEventListener('click',()=>{HSTYLE=v; localStorage.setItem('sk-hstyle',HSTYLE); syncH();});
   });
   syncH();
+})();
+
+// ===== アイコンスタイル切替チップの初期化 =====
+(function initFaStyle(){
+  const faBtns=[...document.querySelectorAll('[data-fa]')];
+  function syncFa(){
+    faBtns.forEach(b=>b.classList.toggle('active', b.dataset.fa===FA_STYLE));
+    applyTint(); // 全サムネ＋モーダルiframeに反映（skInk経由でapplyFaStyleが呼ばれる）
+  }
+  faBtns.forEach(b=>{
+    b.addEventListener('click',()=>{
+      FA_STYLE=b.dataset.fa;
+      localStorage.setItem('sk-fastyle',FA_STYLE);
+      syncFa();
+    });
+  });
+  faBtns.forEach(b=>b.classList.toggle('active', b.dataset.fa===FA_STYLE));
 })();
 
 // design systems（本リポジトリのオリジナル）
