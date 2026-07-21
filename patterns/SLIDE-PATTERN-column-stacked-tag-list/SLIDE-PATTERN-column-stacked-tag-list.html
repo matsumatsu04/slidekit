@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-column-stacked-tag-list</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 64px; display: flex; gap: 24px; }
+  .column { flex: 1; display: flex; flex-direction: column; }
+  .col-header { background: var(--sk-soft,#E8E8E8); border: 1px solid var(--sk-accent,#CCCCCC); text-align: center; padding: 8px 4px; font-size: 14px; font-weight: bold; color: #333333; margin-bottom: 16px; }
+  .tag-stack { display: flex; flex-direction: column; gap: 8px; }
+  .tag-box { border-radius: 8px; border: 1px solid var(--sk-accent,#CCCCCC); background: #FFFFFF; padding: 8px 12px; font-size: 12px; color: #333333; text-align: center; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <!-- 列1（4個） -->
+    <div class="column">
+      <div class="col-header">カラム見出し</div>
+      <div class="tag-stack">
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+      </div>
+    </div>
+    <!-- 列2（3個） -->
+    <div class="column">
+      <div class="col-header">カラム見出し</div>
+      <div class="tag-stack">
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+      </div>
+    </div>
+    <!-- 列3（5個） -->
+    <div class="column">
+      <div class="col-header">カラム見出し</div>
+      <div class="tag-stack">
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+      </div>
+    </div>
+    <!-- 列4（2個） -->
+    <div class="column">
+      <div class="col-header">カラム見出し</div>
+      <div class="tag-stack">
+        <div class="tag-box">項目が入ります</div>
+        <div class="tag-box">項目が入ります</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

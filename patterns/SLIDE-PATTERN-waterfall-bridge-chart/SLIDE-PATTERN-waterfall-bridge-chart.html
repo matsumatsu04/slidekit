@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-waterfall-bridge-chart</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 64px 24px; display: flex; flex-direction: column; }
+  .chart-area { flex: 1; position: relative; border-bottom: 2px solid var(--sk-accent,#999999); display: flex; }
+  .bar-col { flex: 1; position: relative; height: 100%; }
+  .bar { position: absolute; left: 20%; right: 20%; }
+  .bar.total { background: #BEBEBE; }
+  .bar.total.end { background: var(--sk-accent,#333333); }
+  .bar.increase { background: var(--sk-soft,#E0E0E0); }
+  .bar.decrease { background: transparent; border: 1px solid var(--sk-accent,#999999); }
+  .bar-label { position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: bold; color: #333333; white-space: nowrap; }
+  .connector { position: absolute; height: 0; border-top: 1px dashed var(--sk-accent,#999999); }
+  .labels-row { display: flex; margin-top: 8px; flex-shrink: 0; }
+  .series-label { flex: 1; text-align: center; font-size: 13px; color: #666666; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="chart-area">
+      <!-- 接続線（バー間の水平線） -->
+      <div class="connector" style="left:16%;width:8%;bottom:60%;"></div>
+      <div class="connector" style="left:36%;width:8%;bottom:85%;"></div>
+      <div class="connector" style="left:56%;width:8%;bottom:70%;"></div>
+      <div class="connector" style="left:76%;width:8%;bottom:90%;"></div>
+      <!-- 開始値バー -->
+      <div class="bar-col">
+        <div class="bar total" style="bottom:0%;height:60%;"></div>
+        <div class="bar-label" style="bottom:64%;">60</div>
+      </div>
+      <!-- 増加バー：要因A -->
+      <div class="bar-col">
+        <div class="bar increase" style="bottom:60%;height:25%;"></div>
+        <div class="bar-label" style="bottom:87%;">+25</div>
+      </div>
+      <!-- 減少バー：要因B -->
+      <div class="bar-col">
+        <div class="bar decrease" style="bottom:70%;height:15%;"></div>
+        <div class="bar-label" style="bottom:87%;">-15</div>
+      </div>
+      <!-- 増加バー：要因C -->
+      <div class="bar-col">
+        <div class="bar increase" style="bottom:70%;height:20%;"></div>
+        <div class="bar-label" style="bottom:92%;">+20</div>
+      </div>
+      <!-- 終了値バー -->
+      <div class="bar-col">
+        <div class="bar total end" style="bottom:0%;height:90%;"></div>
+        <div class="bar-label" style="bottom:94%;">90</div>
+      </div>
+    </div>
+    <div class="labels-row">
+      <div class="series-label">期首</div>
+      <div class="series-label">要因A</div>
+      <div class="series-label">要因B</div>
+      <div class="series-label">要因C</div>
+      <div class="series-label">期末</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

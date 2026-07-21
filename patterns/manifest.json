@@ -1,5 +1,5 @@
 {
- "count": 76,
+ "count": 96,
  "patterns": [
   {
    "name": "cover-with-image-left",
@@ -532,6 +532,146 @@
    "summary": "上部に見積内訳（項目名｜説明｜金額を縦罫1本で区切る3〜4行）、下部に合計金額を特大数字＋単位・税注記で提示する金額サマリーレイアウト。",
    "tier": "high",
    "id": "P076"
+  },
+  {
+   "name": "grouped-pill-badge-cluster",
+   "category": "リスト",
+   "summary": "カテゴリ見出し2グループの配下に、角丸ピル型バッジを折り返しグリッド状に敷き詰めるリスト。グループ企業・提供サービス・対応ツールなど可変数の項目列挙に。",
+   "tier": "high",
+   "id": "P077"
+  },
+  {
+   "name": "column-stacked-tag-list",
+   "category": "リスト",
+   "summary": "3〜4列のカラムヘッダー配下に、小さな角丸タグボックスを縦積みする一覧。列ごとに項目数が不揃いでよい。技術スタック・使用ツール・担当領域の整理に。",
+   "tier": "high",
+   "id": "P078"
+  },
+  {
+   "name": "ascending-staircase-steps",
+   "category": "ステップ",
+   "summary": "矩形カードを右肩上がりの階段状に配置し矢印でつなぐ成長ステップ図。成熟度モデル・成長フェーズ・段階的な目標の表現に。",
+   "tier": "high",
+   "id": "P079"
+  },
+  {
+   "name": "day-timeline-single-bar",
+   "category": "ステップ",
+   "summary": "1本の横長バーを時間帯で色分けし、下に時刻ラベルを添える1日タイムライン。働き方・コアタイム・イベント当日の流れの説明に。",
+   "tier": "high",
+   "id": "P080"
+  },
+  {
+   "name": "org-chart-tree",
+   "category": "図解・ダイアグラム",
+   "summary": "最上部1ボックス→部門→チームの3段を直角接続線のみで結ぶシンプル組織図（ノード最大10）。体制図・プロジェクト体制の提示に。",
+   "tier": "high",
+   "id": "P081"
+  },
+  {
+   "name": "pyramid-tier-callout",
+   "category": "図解・ダイアグラム",
+   "summary": "左に3段ピラミッド、各段から右の説明ボックスへ細線を伸ばす階層図。上下反転でファネル（漏斗）にも使える。戦略階層・優先順位・コンバージョン構造に。",
+   "tier": "mid",
+   "id": "P082"
+  },
+  {
+   "name": "venn-diagram-three-circle",
+   "category": "図解・ダイアグラム",
+   "summary": "半透明の円3つを重ねたベン図。各円にラベル・中央の重なりに統合ラベル。強みの交差・ポジショニング・スキルの掛け算の表現に。",
+   "tier": "high",
+   "id": "P083"
+  },
+  {
+   "name": "concept-formula-three-box",
+   "category": "図解・ダイアグラム",
+   "summary": "角丸矩形3つを演算子（×・＝）でつなぎ「A×B=C」を表現する数式図。ビジネスモデル・価値の定義・料金構造の説明に。",
+   "tier": "high",
+   "id": "P084"
+  },
+  {
+   "name": "nested-circle-market-size",
+   "category": "図解・ダイアグラム",
+   "summary": "大中小の同心円で包含関係を示し、各円へ引き出し線でラベル+数値を添える市場規模図（TAM/SAM/SOM）。事業計画・市場性の説明に。",
+   "tier": "high",
+   "id": "P085"
+  },
+  {
+   "name": "triangle-node-relationship",
+   "category": "図解・ダイアグラム",
+   "summary": "円3つを三角形の頂点に置き直線で結ぶ三位一体図。中央に統合ラベル。3要素の対等な関係・支え合う構造の表現に。",
+   "tier": "high",
+   "id": "P086"
+  },
+  {
+   "name": "client-logo-grid-wall",
+   "category": "カード",
+   "summary": "見出し行＋5×4の均等セルグリッドに社名/ロゴを敷き詰める導入実績ウォール。取引先一覧・掲載メディア・対応サービスの一覧に。",
+   "tier": "high",
+   "id": "P087"
+  },
+  {
+   "name": "testimonial-quote-grid",
+   "category": "カード",
+   "summary": "引用マーク付きの声カードを3×2グリッドに並べるお客様の声。導入事例・受講生の声・レビューの列挙に。",
+   "tier": "high",
+   "id": "P088"
+  },
+  {
+   "name": "waterfall-bridge-chart",
+   "category": "グラフ",
+   "summary": "開始値→増減の浮動バー→終了値を接続線でつなぐウォーターフォール（ブリッジ）チャート。売上増減の要因分解・コスト内訳の説明に。",
+   "tier": "mid",
+   "id": "P089"
+  },
+  {
+   "name": "positioning-map-scatter",
+   "category": "グラフ",
+   "summary": "十字軸＋四端ラベルの平面にドットを配置する2軸ポジショニングマップ（ドット最大8・%座標）。競合比較・自社の立ち位置の提示に。",
+   "tier": "mid",
+   "id": "P090"
+  },
+  {
+   "name": "skill-matrix-dot-table",
+   "category": "テーブル",
+   "summary": "行×列の表のセルに●/○/－の記号だけを置くスキルマトリクス。対応機能の比較・体制のスキル分布・プラン差の一覧に。",
+   "tier": "high",
+   "id": "P091"
+  },
+  {
+   "name": "weekly-schedule-grid",
+   "category": "テーブル",
+   "summary": "曜日×時間帯のグリッドに高さの異なる予定ブロックを置く週間スケジュール。講座の週次カリキュラム・サポート体制・運用スケジュールに。",
+   "tier": "high",
+   "id": "P092"
+  },
+  {
+   "name": "kpi-donut-chart-grid",
+   "category": "KPI",
+   "summary": "小さなドーナツリング4個を横一列に並べ、中央に%数値・下にラベルを置く複数指標ダッシュボード。達成率・構成比のまとめて提示に。",
+   "tier": "mid",
+   "id": "P093"
+  },
+  {
+   "name": "executive-summary-banner-stack",
+   "category": "まとめ",
+   "summary": "左端にカテゴリタグ付きの横長バナー行を3本積むエグゼクティブサマリー。決算・レポート・進捗報告の要点まとめに。",
+   "tier": "high",
+   "id": "P094"
+  },
+  {
+   "name": "team-member-quote-row",
+   "category": "プロフィール",
+   "summary": "円形アバター3名を横並びにし、各下に名前・役職＋コメント吹き出しを添えるチーム紹介行。メンバーの声・講師紹介に。",
+   "tier": "high",
+   "id": "P095"
+  },
+  {
+   "name": "team-roster-avatar-grid",
+   "category": "プロフィール",
+   "summary": "円形アバター×12（6列×2行）＋氏名・役職キャプションの名簿型チーム一覧。組織全体・受講生コミュニティの提示に。",
+   "tier": "high",
+   "id": "P096"
   }
  ]
 }

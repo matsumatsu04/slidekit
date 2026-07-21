@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-positioning-map-scatter</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; position: relative; padding: 48px 72px; }
+  .axis-line-v { position: absolute; left: 50%; top: 28px; bottom: 28px; width: 1px; background: var(--sk-soft,#CCCCCC); }
+  .axis-line-h { position: absolute; top: 50%; left: 28px; right: 28px; height: 1px; background: var(--sk-soft,#CCCCCC); }
+  .axis-label { position: absolute; font-size: 12px; color: #888888; white-space: nowrap; }
+  .axis-label.top { top: 0; left: 50%; transform: translateX(-50%); }
+  .axis-label.bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+  .axis-label.left { left: 0; top: 50%; transform: translateY(-50%); }
+  .axis-label.right { right: 0; top: 50%; transform: translateY(-50%); }
+  .dot-item { position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #FFFFFF; border: 1.5px solid #999999; }
+  .dot-label { font-size: 11px; color: #555555; white-space: nowrap; }
+  .dot-item.accent .dot { width: 16px; height: 16px; background: var(--sk-accent,#333333); border: none; }
+  .dot-item.accent .dot-label { font-size: 12px; font-weight: bold; color: #333333; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="axis-line-v"></div>
+    <div class="axis-line-h"></div>
+    <div class="axis-label top">軸ラベル（上）</div>
+    <div class="axis-label bottom">軸ラベル（下）</div>
+    <div class="axis-label left">軸ラベル（左）</div>
+    <div class="axis-label right">軸ラベル（右）</div>
+
+    <div class="dot-item" style="left:22%;top:28%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品A</div>
+    </div>
+    <div class="dot-item" style="left:38%;top:62%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品B</div>
+    </div>
+    <div class="dot-item accent" style="left:68%;top:22%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品C</div>
+    </div>
+    <div class="dot-item" style="left:78%;top:55%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品D</div>
+    </div>
+    <div class="dot-item" style="left:30%;top:80%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品E</div>
+    </div>
+    <div class="dot-item" style="left:62%;top:75%;">
+      <div class="dot"></div>
+      <div class="dot-label">商品F</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN-team-roster-avatar-grid</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+
+    /* スライド本体 */
+    .slide {
+      width: 960px;
+      height: 540px;
+      background: #FFFFFF;
+      border: 1px solid var(--sk-accent,#CCCCCC);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* コンテンツエリア：12名を6列×2行のグリッドで配置 */
+    .content-area {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 16px 12px;
+      padding: 24px 32px;
+    }
+
+    /* 各メンバー枠 */
+    .roster-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-width: 0;
+    }
+
+    /* 円形アバター（イニシャル文字） */
+    .roster-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--sk-soft,#E0E0E0);
+      border: 1px solid var(--sk-accent,#CCCCCC);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #999999;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    /* 氏名・役職キャプション */
+    .roster-name {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333333;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      width: 100%;
+    }
+    .roster-role {
+      font-size: 10px;
+      color: #999999;
+      line-height: 1.3;
+      width: 100%;
+    }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+
+  <div class="slide">
+    <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+    <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+
+    <!-- コンテンツエリア -->
+    <div class="content-area">
+
+      <div class="roster-item">
+        <div class="roster-avatar">山</div>
+        <div class="roster-name">山田 太郎</div>
+        <div class="roster-role">営業</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">佐</div>
+        <div class="roster-name">佐藤 花子</div>
+        <div class="roster-role">企画</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">鈴</div>
+        <div class="roster-name">鈴木 一郎</div>
+        <div class="roster-role">開発</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">高</div>
+        <div class="roster-name">高橋 由美</div>
+        <div class="roster-role">デザイン</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">田</div>
+        <div class="roster-name">田中 健二</div>
+        <div class="roster-role">広報</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">伊</div>
+        <div class="roster-name">伊藤 沙織</div>
+        <div class="roster-role">経理</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">渡</div>
+        <div class="roster-name">渡辺 大輔</div>
+        <div class="roster-role">人事</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">中</div>
+        <div class="roster-name">中村 綾子</div>
+        <div class="roster-role">制作</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">小</div>
+        <div class="roster-name">小林 直樹</div>
+        <div class="roster-role">分析</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">加</div>
+        <div class="roster-name">加藤 麻衣</div>
+        <div class="roster-role">運用</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">松</div>
+        <div class="roster-name">松本 亮</div>
+        <div class="roster-role">総務</div>
+      </div>
+
+      <div class="roster-item">
+        <div class="roster-avatar">井</div>
+        <div class="roster-name">井上 恵美</div>
+        <div class="roster-role">サポート</div>
+      </div>
+
+    </div><!-- /.content-area -->
+
+  </div><!-- /.slide -->
+
+</body>
+</html>

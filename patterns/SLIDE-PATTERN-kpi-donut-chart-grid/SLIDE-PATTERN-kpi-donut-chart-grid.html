@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN-kpi-donut-chart-grid</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide {
+      width: 960px;
+      height: 540px;
+      background: #FFFFFF;
+      border: 1px solid var(--sk-accent,#CCCCCC);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* コンテンツエリア */
+    .content-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 40px 48px;
+    }
+    /* ドーナツ1個分のカラム */
+    .donut-item {
+      width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    /* 外側リング（塗り割合はCSS変数 --fill で指定。既定は65%） */
+    .donut-ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: conic-gradient(var(--sk-accent,#333333) 0 var(--fill,65%), var(--sk-soft,#E0E0E0) var(--fill,65%) 100%);
+    }
+    /* 内側の白抜き円（中抜きに見せる） */
+    .donut-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .donut-value {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333333;
+    }
+    .donut-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .donut-label {
+      font-size: 15px;
+      font-weight: bold;
+      color: #333333;
+      text-align: center;
+    }
+    .donut-supplement {
+      font-size: 11px;
+      color: #999999;
+      text-align: center;
+    }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+  <div class="slide">
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+
+    <!-- コンテンツエリア -->
+    <div class="content-area">
+
+      <!-- KPI 1 -->
+      <div class="donut-item">
+        <div class="donut-ring" style="--fill:78%;">
+          <div class="donut-inner"><span class="donut-value">78%</span></div>
+        </div>
+        <div class="donut-text">
+          <div class="donut-label">受注率</div>
+          <div class="donut-supplement">前回比 +6pt</div>
+        </div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="donut-item">
+        <div class="donut-ring" style="--fill:92%;">
+          <div class="donut-inner"><span class="donut-value">92%</span></div>
+        </div>
+        <div class="donut-text">
+          <div class="donut-label">継続率</div>
+          <div class="donut-supplement">前回比 +2pt</div>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="donut-item">
+        <div class="donut-ring" style="--fill:65%;">
+          <div class="donut-inner"><span class="donut-value">65%</span></div>
+        </div>
+        <div class="donut-text">
+          <div class="donut-label">稼働率</div>
+          <div class="donut-supplement">前回比 -3pt</div>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="donut-item">
+        <div class="donut-ring" style="--fill:88%;">
+          <div class="donut-inner"><span class="donut-value">88%</span></div>
+        </div>
+        <div class="donut-text">
+          <div class="donut-label">満足度</div>
+          <div class="donut-supplement">前回比 +4pt</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

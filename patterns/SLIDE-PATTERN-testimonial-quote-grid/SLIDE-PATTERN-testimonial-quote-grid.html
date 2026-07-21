@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-testimonial-quote-grid</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 40px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px; }
+  .quote-card { border: 1px solid var(--sk-accent,#CCCCCC); padding: 20px 20px 16px; display: flex; flex-direction: column; overflow: hidden; }
+  .quote-mark { font-size: 36px; font-weight: bold; color: #CCCCCC; line-height: 1; margin: 0 0 8px; font-family: Georgia, "Times New Roman", serif; }
+  .quote-body { flex: 1; font-size: 12px; color: #333333; line-height: 1.6; margin: 0; }
+  .quote-divider { border: none; border-top: 1px solid var(--sk-accent,#E0E0E0); margin: 12px 0 8px; }
+  .quote-attribution { font-size: 11px; color: #888888; margin: 0; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：3列×2行の引用カードグリッド -->
+  <div class="content-area">
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名A ／ 役職A</p>
+    </div>
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名B ／ 役職B</p>
+    </div>
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名C ／ 役職C</p>
+    </div>
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名D ／ 役職D</p>
+    </div>
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名E ／ 役職E</p>
+    </div>
+    <div class="quote-card">
+      <p class="quote-mark">&#8220;</p>
+      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
+      <hr class="quote-divider">
+      <p class="quote-attribution">会社名F ／ 役職F</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

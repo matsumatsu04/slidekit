@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN-executive-summary-banner-stack</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide {
+      width: 960px;
+      height: 540px;
+      background: #FFFFFF;
+      border: 1px solid var(--sk-accent,#CCCCCC);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* コンテンツエリア */
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 64px;
+      gap: 16px;
+    }
+    /* バナー1行 */
+    .banner-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 24px;
+      background: var(--sk-soft,#F2F2F2);
+      border-radius: 8px;
+    }
+    /* 左端のカテゴリタグ */
+    .banner-tag {
+      flex-shrink: 0;
+      width: 96px;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: var(--sk-accent,#333333);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    /* タグ右側の見出し＋補足ブロック */
+    .banner-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .banner-heading {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333333;
+      line-height: 1.4;
+    }
+    .banner-body {
+      font-size: 13px;
+      color: #888888;
+      line-height: 1.4;
+    }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+  <div class="slide">
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+
+    <!-- コンテンツエリア -->
+    <div class="content-area">
+
+      <!-- バナー行 1 -->
+      <div class="banner-row">
+        <div class="banner-tag">実績</div>
+        <div class="banner-text">
+          <div class="banner-heading">売上は前年比で二桁成長を達成</div>
+          <div class="banner-body">主要施策の効果で全事業セグメントが増収した</div>
+        </div>
+      </div>
+
+      <!-- バナー行 2 -->
+      <div class="banner-row">
+        <div class="banner-tag">課題</div>
+        <div class="banner-text">
+          <div class="banner-heading">新規顧客獲得のコストが上昇傾向</div>
+          <div class="banner-body">獲得チャネルの見直しと単価改善が急務</div>
+        </div>
+      </div>
+
+      <!-- バナー行 3 -->
+      <div class="banner-row">
+        <div class="banner-tag">展望</div>
+        <div class="banner-text">
+          <div class="banner-heading">次期は新市場開拓に経営資源を集中</div>
+          <div class="banner-body">早期の投資回収を見込み優先度を引き上げる</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

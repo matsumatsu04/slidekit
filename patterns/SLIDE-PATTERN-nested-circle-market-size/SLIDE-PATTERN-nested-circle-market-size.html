@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-nested-circle-market-size</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 48px; display: flex; align-items: center; gap: 24px; }
+  .nest-wrap { position: relative; width: 374px; height: 320px; flex-shrink: 0; }
+  .circle { position: absolute; left: 50%; border-radius: 50%; box-sizing: border-box; }
+  .circle-large { width: 320px; height: 320px; top: 0; margin-left: -160px; background: var(--sk-soft,#E4E4E4); border: 1px solid var(--sk-accent,#BBBBBB); }
+  .circle-medium { width: 220px; height: 220px; top: 100px; margin-left: -110px; background: var(--sk-soft,#CFCFCF); border: 1px solid var(--sk-accent,#AAAAAA); }
+  .circle-small { width: 130px; height: 130px; top: 190px; margin-left: -65px; background: var(--sk-accent,#999999); border: 1px solid var(--sk-accent,#888888); }
+  .lead-line { position: absolute; left: 0; height: 2px; background: var(--sk-accent,#BBBBBB); }
+  .line-large { top: 48px; left: 300px; width: 74px; }
+  .line-medium { top: 147px; left: 277px; width: 97px; }
+  .line-small { top: 214px; left: 237px; width: 137px; }
+  .labels-col { flex: 1; position: relative; height: 320px; }
+  .market-label { position: absolute; left: 0; transform: translateY(-50%); }
+  .label-large { top: 48px; }
+  .label-medium { top: 147px; }
+  .label-small { top: 214px; }
+  .label-title { font-size: 14px; font-weight: bold; color: #333333; }
+  .label-amount { font-size: 12px; color: #888888; margin-top: 4px; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <!-- 大中小の同心円（下端揃え） -->
+    <div class="nest-wrap">
+      <div class="circle circle-large"></div>
+      <div class="circle circle-medium"></div>
+      <div class="circle circle-small"></div>
+      <div class="lead-line line-large"></div>
+      <div class="lead-line line-medium"></div>
+      <div class="lead-line line-small"></div>
+    </div>
+    <!-- 引き出しラベル（円名＋金額） -->
+    <div class="labels-col">
+      <div class="market-label label-large">
+        <div class="label-title">市場全体が入ります</div>
+        <div class="label-amount">想定金額が入ります</div>
+      </div>
+      <div class="market-label label-medium">
+        <div class="label-title">獲得可能な市場が入ります</div>
+        <div class="label-amount">想定金額が入ります</div>
+      </div>
+      <div class="market-label label-small">
+        <div class="label-title">自社の獲得シェアが入ります</div>
+        <div class="label-amount">想定金額が入ります</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

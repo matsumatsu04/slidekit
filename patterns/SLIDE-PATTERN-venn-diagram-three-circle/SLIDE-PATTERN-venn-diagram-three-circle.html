@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-venn-diagram-three-circle</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; justify-content: center; }
+  .venn-wrap { position: relative; width: 500px; height: 400px; }
+  .circle { position: absolute; width: 220px; height: 220px; border-radius: 50%; background: var(--sk-accent,#999999); opacity: 0.35; border: 1px solid var(--sk-accent,#888888); }
+  .circle-a { left: 50px; top: 20px; }
+  .circle-b { left: 230px; top: 20px; }
+  .circle-c { left: 140px; top: 170px; }
+  .circle-label { position: absolute; font-size: 13px; font-weight: bold; color: #333333; z-index: 2; }
+  .label-a { left: 96px; top: 56px; }
+  .label-b { left: 312px; top: 56px; }
+  .label-c { left: 210px; top: 306px; }
+  .center-label { position: absolute; left: 50%; top: 190px; transform: translateX(-50%); z-index: 3; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); border-radius: 999px; padding: 8px 16px; font-size: 12px; font-weight: bold; color: #333333; white-space: nowrap; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="venn-wrap">
+      <div class="circle circle-a"></div>
+      <div class="circle circle-b"></div>
+      <div class="circle circle-c"></div>
+      <div class="circle-label label-a">要素Aが入ります</div>
+      <div class="circle-label label-b">要素Bが入ります</div>
+      <div class="circle-label label-c">要素Cが入ります</div>
+      <div class="center-label">統合ラベルが入ります</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

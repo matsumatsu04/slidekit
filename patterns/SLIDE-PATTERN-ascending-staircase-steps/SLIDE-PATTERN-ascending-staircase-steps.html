@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-ascending-staircase-steps</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 64px; display: flex; align-items: flex-end; }
+  .staircase-row { flex: 1; display: flex; align-items: flex-end; gap: 12px; }
+  .step-card { width: 156px; height: 132px; box-sizing: border-box; border: 1px solid var(--sk-accent,#CCCCCC); border-top: 4px solid var(--sk-accent,#999999); border-radius: 4px; background: #FFFFFF; padding: 16px; flex-shrink: 0; }
+  .step-card:nth-child(1) { margin-bottom: 0; }
+  .step-card:nth-child(3) { margin-bottom: 64px; }
+  .step-card:nth-child(5) { margin-bottom: 128px; }
+  .step-card:nth-child(7) { margin-bottom: 192px; }
+  .step-heading { font-size: 15px; font-weight: bold; color: #333333; margin-bottom: 8px; }
+  .step-body { font-size: 12px; color: #333333; line-height: 1.6; }
+  .arrow { flex-shrink: 0; font-size: 18px; color: #AAAAAA; }
+  .arrow:nth-child(2) { margin-bottom: 32px; }
+  .arrow:nth-child(4) { margin-bottom: 96px; }
+  .arrow:nth-child(6) { margin-bottom: 160px; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="staircase-row">
+      <!-- ステップ1 -->
+      <div class="step-card">
+        <div class="step-heading">フェーズ1</div>
+        <div class="step-body">短い説明文が入ります。</div>
+      </div>
+      <div class="arrow">&#9654;</div>
+      <!-- ステップ2 -->
+      <div class="step-card">
+        <div class="step-heading">フェーズ2</div>
+        <div class="step-body">短い説明文が入ります。</div>
+      </div>
+      <div class="arrow">&#9654;</div>
+      <!-- ステップ3 -->
+      <div class="step-card">
+        <div class="step-heading">フェーズ3</div>
+        <div class="step-body">短い説明文が入ります。</div>
+      </div>
+      <div class="arrow">&#9654;</div>
+      <!-- ステップ4 -->
+      <div class="step-card">
+        <div class="step-heading">フェーズ4</div>
+        <div class="step-body">短い説明文が入ります。</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

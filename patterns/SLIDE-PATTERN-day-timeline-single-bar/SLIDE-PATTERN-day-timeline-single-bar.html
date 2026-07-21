@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-day-timeline-single-bar</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 48px 64px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+  .segment-labels { display: flex; }
+  .segment-label { text-align: center; font-size: 12px; font-weight: bold; color: #333333; padding-bottom: 8px; }
+  .bar-row { display: flex; height: 64px; border: 1px solid var(--sk-accent,#999999); border-radius: 4px; overflow: hidden; }
+  .segment { display: flex; align-items: center; justify-content: center; border-right: 1px solid #FFFFFF; }
+  .segment:last-child { border-right: none; }
+  .segment.light { background: var(--sk-soft,#EDEDED); }
+  .segment.core { background: var(--sk-accent,#AAAAAA); }
+  .segment-time { font-size: 11px; color: #333333; }
+  .segment.core .segment-time { color: #FFFFFF; }
+  .time-ticks { display: flex; }
+  .time-tick { text-align: center; font-size: 11px; color: #888888; padding-top: 4px; }
+  .caption { margin-top: 16px; font-size: 12px; color: #888888; line-height: 1.6; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <!-- 区分名ラベル（バー上） -->
+    <div class="segment-labels">
+      <div class="segment-label" style="flex:1;">始業</div>
+      <div class="segment-label" style="flex:2;">コアタイム</div>
+      <div class="segment-label" style="flex:1;">休憩</div>
+      <div class="segment-label" style="flex:3;">コアタイム</div>
+      <div class="segment-label" style="flex:1;">退勤前</div>
+    </div>
+    <!-- 時間帯バー -->
+    <div class="bar-row">
+      <div class="segment light" style="flex:1;"><span class="segment-time">1h</span></div>
+      <div class="segment core" style="flex:2;"><span class="segment-time">2h</span></div>
+      <div class="segment light" style="flex:1;"><span class="segment-time">1h</span></div>
+      <div class="segment core" style="flex:3;"><span class="segment-time">3h</span></div>
+      <div class="segment light" style="flex:1;"><span class="segment-time">1h</span></div>
+    </div>
+    <!-- 時刻ラベル（バー下） -->
+    <div class="time-ticks">
+      <div class="time-tick" style="flex:1;">9:00</div>
+      <div class="time-tick" style="flex:2;">10:00</div>
+      <div class="time-tick" style="flex:1;">12:00</div>
+      <div class="time-tick" style="flex:3;">13:00</div>
+      <div class="time-tick" style="flex:1;">17:30</div>
+    </div>
+    <!-- 補足説明 -->
+    <div class="caption">補足説明が入ります。区分の意図や運用ルールなどを1〜2行で記載します。</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-triangle-node-relationship</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; justify-content: center; }
+  .tri-wrap { position: relative; width: 420px; height: 340px; }
+  .tri-line { position: absolute; height: 2px; background: var(--sk-accent,#BBBBBB); transform-origin: 0 50%; z-index: 1; }
+  .node-circle { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: #FFFFFF; border: 2px solid var(--sk-accent,#999999); display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; box-sizing: border-box; z-index: 2; }
+  .node-top { left: 140px; top: 10px; }
+  .node-left { left: 20px; top: 210px; }
+  .node-right { left: 260px; top: 210px; }
+  .node-text { font-size: 14px; font-weight: bold; color: #333333; }
+  .center-label { position: absolute; left: 210px; top: 213px; transform: translate(-50%, -50%); z-index: 3; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); border-radius: 999px; padding: 8px 16px; font-size: 12px; font-weight: bold; color: #333333; white-space: nowrap; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="tri-wrap">
+      <!-- 三角形をつなぐ3本の直線 -->
+      <div class="tri-line" style="left:210px; top:80px; width:233px; transform:rotate(120.96deg);"></div>
+      <div class="tri-line" style="left:210px; top:80px; width:233px; transform:rotate(59.04deg);"></div>
+      <div class="tri-line" style="left:90px; top:280px; width:240px; transform:rotate(0deg);"></div>
+      <!-- 頂点の円3つ -->
+      <div class="node-circle node-top"><span class="node-text">要素Aが入ります</span></div>
+      <div class="node-circle node-left"><span class="node-text">要素Bが入ります</span></div>
+      <div class="node-circle node-right"><span class="node-text">要素Cが入ります</span></div>
+      <!-- 中央の統合ラベル -->
+      <div class="center-label">統合ラベルが入ります</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

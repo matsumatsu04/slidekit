@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-pyramid-tier-callout</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
+  .content-area { flex: 1; padding: 32px 64px; display: flex; align-items: center; }
+  .pyramid-diagram { flex: 1; height: 100%; display: grid; grid-template-columns: 240px 56px 1fr; grid-template-rows: repeat(3, 1fr); align-items: stretch; }
+  .pyramid-shape { grid-column: 1; grid-row: 1 / 4; position: relative; }
+  .tier { position: absolute; left: 0; right: 0; }
+  .tier-1 { top: 0; height: 33.33%; background: var(--sk-accent,#8C8C8C); clip-path: polygon(40% 0%, 60% 0%, 70% 100%, 30% 100%); }
+  .tier-2 { top: 33.33%; height: 33.33%; background: var(--sk-accent,#AFAFAF); clip-path: polygon(30% 0%, 70% 0%, 85% 100%, 15% 100%); }
+  .tier-3 { top: 66.66%; height: 33.34%; background: var(--sk-accent,#D2D2D2); clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%); }
+  .tier-name { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 12px; font-weight: bold; color: #FFFFFF; }
+  .tier-3 .tier-name { color: #333333; }
+  .connector { grid-column: 2; place-self: center; width: 100%; height: 2px; background: var(--sk-accent,#BBBBBB); }
+  .connector-1 { grid-row: 1; }
+  .connector-2 { grid-row: 2; }
+  .connector-3 { grid-row: 3; }
+  .callout { grid-column: 3; align-self: center; border: 1px solid var(--sk-accent,#CCCCCC); background: #FFFFFF; border-radius: 4px; padding: 12px 20px; }
+  .callout-1 { grid-row: 1; }
+  .callout-2 { grid-row: 2; }
+  .callout-3 { grid-row: 3; }
+  .callout-title { font-size: 14px; font-weight: bold; color: #333333; margin-bottom: 4px; }
+  .callout-body { font-size: 12px; color: #333333; line-height: 1.5; }
+
+/* === 共通見出し v3（番号なし・固定metrics・余白=4の倍数・font48）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;border-left:4px solid var(--sk-accent,#333333);padding:24px 0 0 16px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア -->
+  <div class="content-area">
+    <div class="pyramid-diagram">
+      <!-- ピラミッド（左：3段の台形） -->
+      <div class="pyramid-shape">
+        <div class="tier tier-1"><span class="tier-name">第1層</span></div>
+        <div class="tier tier-2"><span class="tier-name">第2層</span></div>
+        <div class="tier tier-3"><span class="tier-name">第3層</span></div>
+      </div>
+      <!-- 接続線 -->
+      <div class="connector connector-1"></div>
+      <div class="connector connector-2"></div>
+      <div class="connector connector-3"></div>
+      <!-- 説明ボックス（右：3個） -->
+      <div class="callout callout-1">
+        <div class="callout-title">見出しが入ります</div>
+        <div class="callout-body">説明テキストが入ります。</div>
+      </div>
+      <div class="callout callout-2">
+        <div class="callout-title">見出しが入ります</div>
+        <div class="callout-body">説明テキストが入ります。</div>
+      </div>
+      <div class="callout callout-3">
+        <div class="callout-title">見出しが入ります</div>
+        <div class="callout-body">説明テキストが入ります。</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
