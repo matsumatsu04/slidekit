@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SlideKit ギャラリー — 構図パターン & デザインシステム</title>
-<meta name="description" content="AIスライド生成のための構図パターン99種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<meta name="description" content="AIスライド生成のための構図パターン97種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -302,7 +302,7 @@
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v5';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v6';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
@@ -600,8 +600,15 @@ document.addEventListener('keydown',e=>{
 });
 window.addEventListener('resize',()=>{ if(MODAL_OPEN) requestAnimationFrame(fitModal); });
 
+// 表示はカテゴリ順（下記の固定順）でグルーピングし、カテゴリ内はID順。
+// IDは「参照用の恒久コード」であり並び順の約束ではない（追加パターンも正しいカテゴリ位置に収まる）。
+const CAT_ORDER=['表紙','セクション','目次','本文','リスト','ステップ','図解・ダイアグラム','カード','グラフ','テーブル','KPI','まとめ','FAQ','プロフィール'];
 fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
-  DATA=j.patterns;
+  DATA=j.patterns.slice().sort((a,b)=>{
+    const ca=CAT_ORDER.indexOf(a.category), cb=CAT_ORDER.indexOf(b.category);
+    if(ca!==cb) return (ca<0?99:ca)-(cb<0?99:cb);
+    return (a.id||'').localeCompare(b.id||'');
+  });
   document.getElementById('loading').style.display='none';
   document.getElementById('allCount').textContent=DATA.length;
   document.getElementById('favCount').textContent=FAVS.size; // 初回表示時点のお気に入り件数を反映

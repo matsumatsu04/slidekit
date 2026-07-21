@@ -1,5 +1,5 @@
 {
- "count": 99,
+ "count": 97,
  "patterns": [
   {
    "name": "cover-with-image-left",
@@ -63,20 +63,6 @@
    "summary": "スライド全体を左右に二分割し、左側に「INDEX」などのセクション見出しを縦書きまたは横書きで大きく置き、右側に番号付き目次項目を縦に並べる目次専用レイアウト。",
    "tier": "high",
    "id": "P009"
-  },
-  {
-   "name": "category-toc-simple",
-   "category": "目次",
-   "summary": "カテゴリ見出し（英語太字大文字＋日本語サブタイトル）と縦線付き箇条書き項目を縦積みしたシンプルな全幅目次レイアウト",
-   "tier": "high",
-   "id": "P010"
-  },
-  {
-   "name": "category-toc-with-image",
-   "category": "目次",
-   "summary": "カテゴリ見出し（英語大文字＋日本語サブタイトル）と縦線付き箇条書き項目を縦積みした目次を左側に、装飾イメージを右側に配置する2カラムレイアウト",
-   "tier": "high",
-   "id": "P011"
   },
   {
    "name": "key-message-single",
