@@ -79,27 +79,27 @@ N. [締め]      まとめと次の一歩
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙 | cover-with-image-left / cover-gradient-text-bottom / cover-fullbg-text-left |
+| 表紙 | cover-gradient-text-bottom / cover-minimal-disclaimer |
 | セクション | section-divider |
-| 目次 | agenda-toc / numbered-toc / two-column-toc |
+| 目次 | agenda-toc / sidebar-toc-panel |
 | 本文 | key-message-single / two-col-text-body / image-left-text-right / two-section-stacked-text |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
 | ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow |
 | 図解・ダイアグラム | two-column-split-boxes / two-col-icon-list-comparison / four-quadrant-center-circle |
 | カード | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
-| グラフ | bar-chart-full / kpi-bar-chart / chart-left-text-right |
+| グラフ | waterfall-bridge-chart / positioning-map-scatter |
 | テーブル | before-after-two-col / comparison-matrix-table / estimate-amount-table / line-item-table |
 | KPI | three-kpi-big-number / goal-kgi-kpi-dashboard |
 | まとめ | summary-three-points / action-items-list |
 | FAQ | faq-grid / faq-single-column |
-| プロフィール | profile-bio / profile-bio-photo-right |
+| プロフィール | profile-bio |
 
 割り当て表の例（**使用した構図パターン名とID（manifest.jsonの`id`）を必ず列に含める**。見出しの有無も示す）：
 
 | # | 種類 | ID | 構図パターン（SLIDE-PATTERN名） | 見出し | 内容（1行） |
 |---|---|---|---|---|---|
-| 1 | 表紙 | P001 | cover-with-image-left | なし | タイトル・対象・日付 |
-| 2 | 目次 | P008 | agenda-toc | なし | 本日の流れ |
+| 1 | 表紙 | P002 | cover-gradient-text-bottom | なし | タイトル・対象・日付 |
+| 2 | 目次 | P006 | agenda-toc | なし | 本日の流れ |
 | 4 | 本文 | P015 | key-message-single | あり | 現状の課題 |
 | … | … | … | … | … | … |
 気に入らない割り当ては変更を受ける（「4枚目を before-after-two-col に」等）。**ここでも承認を取る。**
