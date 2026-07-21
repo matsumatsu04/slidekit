@@ -1,3 +1,4 @@
 node_modules/
 *.pdf
 tools/pptx/out/
+.DS_Store
