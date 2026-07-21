@@ -157,6 +157,7 @@
     .grid[data-density="4"]{grid-template-columns:repeat(3,1fr)}
   }
   @media (max-width:900px){
+    .fav-btn,.tray-add{opacity:1} /* タッチ端末はhoverが効かないため常時表示 */
     .app{flex-direction:column}
     .sidebar{position:sticky;top:0;width:100%;flex:0 0 auto;height:auto;flex-direction:row;align-items:center;
       overflow-x:auto;padding:10px 14px;gap:10px;border-right:none;border-bottom:1px solid var(--line)}
