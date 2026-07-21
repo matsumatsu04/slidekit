@@ -588,6 +588,48 @@
       "summary": "白地のスライド垂直中央に全幅のアクセント色帯を配置し、帯の中に章番号と章タイトルを左寄せで表示する中扉レイアウト。帯の上下には余白を残す。",
       "tier": "high",
       "id": "P099"
+    },
+    {
+      "name": "cover-photo-overlay-center",
+      "category": "表紙",
+      "summary": "実写写真＋暗色オーバーレイの上に白文字タイトルを中央配置する表紙。背景は画像アセット（差し替え可・色ティント対象外）",
+      "tier": "high",
+      "id": "P100"
+    },
+    {
+      "name": "cover-geo-texture-left",
+      "category": "表紙",
+      "summary": "紙質感の幾何学装飾背景の左中央にタイトル・会社名・日付を縦積みする上品な表紙。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P101"
+    },
+    {
+      "name": "cover-art-brush-left",
+      "category": "表紙",
+      "summary": "手描き画材モチーフ背景＋左縦バー付き2行タイトルのクリエイティブ表紙。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P102"
+    },
+    {
+      "name": "cover-soft-3d-left",
+      "category": "表紙",
+      "summary": "半透明3Dオブジェクトの淡色背景に細身・字間広めの大タイトルを載せるIT/SaaS系表紙。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P103"
+    },
+    {
+      "name": "cover-blob-side-left",
+      "category": "表紙",
+      "summary": "右側の有機的ブロブ背景＋左の特大太字タイトルの明るい表紙。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P104"
+    },
+    {
+      "name": "cover-curve-shape-left",
+      "category": "表紙",
+      "summary": "右端の大きな曲面シェイプ背景に種別ラベル＋特大タイトルを載せるモダン表紙。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P105"
     }
   ]
 }

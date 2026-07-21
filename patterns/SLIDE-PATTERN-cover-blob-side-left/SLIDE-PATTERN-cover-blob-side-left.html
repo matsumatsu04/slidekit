@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: cover-blob-side-left</title>
+  <style>
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
+    /* 有機的ブロブ背景（画像アセット差し替え可）＋左の太字タイトル */
+    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
+    .company { position:absolute; left:64px; top:56px; font-size:16px; font-weight:bold; color:#1A1A1A; }
+    .main-title { position:absolute; left:64px; top:46%; transform:translateY(-50%); font-size:42px; font-weight:bold; color:#1A1A1A; line-height:1.35; }
+    .date { position:absolute; left:64px; bottom:48px; font-size:12px; font-weight:bold; color:#555555; letter-spacing:0.04em; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="bg"></div>
+    <div class="company">会社名が入ります</div>
+    <div class="main-title">メインタイトルが入ります</div>
+    <div class="date">2026.X.X 更新</div>
+  </div>
+</body>
+</html>

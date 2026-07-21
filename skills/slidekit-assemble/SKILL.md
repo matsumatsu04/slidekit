@@ -79,7 +79,7 @@ N. [締め]      まとめと次の一歩
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙 | cover-gradient-text-bottom / cover-minimal-disclaimer |
+| 表紙 | cover-gradient-text-bottom / cover-photo-overlay-center / cover-blob-side-left / cover-curve-shape-left ほか（画像背景表紙は assets/covers/ の素材を使用・色ティント対象外） |
 | セクション | section-divider |
 | 目次 | agenda-toc / sidebar-toc-panel |
 | 本文 | key-message-single / two-col-text-body / image-left-text-right / two-section-stacked-text |
