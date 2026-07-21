@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-section-left-number-line</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 48px; padding: 0 80px; }
+  /* 左：特大の章番号 */
+  .big-number { font-size: 120px; font-weight: bold; color: var(--sk-soft,#DDDDDD); line-height: 1; flex-shrink: 0; }
+  /* 右：章タイトル＋短いアクセント線 */
+  .title-block { display: flex; flex-direction: column; gap: 16px; }
+  .section-title { font-size: 32px; font-weight: bold; color: #333333; line-height: 1.4; }
+  .accent-line { width: 56px; height: 3px; border-radius: 2px; background: var(--sk-accent,#333333); }
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- 左：特大の章番号 -->
+  <div class="big-number">03</div>
+  <!-- 右：章タイトル＋短いアクセント線 -->
+  <div class="title-block">
+    <div class="section-title">セクションタイトルが<br>ここに入ります</div>
+    <div class="accent-line"></div>
+  </div>
+</div>
+</body>
+</html>

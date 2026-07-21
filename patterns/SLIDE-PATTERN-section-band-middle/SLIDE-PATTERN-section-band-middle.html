@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-section-band-middle</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
+  /* 帯の上：余白 */
+  .spacer { flex: 1; }
+  /* 垂直中央のアクセント色帯（全幅） */
+  .band { flex-shrink: 0; height: 120px; width: 100%; background: var(--sk-accent,#333333); box-sizing: border-box; display: flex; align-items: center; gap: 24px; padding: 0 80px; }
+  .band-number { font-size: 40px; font-weight: bold; color: #FFFFFF; line-height: 1; flex-shrink: 0; }
+  .band-title { font-size: 28px; font-weight: bold; color: #FFFFFF; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- 帯の上：余白 -->
+  <div class="spacer"></div>
+  <!-- 垂直中央の全幅アクセント色帯 -->
+  <div class="band">
+    <div class="band-number">03</div>
+    <div class="band-title">セクションタイトルが入ります</div>
+  </div>
+  <!-- 帯の下：余白 -->
+  <div class="spacer"></div>
+</div>
+</body>
+</html>

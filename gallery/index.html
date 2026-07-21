@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SlideKit ギャラリー — 構図パターン & デザインシステム</title>
-<meta name="description" content="AIスライド生成のための構図パターン96種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<meta name="description" content="AIスライド生成のための構図パターン99種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -118,10 +118,6 @@
   .card .name{font-size:14px;font-weight:700;word-break:break-all}
   .card .pid{font-size:11px;font-weight:700;color:#fff;background:var(--ink);border-radius:5px;padding:1px 7px;margin-right:6px;letter-spacing:.02em}
   .card .cat{display:inline-block;font-size:11px;color:#666;background:var(--surf);border-radius:5px;padding:1px 8px;margin-bottom:4px}
-  .card .tier{display:inline-block;font-size:10.5px;border-radius:5px;padding:1px 7px;margin-left:5px;font-weight:700}
-  .tier.high{color:#0d7a43;background:#e5f6ec}
-  .tier.mid{color:#8a6100;background:#fdf3d7}
-  .tier.low{color:#a33;background:#fdeaea}
   .card .sum{font-size:12px;color:#777;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
   #designs{margin-top:46px;padding-top:6px;border-top:1px solid var(--line)}
@@ -159,10 +155,6 @@
   .modal-pid{font-size:11px;font-weight:700;color:#1a1a1a;background:#fff;border-radius:5px;padding:2px 8px;letter-spacing:.02em}
   .modal-name{font-size:14px;font-weight:700;color:#fff}
   .modal-cat{font-size:11px;color:#e8e8ea;background:rgba(255,255,255,.14);border-radius:5px;padding:2px 9px}
-  .modal-tier{font-size:10.5px;border-radius:5px;padding:2px 8px;font-weight:700}
-  .modal-tier.high{color:#0d7a43;background:#e5f6ec}
-  .modal-tier.mid{color:#8a6100;background:#fdf3d7}
-  .modal-tier.low{color:#a33;background:#fdeaea}
   .modal-sp{flex:1}
   .modal-topbar .btn{margin-right:0;background:rgba(255,255,255,.94)}
   .modal-topbar #mFav.active{color:#c9860a;border-color:#f5b400}
@@ -254,7 +246,7 @@
         <button class="chip-btn" id="hC" data-h="c">C：塗り帯</button>
         <button class="chip-btn" id="hD" data-h="d">D：2トーン</button>
         <button class="chip-btn" id="hE" data-h="e">E：ショートバー</button>
-        <button class="chip-btn" id="hF" data-h="f">F：タブ</button>
+        <button class="chip-btn" id="hF" data-h="f">F：ラベル</button>
       </div>
     </div>
 
@@ -290,7 +282,6 @@
     <span class="modal-pid" id="mPid" title="恒久ID（追加・削除があっても変わりません）"></span>
     <span class="modal-name" id="mName"></span>
     <span class="modal-cat" id="mCat"></span>
-    <span class="modal-tier" id="mTier" title="スライド生成AIでの再現性"></span>
     <span class="modal-sp"></span>
     <a class="btn" id="mDl" download>.md DL</a>
     <button class="btn" id="mFav">☆ お気に入り</button>
@@ -311,7 +302,7 @@
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v4';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v5';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
@@ -521,7 +512,7 @@ function render(){
         <button class="tray-add ${tray?'added':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'追加済み ✓':'＋ 構成に追加'}</button>
       </div>
       <div class="body">
-        <div><span class="cat">${p.category}</span><span class="tier ${p.tier||'mid'}" title="スライド生成AIでの再現性">${{high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'}[p.tier]||''}</span></div>
+        <div><span class="cat">${p.category}</span></div>
         <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
       </div>`;
@@ -541,7 +532,6 @@ document.getElementById('navFav').onclick=()=>{active='__fav';syncNavActive();re
 
 // ===== プレビューモーダル（ページ内ライトボックス＋カルーセル）=====
 // カルーセルは「現在の絞り込み結果リスト」（LAST_LIST、renderのたびに更新）の範囲内を移動する。
-const TIER_LABEL={high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'};
 function openModal(idx){
   if(!LAST_LIST.length) return;
   MODAL_LIST=LAST_LIST;
@@ -568,9 +558,6 @@ function renderModal(){
   document.getElementById('mPid').textContent=p.id||'';
   document.getElementById('mName').textContent=p.name;
   document.getElementById('mCat').textContent=p.category;
-  const tierEl=document.getElementById('mTier');
-  tierEl.className='modal-tier '+(p.tier||'mid');
-  tierEl.textContent=TIER_LABEL[p.tier]||'';
   document.getElementById('mDl').href=`${base(p.name)}/SLIDE-PATTERN-${p.name}.md`;
   const favBtn=document.getElementById('mFav');
   const fav=isFav(p.id);

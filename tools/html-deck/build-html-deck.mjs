@@ -34,7 +34,7 @@ const DEFAULT_THEME = {
   bg: '#FFFFFF',
 };
 
-// 共通見出し（sk-h）のスタイル一覧。patterns/ 側の sk-head v4（data-hstyle="a"〜"f"）と
+// 共通見出し（sk-h）のスタイル一覧。patterns/ 側の sk-head v5（data-hstyle="a"〜"f"）と
 // 同じ見た目になるよう対応させている。詳細は SPEC.md の「共通見出し」節を参照。
 const HEADING_STYLES = ['a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -258,11 +258,12 @@ function maybeInjectPageNumber(sectionHtml, n, total, config) {
 
 // 見出し（.sk-h）をスタイル別に出し分ける。全スタイル共通の不変metrics
 // （上端から24px・font24px bold・本文開始76px/メッセージライン時128px）は変えない。
-// patterns/ 側の sk-head v4（data-hstyle="a"〜"f"）と同じ見た目になるよう対応させている。
+// patterns/ 側の sk-head v5（data-hstyle="a"〜"f"）と同じ見た目になるよう対応させている。
 function buildHeadingCss(style) {
   switch (style) {
-    case 'b': // 縦バー
-      return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 16px; border-left:4px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }`;
+    case 'b': // 縦バー（タイトル文字高に合わせた短い縦バー・左40px＋タイトルはその右16px）
+      return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 20px; font-size:24px; font-weight:700; color:#333; }
+.sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; border-radius:2px; background:var(--sk-accent); }`;
     case 'c': // 塗り帯（全幅アクセント帯・白文字）
       return `.sk-h { position:absolute; top:0; left:0; right:0; height:76px; box-sizing:border-box; display:flex; align-items:center; padding:0 40px; background:var(--sk-accent); font-size:24px; font-weight:700; color:#FFFFFF; }`;
     case 'd': // 2トーン下線（左だけ濃い線＋全幅の薄線）
@@ -271,8 +272,9 @@ function buildHeadingCss(style) {
     case 'e': // ショートバー（タイトル下に短いバーのみ・全幅線なし）
       return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; font-size:24px; font-weight:700; color:#333; }
 .sk-h::after { content:""; position:absolute; left:0; bottom:0; width:56px; height:3px; border-radius:2px; background:var(--sk-accent); }`;
-    case 'f': // タブ型（タイトルが角丸塗りタブに乗る・白文字）
-      return `.sk-h { position:absolute; top:16px; left:40px; padding:8px 24px; font-size:20px; font-weight:700; color:#FFFFFF; background:var(--sk-accent); border-radius:8px 8px 8px 0; }`;
+    case 'f': // ドット＋英字ラベル型（`.sk-h` に data-label 属性でラベル文言を渡す）
+      return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:16px 0 0; display:flex; flex-direction:column; align-items:flex-start; gap:4px; font-size:24px; font-weight:700; color:#333; }
+.sk-h::before { content:"● " attr(data-label); font-size:12px; font-weight:700; color:var(--sk-accent); letter-spacing:.06em; }`;
     case 'a': // 全幅下線（既定）
     default:
       return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; border-bottom:2px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }`;
@@ -323,6 +325,7 @@ function buildDocument(config, allStyles, sections) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=${fontParam}:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 ${commonCss}
 </style>

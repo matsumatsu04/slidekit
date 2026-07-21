@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-section-center-circle-number</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width: 960px; height: 540px; background: var(--sk-accent,#4A4A4A); border: 1px solid var(--sk-accent,#4A4A4A); overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+  /* 中央の円形バッジ（白枠線・中に章番号） */
+  .circle-badge { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .circle-badge span { font-size: 20px; font-weight: bold; color: #FFFFFF; line-height: 1; }
+  /* 章タイトル */
+  .section-title { font-size: 36px; font-weight: bold; color: #FFFFFF; text-align: center; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <!-- 中央の円形章番号バッジ -->
+  <div class="circle-badge"><span>03</span></div>
+  <!-- 章タイトル -->
+  <div class="section-title">セクションタイトルが<br>ここに入ります</div>
+</div>
+</body>
+</html>
