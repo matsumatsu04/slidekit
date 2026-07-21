@@ -100,30 +100,28 @@
   .thumb:hover .open{opacity:1}
   .thumb .open span{background:#fff;border-radius:6px;font-size:11px;padding:3px 8px;color:#333}
 
-  .fav-btn{position:absolute;top:8px;right:8px;z-index:3;width:29px;height:29px;border-radius:50%;border:none;
-    background:rgba(255,255,255,.92);color:#c8ccd2;font-size:15px;cursor:pointer;opacity:0;
-    transition:opacity .15s,color .15s,transform .15s;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 1px 4px rgba(0,0,0,.14)}
-  .thumb:hover .fav-btn{opacity:1}
-  .fav-btn.active{opacity:1;color:#f5b400}
-  .fav-btn:hover{transform:scale(1.12)}
-
-  .tray-add{position:absolute;left:8px;bottom:8px;z-index:3;font-size:11px;font-weight:700;border:none;border-radius:999px;
-    padding:6px 11px;background:rgba(255,255,255,.95);color:#333;cursor:pointer;opacity:0;transition:opacity .15s,background .15s,color .15s;
-    box-shadow:0 1px 4px rgba(0,0,0,.14)}
-  .thumb:hover .tray-add{opacity:1}
-  .tray-add.added{opacity:1;background:var(--brand);color:#fff}
-
   .card .body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
   .card .name{font-size:14px;font-weight:700;word-break:break-all}
   .card .pid{font-size:11px;font-weight:700;color:#666;background:var(--surf);border-radius:5px;padding:1px 7px;margin-right:6px;letter-spacing:.02em}
   .card .cat{display:inline-block;font-size:11px;color:#fff;background:var(--ink);border-radius:5px;padding:1px 8px;margin-bottom:4px}
   .card .sum{font-size:12px;color:#777;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
+  /* 説明文の下のアクション行（ホバー不要・ワンクリックで付与）*/
+  .card .actions{display:flex;gap:5px}
+  .act{flex:1;min-width:0;font-size:11px;font-weight:500;text-align:center;
+    border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 4px;cursor:pointer;color:#555;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .12s,border-color .12s,color .12s}
+  .act:hover{border-color:#a9afb8}
+  .act.on-fav{background:#fff6dc;border-color:#f0c040;color:#8a6400;font-weight:700}
+  .act.on-del{background:#fdeeee;border-color:#e08585;color:#b03030;font-weight:700}
+  .act.on-tray{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+
   #designs{margin-top:46px;padding-top:6px;border-top:1px solid var(--line)}
   .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
   .ds-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
   .ds-card h3{font-size:18px}.ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
+  .ds-card .dsfont{display:flex;align-items:center;gap:6px;font-size:12px;color:#444;margin-top:5px}
+  .ds-card .dsfont::before{content:"Aa";font-size:10px;font-weight:700;color:#888;border:1px solid var(--line);border-radius:4px;padding:0 4px;line-height:1.5}
   .ds-card .swatches{display:flex;gap:6px;margin-bottom:14px}
   .ds-card .sw{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.06)}
 
@@ -158,6 +156,7 @@
   .modal-sp{flex:1}
   .modal-topbar .btn{margin-right:0;background:rgba(255,255,255,.94)}
   .modal-topbar #mFav.active{color:#c9860a;border-color:#f5b400}
+  .modal-topbar #mDelBtn.on-del{background:#fdeeee;color:#b03030;border-color:#e08585}
   .modal-topbar #mTray.added{background:var(--brand);color:#fff;border-color:var(--brand)}
   .modal-close{width:34px;height:34px;flex:0 0 auto;border-radius:50%;border:none;background:rgba(255,255,255,.16);
     color:#fff;font-size:16px;line-height:1;cursor:pointer;transition:background .15s}
@@ -183,7 +182,6 @@
     .grid[data-density="4"]{grid-template-columns:repeat(3,1fr)}
   }
   @media (max-width:900px){
-    .fav-btn,.tray-add{opacity:1} /* タッチ端末はhoverが効かないため常時表示 */
     .app{flex-direction:column}
     .sidebar{position:sticky;top:0;width:100%;flex:0 0 auto;height:auto;flex-direction:row;align-items:center;
       overflow-x:auto;padding:10px 14px;gap:10px;border-right:none;border-bottom:1px solid var(--line)}
@@ -211,6 +209,7 @@
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" id="navAll">すべて<span class="cnt" id="allCount">…</span></button>
         <button class="nav-item" id="navFav">⭐ お気に入り<span class="cnt" id="favCount">0</span></button>
+        <button class="nav-item" id="navDel">🗑 削除予定<span class="cnt" id="delCount">0</span></button>
         <div class="nav-sep"></div>
       </nav>
     </div>
@@ -253,6 +252,7 @@
     <div class="content">
       <div class="content-head">
         <h2 id="sectionTitle">構図パターン</h2>
+        <button class="btn" id="delCopy" style="display:none">削除予定のIDをコピー</button>
       </div>
       <div class="grid" id="grid" data-density="3"></div>
       <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
@@ -285,6 +285,7 @@
     <span class="modal-sp"></span>
     <a class="btn" id="mDl" download>.md DL</a>
     <button class="btn" id="mFav">☆ お気に入り</button>
+    <button class="btn" id="mDelBtn">🗑 削除予定</button>
     <button class="btn" id="mTray">＋ 構成に追加</button>
     <button class="modal-close" id="mClose" title="閉じる（Esc）" aria-label="閉じる">✕</button>
   </div>
@@ -373,26 +374,26 @@ function setTint(hex){
 
 // design systems（本リポジトリのオリジナル）
 const DESIGNS=[
-  {name:'clean-mono-sans',mood:'静か / 知的 / 余白多め / ミニマル',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
+  {name:'clean-mono-sans',mood:'静か / 知的 / 余白多め / ミニマル',font:'Noto Sans JP',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
    md:'/design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md',sample:'/design-systems/clean-mono-sans/sample.html'},
-  {name:'consulting-navy',mood:'信頼感 / 論理的 / フォーマル / 結論先行',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
+  {name:'consulting-navy',mood:'信頼感 / 論理的 / フォーマル / 結論先行',font:'Noto Sans JP',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
    md:'/design-systems/consulting-navy/SLIDEKIT-DESIGN.md',sample:'/design-systems/consulting-navy/sample.html'},
-  {name:'editorial-warm',mood:'上質 / 温かい / 雑誌風 / 明朝見出し',swatches:['#3A3733','#A6572E','#EFE6D8','#F7F3EC'],
+  {name:'editorial-warm',mood:'上質 / 温かい / 雑誌風 / 明朝見出し',font:'見出し Noto Serif JP ／ 本文 Noto Sans JP',swatches:['#3A3733','#A6572E','#EFE6D8','#F7F3EC'],
    md:'/design-systems/editorial-warm/SLIDEKIT-DESIGN.md',sample:'/design-systems/editorial-warm/sample.html'},
-  {name:'dark-tech',mood:'モダン / シャープ / スクリーン映え / ダーク',swatches:['#0E1116','#6E8BFF','#1A2029','#E6E9EE'],
+  {name:'dark-tech',mood:'モダン / シャープ / スクリーン映え / ダーク',font:'Noto Sans JP',swatches:['#0E1116','#6E8BFF','#1A2029','#E6E9EE'],
    md:'/design-systems/dark-tech/SLIDEKIT-DESIGN.md',sample:'/design-systems/dark-tech/sample.html'},
-  {name:'vivid-gradient',mood:'明るい / 大胆 / 先進的 / ピッチ向き',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
+  {name:'vivid-gradient',mood:'明るい / 大胆 / 先進的 / ピッチ向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
    md:'/design-systems/vivid-gradient/SLIDEKIT-DESIGN.md',sample:'/design-systems/vivid-gradient/sample.html'},
-  {name:'brand-a-brand',mood:'brand-a公式 / Blue×Pink / 講座・集客',swatches:['#2F62A6','#2B4894','#D72550','#FFFFFF'],
+  {name:'brand-a-brand',mood:'brand-a公式 / Blue×Pink / 講座・集客',font:'見出し M PLUS Rounded 1c ／ 本文 Noto Sans JP ／ 英数 Poppins',swatches:['#2F62A6','#2B4894','#D72550','#FFFFFF'],
    md:'/design-systems/brand-a-brand/SLIDEKIT-DESIGN.md',sample:'/design-systems/brand-a-brand/sample.html'},
-  {name:'brand-b-sales',mood:'brand-b公式 / ネイビー×ゴールド / 営業・提案',swatches:['#1E2E53','#FED307','#E8EBF2','#FFFFFF'],
+  {name:'brand-b-sales',mood:'brand-b公式 / ネイビー×ゴールド / 営業・提案',font:'Noto Sans JP',swatches:['#1E2E53','#FED307','#E8EBF2','#FFFFFF'],
    md:'/design-systems/brand-b-sales/SLIDEKIT-DESIGN.md',sample:'/design-systems/brand-b-sales/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
   const sw=d.swatches.map(c=>`<span class="sw" style="background:${c}"></span>`).join('');
   const el=document.createElement('div');el.className='ds-card';
-  el.innerHTML=`<h3>${d.name}</h3><div class="mood">${d.mood}</div><div class="swatches">${sw}</div>
+  el.innerHTML=`<h3>${d.name}</h3><div class="dsfont">${d.font}</div><div class="mood">${d.mood}</div><div class="swatches">${sw}</div>
     <a class="btn primary" href="${d.sample}" target="_blank" rel="noopener">サンプルを見る</a>
     <a class="btn" href="${d.md}" download>SLIDEKIT-DESIGN.md</a>`;
   dsGrid.appendChild(el);
@@ -408,6 +409,34 @@ function toggleFav(id,ev){
   saveFavs();
   document.getElementById('favCount').textContent=FAVS.size;
   render();
+}
+
+// ===== 削除予定ラベル（候補をマーク→「IDをコピー」でAIに削除依頼する運用）=====
+let DELS=new Set(JSON.parse(localStorage.getItem('sk-dels')||'[]'));
+function saveDels(){localStorage.setItem('sk-dels',JSON.stringify([...DELS]));}
+function isDel(id){return DELS.has(id);}
+function toggleDel(id,ev){
+  if(ev){ev.stopPropagation();ev.preventDefault();}
+  if(DELS.has(id)) DELS.delete(id); else DELS.add(id);
+  saveDels();
+  document.getElementById('delCount').textContent=DELS.size;
+  render();
+}
+
+// ===== クリップボード共通 =====
+async function copyText(text){
+  if(!text) return false;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); return true; }
+  }catch(e){}
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.left='-9999px';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,text.length);
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e2){ return false; }
 }
 
 // ===== デッキ構成トレイ（カート）=====
@@ -446,21 +475,7 @@ function renderTray(){
   chips.innerHTML=TRAY.map(t=>`<span class="tray-chip">${t.id} ${t.name}<button class="tray-x" title="削除" onclick="removeFromTray('${t.id}',event)">×</button></span>`).join('');
 }
 async function copyTrayIds(){
-  const text=TRAY.map(t=>t.id).join(', ');
-  if(!text) return;
-  let ok=false;
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); ok=true; }
-  }catch(e){ ok=false; }
-  if(!ok){
-    try{
-      const ta=document.createElement('textarea');
-      ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.left='-9999px';
-      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,text.length);
-      ok=document.execCommand('copy');
-      document.body.removeChild(ta);
-    }catch(e2){ ok=false; }
-  }
+  const ok=await copyText(TRAY.map(t=>t.id).join(', '));
   const btn=document.getElementById('trayCopy');
   btn.textContent = ok ? 'コピーしました ✓' : 'コピーに失敗しました';
   btn.classList.toggle('copy-ok',ok);
@@ -468,6 +483,15 @@ async function copyTrayIds(){
 }
 document.getElementById('trayCopy').addEventListener('click',copyTrayIds);
 document.getElementById('trayClear').addEventListener('click',clearTray);
+document.getElementById('delCopy').addEventListener('click',async()=>{
+  // 表示順（カテゴリ順）でコピーする。DATA未取得時はSetの登録順。
+  const ids=(DATA.length?DATA.filter(p=>isDel(p.id)).map(p=>p.id):[...DELS]).join(', ');
+  const ok=await copyText(ids);
+  const btn=document.getElementById('delCopy');
+  btn.textContent = ok ? 'コピーしました ✓' : 'コピーに失敗しました';
+  btn.classList.toggle('copy-ok',ok);
+  setTimeout(()=>{btn.textContent='削除予定のIDをコピー';btn.classList.remove('copy-ok');},1800);
+});
 
 // ===== 表示密度 =====
 let DENSITY=localStorage.getItem('sk-density')||'3';
@@ -484,6 +508,7 @@ let DATA=[],active='all',QUERY='';
 const grid=document.getElementById('grid');
 function matches(p){
   if(active==='__fav'){ if(!isFav(p.id)) return false; }
+  else if(active==='__del'){ if(!isDel(p.id)) return false; }
   else if(active!=='all' && p.category!==active) return false;
   if(!QUERY) return true;
   const q=QUERY.toLowerCase();
@@ -502,22 +527,26 @@ function render(){
   LAST_LIST=list; // モーダルのカルーセルが参照する「現在の絞り込み結果」
   document.getElementById('noresult').style.display=list.length?'none':'block';
   document.getElementById('matchCount').textContent=DATA.length?`${list.length} / ${DATA.length} 件`:'';
-  const titleMap={all:'構図パターン',__fav:'⭐ お気に入り'};
+  const titleMap={all:'構図パターン',__fav:'⭐ お気に入り',__del:'🗑 削除予定'};
   document.getElementById('sectionTitle').textContent=titleMap[active]||active;
+  document.getElementById('delCopy').style.display=(active==='__del'&&list.length)?'inline-block':'none';
   list.forEach((p,i)=>{
-    const fav=isFav(p.id), tray=inTray(p.id);
+    const fav=isFav(p.id), del=isDel(p.id), tray=inTray(p.id);
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
       <div class="thumb" onclick="openModal(${i})">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
-        <button class="fav-btn ${fav?'active':''}" title="お気に入り" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'}</button>
         <div class="open"><span>拡大してプレビュー</span></div>
-        <button class="tray-add ${tray?'added':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'追加済み ✓':'＋ 構成に追加'}</button>
       </div>
       <div class="body">
         <div><span class="cat">${p.category}</span></div>
         <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
+        <div class="actions">
+          <button class="act ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
+          <button class="act ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
+          <button class="act ${tray?'on-tray':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'✓ 追加済み':'＋ 構成に追加'}</button>
+        </div>
       </div>`;
     grid.appendChild(card);
   });
@@ -526,12 +555,14 @@ function render(){
 }
 function syncNavActive(){
   [...document.querySelectorAll('.nav-item')].forEach(b=>{
-    const isThis=(b.id==='navAll'&&active==='all')||(b.id==='navFav'&&active==='__fav')||(b.dataset.cat&&b.dataset.cat===active);
+    // !!で真偽値に強制する（undefinedを渡すとtoggleが「反転」動作になり、対象外ボタンが点いてしまう）
+    const isThis=!!((b.id==='navAll'&&active==='all')||(b.id==='navFav'&&active==='__fav')||(b.id==='navDel'&&active==='__del')||(b.dataset.cat&&b.dataset.cat===active));
     b.classList.toggle('active',isThis);
   });
 }
 document.getElementById('navAll').onclick=()=>{active='all';syncNavActive();render();};
 document.getElementById('navFav').onclick=()=>{active='__fav';syncNavActive();render();};
+document.getElementById('navDel').onclick=()=>{active='__del';syncNavActive();render();};
 
 // ===== プレビューモーダル（ページ内ライトボックス＋カルーセル）=====
 // カルーセルは「現在の絞り込み結果リスト」（LAST_LIST、renderのたびに更新）の範囲内を移動する。
@@ -566,14 +597,23 @@ function renderModal(){
   const fav=isFav(p.id);
   favBtn.classList.toggle('active',fav);
   favBtn.textContent=fav?'★ お気に入り':'☆ お気に入り';
+  const delBtn=document.getElementById('mDelBtn');
+  const del=isDel(p.id);
+  delBtn.classList.toggle('on-del',del);
+  delBtn.textContent=del?'✓ 削除予定':'🗑 削除予定';
   const trayBtn=document.getElementById('mTray');
   const tray=inTray(p.id);
   trayBtn.classList.toggle('added',tray);
   trayBtn.textContent=tray?'追加済み ✓':'＋ 構成に追加';
   document.getElementById('mPos').textContent=`${MODAL_IDX+1} / ${MODAL_LIST.length}`;
   const frame=document.getElementById('mFrame');
-  frame.onload=()=>skInk(frame);
-  frame.src=htmlPath(p.name); // src差し替えのみ（プリロードなし）。連打してもonloadで最新pに追従する
+  const want=htmlPath(p.name);
+  if(frame.getAttribute('src')!==want){
+    frame.onload=()=>skInk(frame);
+    frame.src=want; // src差し替えのみ（プリロードなし）。連打してもonloadで最新pに追従する
+  }else{
+    skInk(frame); // 同一スライドのままボタン操作した時は再読み込みしない（チラつき防止）
+  }
   requestAnimationFrame(fitModal);
 }
 function fitModal(){
@@ -587,6 +627,7 @@ document.getElementById('mClose').addEventListener('click',closeModal);
 document.getElementById('mPrev').addEventListener('click',()=>moveModal(-1));
 document.getElementById('mNext').addEventListener('click',()=>moveModal(1));
 document.getElementById('mFav').addEventListener('click',()=>{ const p=MODAL_LIST[MODAL_IDX]; if(p) toggleFav(p.id); renderModal(); });
+document.getElementById('mDelBtn').addEventListener('click',()=>{ const p=MODAL_LIST[MODAL_IDX]; if(p) toggleDel(p.id); renderModal(); });
 document.getElementById('mTray').addEventListener('click',()=>{ const p=MODAL_LIST[MODAL_IDX]; if(p) toggleTray(p.id,p.name); renderModal(); });
 document.getElementById('modalOverlay').addEventListener('click',e=>{
   // topbar/stage/posはボタン・プレビュー枠の分だけ全面を覆っているため、
@@ -615,6 +656,7 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   document.getElementById('loading').style.display='none';
   document.getElementById('allCount').textContent=DATA.length;
   document.getElementById('favCount').textContent=FAVS.size; // 初回表示時点のお気に入り件数を反映
+  document.getElementById('delCount').textContent=DELS.size;
   const counts={};DATA.forEach(p=>counts[p.category]=(counts[p.category]||0)+1);
   const cats=Array.from(new Set(DATA.map(p=>p.category)));
   const sideNav=document.getElementById('sideNav');
