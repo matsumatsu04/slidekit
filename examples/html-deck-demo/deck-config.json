@@ -1,0 +1,13 @@
+{
+  "title": "SlideKit HTMLデッキビルダー デモ",
+  "theme": {
+    "accent": "#1E2E53",
+    "soft": "#E8EBF2",
+    "text": "#333333",
+    "muted": "#8A8F98",
+    "bg": "#FFFFFF"
+  },
+  "font": "Noto Sans JP",
+  "pageNumbers": true,
+  "noPageNoOn": [1]
+}

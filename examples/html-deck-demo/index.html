@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SlideKit HTMLデッキビルダー デモ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sk-accent: #1E2E53;
+  --sk-soft: #E8EBF2;
+  --sk-text: #333333;
+  --sk-muted: #8A8F98;
+  --sk-bg: #FFFFFF;
+}
+html, body { margin:0; padding:0; }
+body { font-family: 'Noto Sans JP', "Noto Sans JP", sans-serif; background:#E9EAEC; display:flex; flex-direction:column; align-items:center; gap:24px; padding:24px 0; }
+html { scroll-snap-type: y mandatory; }
+.slide {
+  width:960px; height:540px; position:relative; overflow:hidden;
+  background:#fff; margin:0 auto; box-shadow:0 2px 16px rgba(0,0,0,.12);
+  scroll-snap-align:start;
+}
+.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; border-bottom:2px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }
+.sk-msg { position:absolute; top:82px; left:40px; right:40px; font-size:16px; color:#333; }
+.sk-pageno { position:absolute; right:40px; bottom:16px; font-size:12px; color:var(--sk-muted,#8A8F98); }
+
+@page { size:960px 540px; margin:0; }
+@media print {
+  html, body { background:#fff; }
+  body { display:block; gap:0; padding:0; }
+  .slide { margin:0; box-shadow:none; scroll-snap-align:none; page-break-after:always; break-after:page; }
+  .slide:last-child { page-break-after:auto; break-after:auto; }
+}
+</style>
+<style>
+.s1-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.s1-text {
+  position: absolute;
+  left: 60px;
+  right: 400px;
+  top: 300px;
+}
+.s1-title {
+  font-size: 44px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+.s1-sub {
+  font-size: 16px;
+  color: #FFFFFF;
+  opacity: 0.9;
+}
+</style>
+<style>
+.s2-content {
+  position: absolute;
+  top: 128px;
+  left: 40px;
+  right: 40px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.s2-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--sk-soft);
+}
+.s2-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.s2-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sk-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  flex-shrink: 0;
+}
+.s2-item-content {
+  flex: 1;
+}
+.s2-item-heading {
+  font-size: 17px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 6px;
+}
+.s2-item-body {
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.6;
+}
+</style>
+<style>
+.s3-content {
+  position: absolute;
+  top: 76px;
+  left: 40px;
+  right: 40px;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+.s3-kpi-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.s3-kpi-col {
+  flex: 1;
+  border: 1px solid var(--sk-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  gap: 8px;
+}
+.s3-kpi-label {
+  font-size: 11px;
+  color: var(--sk-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.s3-kpi-number-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.s3-kpi-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--sk-accent);
+  line-height: 1;
+}
+.s3-kpi-unit {
+  font-size: 20px;
+  color: var(--sk-muted);
+  font-weight: normal;
+}
+.s3-kpi-description {
+  font-size: 13px;
+  color: #333333;
+  text-align: center;
+  line-height: 1.4;
+}
+.s3-kpi-supplement {
+  font-size: 11px;
+  color: var(--sk-muted);
+  text-align: center;
+}
+.s3-col-divider {
+  width: 1px;
+  height: 60%;
+  background: var(--sk-soft);
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 12px;
+}
+</style>
+</head>
+<body>
+<section class="slide s1-cover">
+  <img class="s1-bg" src="assets/cover-bg-logo.png" alt="">
+  <div class="s1-text">
+    <div class="s1-title">SlideKit HTMLデッキビルダー</div>
+    <div class="s1-sub">動作検証デモ ｜ 2026年7月</div>
+  </div>
+</section>
+<section class="slide s2-body">
+  <div class="sk-h">本ツールの3つの特徴</div>
+  <div class="sk-msg">スライドはフラグメント単位で管理し、色は変数注入だけでテーマを反映します</div>
+  <div class="s2-content">
+    <div class="s2-item">
+      <div class="s2-badge">01</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">フラグメント管理</div>
+        <div class="s2-item-body">スライド1枚＝1つの自己完結HTMLファイル。連番で並べるだけで順序が決まります。</div>
+      </div>
+    </div>
+    <div class="s2-item">
+      <div class="s2-badge">02</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">色は変数注入のみ</div>
+        <div class="s2-item-body">パターンはグレースケールのまま。deck-config.jsonの色をCSS変数として注入するだけでテーマ色になります。</div>
+      </div>
+    </div>
+    <div class="s2-item">
+      <div class="s2-badge">03</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">画面表示とPDFを両立</div>
+        <div class="s2-item-body">1ファイルのindex.htmlが、縦スクロール表示と1枚1ページのPDF書き出しの両方に対応します。</div>
+      </div>
+    </div>
+  </div>
+<span class="sk-pageno">2 / 3</span></section>
+<section class="slide s3-kpi">
+  <div class="sk-h">デモ実行結果</div>
+  <div class="s3-content">
+    <div class="s3-kpi-wrapper">
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">対応構図パターン</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">3</span>
+          <span class="s3-kpi-unit">種</span>
+        </div>
+        <div class="s3-kpi-description">表紙・本文・KPIの3構図で検証</div>
+        <div class="s3-kpi-supplement">今回のデモ範囲</div>
+      </div>
+
+      <div class="s3-col-divider"></div>
+
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">最終出力ファイル</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">1</span>
+          <span class="s3-kpi-unit">本</span>
+        </div>
+        <div class="s3-kpi-description">index.html 1ファイルに全スライドを集約</div>
+        <div class="s3-kpi-supplement">画像・PDFも自己完結</div>
+      </div>
+
+      <div class="s3-col-divider"></div>
+
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">レイアウト再現性</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">960×540</span>
+          <span class="s3-kpi-unit">px</span>
+        </div>
+        <div class="s3-kpi-description">画面表示とPDFで同一サイズを維持</div>
+        <div class="s3-kpi-supplement">@pageで印刷サイズを固定</div>
+      </div>
+    </div>
+  </div>
+<span class="sk-pageno">3 / 3</span></section>
+</body>
+</html>

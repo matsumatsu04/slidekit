@@ -9,57 +9,111 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7}
+  :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7;--side-w:240px}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Noto Sans JP',sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
-  header{padding:56px 0 26px;border-bottom:1px solid var(--line)}
-  header .tag{display:inline-block;font-size:12px;color:var(--brand);font-weight:700;letter-spacing:.08em;margin-bottom:10px}
-  header h1{font-size:32px;font-weight:900;letter-spacing:-.01em}
-  header p{color:#555;margin-top:8px;max-width:760px}
-  header .credit{margin-top:10px;font-size:12.5px;color:var(--muted)}
-  header .credit a{color:var(--muted)}
-  header .links{margin-top:16px;font-size:14px}
-  header .links a{color:var(--brand);text-decoration:none;margin-right:18px}
-  header .links a:hover{text-decoration:underline}
-  section{padding:38px 0}
-  h2{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
+  a{color:inherit}
+  button{font-family:inherit}
+
+  /* ===== layout shell ===== */
+  .app{display:flex;align-items:flex-start;min-height:100vh}
+
+  /* ===== sidebar ===== */
+  .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;justify-content:space-between;background:#fff;
+    border-right:1px solid var(--line);padding:22px 14px 16px;z-index:25}
+  .side-logo{font-size:15px;font-weight:900;letter-spacing:-.01em;padding:2px 10px 18px;display:flex;align-items:center;gap:6px}
+  .side-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);display:inline-block}
+  .side-nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
+  .nav-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
+    border:none;background:none;font-size:13.5px;color:#444;padding:9px 11px;border-radius:9px;cursor:pointer;white-space:nowrap}
+  .nav-item:hover{background:var(--surf)}
+  .nav-item.active{background:var(--ink);color:#fff;font-weight:700}
+  .nav-item .cnt{font-size:11px;opacity:.55}
+  .nav-item.active .cnt{opacity:.75;color:#fff}
+  .nav-sep{height:1px;background:var(--line);margin:10px 6px}
+  .side-bottom{display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line)}
+  .side-bottom a{font-size:12.5px;color:#555;padding:8px 11px;border-radius:9px;text-decoration:none;display:block}
+  .side-bottom a:hover{background:var(--surf);color:var(--brand)}
+
+  /* ===== main ===== */
+  .main{flex:1;min-width:0}
+  .toolbar-sticky{position:sticky;top:0;z-index:20;background:rgba(250,250,250,.94);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:14px 28px}
+  .toolbar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .toolbar-row + .toolbar-row{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .lab{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+
+  .search{position:relative;flex:1;min-width:200px;max-width:420px}
+  .search input{width:100%;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 32px;background:#fff}
+  .search input:focus{outline:none;border-color:var(--brand)}
+  .search::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.5}
+  .match-count{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto}
+
+  .density{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;flex:0 0 auto}
+  .density button{padding:8px 12px;background:#fff;border:none;border-right:1px solid var(--line);cursor:pointer;display:flex;align-items:center}
+  .density button:last-child{border-right:none}
+  .density button.active{background:var(--surf)}
+  .dot-row{display:flex;gap:2px;align-items:flex-end;height:12px}
+  .dot-row i{width:5px;background:#b0b4bc;border-radius:1px;display:block;height:100%}
+  .density button.active .dot-row i{background:var(--brand)}
+
+  input[type=color]{width:32px;height:32px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;padding:2px}
+  input[type=text].hex{width:88px;font-family:ui-monospace,Menlo,monospace;font-size:13px;border:1px solid var(--line);
+    border-radius:8px;padding:7px 9px;text-transform:uppercase}
+  .swatches{display:flex;gap:6px}
+  .swatch{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  .swatch.active{box-shadow:0 0 0 2px var(--ink)}
+  .link-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;white-space:nowrap}
+  .divider{width:1px;height:22px;background:var(--line);flex:0 0 auto}
+  .chip-btn{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#555;white-space:nowrap}
+  .chip-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  label.chk{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+
+  .content{padding:22px 28px 60px}
+  .content-head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+  .content-head h2{font-size:16px;font-weight:900}
+
   .btn{display:inline-block;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--ink);
        border-radius:8px;padding:7px 12px;cursor:pointer;text-decoration:none;margin-right:8px}
   .btn:hover{border-color:var(--brand);color:var(--brand)}
   .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-  .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:14px;
-           border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
-  .toolbar .lab{font-size:12px;color:var(--muted);font-weight:700}
-  .toolbar input[type=color]{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;padding:2px}
-  .toolbar input[type=text]{width:96px;font-family:ui-monospace,Menlo,monospace;font-size:13px;border:1px solid var(--line);
-           border-radius:8px;padding:7px 10px;text-transform:uppercase}
-  .swatches{display:flex;gap:7px}
-  .swatch{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
-  .swatch.active{box-shadow:0 0 0 2px var(--ink)}
-  .toolbar .reset{margin-left:auto;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
-  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;position:sticky;top:0;z-index:20;
-           background:rgba(250,250,250,.94);backdrop-filter:blur(8px);padding:12px 0;align-items:center}
-  .chip{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:#555;white-space:nowrap}
-  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .chip small{opacity:.55;font-size:11px;margin-left:3px}
-  .search{position:relative;margin-left:auto}
-  .search input{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 32px;width:220px;background:#fff}
-  .search input:focus{outline:none;border-color:var(--brand)}
-  .search::before{content:"🔍";position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.5}
+
   .noresult{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
-  .totop{position:fixed;right:22px;bottom:22px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
-    background:#fff;color:#555;font-size:17px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.10);display:none}
-  .totop:hover{border-color:var(--brand);color:var(--brand)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .loading{color:var(--muted);font-size:14px;padding:20px 0}
+
+  .grid{display:grid;gap:20px}
+  .grid[data-density="2"]{grid-template-columns:repeat(2,1fr)}
+  .grid[data-density="3"]{grid-template-columns:repeat(3,1fr)}
+  .grid[data-density="4"]{grid-template-columns:repeat(4,1fr)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+    transition:transform .18s ease,box-shadow .18s ease}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,20,30,.09)}
   .thumb{position:relative;width:100%;overflow:hidden;background:#e8e8e8;border-bottom:1px solid var(--line);cursor:pointer}
-  .thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none;background:#e8e8e8}
+  .thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none;
+    background:#e8e8e8;transform:scale(var(--fit-scale,1));transition:transform .25s ease}
+  .thumb:hover iframe{transform:scale(calc(var(--fit-scale,1) * 1.02))}
   .tintlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color;background:transparent;z-index:2}
   .thumb .open{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;
-        opacity:0;transition:opacity .15s;background:linear-gradient(transparent 60%,rgba(0,0,0,.18))}
+        opacity:0;transition:opacity .15s;background:linear-gradient(transparent 60%,rgba(0,0,0,.18));z-index:2}
   .thumb:hover .open{opacity:1}
   .thumb .open span{background:#fff;border-radius:6px;font-size:11px;padding:3px 8px;color:#333}
+
+  .fav-btn{position:absolute;top:8px;right:8px;z-index:3;width:29px;height:29px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.92);color:#c8ccd2;font-size:15px;cursor:pointer;opacity:0;
+    transition:opacity .15s,color .15s,transform .15s;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 4px rgba(0,0,0,.14)}
+  .thumb:hover .fav-btn{opacity:1}
+  .fav-btn.active{opacity:1;color:#f5b400}
+  .fav-btn:hover{transform:scale(1.12)}
+
+  .tray-add{position:absolute;left:8px;bottom:8px;z-index:3;font-size:11px;font-weight:700;border:none;border-radius:999px;
+    padding:6px 11px;background:rgba(255,255,255,.95);color:#333;cursor:pointer;opacity:0;transition:opacity .15s,background .15s,color .15s;
+    box-shadow:0 1px 4px rgba(0,0,0,.14)}
+  .thumb:hover .tray-add{opacity:1}
+  .tray-add.added{opacity:1;background:var(--brand);color:#fff}
+
   .card .body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
   .card .name{font-size:14px;font-weight:700;word-break:break-all}
   .card .pid{font-size:11px;font-weight:700;color:#fff;background:var(--ink);border-radius:5px;padding:1px 7px;margin-right:6px;letter-spacing:.02em}
@@ -69,57 +123,128 @@
   .tier.mid{color:#8a6100;background:#fdf3d7}
   .tier.low{color:#a33;background:#fdeaea}
   .card .sum{font-size:12px;color:#777;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+  #designs{margin-top:46px;padding-top:6px;border-top:1px solid var(--line)}
   .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
   .ds-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
   .ds-card h3{font-size:18px}.ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
   .ds-card .swatches{display:flex;gap:6px;margin-bottom:14px}
   .ds-card .sw{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.06)}
-  footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:13px;line-height:1.8}
-  footer a{color:var(--muted)}
-  .loading{color:var(--muted);font-size:14px;padding:20px 0}
+
+  .totop{position:fixed;right:22px;bottom:22px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+    background:#fff;color:#555;font-size:17px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.10);display:none;
+    align-items:center;justify-content:center;transition:bottom .2s}
+  .totop:hover{border-color:var(--brand);color:var(--brand)}
+  .totop.raised{bottom:78px}
+  body.has-tray{padding-bottom:64px}
+
+  /* ===== deck tray ===== */
+  .tray-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);
+    box-shadow:0 -4px 16px rgba(0,0,0,.06);padding:10px 24px;display:none;align-items:center;gap:14px;flex-wrap:wrap}
+  .tray-bar.show{display:flex}
+  .tray-label{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .tray-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+  .tray-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;background:var(--surf);border-radius:999px;
+    padding:5px 6px 5px 12px;white-space:nowrap}
+  .tray-x{border:none;background:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:50%}
+  .tray-x:hover{color:#c0392b;background:#fff}
+  .tray-actions{display:flex;gap:8px;flex:0 0 auto}
+  .tray-actions .btn{margin-right:0}
+  .btn.copy-ok{background:#0d7a43;color:#fff;border-color:#0d7a43}
+
+  /* ===== responsive ===== */
+  @media (max-width:1100px){
+    .grid[data-density="4"]{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:900px){
+    .app{flex-direction:column}
+    .sidebar{position:sticky;top:0;width:100%;flex:0 0 auto;height:auto;flex-direction:row;align-items:center;
+      overflow-x:auto;padding:10px 14px;gap:10px;border-right:none;border-bottom:1px solid var(--line)}
+    .side-logo{padding:0 6px 0 0;flex:0 0 auto}
+    .side-nav{flex-direction:row;flex-wrap:nowrap;overflow-x:visible;flex:0 0 auto;gap:6px}
+    .nav-item{white-space:nowrap;border:1px solid var(--line);border-radius:999px}
+    .nav-item.active{border-color:var(--ink)}
+    .nav-sep{display:none}
+    .side-bottom{flex-direction:row;border-top:none;padding-top:0;flex:0 0 auto;gap:6px;margin-left:6px}
+    .toolbar-sticky{position:static}
+    .grid[data-density="3"],.grid[data-density="4"]{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr !important}
+    .content{padding:18px 16px 60px}
+    .toolbar-sticky{padding:12px 16px}
+  }
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <span class="tag">SLIDEKIT GALLERY</span>
-  <h1>構図パターン &amp; デザインシステム</h1>
-  <p>AIスライド生成のための「構図」と「見た目」のライブラリ。気に入ったパターンの Markdown をダウンロードし、デザインシステムと組み合わせてスライド生成AIに渡せば、統一感のあるスライドが作れます。</p>
-  <div class="links">
-    <a id="repoLink" href="#">GitHub リポジトリ ↗</a>
-    <a href="#patterns">構図パターンへ ↓</a>
-    <a href="#designs">デザインシステムへ ↓</a>
-    <a href="/gallery/deck-review.html">デッキレビュー ↗</a>
-  </div>
-</div></header>
+<div class="app">
+  <aside class="sidebar">
+    <div>
+      <div class="side-logo"><span class="dot"></span>SlideKit</div>
+      <nav class="side-nav" id="sideNav">
+        <button class="nav-item active" id="navAll">すべて<span class="cnt" id="allCount">…</span></button>
+        <button class="nav-item" id="navFav">⭐ お気に入り<span class="cnt" id="favCount">0</span></button>
+        <div class="nav-sep"></div>
+      </nav>
+    </div>
+    <div class="side-bottom">
+      <a href="#designs">デザインシステム</a>
+      <a href="/gallery/deck-review.html">デッキレビュー ↗</a>
+      <a id="repoLink" href="#">GitHub ↗</a>
+    </div>
+  </aside>
 
-<section id="patterns"><div class="wrap">
-  <h2>構図パターン（<span id="pcount">…</span>）</h2>
-  <div class="toolbar">
-    <span class="lab">プレビューの色</span>
-    <input type="color" id="tint" value="#1E2E53" aria-label="プレビューの色">
-    <input type="text" id="tintHex" value="#1E2E53" maxlength="7" aria-label="カラーコード">
-    <div class="swatches" id="swatches"></div>
-    <button class="reset" id="tintReset">グレーに戻す</button>
-    <span style="width:1px;height:24px;background:var(--line);margin:0 4px"></span>
-    <label class="lab" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
-    <span class="lab">見出しデザイン</span>
-    <button class="chip" id="hA" data-h="a">A：番号＋下線</button>
-    <button class="chip" id="hB" data-h="b">B：縦バー</button>
-  </div>
-  <div class="filters" id="filters">
-    <span class="search"><input type="search" id="q" placeholder="パターン名・ID(P001)・説明で検索" aria-label="パターン検索"></span>
-  </div>
-  <div class="grid" id="grid"></div>
-  <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
-  <div class="loading" id="loading">読み込み中…</div>
-  <button class="totop" id="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
-</div></section>
+  <main class="main">
+    <div class="toolbar-sticky">
+      <div class="toolbar-row">
+        <span class="search"><input type="search" id="q" placeholder="パターン名・ID(P001)・説明で検索" aria-label="パターン検索"></span>
+        <div class="density" id="density" role="group" aria-label="表示密度">
+          <button data-d="2" title="2列表示" aria-label="2列表示"><span class="dot-row"><i style="height:60%"></i><i style="height:60%"></i></span></button>
+          <button data-d="3" title="3列表示" aria-label="3列表示"><span class="dot-row"><i style="height:70%"></i><i style="height:100%"></i><i style="height:70%"></i></span></button>
+          <button data-d="4" title="4列表示" aria-label="4列表示"><span class="dot-row"><i style="height:50%"></i><i style="height:80%"></i><i style="height:80%"></i><i style="height:50%"></i></span></button>
+        </div>
+        <span class="match-count" id="matchCount"></span>
+      </div>
+      <div class="toolbar-row">
+        <span class="lab">プレビューの色</span>
+        <input type="color" id="tint" value="#1E2E53" aria-label="プレビューの色">
+        <input type="text" class="hex" id="tintHex" value="#1E2E53" maxlength="7" aria-label="カラーコード">
+        <div class="swatches" id="swatches"></div>
+        <button class="link-btn" id="tintReset">グレーに戻す</button>
+        <span class="divider"></span>
+        <label class="chk"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
+        <span class="lab">見出しデザイン</span>
+        <button class="chip-btn" id="hA" data-h="a">A：番号＋下線</button>
+        <button class="chip-btn" id="hB" data-h="b">B：縦バー</button>
+      </div>
+    </div>
 
-<section id="designs"><div class="wrap">
-  <h2>デザインシステム</h2>
-  <div class="ds-grid" id="dsGrid"></div>
-</div></section>
+    <div class="content">
+      <div class="content-head">
+        <h2 id="sectionTitle">構図パターン</h2>
+      </div>
+      <div class="grid" id="grid" data-density="3"></div>
+      <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
+      <div class="loading" id="loading">読み込み中…</div>
 
+      <section id="designs">
+        <div class="content-head"><h2>デザインシステム</h2></div>
+        <div class="ds-grid" id="dsGrid"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<button class="totop" id="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
+
+<div class="tray-bar" id="trayBar">
+  <span class="tray-label">構成に追加中（<span id="trayCount">0</span>）</span>
+  <div class="tray-chips" id="trayChips"></div>
+  <div class="tray-actions">
+    <button class="btn" id="trayCopy">IDをコピー</button>
+    <button class="btn" id="trayClear">クリア</button>
+  </div>
+</div>
 
 <script>
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
@@ -207,10 +332,93 @@ for(const d of DESIGNS){
   dsGrid.appendChild(el);
 }
 
+// ===== お気に入り =====
+let FAVS=new Set(JSON.parse(localStorage.getItem('sk-favs')||'[]'));
+function saveFavs(){localStorage.setItem('sk-favs',JSON.stringify([...FAVS]));}
+function isFav(id){return FAVS.has(id);}
+function toggleFav(id,ev){
+  if(ev){ev.stopPropagation();ev.preventDefault();}
+  if(FAVS.has(id)) FAVS.delete(id); else FAVS.add(id);
+  saveFavs();
+  document.getElementById('favCount').textContent=FAVS.size;
+  render();
+}
+
+// ===== デッキ構成トレイ（カート）=====
+let TRAY=JSON.parse(localStorage.getItem('sk-tray')||'[]');
+function saveTray(){
+  localStorage.setItem('sk-tray',JSON.stringify(TRAY));
+  document.body.classList.toggle('has-tray',TRAY.length>0);
+}
+function inTray(id){return TRAY.some(t=>t.id===id);}
+function toggleTray(id,name,ev){
+  if(ev){ev.stopPropagation();ev.preventDefault();}
+  if(inTray(id)) TRAY=TRAY.filter(t=>t.id!==id);
+  else TRAY.push({id,name});
+  saveTray();renderTray();render();
+}
+function removeFromTray(id,ev){
+  if(ev){ev.stopPropagation();ev.preventDefault();}
+  TRAY=TRAY.filter(t=>t.id!==id);
+  saveTray();renderTray();render();
+}
+function clearTray(){TRAY=[];saveTray();renderTray();render();}
+function renderTray(){
+  const bar=document.getElementById('trayBar');
+  const chips=document.getElementById('trayChips');
+  const countEl=document.getElementById('trayCount');
+  const totop=document.getElementById('totop');
+  countEl.textContent=TRAY.length;
+  if(!TRAY.length){
+    bar.classList.remove('show');
+    chips.innerHTML='';
+    totop.classList.remove('raised');
+    return;
+  }
+  bar.classList.add('show');
+  totop.classList.add('raised');
+  chips.innerHTML=TRAY.map(t=>`<span class="tray-chip">${t.id} ${t.name}<button class="tray-x" title="削除" onclick="removeFromTray('${t.id}',event)">×</button></span>`).join('');
+}
+async function copyTrayIds(){
+  const text=TRAY.map(t=>t.id).join(', ');
+  if(!text) return;
+  let ok=false;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); ok=true; }
+  }catch(e){ ok=false; }
+  if(!ok){
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,text.length);
+      ok=document.execCommand('copy');
+      document.body.removeChild(ta);
+    }catch(e2){ ok=false; }
+  }
+  const btn=document.getElementById('trayCopy');
+  btn.textContent = ok ? 'コピーしました ✓' : 'コピーに失敗しました';
+  btn.classList.toggle('copy-ok',ok);
+  setTimeout(()=>{btn.textContent='IDをコピー';btn.classList.remove('copy-ok');},1800);
+}
+document.getElementById('trayCopy').addEventListener('click',copyTrayIds);
+document.getElementById('trayClear').addEventListener('click',clearTray);
+
+// ===== 表示密度 =====
+let DENSITY=localStorage.getItem('sk-density')||'3';
+function setDensity(d){
+  DENSITY=d; localStorage.setItem('sk-density',d);
+  document.getElementById('grid').dataset.density=d;
+  [...document.querySelectorAll('.density button')].forEach(b=>b.classList.toggle('active',b.dataset.d===d));
+  requestAnimationFrame(fit);
+}
+[...document.querySelectorAll('.density button')].forEach(b=>b.addEventListener('click',()=>setDensity(b.dataset.d)));
+
+// ===== データ & 一覧描画 =====
 let DATA=[],active='all',QUERY='';
-const grid=document.getElementById('grid'),filters=document.getElementById('filters');
+const grid=document.getElementById('grid');
 function matches(p){
-  if(active!=='all'&&p.category!==active) return false;
+  if(active==='__fav'){ if(!isFav(p.id)) return false; }
+  else if(active!=='all' && p.category!==active) return false;
   if(!QUERY) return true;
   const q=QUERY.toLowerCase();
   return p.name.toLowerCase().includes(q)||(p.summary||'').toLowerCase().includes(q)||p.category.includes(QUERY)||(p.id||'').toLowerCase()===q;
@@ -219,19 +427,25 @@ function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
     const w=t.clientWidth,s=w/960;
     t.style.height=(540*s)+'px';
-    const f=t.querySelector('iframe'); if(f) f.style.transform=`scale(${s})`;
+    const f=t.querySelector('iframe'); if(f) f.style.setProperty('--fit-scale',s);
   });
 }
 function render(){
   grid.innerHTML='';
   const list=DATA.filter(matches);
   document.getElementById('noresult').style.display=list.length?'none':'block';
+  document.getElementById('matchCount').textContent=DATA.length?`${list.length} / ${DATA.length} 件`:'';
+  const titleMap={all:'構図パターン',__fav:'⭐ お気に入り'};
+  document.getElementById('sectionTitle').textContent=titleMap[active]||active;
   for(const p of list){
+    const fav=isFav(p.id), tray=inTray(p.id);
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
       <div class="thumb" onclick="openView('${p.name}','${p.category}','${p.id||''}')">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
+        <button class="fav-btn ${fav?'active':''}" title="お気に入り" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'}</button>
         <div class="open"><span>拡大して開く ↗</span></div>
+        <button class="tray-add ${tray?'added':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'追加済み ✓':'＋ 構成に追加'}</button>
       </div>
       <div class="body">
         <div><span class="cat">${p.category}</span><span class="tier ${p.tier||'mid'}" title="スライド生成AIでの再現性">${{high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'}[p.tier]||''}</span></div>
@@ -243,28 +457,38 @@ function render(){
   applyTint();
   requestAnimationFrame(fit);
 }
+function syncNavActive(){
+  [...document.querySelectorAll('.nav-item')].forEach(b=>{
+    const isThis=(b.id==='navAll'&&active==='all')||(b.id==='navFav'&&active==='__fav')||(b.dataset.cat&&b.dataset.cat===active);
+    b.classList.toggle('active',isThis);
+  });
+}
+document.getElementById('navAll').onclick=()=>{active='all';syncNavActive();render();};
+document.getElementById('navFav').onclick=()=>{active='__fav';syncNavActive();render();};
+
 fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   DATA=j.patterns;
-  document.getElementById('pcount').textContent=DATA.length;
   document.getElementById('loading').style.display='none';
+  document.getElementById('allCount').textContent=DATA.length;
   const counts={};DATA.forEach(p=>counts[p.category]=(counts[p.category]||0)+1);
-  const cats=['all',...Array.from(new Set(DATA.map(p=>p.category)))];
-  const searchBox=document.querySelector('.search');
-  cats.forEach((c,i)=>{
-    const b=document.createElement('button');b.className='chip'+(i===0?' active':'');
-    b.innerHTML=c==='all'?`すべて<small>${DATA.length}</small>`:`${c}<small>${counts[c]}</small>`;
-    b.onclick=()=>{active=c;[...filters.querySelectorAll('.chip')].forEach(x=>x.classList.remove('active'));b.classList.add('active');render();};
-    filters.insertBefore(b,searchBox);
+  const cats=Array.from(new Set(DATA.map(p=>p.category)));
+  const sideNav=document.getElementById('sideNav');
+  cats.forEach(c=>{
+    const b=document.createElement('button');b.className='nav-item';b.dataset.cat=c;
+    b.innerHTML=`<span>${c}</span><span class="cnt">${counts[c]}</span>`;
+    b.onclick=()=>{active=c;syncNavActive();render();};
+    sideNav.appendChild(b);
   });
-  // 検索（入力のたびに絞り込み）
   document.getElementById('q').addEventListener('input',e=>{QUERY=e.target.value.trim();render();});
-  // トップに戻る
   const totop=document.getElementById('totop');
-  window.addEventListener('scroll',()=>{totop.style.display=window.scrollY>600?'block':'none'});
+  window.addEventListener('scroll',()=>{totop.style.display=window.scrollY>600?'flex':'none'});
   totop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   render();
+  setDensity(DENSITY);
   setTint('#1E2E53'); // デフォルト：brand-bネイビー（ブランドガイド navy）
 }).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
+
+renderTray();
 window.addEventListener('resize',()=>requestAnimationFrame(fit));
 window.addEventListener('load',()=>requestAnimationFrame(fit));
 </script>

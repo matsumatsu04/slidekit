@@ -2,27 +2,28 @@
 name: slidekit-assemble
 description: >-
   プレゼンの目的・対象・枚数と内容をヒアリングし、用意済みのデザインシステム（SLIDEKIT-DESIGN.md）と
-  構図パターンライブラリ（patterns/SLIDE-PATTERN-*）を組み合わせて、スライド構成案を提示・承認の上、最終設計書
-  SLIDEKIT-DECK.md を1ファイルで生成するスキル。SLIDEKIT形式でスライドを作る・DECKまで組み上げる場面で発動する
-  （単なるアウトライン案だけが欲しい場合は対象外）。このファイル1枚をスライド生成AI（Claudeのデザイン機能・
-  NotebookLM等）に渡せばスライドが完成する。「設計書を作って」「プレゼンを組み立てて」「SLIDEKIT-DECK を作って」
-  「スライドの構成案を出して」と言われたら発動する。デザインシステム単体の生成は slidekit-design、構図パターン単体の
-  定義は slidekit-layout の担当。
+  構図パターンライブラリ（patterns/SLIDE-PATTERN-*）を組み合わせて、スライド構成案を提示・承認の上、
+  HTMLデッキ（index.html＋PDF書き出し）を生成するスキル。デザインは構図パターンHTML＋テーマ変数注入で
+  確定するためピクセルズレ・生成コストがない。「スライドを作って」「スライドジェネレーター」「設計書を作って」
+  「プレゼンを組み立てて」「SLIDEKIT-DECK を作って」「スライドの構成案を出して」と言われたら発動する。
+  デザインシステム単体の生成は slidekit-design、構図パターン単体の定義は slidekit-layout の担当。
 ---
 
-# slidekit-assemble — 設計書（SLIDEKIT-DECK.md）生成
+# slidekit-assemble — HTMLデッキ生成
 
 ## このスキルは何をするか
 
 プレゼンのブリーフ（目的・対象・枚数）と内容を受け取り、デザインシステムと構図パターンを組み合わせて
-**最終設計書 `SLIDEKIT-DECK.md`** を 1 ファイルで生成する。このファイルには
-「選んだデザインシステムの中身・各ページの構図・実際のコンテンツ」がすべて埋め込まれているため、
-これ 1 枚をスライド生成 AI に渡せばスライドが完成する。
+**HTMLデッキ（`index.html`＋`deck.pdf`）** を生成する。スライド1枚＝構図パターンHTML準拠のフラグメントで、
+テーマ色はCSS変数注入で確定する（画像生成なし・ピクセルズレなし・デザインのブレなし）。
+設計書 `SLIDEKIT-DECK.md`（人間レビュー用サマリー）も併せて出力する。
 
-成果物。
-- `examples/{name}/SLIDEKIT-DECK.md`（または任意の出力先）
+成果物（出力先は案件フォルダ or `output/`）。
+- `{デッキフォルダ}/slides/*.html`（フラグメント）＋ `deck-config.json`
+- `{デッキフォルダ}/index.html`（ビルド結果・画面表示用）＋ `deck.pdf`（納品用）
+- `SLIDEKIT-DECK.md`（構成サマリー）
 
-形式の正は常に `SPEC.md` の「3. SLIDEKIT-DECK.md」セクション。**着手前に必ず `SPEC.md` を読む。**
+形式の正は常に `SPEC.md` と **`docs/html-deck-generation.md`**。**着手前に必ず両方読む。**
 
 > 3 スキルの締めくくり。`slidekit-design`（見た目）と `slidekit-layout`（構図）の成果物を、
 > ここで「実コンテンツ」と結合して完成形にする。
@@ -133,21 +134,28 @@ N. [締め]      まとめと次の一歩
 > **長文スロットの扱い：** パターンの推奨文字数を超える内容は、**要約して収める**か、**スライドを分割**する。
 > 1スロットに詰め込んで構図を破綻させない（必要なら構成案に戻ってスライドを足す）。
 
-### 7. pptx を直接生成する（既定の納品ルート）
-DECK と同時に **`deck.json`**（DECKの機械可読版）を同じフォルダに出力し、ビルダーで pptx を生成する:
+### 7. HTMLデッキを生成する（既定の納品ルート）
+手順の正は **`docs/html-deck-generation.md`**（必読）。要点:
+1. `{デッキフォルダ}/slides/` に連番フラグメント（01-cover.html…）を書く。
+   **各フラグメントは割り当てた構図パターンHTML（patterns/SLIDE-PATTERN-{name}/）の .slide 構造・CSSをコピーし、
+   クラスに `s{連番}-` プレフィックスを付け、テキストだけ実文言に差し替える**（レイアウト構造・数値は変えない。ギャラリー＝正）。
+   色は直書き禁止（var(--sk-accent) / var(--sk-soft) / #333333 / #8A8F98 のみ）。
+   共通見出しはビルダー提供の `.sk-h` / `.sk-msg` を使う（本文はtop:128px以降）。
+   背景画像スライドは `assets/brand/` の素材を相対参照（ビルダーが自己完結化する）。
+2. `deck-config.json` にタイトル・テーマ色（選んだデザインシステムのpptx theme JSONの色を `#` 付きで）を書く。
+3. ビルド＆PDF書き出し:
 ```bash
-cd tools/pptx && node build-pptx.mjs <deck.jsonのパス> <出力.pptx>
+node tools/html-deck/build-html-deck.mjs <デッキフォルダ>
+bash tools/html-deck/export-pdf.sh <デッキフォルダ>
 ```
-- deck.json スキーマ・実装済みレンダラ一覧・変換の約束事は **`docs/pptx-generation.md`** を必ず読む。
-- パターン割り当て時は、**レンダラ実装済みパターンを優先**する（未実装はbulletsフォールバックになり構図が失われる）。
-- 生成後は **レンダリングQA（soffice→pdftoppm→視覚チェック・1サイクル）** を必ず行う（QAのやり方は下の「環境適応」参照）。
-- 納品は **Google Slides 変換が第一候補**（詳細は docs/pptx-generation.md「納品」節）。
-  PowerPointで直接編集できる形式（テキスト・図形がオブジェクトのまま）を必ず維持する。
+4. **QA（1サイクル・必須）**: 生成された qa-*.jpg を視覚チェック（環境適応の表参照）。
+   はみ出し・重なり・語中折返し・整列ズレ・余白の偏りを確認し、修正して再ビルド。
 
-### 8. 使い方を伝える
-- 既定: 生成した pptx / Google Slides リンクを渡す（編集可能形式）。
-- 代替: `SLIDEKIT-DECK.md` をスライド生成AI（Claudeのデザイン機能等）に渡す従来ルートも案内できる
-  （画像ベースになり後から文字修正できないため既定にしない。pptx生成ツールがない環境のみ）。
+### 8. 納品して使い方を伝える
+- 既定: **`index.html`（画面表示・そのままプレゼン可）＋ `deck.pdf`（共有・印刷用）** を渡す。
+- **文字修正はユーザーからの指示を受けてAIが即修正**する（フラグメント編集→再ビルド。ユーザーはHTMLを触らない前提）。
+- **編集可能形式（Google Slides）が必要な案件のみ**、代替として `tools/pptx` ルート
+  （deck.json→build-pptx.mjs→Google Slides変換。docs/pptx-generation.md）を使う。PowerPointは所有していないため納品先はGoogle Slides。
 
 ## 環境適応（どのAI・どの環境でも動かすための分岐）
 
@@ -156,21 +164,21 @@ cd tools/pptx && node build-pptx.mjs <deck.jsonのパス> <出力.pptx>
 
 | 依存 | ある場合 | ない場合の代替 |
 |---|---|---|
+| Node.js（`tools/html-deck`） | フラグメント→build-html-deck.mjs（既定） | フラグメントを手動結合した単一HTMLを書く（共通CSSは docs/html-deck-generation.md からコピー） |
+| Chrome（PDF書き出し） | export-pdf.sh で deck.pdf＋qa画像 | index.html をブラウザで開き印刷→PDF を案内。QAはブラウザ目視 |
 | サブエージェント機構（Agent tool / spawn_agent 等） | 生成に関与していない別エージェントに視覚QAさせる | **自分でQA画像を1枚ずつ開いて客観チェック**（観点: はみ出し/重なり/語中折返し/整列ズレ/余白の偏り）。1サイクルで止める |
-| Google Drive 連携（MCP等） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→ダブルクリックでGoogle Slidesとして編集可」と一言案内 |
-| Node.js + pptxgenjs（`tools/pptx`） | deck.json→build-pptx.mjs（既定） | `SLIDEKIT-DECK.md` をスライド生成AIに渡す代替ルート（編集不可になる旨を明示） |
-| LibreOffice/Poppler（QAレンダリング） | soffice→pdftoppm でQA画像化 | pptxを直接開ける環境なら目視、無理ならQAスキップを**正直に報告**（黙って省略しない） |
+| Google Drive 連携（MCP等・Google Slides納品時のみ） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→開くとGoogle Slidesとして編集可」と一言案内 |
 | ローカルWebサーバー（デッキレビューア） | `/gallery/deck-review.html` で通し確認 | QA画像ファイルを直接開いて確認（レビューアは任意の補助） |
 
-- パスは正本リポジトリからの相対（`tools/pptx/` `docs/` `patterns/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
+- パスは正本リポジトリからの相対（`tools/html-deck/` `tools/pptx/` `docs/` `patterns/` `assets/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
 - 承認ゲート・自己検証・成果物提示の表形式など**このSKILLの手順自体は環境によらず同一**。
 
 ## 完了基準（Definition of Done）
-- `SLIDEKIT-DECK.md` が `SPEC.md` の全セクションを満たす。
-- デザインシステムと各構図が**参照ではなく埋め込み**になっている（1ファイルで完結）。
-- 各スライドのスロットが**実際の文言**で埋まっている（プレースホルダが残っていない）。
+- `SLIDEKIT-DECK.md`（構成サマリー）が `SPEC.md` の形式を満たす。
+- 全フラグメントが**割り当てた構図パターンHTMLの構造に忠実**で、テキストが**実際の文言**で埋まっている（プレースホルダが残っていない）。
+- 色の直書きがない（var(--sk-accent)/var(--sk-soft)/#333333/#8A8F98 のみ）。
 - 構成・パターン割り当てがユーザー承認済み。
-- `deck.json` を出力し、`build-pptx.mjs` で pptx を生成、レンダリングQA（1サイクル）を通過している。
+- `build-html-deck.mjs` でビルドし、`index.html`＋`deck.pdf` を生成、視覚QA（1サイクル）を通過している。
 
 ## 自己検証
 出力前に確認し、結果は**ユーザーへの最終報告に記載**する（成果物ファイル本体には書かない）。

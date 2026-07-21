@@ -1,0 +1,107 @@
+<section class="slide s3-kpi">
+  <div class="sk-h">デモ実行結果</div>
+  <div class="s3-content">
+    <div class="s3-kpi-wrapper">
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">対応構図パターン</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">3</span>
+          <span class="s3-kpi-unit">種</span>
+        </div>
+        <div class="s3-kpi-description">表紙・本文・KPIの3構図で検証</div>
+        <div class="s3-kpi-supplement">今回のデモ範囲</div>
+      </div>
+
+      <div class="s3-col-divider"></div>
+
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">最終出力ファイル</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">1</span>
+          <span class="s3-kpi-unit">本</span>
+        </div>
+        <div class="s3-kpi-description">index.html 1ファイルに全スライドを集約</div>
+        <div class="s3-kpi-supplement">画像・PDFも自己完結</div>
+      </div>
+
+      <div class="s3-col-divider"></div>
+
+      <div class="s3-kpi-col">
+        <div class="s3-kpi-label">レイアウト再現性</div>
+        <div class="s3-kpi-number-row">
+          <span class="s3-kpi-number">960×540</span>
+          <span class="s3-kpi-unit">px</span>
+        </div>
+        <div class="s3-kpi-description">画面表示とPDFで同一サイズを維持</div>
+        <div class="s3-kpi-supplement">@pageで印刷サイズを固定</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.s3-content {
+  position: absolute;
+  top: 76px;
+  left: 40px;
+  right: 40px;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+.s3-kpi-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.s3-kpi-col {
+  flex: 1;
+  border: 1px solid var(--sk-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  gap: 8px;
+}
+.s3-kpi-label {
+  font-size: 11px;
+  color: var(--sk-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.s3-kpi-number-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.s3-kpi-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--sk-accent);
+  line-height: 1;
+}
+.s3-kpi-unit {
+  font-size: 20px;
+  color: var(--sk-muted);
+  font-weight: normal;
+}
+.s3-kpi-description {
+  font-size: 13px;
+  color: #333333;
+  text-align: center;
+  line-height: 1.4;
+}
+.s3-kpi-supplement {
+  font-size: 11px;
+  color: var(--sk-muted);
+  text-align: center;
+}
+.s3-col-divider {
+  width: 1px;
+  height: 60%;
+  background: var(--sk-soft);
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 12px;
+}
+</style>

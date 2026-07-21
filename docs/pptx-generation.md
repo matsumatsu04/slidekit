@@ -1,4 +1,7 @@
-# SLIDEKIT-DECK.md → pptx 直接生成ガイド
+# SLIDEKIT-DECK.md → pptx 直接生成ガイド（代替ルート）
+
+> **2026/7改定: 既定の納品ルートは HTMLデッキ（`docs/html-deck-generation.md`）になった。**
+> この pptx ルートは「編集可能形式（Google Slides）が必要な案件のみ」の代替として使う。
 
 DECKファイルから、**後から文字修正できる編集可能な `.pptx`** を直接生成する手順。
 スライド生成AI（画像ベース）を経由しないため、テキスト・図形が全てPowerPoint/Googleスライドのオブジェクトとして残る。

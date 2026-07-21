@@ -1,0 +1,77 @@
+<section class="slide s2-body">
+  <div class="sk-h">本ツールの3つの特徴</div>
+  <div class="sk-msg">スライドはフラグメント単位で管理し、色は変数注入だけでテーマを反映します</div>
+  <div class="s2-content">
+    <div class="s2-item">
+      <div class="s2-badge">01</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">フラグメント管理</div>
+        <div class="s2-item-body">スライド1枚＝1つの自己完結HTMLファイル。連番で並べるだけで順序が決まります。</div>
+      </div>
+    </div>
+    <div class="s2-item">
+      <div class="s2-badge">02</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">色は変数注入のみ</div>
+        <div class="s2-item-body">パターンはグレースケールのまま。deck-config.jsonの色をCSS変数として注入するだけでテーマ色になります。</div>
+      </div>
+    </div>
+    <div class="s2-item">
+      <div class="s2-badge">03</div>
+      <div class="s2-item-content">
+        <div class="s2-item-heading">画面表示とPDFを両立</div>
+        <div class="s2-item-body">1ファイルのindex.htmlが、縦スクロール表示と1枚1ページのPDF書き出しの両方に対応します。</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.s2-content {
+  position: absolute;
+  top: 128px;
+  left: 40px;
+  right: 40px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.s2-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--sk-soft);
+}
+.s2-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.s2-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sk-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  flex-shrink: 0;
+}
+.s2-item-content {
+  flex: 1;
+}
+.s2-item-heading {
+  font-size: 17px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 6px;
+}
+.s2-item-body {
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.6;
+}
+</style>
