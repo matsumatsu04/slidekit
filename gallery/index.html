@@ -152,6 +152,40 @@
   .tray-actions .btn{margin-right:0}
   .btn.copy-ok{background:#0d7a43;color:#fff;border-color:#0d7a43}
 
+  /* ===== プレビューモーダル（ライトボックス＋カルーセル） ===== */
+  .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,12,18,.86);display:none;flex-direction:column}
+  .modal-overlay.show{display:flex}
+  .modal-topbar{display:flex;align-items:center;gap:10px;padding:14px 20px;flex-wrap:wrap;flex:0 0 auto}
+  .modal-pid{font-size:11px;font-weight:700;color:#1a1a1a;background:#fff;border-radius:5px;padding:2px 8px;letter-spacing:.02em}
+  .modal-name{font-size:14px;font-weight:700;color:#fff}
+  .modal-cat{font-size:11px;color:#e8e8ea;background:rgba(255,255,255,.14);border-radius:5px;padding:2px 9px}
+  .modal-tier{font-size:10.5px;border-radius:5px;padding:2px 8px;font-weight:700}
+  .modal-tier.high{color:#0d7a43;background:#e5f6ec}
+  .modal-tier.mid{color:#8a6100;background:#fdf3d7}
+  .modal-tier.low{color:#a33;background:#fdeaea}
+  .modal-sp{flex:1}
+  .modal-topbar .btn{margin-right:0;background:rgba(255,255,255,.94)}
+  .modal-topbar #mFav.active{color:#c9860a;border-color:#f5b400}
+  .modal-topbar #mTray.added{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .modal-close{width:34px;height:34px;flex:0 0 auto;border-radius:50%;border:none;background:rgba(255,255,255,.16);
+    color:#fff;font-size:16px;line-height:1;cursor:pointer;transition:background .15s}
+  .modal-close:hover{background:rgba(255,255,255,.3)}
+  .modal-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 76px}
+  .modal-holder{position:relative;width:960px;height:540px;transform-origin:center center;box-shadow:0 20px 70px rgba(0,0,0,.45);flex:0 0 auto}
+  .modal-holder iframe{position:absolute;inset:0;width:960px;height:540px;border:0;background:#e8e8e8}
+  .modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;flex:0 0 auto;border-radius:50%;
+    border:none;background:rgba(255,255,255,.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s}
+  .modal-nav:hover{background:rgba(255,255,255,.3)}
+  .modal-nav:active{transform:translateY(-50%) scale(.92)}
+  .modal-nav.prev{left:14px}
+  .modal-nav.next{right:14px}
+  .modal-pos{flex:0 0 auto;text-align:center;color:#cfd2d8;font-size:12px;padding:8px 0 18px}
+  @media (max-width:900px){
+    .modal-stage{padding:0 8px}
+    .modal-nav{width:40px;height:40px;font-size:22px}
+  }
+
   /* ===== responsive ===== */
   @media (max-width:1100px){
     .grid[data-density="4"]{grid-template-columns:repeat(3,1fr)}
@@ -215,8 +249,12 @@
         <span class="divider"></span>
         <label class="chk"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
         <span class="lab">見出しデザイン</span>
-        <button class="chip-btn" id="hA" data-h="a">A：番号＋下線</button>
+        <button class="chip-btn" id="hA" data-h="a">A：下線</button>
         <button class="chip-btn" id="hB" data-h="b">B：縦バー</button>
+        <button class="chip-btn" id="hC" data-h="c">C：塗り帯</button>
+        <button class="chip-btn" id="hD" data-h="d">D：2トーン</button>
+        <button class="chip-btn" id="hE" data-h="e">E：ショートバー</button>
+        <button class="chip-btn" id="hF" data-h="f">F：タブ</button>
       </div>
     </div>
 
@@ -247,25 +285,49 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="パターンプレビュー">
+  <div class="modal-topbar">
+    <span class="modal-pid" id="mPid" title="恒久ID（追加・削除があっても変わりません）"></span>
+    <span class="modal-name" id="mName"></span>
+    <span class="modal-cat" id="mCat"></span>
+    <span class="modal-tier" id="mTier" title="スライド生成AIでの再現性"></span>
+    <span class="modal-sp"></span>
+    <a class="btn" id="mDl" download>.md DL</a>
+    <button class="btn" id="mFav">☆ お気に入り</button>
+    <button class="btn" id="mTray">＋ 構成に追加</button>
+    <button class="modal-close" id="mClose" title="閉じる（Esc）" aria-label="閉じる">✕</button>
+  </div>
+  <div class="modal-stage" id="mStage">
+    <button class="modal-nav prev" id="mPrev" title="前へ（←）" aria-label="前のパターンへ">‹</button>
+    <div class="modal-holder" id="mHolder">
+      <iframe id="mFrame" title="パターンプレビュー"></iframe>
+    </div>
+    <button class="modal-nav next" id="mNext" title="次へ（→）" aria-label="次のパターンへ">›</button>
+  </div>
+  <div class="modal-pos" id="mPos"></div>
+</div>
+
 <script>
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html`;
+const PV='v4';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 
 // ===== プレビューの色味（グレースケールを選択色にティント）=====
 let TINT=null; // null = グレーのまま
-function openView(name,cat,id){
-  const t=TINT?TINT.replace('#',''):'';
-  const u=`/gallery/view.html?p=${encodeURIComponent(name)}&cat=${encodeURIComponent(cat||'')}&id=${encodeURIComponent(id||'')}`+(t?`&tint=${t}`:'')+`&head=${HEADING?'on':'off'}&hstyle=${HSTYLE}`;
-  window.open(u,'_blank');
-}
 function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=元色の割合）
   const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
   const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');
   return '#'+m(r)+m(g)+m(b);
 }
-let HEADING=true, HSTYLE='a';
+const HSTYLE_VALUES=['a','b','c','d','e','f'];
+let HEADING=true, HSTYLE=(function(){
+  const saved=localStorage.getItem('sk-hstyle');
+  return HSTYLE_VALUES.includes(saved) ? saved : 'a';
+})();
+// ===== モーダルプレビューの状態（初期化はIIFEより前に必要）=====
+let LAST_LIST=[], MODAL_LIST=[], MODAL_IDX=-1, MODAL_OPEN=false;
 function skInk(fr){
   // テキストは黒#333固定（HTML側）。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
   try{
@@ -279,6 +341,10 @@ function skInk(fr){
 }
 function applyTint(){
   document.querySelectorAll('.thumb iframe').forEach(skInk);
+  if(MODAL_OPEN){
+    const mf=document.getElementById('mFrame');
+    if(mf) skInk(mf);
+  }
 }
 function setTint(hex){
   if(!/^#?[0-9a-fA-F]{6}$/.test(hex)) return;
@@ -297,12 +363,17 @@ function setTint(hex){
   document.getElementById('tint').addEventListener('input',e=>setTint(e.target.value));
   document.getElementById('tintHex').addEventListener('input',e=>setTint(e.target.value.trim()));
   document.getElementById('tintReset').addEventListener('click',()=>{TINT=null;[...document.querySelectorAll('.swatch')].forEach(s=>s.classList.remove('active'));applyTint();});
-  // 見出し: ON/OFF と デザインA/B
-  const hA=document.getElementById('hA'), hB=document.getElementById('hB');
-  function syncH(){ hA.classList.toggle('active',HSTYLE==='a'); hB.classList.toggle('active',HSTYLE==='b'); applyTint(); }
+  // 見出し: ON/OFF と デザインA〜F
+  const hBtns={};
+  HSTYLE_VALUES.forEach(v=>{ hBtns[v]=document.getElementById('h'+v.toUpperCase()); });
+  function syncH(){
+    HSTYLE_VALUES.forEach(v=>hBtns[v].classList.toggle('active',HSTYLE===v));
+    applyTint();
+  }
   document.getElementById('headOn').addEventListener('change',e=>{HEADING=e.target.checked; applyTint();});
-  hA.addEventListener('click',()=>{HSTYLE='a'; syncH();});
-  hB.addEventListener('click',()=>{HSTYLE='b'; syncH();});
+  HSTYLE_VALUES.forEach(v=>{
+    hBtns[v].addEventListener('click',()=>{HSTYLE=v; localStorage.setItem('sk-hstyle',HSTYLE); syncH();});
+  });
   syncH();
 })();
 
@@ -434,18 +505,19 @@ function fit(){
 function render(){
   grid.innerHTML='';
   const list=DATA.filter(matches);
+  LAST_LIST=list; // モーダルのカルーセルが参照する「現在の絞り込み結果」
   document.getElementById('noresult').style.display=list.length?'none':'block';
   document.getElementById('matchCount').textContent=DATA.length?`${list.length} / ${DATA.length} 件`:'';
   const titleMap={all:'構図パターン',__fav:'⭐ お気に入り'};
   document.getElementById('sectionTitle').textContent=titleMap[active]||active;
-  for(const p of list){
+  list.forEach((p,i)=>{
     const fav=isFav(p.id), tray=inTray(p.id);
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`
-      <div class="thumb" onclick="openView('${p.name}','${p.category}','${p.id||''}')">
+      <div class="thumb" onclick="openModal(${i})">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
         <button class="fav-btn ${fav?'active':''}" title="お気に入り" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'}</button>
-        <div class="open"><span>拡大して開く ↗</span></div>
+        <div class="open"><span>拡大してプレビュー</span></div>
         <button class="tray-add ${tray?'added':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'追加済み ✓':'＋ 構成に追加'}</button>
       </div>
       <div class="body">
@@ -454,7 +526,7 @@ function render(){
         <div class="sum">${p.summary||''}</div>
       </div>`;
     grid.appendChild(card);
-  }
+  });
   applyTint();
   requestAnimationFrame(fit);
 }
@@ -467,10 +539,85 @@ function syncNavActive(){
 document.getElementById('navAll').onclick=()=>{active='all';syncNavActive();render();};
 document.getElementById('navFav').onclick=()=>{active='__fav';syncNavActive();render();};
 
+// ===== プレビューモーダル（ページ内ライトボックス＋カルーセル）=====
+// カルーセルは「現在の絞り込み結果リスト」（LAST_LIST、renderのたびに更新）の範囲内を移動する。
+const TIER_LABEL={high:'AI再現◎',mid:'AI再現◯',low:'複雑・崩れ注意'};
+function openModal(idx){
+  if(!LAST_LIST.length) return;
+  MODAL_LIST=LAST_LIST;
+  MODAL_IDX=((idx%MODAL_LIST.length)+MODAL_LIST.length)%MODAL_LIST.length;
+  MODAL_OPEN=true;
+  document.getElementById('modalOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+  renderModal();
+}
+function closeModal(){
+  MODAL_OPEN=false;
+  document.getElementById('modalOverlay').classList.remove('show');
+  document.body.style.overflow='';
+  document.getElementById('mFrame').src='about:blank'; // 閉じたら読み込みを止める
+}
+function moveModal(delta){
+  if(!MODAL_LIST.length) return;
+  MODAL_IDX=((MODAL_IDX+delta)%MODAL_LIST.length+MODAL_LIST.length)%MODAL_LIST.length; // 末尾↔先頭でループ
+  renderModal();
+}
+function renderModal(){
+  const p=MODAL_LIST[MODAL_IDX];
+  if(!p) return;
+  document.getElementById('mPid').textContent=p.id||'';
+  document.getElementById('mName').textContent=p.name;
+  document.getElementById('mCat').textContent=p.category;
+  const tierEl=document.getElementById('mTier');
+  tierEl.className='modal-tier '+(p.tier||'mid');
+  tierEl.textContent=TIER_LABEL[p.tier]||'';
+  document.getElementById('mDl').href=`${base(p.name)}/SLIDE-PATTERN-${p.name}.md`;
+  const favBtn=document.getElementById('mFav');
+  const fav=isFav(p.id);
+  favBtn.classList.toggle('active',fav);
+  favBtn.textContent=fav?'★ お気に入り':'☆ お気に入り';
+  const trayBtn=document.getElementById('mTray');
+  const tray=inTray(p.id);
+  trayBtn.classList.toggle('added',tray);
+  trayBtn.textContent=tray?'追加済み ✓':'＋ 構成に追加';
+  document.getElementById('mPos').textContent=`${MODAL_IDX+1} / ${MODAL_LIST.length}`;
+  const frame=document.getElementById('mFrame');
+  frame.onload=()=>skInk(frame);
+  frame.src=htmlPath(p.name); // src差し替えのみ（プリロードなし）。連打してもonloadで最新pに追従する
+  requestAnimationFrame(fitModal);
+}
+function fitModal(){
+  const stage=document.querySelector('.modal-stage'),holder=document.getElementById('mHolder');
+  if(!stage||!holder) return;
+  const sw=stage.clientWidth-32, sh=stage.clientHeight-32;
+  const s=Math.max(Math.min(sw/960, sh/540, 1.3),0.2);
+  holder.style.transform=`scale(${s})`;
+}
+document.getElementById('mClose').addEventListener('click',closeModal);
+document.getElementById('mPrev').addEventListener('click',()=>moveModal(-1));
+document.getElementById('mNext').addEventListener('click',()=>moveModal(1));
+document.getElementById('mFav').addEventListener('click',()=>{ const p=MODAL_LIST[MODAL_IDX]; if(p) toggleFav(p.id); renderModal(); });
+document.getElementById('mTray').addEventListener('click',()=>{ const p=MODAL_LIST[MODAL_IDX]; if(p) toggleTray(p.id,p.name); renderModal(); });
+document.getElementById('modalOverlay').addEventListener('click',e=>{
+  // topbar/stage/posはボタン・プレビュー枠の分だけ全面を覆っているため、
+  // それらの「背景」自体（子要素そのものではない部分）をクリックしたときも閉じる。
+  const isBackdrop = e.target.id==='modalOverlay' || e.target.id==='mStage'
+    || e.target.classList.contains('modal-topbar') || e.target.classList.contains('modal-pos');
+  if(isBackdrop) closeModal();
+});
+document.addEventListener('keydown',e=>{
+  if(!MODAL_OPEN) return;
+  if(e.key==='Escape'){ closeModal(); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); moveModal(-1); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); moveModal(1); }
+});
+window.addEventListener('resize',()=>{ if(MODAL_OPEN) requestAnimationFrame(fitModal); });
+
 fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   DATA=j.patterns;
   document.getElementById('loading').style.display='none';
   document.getElementById('allCount').textContent=DATA.length;
+  document.getElementById('favCount').textContent=FAVS.size; // 初回表示時点のお気に入り件数を反映
   const counts={};DATA.forEach(p=>counts[p.category]=(counts[p.category]||0)+1);
   const cats=Array.from(new Set(DATA.map(p=>p.category)));
   const sideNav=document.getElementById('sideNav');

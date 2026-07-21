@@ -51,7 +51,8 @@ const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
 let tint=qs.get('tint')||''; if(tint && tint[0]!=='#') tint='#'+tint;
 let heading=qs.get('head')!=='off'; // 既定ON
-let hstyle=qs.get('hstyle')==='b'?'b':'a';
+const HSTYLE_VALUES=['a','b','c','d','e','f'];
+let hstyle=HSTYLE_VALUES.includes(qs.get('hstyle'))?qs.get('hstyle'):'a';
 const cat=qs.get('cat')||'';
 const pid=qs.get('id')||'';
 const base=`/patterns/SLIDE-PATTERN-${name}`;
@@ -60,7 +61,7 @@ document.getElementById('pcat').textContent=cat;
 if(!cat) document.getElementById('pcat').style.display='none';
 document.getElementById('pid').textContent=pid;
 if(!pid) document.getElementById('pid').style.display='none';
-document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html`;
+document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html?v4`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
 const frame=document.getElementById('frame'),ti=document.getElementById('tint'),th=document.getElementById('tintHex');

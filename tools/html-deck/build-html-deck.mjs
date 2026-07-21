@@ -34,6 +34,10 @@ const DEFAULT_THEME = {
   bg: '#FFFFFF',
 };
 
+// 共通見出し（sk-h）のスタイル一覧。patterns/ 側の sk-head v4（data-hstyle="a"〜"f"）と
+// 同じ見た目になるよう対応させている。詳細は SPEC.md の「共通見出し」節を参照。
+const HEADING_STYLES = ['a', 'b', 'c', 'd', 'e', 'f'];
+
 function fail(message) {
   console.error(`[build-html-deck] エラー: ${message}`);
   process.exit(1);
@@ -55,12 +59,19 @@ function main() {
   }
   const rawConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
+  if (rawConfig.headingStyle && !HEADING_STYLES.includes(rawConfig.headingStyle)) {
+    console.error(
+      `[build-html-deck] 警告: headingStyle "${rawConfig.headingStyle}" は未対応です（a〜fのいずれかを指定）。"a" にフォールバックします。`
+    );
+  }
+
   const config = {
     title: rawConfig.title || 'SlideKit Deck',
     theme: { ...DEFAULT_THEME, ...(rawConfig.theme || {}) },
     font: rawConfig.font || 'Noto Sans JP',
     pageNumbers: rawConfig.pageNumbers !== false,
     noPageNoOn: Array.isArray(rawConfig.noPageNoOn) ? rawConfig.noPageNoOn : [],
+    headingStyle: HEADING_STYLES.includes(rawConfig.headingStyle) ? rawConfig.headingStyle : 'a',
   };
 
   const slidesDir = path.join(deckDir, 'slides');
@@ -245,6 +256,29 @@ function maybeInjectPageNumber(sectionHtml, n, total, config) {
   return sectionHtml.slice(0, insertAt) + span + sectionHtml.slice(insertAt);
 }
 
+// 見出し（.sk-h）をスタイル別に出し分ける。全スタイル共通の不変metrics
+// （上端から24px・font24px bold・本文開始76px/メッセージライン時128px）は変えない。
+// patterns/ 側の sk-head v4（data-hstyle="a"〜"f"）と同じ見た目になるよう対応させている。
+function buildHeadingCss(style) {
+  switch (style) {
+    case 'b': // 縦バー
+      return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 16px; border-left:4px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }`;
+    case 'c': // 塗り帯（全幅アクセント帯・白文字）
+      return `.sk-h { position:absolute; top:0; left:0; right:0; height:76px; box-sizing:border-box; display:flex; align-items:center; padding:0 40px; background:var(--sk-accent); font-size:24px; font-weight:700; color:#FFFFFF; }`;
+    case 'd': // 2トーン下線（左だけ濃い線＋全幅の薄線）
+      return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; border-bottom:2px solid var(--sk-soft); font-size:24px; font-weight:700; color:#333; }
+.sk-h::after { content:""; position:absolute; left:0; bottom:-2px; width:120px; height:2px; background:var(--sk-accent); }`;
+    case 'e': // ショートバー（タイトル下に短いバーのみ・全幅線なし）
+      return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; font-size:24px; font-weight:700; color:#333; }
+.sk-h::after { content:""; position:absolute; left:0; bottom:0; width:56px; height:3px; border-radius:2px; background:var(--sk-accent); }`;
+    case 'f': // タブ型（タイトルが角丸塗りタブに乗る・白文字）
+      return `.sk-h { position:absolute; top:16px; left:40px; padding:8px 24px; font-size:20px; font-weight:700; color:#FFFFFF; background:var(--sk-accent); border-radius:8px 8px 8px 0; }`;
+    case 'a': // 全幅下線（既定）
+    default:
+      return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; border-bottom:2px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }`;
+  }
+}
+
 function buildCommonCss(config) {
   const t = config.theme;
   return `:root {
@@ -262,7 +296,7 @@ html { scroll-snap-type: y mandatory; }
   background:#fff; margin:0 auto; box-shadow:0 2px 16px rgba(0,0,0,.12);
   scroll-snap-align:start;
 }
-.sk-h { position:absolute; top:0; left:40px; right:40px; padding:24px 0 12px; border-bottom:2px solid var(--sk-accent); font-size:24px; font-weight:700; color:#333; }
+${buildHeadingCss(config.headingStyle)}
 .sk-msg { position:absolute; top:82px; left:40px; right:40px; font-size:16px; color:#333; }
 .sk-pageno { position:absolute; right:40px; bottom:16px; font-size:12px; color:var(--sk-muted,#8A8F98); }
 
