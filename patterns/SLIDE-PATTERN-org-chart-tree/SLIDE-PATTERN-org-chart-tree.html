@@ -16,11 +16,11 @@
   .org-tree li { position: relative; display: flex; flex-direction: column; align-items: center; padding: 28px 4px 0; }
   .org-tree li::before, .org-tree li::after { content: ""; position: absolute; top: 0; right: 50%; width: 50%; height: 28px; border-top: 2px solid var(--sk-accent,#BBBBBB); }
   .org-tree li::after { right: auto; left: 50%; border-left: 2px solid var(--sk-accent,#BBBBBB); }
-  .org-tree li:first-child::before { border: none; }
-  .org-tree li:last-child::after { border: none; }
+  /* 両端の子は「外側へのはみ出し」だけを消す（::afterのborder-left=子への縦線は残す） */
+  .org-tree li:first-child::before { border-top: none; }
+  .org-tree li:last-child::after { border-top: none; }
   .org-tree > li { padding-top: 0; }
   .org-tree > li::before, .org-tree > li::after { display: none; }
-  .org-tree > li > ul::before { display: none; }
 
   .node { border: 2px solid var(--sk-accent,#999999); background: #FFFFFF; padding: 8px 14px; font-size: 13px; font-weight: bold; color: #333333; white-space: nowrap; border-radius: 4px; }
   .node-l1 { font-size: 15px; padding: 12px 24px; background: var(--sk-soft,#E4E4E4); }

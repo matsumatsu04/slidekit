@@ -9,9 +9,9 @@
   .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
   .content-area { flex: 1; padding: 16px 32px 20px; display: flex; flex-direction: column; }
   .timeline-row { display: flex; align-items: center; padding: 0 24px; margin-bottom: 16px; position: relative; }
-  .timeline-line { position: absolute; top: 50%; left: 24px; right: 24px; height: 2px; background: #DDDDDD; z-index: 0; }
+  .timeline-line { position: absolute; top: 50%; left: calc(24px + (100% - 48px)/8); right: calc(24px + (100% - 48px)/8); height: 2px; background: var(--sk-soft,#DDDDDD); z-index: 0; }
   .timeline-dots { display: flex; justify-content: space-around; width: 100%; position: relative; z-index: 1; }
-  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: #CCCCCC; border: 2px solid #FFFFFF; }
+  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--sk-accent,#CCCCCC); border: 2px solid #FFFFFF; }
   .cards-row { display: flex; gap: 12px; flex: 1; }
   .card { flex: 1; background: #FFFFFF; border: 1px solid var(--sk-accent,#E0E0E0); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; }
   .step-label { font-size: 10px; color: #888; margin-bottom: 2px; }

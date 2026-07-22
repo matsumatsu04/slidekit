@@ -306,7 +306,7 @@
 <script>
 // リポジトリへの導線はナビから外し、導入手順ページ（/gallery/start.html）内のリンクに一本化（2026-07-22）
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v8';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v9';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro導入時はパターン/デッキ側のCDN linkもKit URLに差し替える。docs/html-deck-generation.md参照）
 

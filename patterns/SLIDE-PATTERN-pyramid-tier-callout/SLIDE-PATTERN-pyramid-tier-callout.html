@@ -10,9 +10,10 @@
   .pyramid-diagram { flex: 1; height: 100%; display: grid; grid-template-columns: 240px 56px 1fr; grid-template-rows: repeat(3, 1fr); align-items: stretch; }
   .pyramid-shape { grid-column: 1; grid-row: 1 / 4; position: relative; }
   .tier { position: absolute; left: 0; right: 0; }
-  .tier-1 { top: 0; height: 33.33%; background: var(--sk-accent,#8C8C8C); clip-path: polygon(40% 0%, 60% 0%, 70% 100%, 30% 100%); }
-  .tier-2 { top: 33.33%; height: 33.33%; background: var(--sk-accent,#AFAFAF); clip-path: polygon(30% 0%, 70% 0%, 85% 100%, 15% 100%); }
-  .tier-3 { top: 66.66%; height: 33.34%; background: var(--sk-accent,#D2D2D2); clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%); }
+  /* 斜辺は全層で同じ傾き（1層あたり左右12%ずつ広がる）。濃淡はcolor-mixでパレット適用時も3段グラデを維持 */
+  .tier-1 { top: 0; height: 33.33%; background: var(--sk-accent,#8C8C8C); clip-path: polygon(36% 0%, 64% 0%, 76% 100%, 24% 100%); }
+  .tier-2 { top: 33.33%; height: 33.33%; background: color-mix(in srgb, var(--sk-accent,#8C8C8C) 72%, #FFFFFF); clip-path: polygon(24% 0%, 76% 0%, 88% 100%, 12% 100%); }
+  .tier-3 { top: 66.66%; height: 33.34%; background: color-mix(in srgb, var(--sk-accent,#8C8C8C) 42%, #FFFFFF); clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%); }
   .tier-name { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 12px; font-weight: bold; color: #FFFFFF; }
   .tier-3 .tier-name { color: #333333; }
   .connector { grid-column: 2; place-self: center; width: 100%; height: 2px; background: var(--sk-accent,#BBBBBB); }
