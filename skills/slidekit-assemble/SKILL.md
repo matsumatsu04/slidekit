@@ -174,7 +174,6 @@ bash tools/html-deck/export-pdf.sh <デッキフォルダ>
 | Chrome（PDF書き出し） | export-pdf.sh で deck.pdf＋qa画像 | index.html をブラウザで開き印刷→PDF を案内。QAはブラウザ目視 |
 | サブエージェント機構（Agent tool / spawn_agent 等） | 生成に関与していない別エージェントに視覚QAさせる | **自分でQA画像を1枚ずつ開いて客観チェック**（観点: はみ出し/重なり/語中折返し/整列ズレ/余白の偏り）。1サイクルで止める |
 | Google Drive 連携（MCP等・Google Slides納品時のみ） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→開くとGoogle Slidesとして編集可」と一言案内 |
-| ローカルWebサーバー（デッキレビューア） | `/gallery/deck-review.html` で通し確認 | QA画像ファイルを直接開いて確認（レビューアは任意の補助） |
 | スライド確認・修正依頼ページ（フィードバックループ） | 本番 `https://slidekit-sigma.vercel.app/gallery/deck.html`（またはローカル `/gallery/deck.html`）を納品時に案内 | index.html をブラウザで開いて確認し、修正指示はチャットで受ける |
 
 - パスは正本リポジトリからの相対（`tools/html-deck/` `tools/pptx/` `docs/` `patterns/` `assets/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
