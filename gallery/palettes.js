@@ -6,10 +6,10 @@
 // - font   : 全パレット共通 #333333（パターンHTML側で固定済み）
 // 名前は色由来の中立名のみを使う（由来・用途がわかる固有名詞は入れない）。
 const SK_PALETTES = [
-  { key: 'minimal-blue', label: 'ブルー',             main: '#2F6BFF', accent: '#1A1A1A', base: '#F4F5F7' },
+  { key: 'blue',         label: 'ブルー',             main: '#2F6BFF', accent: '#1A1A1A', base: '#F4F5F7' },
   { key: 'navy',         label: 'ネイビー',           main: '#1F3A5F', accent: '#4A6A8F', base: '#EEF2F7' },
-  { key: 'terracotta',   label: 'ブラウン',           main: '#A6572E', accent: '#9B938A', base: '#EFE6D8' },
-  { key: 'violet-pink',  label: 'パープル×ピンク',    main: '#635BFF', accent: '#FF5CA8', base: '#EEEDFF' },
+  { key: 'brown',        label: 'ブラウン',           main: '#A6572E', accent: '#9B938A', base: '#EFE6D8' },
+  { key: 'purple-pink',  label: 'パープル×ピンク',    main: '#635BFF', accent: '#FF5CA8', base: '#EEEDFF' },
   { key: 'blue-pink',    label: 'ブルー×ピンク',      main: '#2B4894', accent: '#D72550', base: '#E8EEF7' },
   { key: 'navy-gold',    label: 'ネイビー×ゴールド',  main: '#1E2E53', accent: '#C9A227', base: '#E8EBF2' },
 ];

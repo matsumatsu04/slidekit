@@ -1,7 +1,7 @@
-# SLIDEKIT-DESIGN — editorial-warm
+# SLIDEKIT-DESIGN — warm
 
 ## Meta
-- **name:** editorial-warm
+- **name:** warm
 - **summary:** ベージュ地×明朝見出しの雑誌エディトリアル風デザイン。上質で温かい講義・ブランドストーリー資料向け
 - **best-for:** 講義資料・受講生向け資料・ブランドストーリー・セミナー
 - **mood:** 上質 / 温かい / 落ち着いた / 雑誌風 / 誠実

@@ -1,7 +1,7 @@
-# SLIDEKIT-DESIGN — dark-tech
+# SLIDEKIT-DESIGN — dark
 
 ## Meta
-- **name:** dark-tech
+- **name:** dark
 - **summary:** 黒地×白文字×鮮やかな青紫1色の、Linear / Vercel 系プロダクト発表風ダークテーマ。スクリーン映え重視
 - **best-for:** 発表会・テック系セミナー・YouTube収録・プロダクトデモ
 - **mood:** モダン / シャープ / ミニマル / スクリーン映え

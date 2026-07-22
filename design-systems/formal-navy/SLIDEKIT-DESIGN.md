@@ -1,7 +1,7 @@
-# SLIDEKIT-DESIGN — consulting-navy
+# SLIDEKIT-DESIGN — formal-navy
 
 ## Meta
-- **name:** consulting-navy
+- **name:** formal-navy
 - **summary:** ネイビー×グレー基調のコンサルティングファーム風デザイン。結論先行のフォーマルな提案・報告資料向け
 - **best-for:** 社外提案書・経営報告・戦略資料・与信のいる商談資料
 - **mood:** 信頼感 / 論理的 / フォーマル / 引き締まった / 結論先行

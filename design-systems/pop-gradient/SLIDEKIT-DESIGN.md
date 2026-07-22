@@ -1,7 +1,7 @@
-# SLIDEKIT-DESIGN — vivid-gradient
+# SLIDEKIT-DESIGN — pop-gradient
 
 ## Meta
-- **name:** vivid-gradient
+- **name:** pop-gradient
 - **summary:** 白地×大胆タイポ×カラフルグラデ装飾のスタートアップピッチ風デザイン。Stripe / Figma 系の明るく先進的なトーン
 - **best-for:** サービス紹介・ピッチ・キャンペーン資料・LP的資料
 - **mood:** 明るい / 大胆 / 先進的 / エネルギッシュ

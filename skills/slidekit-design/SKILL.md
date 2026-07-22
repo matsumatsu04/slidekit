@@ -60,7 +60,7 @@ SlideKit の仕様に沿った **`SLIDEKIT-DESIGN.md`（デザインテーマ）
 - canvas は 16:9（既定 1280×720）。
 - **構図や実コンテンツは書かない**（DESIGN は見た目だけ）。
 - **フォントが特定できない場合は Noto Sans JP にフォールバック**する（SPEC 標準。空欄のままにしない）。
-- `name` は内容が分かる kebab-case（例: `calm-navy-mincho`, `clean-mono-sans`）。
+- `name` は内容が分かる kebab-case（例: `calm-navy-mincho`, `minimal`）。
 
 ### 5. sample.html を生成する
 そのデザインテーマを使った **確認用のサンプルスライド 6 ページ**を 1 つの HTML にまとめて生成する。

@@ -6,7 +6,7 @@
 ## フェーズ
 
 - [x] **Phase 0** — プロジェクト雛形 ＋ 3ファイル形式の仕様（`SPEC.md`）
-- [x] **Phase 1** — スキル① `slidekit-design`（デザインシステム生成）＋ デモ（clean-mono-sans + sample.html）
+- [x] **Phase 1** — スキル① `slidekit-design`（デザインテーマ生成）＋ デモ（minimal + sample.html）
 - [x] **Phase 2** — スキル② `slidekit-layout`（構図パターン抽出）＋ 構図ライブラリ初期14パターン＋グレースケール一覧（patterns/preview.html）
 - [x] **Phase 3** — スキル③ `slidekit-assemble`（ヒアリング→設計書生成）＋ デモ（examples/sample-proposal/SLIDEKIT-DECK.md）
 - [x] **Phase 5** — ギャラリーサイト（gallery/index.html・14構図＋デザイン一覧/プレビュー/コピー/DL）＋ README/LICENSE/.gitignore ＋ ルートindex.html
@@ -29,6 +29,6 @@
 ## 成果物の場所
 - 仕様: `SPEC.md`
 - スキル: `skills/{slidekit-design,slidekit-layout,slidekit-assemble}/SKILL.md`
-- デザインシステム: `design-systems/{name}/SLIDEKIT-DESIGN.md` + `sample.html`
+- デザインテーマ: `design-systems/{name}/SLIDEKIT-DESIGN.md` + `sample.html`
 - 構図パターン: `patterns/{category}/SLIDEKIT-LAYOUT-{name}.md`
 - ギャラリー: `gallery/`

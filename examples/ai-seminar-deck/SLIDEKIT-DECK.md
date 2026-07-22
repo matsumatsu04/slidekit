@@ -14,7 +14,7 @@
 
 ---
 
-## Design System（clean-mono-sans）
+## Design System（minimal）
 
 すべてのスライドに以下を厳守して適用すること。
 
