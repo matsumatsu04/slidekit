@@ -25,9 +25,14 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.join(__dirname, '..', '..');
+// 非公開アセット置き場（任意）。リポジトリの隣に slidekit-private/ がある場合、
+// リポジトリ内で見つからないアセット（assets/...）をここからも解決する。
+// 例: slidekit-private/assets/brand/... （ブランドロゴ等、公開リポジトリに含めない素材）
+const PRIVATE_ROOT = path.join(REPO_ROOT, '..', 'slidekit-private');
 
 const DEFAULT_THEME = {
   accent: '#1E2E53',
+  accent2: '', // 差し色（任意）。空なら --sk-accent2 は出力せず、フラグメント側のフォールバックで accent に落ちる
   soft: '#E8EBF2',
   text: '#333333',
   muted: '#8A8F98',
@@ -235,9 +240,17 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
 
   const html = sectionHtml.replace(srcRe, (fullMatch, quote, value) => {
     const idx = value.indexOf('assets/');
-    const relFromRoot = value.slice(idx); // 例: "assets/brand/brand-b/cover-bg-logo.png"
-    const srcAbsPath = path.join(REPO_ROOT, relFromRoot);
+    const relFromRoot = value.slice(idx); // 例: "assets/covers/cover-bg-organic-blobs.jpg"
+    let srcAbsPath = path.join(REPO_ROOT, relFromRoot);
+    let isPrivate = false;
 
+    if (!fs.existsSync(srcAbsPath)) {
+      const privatePath = path.join(PRIVATE_ROOT, relFromRoot);
+      if (fs.existsSync(privatePath)) {
+        srcAbsPath = privatePath;
+        isPrivate = true;
+      }
+    }
     if (!fs.existsSync(srcAbsPath)) {
       console.error(`[build-html-deck] 警告: アセットが見つかりません（スキップ）: ${srcAbsPath}`);
       return fullMatch;
@@ -256,6 +269,10 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
     // data-sk-asset にはリポジトリルートからの元パスを残す。
     // デッキ単体ではローカルコピー（assets/{basename}）を参照し、
     // ギャラリーのデッキビューアに貼り付けた時はこの元パスから画像を復元する。
+    // 非公開（slidekit-private）由来のアセットは公開ギャラリーに存在しないため付与しない。
+    if (isPrivate) {
+      return `src=${quote}assets/${basename}${quote}`;
+    }
     return `src=${quote}assets/${basename}${quote} data-sk-asset=${quote}${relFromRoot}${quote}`;
   });
 
@@ -333,7 +350,7 @@ function buildHeadingCss(style) {
 function buildCommonCss(config) {
   const t = config.theme;
   return `:root {
-  --sk-accent: ${t.accent};
+  --sk-accent: ${t.accent};${t.accent2 ? `\n  --sk-accent2: ${t.accent2};` : ''}
   --sk-soft: ${t.soft};
   --sk-text: ${t.text};
   --sk-muted: ${t.muted};

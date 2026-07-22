@@ -11,7 +11,7 @@ const SK_PALETTES = [
   { key: 'terracotta',   label: 'テラコッタ',         main: '#A6572E', accent: '#9B938A', base: '#EFE6D8' },
   { key: 'violet-pink',  label: 'バイオレット',       main: '#635BFF', accent: '#FF5CA8', base: '#EEEDFF' },
   { key: 'blue-pink',    label: 'ブルー×ピンク',      main: '#2B4894', accent: '#D72550', base: '#E8EEF7' },
-  { key: 'navy-gold',    label: 'ネイビー×ゴールド',  main: '#1E2E53', accent: '#FED307', base: '#E8EBF2' },
+  { key: 'navy-gold',    label: 'ネイビー×ゴールド',  main: '#1E2E53', accent: '#C9A227', base: '#E8EBF2' },
 ];
 const SK_FONT_COLOR = '#333333';
 

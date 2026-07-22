@@ -219,8 +219,8 @@
     </div>
     <div class="side-bottom">
       <a href="#designs">デザインシステム</a>
-      <a href="/gallery/deck.html">デッキビューア ↗</a>
-      <a href="/gallery/deck-review.html">デッキレビュー ↗</a>
+      <a href="/gallery/deck.html">スライド確認・修正依頼 ↗</a>
+      <a href="/gallery/deck-review.html">QA画像チェック ↗</a>
       <a id="repoLink" href="#">GitHub ↗</a>
     </div>
   </aside>
@@ -240,7 +240,8 @@
         <span class="lab">カラーパレット</span>
         <div class="palettes" id="palettes"></div>
         <button class="link-btn" id="palReset">グレーに戻す</button>
-        <span class="divider"></span>
+      </div>
+      <div class="toolbar-row">
         <label class="chk"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
         <span class="lab">見出しデザイン</span>
         <button class="chip-btn" id="hA" data-h="a">A：下線</button>
@@ -302,12 +303,12 @@
   <div class="modal-pos" id="mPos"></div>
 </div>
 
-<script src="/gallery/palettes.js"></script>
+<script src="/gallery/palettes.js?v2"></script>
 <script>
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v7';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v8';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro導入時はパターン/デッキ側のCDN linkもKit URLに差し替える。docs/html-deck-generation.md参照）
 
