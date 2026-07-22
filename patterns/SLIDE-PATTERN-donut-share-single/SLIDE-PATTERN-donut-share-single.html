@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-donut-share-single</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:32px 88px; display:flex; align-items:center; gap:72px; }
+  .donut-wrap { position:relative; width:260px; height:260px; flex-shrink:0; }
+  .donut { width:100%; height:100%; border-radius:50%; background:conic-gradient(var(--sk-accent,#555555) 0 62%, var(--sk-soft,#E8E8E8) 62% 100%); }
+  .donut-hole { position:absolute; inset:52px; background:#FFFFFF; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+  .dh-num { font-size:44px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
+  .dh-label { font-size:11px; color:#999999; }
+  .legend { flex:1; display:flex; flex-direction:column; gap:20px; }
+  .lg-row { display:flex; align-items:flex-start; gap:14px; }
+  .lg-chip { width:16px; height:16px; border-radius:4px; flex-shrink:0; margin-top:3px; }
+  .lg-main { background:var(--sk-accent,#555555); }
+  .lg-rest { background:var(--sk-soft,#E8E8E8); }
+  .lg-title { font-size:15px; font-weight:bold; color:#333333; }
+  .lg-desc { font-size:12px; color:#666666; line-height:1.7; margin-top:2px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="donut-wrap">
+      <div class="donut"></div>
+      <div class="donut-hole"><div class="dh-num">62%</div><div class="dh-label">ラベルが入ります</div></div>
+    </div>
+    <div class="legend">
+      <div class="lg-row"><div class="lg-chip lg-main"></div><div><div class="lg-title">主要セグメント名が入ります（62%）</div><div class="lg-desc">このセグメントの説明が入ります。何を示す割合かを1〜2行で記述します。</div></div></div>
+      <div class="lg-row"><div class="lg-chip lg-rest"></div><div><div class="lg-title">その他（38%）</div><div class="lg-desc">残りのセグメントの説明が入ります。</div></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

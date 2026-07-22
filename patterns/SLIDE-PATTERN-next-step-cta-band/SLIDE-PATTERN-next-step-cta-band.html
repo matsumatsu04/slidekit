@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-next-step-cta-band</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .summary-area { flex:1; display:flex; flex-direction:column; justify-content:center; padding:24px 100px; gap:14px; }
+  .sum-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; }
+  .sum-text { font-size:22px; font-weight:bold; color:#333333; line-height:1.7; }
+  .sum-supp { font-size:13px; color:#666666; line-height:1.8; }
+  .cta-band { flex-shrink:0; height:150px; background:var(--sk-accent,#4A4A4A); display:flex; align-items:center; justify-content:space-between; padding:0 100px; }
+  .cta-msg { font-size:22px; font-weight:bold; color:#FFFFFF; line-height:1.5; }
+  .cta-sub { font-size:12px; color:rgba(255,255,255,0.8); margin-top:4px; }
+  .cta-button { background:#FFFFFF; color:var(--sk-accent,#333333); font-size:15px; font-weight:bold; padding:14px 32px; border-radius:28px; white-space:nowrap; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="summary-area">
+    <div class="sum-label">SUMMARY</div>
+    <div class="sum-text">本日のまとめの文章がここに入ります。<br>結論を2行以内で言い切ります。</div>
+    <div class="sum-supp">補足説明のテキストが入ります。まとめの根拠や、次のアクションにつながる一言を添えます。</div>
+  </div>
+  <div class="cta-band">
+    <div><div class="cta-msg">まずは◯◯から始めましょう</div><div class="cta-sub">申込方法・期限・特典などの補足が入ります</div></div>
+    <div class="cta-button">お申し込みはこちら →</div>
+  </div>
+</div>
+</body>
+</html>

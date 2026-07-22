@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-cover-split-two-tone</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; }
+  .ct-left { width:42%; background:var(--sk-accent,#4A4A4A); display:flex; flex-direction:column; justify-content:center; padding:0 48px; gap:18px; }
+  .ct-label { font-size:12px; font-weight:bold; color:rgba(255,255,255,0.75); letter-spacing:0.18em; }
+  .ct-title { font-size:34px; font-weight:bold; color:#FFFFFF; line-height:1.45; }
+  .ct-sub { font-size:13px; color:rgba(255,255,255,0.85); }
+  .ct-right { flex:1; position:relative; background:#FFFFFF; }
+  .ct-deco { position:absolute; right:56px; top:64px; width:56px; height:56px; border:3px solid var(--sk-soft,#E0E0E0); border-radius:50%; }
+  .ct-meta { position:absolute; right:56px; bottom:56px; text-align:right; }
+  .ct-company { font-size:15px; font-weight:bold; color:#333333; }
+  .ct-date { font-size:12px; color:#888888; margin-top:4px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="ct-left">
+    <div class="ct-label">PROPOSAL</div>
+    <div class="ct-title">メインタイトルが<br>ここに入ります</div>
+    <div class="ct-sub">サブタイトル・対象が入ります</div>
+  </div>
+  <div class="ct-right">
+    <div class="ct-deco"></div>
+    <div class="ct-meta">
+      <div class="ct-company">会社名・発表者名が入ります</div>
+      <div class="ct-date">2026年X月X日</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

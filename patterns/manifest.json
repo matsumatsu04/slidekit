@@ -1,5 +1,5 @@
 {
-  "count": 104,
+  "count": 119,
   "patterns": [
     {
       "name": "cover-gradient-text-bottom",
@@ -728,6 +728,111 @@
       "summary": "円形写真＋氏名＋役職＋一言のメンバーカードを4列×2行で並べるチーム紹介。会社紹介・採用資料・講師陣紹介に。",
       "tier": "high",
       "id": "P119"
+    },
+    {
+      "name": "bar-diff-bracket",
+      "category": "グラフ",
+      "summary": "2本の棒（前=グレー・後=アクセント）の頂点差を破線ガイド＋ブラケット＋差分バッジ（差し色）で強調する比較グラフ。導入前後の「1点の差」に。",
+      "tier": "mid",
+      "id": "P120"
+    },
+    {
+      "name": "line-trend-target",
+      "category": "グラフ",
+      "summary": "右肩上がりの折れ線＋破線の目標ライン。終点だけ差し色ドット＋数値で「目標にどこまで迫ったか」を示すトレンドグラフ（SVG）。",
+      "tier": "mid",
+      "id": "P121"
+    },
+    {
+      "name": "donut-share-single",
+      "category": "グラフ",
+      "summary": "大きなドーナツ1つ（アクセント×淡色）＋中央に割合数値、右に凡例と説明。市場シェア・構成比を1つだけ見せる。",
+      "tier": "mid",
+      "id": "P122"
+    },
+    {
+      "name": "kpi-two-contrast",
+      "category": "KPI",
+      "summary": "左に旧値（グレー・小）、右に新値（アクセント・特大）を矢印でつなぐビフォーアフター数値対比。「3時間→30分」の落差で語る。",
+      "tier": "high",
+      "id": "P123"
+    },
+    {
+      "name": "stats-grid-six",
+      "category": "KPI",
+      "summary": "「数字で見る◯◯」の定番。ラベル＋大数値＋補足のセルを3×2グリッドで並べ細罫線で区切る。会社紹介・実績サマリーに。",
+      "tier": "high",
+      "id": "P124"
+    },
+    {
+      "name": "profile-two-speakers",
+      "category": "プロフィール",
+      "summary": "円形写真96px＋氏名＋肩書＋経歴の同一カード2枚を並べる2名紹介。登壇者・共同創業者・対談相手の紹介に。",
+      "tier": "high",
+      "id": "P125"
+    },
+    {
+      "name": "toc-current-highlight",
+      "category": "目次",
+      "summary": "目次リストの現在章だけアクセント帯＋白文字＋NOWバッジで塗り、他章はグレーで沈める現在地ナビ型目次。章の再掲用。",
+      "tier": "high",
+      "id": "P126"
+    },
+    {
+      "name": "section-tag-progress",
+      "category": "セクション",
+      "summary": "上部に全章のタグナビ（現在章のみ塗り）＋中央左に特大章番号・章タイトルを置く現在地つき中扉。長尺デッキの章区切りに。",
+      "tier": "high",
+      "id": "P127"
+    },
+    {
+      "name": "quote-single-large",
+      "category": "本文",
+      "summary": "特大の引用符＋2〜3行の引用文＋発言者（円形写真・氏名・肩書）の1名大型引用。顧客の声・推薦コメントを深く見せる。",
+      "tier": "high",
+      "id": "P128"
+    },
+    {
+      "name": "next-step-cta-band",
+      "category": "まとめ",
+      "summary": "上2/3にまとめ（結論2行＋補足）、下1/3に全幅アクセント帯のCTA（誘導文＋白ボタン風ラベル）を置く締めスライド。",
+      "tier": "high",
+      "id": "P129"
+    },
+    {
+      "name": "checklist-two-column",
+      "category": "リスト",
+      "summary": "チェックボックス付き項目（見出し＋補足）を2カラム×4行で並べるチェックリスト。準備物・対応範囲・提供内容の一覧に。",
+      "tier": "high",
+      "id": "P130"
+    },
+    {
+      "name": "flow-branch-two-outcomes",
+      "category": "図解・ダイアグラム",
+      "summary": "起点→ひし形の条件判断→YES（アクセント）/NO（グレー）の2分岐で結果へ流れる条件分岐フロー図。診断・場合分けに。",
+      "tier": "mid",
+      "id": "P131"
+    },
+    {
+      "name": "business-model-three-party",
+      "category": "図解・ダイアグラム",
+      "summary": "顧客・自社（中央強調）・パートナーの3者を双方向矢印＋ラベルで結ぶ商流・ビジネスモデル図。事業説明の定番。",
+      "tier": "mid",
+      "id": "P132"
+    },
+    {
+      "name": "cover-split-two-tone",
+      "category": "表紙",
+      "summary": "左42%アクセント色ベタ（白抜きタイトル）×右58%白（余白＋右下メタ）の2トーン分割表紙。画像素材なしで使える表紙。",
+      "tier": "high",
+      "id": "P133"
+    },
+    {
+      "name": "value-three-pillars",
+      "category": "本文",
+      "summary": "MISSION/VISION/VALUEのチップ＋大きな文言を3段で縦に積む理念提示。会社紹介・採用資料の定番。",
+      "tier": "high",
+      "id": "P134"
     }
   ]
 }
