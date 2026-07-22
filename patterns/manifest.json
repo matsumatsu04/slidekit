@@ -1,5 +1,5 @@
 {
-  "count": 96,
+  "count": 104,
   "patterns": [
     {
       "name": "cover-gradient-text-bottom",
@@ -672,6 +672,62 @@
       "summary": "手描き画材モチーフ背景に締めメッセージと連絡先カードを載せるクリエイティブな締めスライド。背景は画像アセット（色ティント対象外）",
       "tier": "high",
       "id": "P111"
+    },
+    {
+      "name": "toc-two-column",
+      "category": "目次",
+      "summary": "目次項目を左右2カラムに分けて並べる目次。大きな章番号＋セクション名＋ページ番号の行を最大8項目。5〜10セクションの中長尺デッキ向け。",
+      "tier": "high",
+      "id": "P112"
+    },
+    {
+      "name": "bar-actual-forecast",
+      "category": "グラフ",
+      "summary": "実績バーはグレー・最終期（予想）だけアクセント色＋特大数値＋予想タグで強調する成長棒グラフ。右上に前年比バッジ（差し色）。",
+      "tier": "mid",
+      "id": "P113"
+    },
+    {
+      "name": "giant-number-badge",
+      "category": "KPI",
+      "summary": "画面1/3を占める特大数字1つ＋種別バッジ＋補足・出典。背景に超薄色の大円2つ。市場規模・累計実績など1数字で語る1枚。",
+      "tier": "high",
+      "id": "P114"
+    },
+    {
+      "name": "left-context-data",
+      "category": "本文",
+      "summary": "左28%を淡色の文脈固定エリア（章番号・見出し・要点）にし、右にデータ・図表を置く左右分割。連続データページの標準形。",
+      "tier": "high",
+      "id": "P115"
+    },
+    {
+      "name": "key-message-inverted",
+      "category": "本文",
+      "summary": "全面アクセント色ベタ＋白抜きキーメッセージ中央配置の反転配色。背景トーン切替でデッキの山場を作る（1デッキ1〜2枚まで）。",
+      "tier": "high",
+      "id": "P116"
+    },
+    {
+      "name": "ok-ng-comparison",
+      "category": "図解・ダイアグラム",
+      "summary": "左NG（グレー＋×）・右OK（アクセント＋✓）を同一構造カードで並べる対比。テイストを揃えて対立だけを作る説得レイアウト。",
+      "tier": "high",
+      "id": "P117"
+    },
+    {
+      "name": "phase-staircase-lshape",
+      "category": "ステップ",
+      "summary": "フェーズごとのL字ライン＋見出し＋箇条書きを左下→右上へ段違い配置する階段型ロードマップ。矢印・グラデ不要で右肩上がりを表現。",
+      "tier": "mid",
+      "id": "P118"
+    },
+    {
+      "name": "team-members-grid",
+      "category": "プロフィール",
+      "summary": "円形写真＋氏名＋役職＋一言のメンバーカードを4列×2行で並べるチーム紹介。会社紹介・採用資料・講師陣紹介に。",
+      "tier": "high",
+      "id": "P119"
     }
   ]
 }

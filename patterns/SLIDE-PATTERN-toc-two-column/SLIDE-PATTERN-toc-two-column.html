@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-toc-two-column</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:48px 72px; display:flex; flex-direction:column; }
+  .toc-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:4px; }
+  .toc-title { font-size:26px; font-weight:bold; color:#333333; margin-bottom:28px; }
+  .toc-grid { flex:1; display:grid; grid-template-columns:1fr 1fr; column-gap:64px; align-content:center; }
+  .toc-item { display:flex; align-items:baseline; gap:16px; padding:16px 0; border-bottom:1px solid var(--sk-soft,#E8E8E8); }
+  .toc-no { font-size:24px; font-weight:bold; color:var(--sk-accent,#BBBBBB); width:44px; flex-shrink:0; line-height:1; }
+  .toc-name { font-size:15px; font-weight:bold; color:#333333; flex:1; }
+  .toc-page { font-size:12px; color:#999999; flex-shrink:0; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="toc-label">CONTENTS</div>
+    <div class="toc-title">目次</div>
+    <div class="toc-grid">
+      <div class="toc-item"><div class="toc-no">01</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.3</div></div>
+      <div class="toc-item"><div class="toc-no">02</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.8</div></div>
+      <div class="toc-item"><div class="toc-no">03</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.14</div></div>
+      <div class="toc-item"><div class="toc-no">04</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.20</div></div>
+      <div class="toc-item"><div class="toc-no">05</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.26</div></div>
+      <div class="toc-item"><div class="toc-no">06</div><div class="toc-name">セクション名が入ります</div><div class="toc-page">p.31</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
