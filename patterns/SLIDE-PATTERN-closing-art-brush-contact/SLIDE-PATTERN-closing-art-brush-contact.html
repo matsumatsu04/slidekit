@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: closing-art-brush-contact</title>
+  <style>
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
+    /* 手描き画材モチーフ背景（画像アセット差し替え可）＋締めメッセージ＋連絡先カード */
+    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-handdrawn-art.jpg') center/cover no-repeat; }
+    .message { position:absolute; left:72px; top:36%; transform:translateY(-50%); font-size:34px; font-weight:bold; color:#1A1A1A; line-height:1.45; letter-spacing:0.04em; }
+    .contact-card { position:absolute; left:72px; top:55%; width:300px; background:rgba(255,255,255,0.92); border:1px solid #DDDDDD; border-radius:10px; padding:20px 24px; display:flex; flex-direction:column; gap:12px; }
+    .contact-row { display:flex; align-items:baseline; gap:14px; }
+    .contact-label { font-size:12px; font-weight:bold; color:#555555; flex-shrink:0; }
+    .contact-value { font-size:13px; color:#333333; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="bg"></div>
+    <div class="message">締めのメッセージが<br>ここに入ります</div>
+    <div class="contact-card">
+      <div class="contact-row">
+        <div class="contact-label">連絡先</div>
+        <div class="contact-value">メール・電話番号が入ります</div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-label">WEB</div>
+        <div class="contact-value">URL・SNSが入ります</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

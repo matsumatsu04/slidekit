@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: closing-curve-shape-footer</title>
+  <style>
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
+    /* 大きな曲面シェイプ背景（画像アセット差し替え可）＋結びラベル＋特大メッセージ＋下部の連絡先行 */
+    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-curved-shape.jpg') center/cover no-repeat; }
+    .closing-label { position:absolute; left:72px; top:140px; font-size:15px; font-weight:bold; color:#333333; letter-spacing:0.06em; }
+    .message { position:absolute; left:72px; top:190px; font-size:46px; font-weight:bold; color:#1F1F1F; line-height:1.3; }
+    .footer-block { position:absolute; left:72px; bottom:56px; display:flex; align-items:baseline; gap:24px; }
+    .company { font-size:18px; font-weight:bold; color:#1A1A1A; }
+    .contact { font-size:13px; color:#666666; }
+    .url { font-size:13px; color:#666666; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="bg"></div>
+    <div class="closing-label">結びの一言が入ります</div>
+    <div class="message">締めのメッセージが<br>ここに入ります</div>
+    <div class="footer-block">
+      <div class="company">会社名が入ります</div>
+      <div class="contact">お問い合わせ先が入ります</div>
+      <div class="url">URL・SNSが入ります</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -69,9 +69,9 @@ N. [締め]      まとめと次の一歩
 （名前を創作しない。INDEX/manifest の全パターン・14カテゴリ）。各スライドの内容に最も合うカテゴリ→パターンを選ぶ。
 
 > **再現性tier（manifest.json の `tier`）を必ず考慮する：**
-> - `high`（44種）: シンプルで自動生成でも崩れない。**既定はここから選ぶ**
+> - `high`（65種）: シンプルで自動生成でも崩れない。**既定はここから選ぶ**
 > - `mid`（31種）: 規則的だが要素多め。内容が合うときに使う
-> - `low`（21種・円環図/ハブスポーク/ドーナツ図/組織図等）: 自動生成では崩れやすい。
+> - `low`（現在0種。今後追加された場合：円環図/ハブスポーク/ドーナツ図/組織図等）: 自動生成では崩れやすい。
 >   **ユーザーが明示的に指定した場合のみ**使い、「複雑な構図のため生成結果が崩れる可能性がある」ことを一言添える。
 >   同じ内容は high/mid の代替（例: 円環図→four-step-flow、ドーナツ図→three-kpi-big-number）で表現できないか先に検討する。
 
@@ -80,7 +80,7 @@ N. [締め]      まとめと次の一歩
 | カテゴリ | 代表パターン例 |
 |---|---|
 | 表紙 | cover-gradient-text-bottom / cover-photo-overlay-center / cover-blob-side-left / cover-curve-shape-left ほか（画像背景表紙は assets/covers/ の素材を使用・色ティント対象外） |
-| セクション | section-divider |
+| セクション | section-divider / section-photo-overlay-left / section-geo-texture-left / section-soft-3d-number-row（画像背景中扉は assets/covers/ の素材を使用・色ティント対象外） |
 | 目次 | agenda-toc / sidebar-toc-panel |
 | 本文 | key-message-single / two-col-text-body / image-left-text-right / two-section-stacked-text |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list |
@@ -90,7 +90,7 @@ N. [締め]      まとめと次の一歩
 | グラフ | waterfall-bridge-chart / positioning-map-scatter |
 | テーブル | before-after-two-col / comparison-matrix-table / estimate-amount-table / line-item-table |
 | KPI | three-kpi-big-number / goal-kgi-kpi-dashboard |
-| まとめ | summary-three-points / action-items-list |
+| まとめ | summary-three-points / action-items-list / closing-blob-thanks-left / closing-curve-shape-footer / closing-art-brush-contact（画像背景の締めは assets/covers/ の素材を使用・色ティント対象外） |
 | FAQ | faq-grid / faq-single-column |
 | プロフィール | profile-bio |
 

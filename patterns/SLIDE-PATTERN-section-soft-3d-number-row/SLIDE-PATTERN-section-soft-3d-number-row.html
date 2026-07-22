@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: section-soft-3d-number-row</title>
+  <style>
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
+    /* 半透明3Dオブジェクト背景（画像アセット差し替え可）＋特大章番号と章タイトルの横並び */
+    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-soft-3d.jpg') center/cover no-repeat; }
+    .row { position:absolute; left:72px; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:36px; max-width:560px; }
+    .big-number { font-size:110px; font-weight:bold; color:#8F9AAB; line-height:1; flex-shrink:0; }
+    .title-block { display:flex; flex-direction:column; gap:14px; }
+    .section-title { font-size:30px; font-weight:bold; color:#333333; line-height:1.4; }
+    .accent-line { width:56px; height:3px; background:#4A4A4A; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="bg"></div>
+    <div class="row">
+      <div class="big-number">04</div>
+      <div class="title-block">
+        <div class="section-title">セクションタイトルが<br>ここに入ります</div>
+        <div class="accent-line"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

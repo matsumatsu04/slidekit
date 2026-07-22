@@ -1,5 +1,5 @@
 {
-  "count": 97,
+  "count": 96,
   "patterns": [
     {
       "name": "cover-gradient-text-bottom",
@@ -630,6 +630,48 @@
       "summary": "右端の大きな曲面シェイプ背景に種別ラベル＋特大タイトルを載せるモダン表紙。背景は画像アセット（色ティント対象外）",
       "tier": "high",
       "id": "P105"
+    },
+    {
+      "name": "section-photo-overlay-left",
+      "category": "セクション",
+      "summary": "実写写真＋暗色オーバーレイの左中央に縦バー付きで章番号・章タイトルを載せる中扉。背景は画像アセット（差し替え可・色ティント対象外）",
+      "tier": "high",
+      "id": "P106"
+    },
+    {
+      "name": "section-geo-texture-left",
+      "category": "セクション",
+      "summary": "紙質感の幾何学装飾背景の左中央に特大章番号・区切り線・章タイトルを縦積みする上品な中扉。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P107"
+    },
+    {
+      "name": "section-soft-3d-number-row",
+      "category": "セクション",
+      "summary": "半透明3Dオブジェクトの淡色背景に特大章番号と章タイトルを横並びにするIT/SaaS系中扉。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P108"
+    },
+    {
+      "name": "closing-blob-thanks-left",
+      "category": "まとめ",
+      "summary": "右側の有機的ブロブ背景＋左の太字締めメッセージ・会社名・連絡先で結ぶ明るい締めスライド。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P109"
+    },
+    {
+      "name": "closing-curve-shape-footer",
+      "category": "まとめ",
+      "summary": "右端の曲面シェイプ背景に結びラベル＋特大メッセージ＋下部の連絡先行を載せるモダンな締めスライド。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P110"
+    },
+    {
+      "name": "closing-art-brush-contact",
+      "category": "まとめ",
+      "summary": "手描き画材モチーフ背景に締めメッセージと連絡先カードを載せるクリエイティブな締めスライド。背景は画像アセット（色ティント対象外）",
+      "tier": "high",
+      "id": "P111"
     }
   ]
 }

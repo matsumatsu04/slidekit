@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: closing-blob-thanks-left</title>
+  <style>
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
+    /* 有機的ブロブ背景（画像アセット差し替え可）＋左の太字締めメッセージ＋会社名・連絡先 */
+    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
+    .text-block { position:absolute; left:64px; top:46%; transform:translateY(-50%); }
+    .message { font-size:40px; font-weight:bold; color:#1A1A1A; line-height:1.4; margin-bottom:28px; }
+    .company { font-size:15px; font-weight:bold; color:#333333; }
+    .contact { position:absolute; left:64px; bottom:48px; font-size:12px; font-weight:bold; color:#555555; letter-spacing:0.04em; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="bg"></div>
+    <div class="text-block">
+      <div class="message">締めのメッセージが<br>ここに入ります</div>
+      <div class="company">会社名・ブランド名が入ります</div>
+    </div>
+    <div class="contact">お問い合わせ先・URLが入ります</div>
+  </div>
+</body>
+</html>
