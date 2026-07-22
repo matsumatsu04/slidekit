@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SlideKit ギャラリー — 構図パターン & デザインシステム</title>
-<meta name="description" content="AIスライド生成のための構図パターン96種とデザインシステムのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<title>SlideKit ギャラリー — 構図パターン & デザインテーマ</title>
+<meta name="description" content="AIスライド生成のための構図パターン96種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -123,7 +123,9 @@
   #designs{margin-top:46px;padding-top:6px;border-top:1px solid var(--line)}
   .ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
   .ds-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
-  .ds-card h3{font-size:18px}.ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
+  .ds-card h3{font-size:18px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .ds-card .ds-slug{font-size:11px;font-weight:400;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+  .ds-card .mood{color:var(--muted);font-size:13px;margin:6px 0 14px}
   .ds-card .dsfont{display:flex;align-items:center;gap:6px;font-size:12px;color:#444;margin-top:5px}
   .ds-card .dsfont::before{content:"Aa";font-size:10px;font-weight:700;color:#888;border:1px solid var(--line);border-radius:4px;padding:0 4px;line-height:1.5}
   .ds-card .swatches{display:flex;gap:6px;margin-bottom:14px}
@@ -218,7 +220,7 @@
       </nav>
     </div>
     <div class="side-bottom">
-      <a href="#designs">デザインシステム</a>
+      <a href="#designs">デザインテーマ</a>
       <a href="/gallery/deck.html">スライド確認・修正依頼 ↗</a>
       <a href="/gallery/start.html">導入手順 ↗</a>
     </div>
@@ -262,7 +264,7 @@
       <div class="loading" id="loading">読み込み中…</div>
 
       <section id="designs">
-        <div class="content-head"><h2>デザインシステム</h2></div>
+        <div class="content-head"><h2>デザインテーマ</h2></div>
         <div class="ds-grid" id="dsGrid"></div>
       </section>
     </div>
@@ -302,7 +304,7 @@
   <div class="modal-pos" id="mPos"></div>
 </div>
 
-<script src="/gallery/palettes.js?v2"></script>
+<script src="/gallery/palettes.js?v3"></script>
 <script>
 // リポジトリへの導線はナビから外し、導入手順ページ（/gallery/start.html）内のリンクに一本化（2026-07-22）
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
@@ -368,24 +370,23 @@ function setPalette(palOrNull){
 
 // design systems（本リポジトリのオリジナル）
 const DESIGNS=[
-  {name:'clean-mono-sans',mood:'静か / 知的 / 余白多め / ミニマル',font:'Noto Sans JP',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
-   md:'/design-systems/clean-mono-sans/SLIDEKIT-DESIGN.md',sample:'/design-systems/clean-mono-sans/sample.html'},
-  {name:'consulting-navy',mood:'信頼感 / 論理的 / フォーマル / 結論先行',font:'Noto Sans JP',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
-   md:'/design-systems/consulting-navy/SLIDEKIT-DESIGN.md',sample:'/design-systems/consulting-navy/sample.html'},
-  {name:'editorial-warm',mood:'上質 / 温かい / 雑誌風 / 明朝見出し',font:'見出し Noto Serif JP ／ 本文 Noto Sans JP',swatches:['#3A3733','#A6572E','#EFE6D8','#F7F3EC'],
-   md:'/design-systems/editorial-warm/SLIDEKIT-DESIGN.md',sample:'/design-systems/editorial-warm/sample.html'},
-  {name:'dark-tech',mood:'モダン / シャープ / スクリーン映え / ダーク',font:'Noto Sans JP',swatches:['#0E1116','#6E8BFF','#1A2029','#E6E9EE'],
-   md:'/design-systems/dark-tech/SLIDEKIT-DESIGN.md',sample:'/design-systems/dark-tech/sample.html'},
-  {name:'vivid-gradient',mood:'明るい / 大胆 / 先進的 / ピッチ向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
-   md:'/design-systems/vivid-gradient/SLIDEKIT-DESIGN.md',sample:'/design-systems/vivid-gradient/sample.html'},
+  {name:'clean-mono-sans',label:'ミニマル',mood:'静か / 知的 / 余白多め',font:'Noto Sans JP',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
+   sample:'/design-systems/clean-mono-sans/sample.html'},
+  {name:'consulting-navy',label:'フォーマルネイビー',mood:'信頼感 / 論理的 / 報告・提案向き',font:'Noto Sans JP',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
+   sample:'/design-systems/consulting-navy/sample.html'},
+  {name:'editorial-warm',label:'上品ウォーム',mood:'上質 / 温かい / 雑誌風・明朝見出し',font:'見出し Noto Serif JP ／ 本文 Noto Sans JP',swatches:['#3A3733','#A6572E','#EFE6D8','#F7F3EC'],
+   sample:'/design-systems/editorial-warm/sample.html'},
+  {name:'dark-tech',label:'ダーク',mood:'モダン / シャープ / スクリーン投影向き',font:'Noto Sans JP',swatches:['#0E1116','#6E8BFF','#1A2029','#E6E9EE'],
+   sample:'/design-systems/dark-tech/sample.html'},
+  {name:'vivid-gradient',label:'ポップグラデ',mood:'明るい / 大胆 / ピッチ・告知向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
+   sample:'/design-systems/vivid-gradient/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
   const sw=d.swatches.map(c=>`<span class="sw" style="background:${c}"></span>`).join('');
   const el=document.createElement('div');el.className='ds-card';
-  el.innerHTML=`<h3>${d.name}</h3><div class="dsfont">${d.font}</div><div class="mood">${d.mood}</div><div class="swatches">${sw}</div>
-    <a class="btn primary" href="${d.sample}" target="_blank" rel="noopener">サンプルを見る</a>
-    <a class="btn" href="${d.md}" download>SLIDEKIT-DESIGN.md</a>`;
+  el.innerHTML=`<h3>${d.label}<span class="ds-slug">${d.name}</span></h3><div class="dsfont">${d.font}</div><div class="mood">${d.mood}</div><div class="swatches">${sw}</div>
+    <a class="btn primary" href="${d.sample}" target="_blank" rel="noopener">サンプルを見る</a>`;
   dsGrid.appendChild(el);
 }
 
