@@ -144,7 +144,11 @@ function main() {
     const sectionWithIconStyle = applyIconStyle(sectionWithAssets, config.iconStyle);
 
     // 5. ページ番号注入
-    const finalSection = maybeInjectPageNumber(sectionWithIconStyle, n, N, config);
+    const numberedSection = maybeInjectPageNumber(sectionWithIconStyle, n, N, config);
+
+    // 6. 元フラグメント名を data-sk-src として埋め込む
+    //    （ギャラリーのデッキビューアが「スライドN＝どのファイルか」をフィードバックプロンプトに書けるようにする）
+    const finalSection = injectSrcAttr(numberedSection, filename);
 
     processedSections.push(finalSection);
   });
@@ -249,7 +253,10 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
     }
     copied.push(basename);
 
-    return `src=${quote}assets/${basename}${quote}`;
+    // data-sk-asset にはリポジトリルートからの元パスを残す。
+    // デッキ単体ではローカルコピー（assets/{basename}）を参照し、
+    // ギャラリーのデッキビューアに貼り付けた時はこの元パスから画像を復元する。
+    return `src=${quote}assets/${basename}${quote} data-sk-asset=${quote}${relFromRoot}${quote}`;
   });
 
   return { html, copied };
@@ -269,6 +276,12 @@ function applyIconStyle(sectionHtml, iconStyle) {
   if (!iconStyle || iconStyle === 'solid') return sectionHtml;
   const replacement = iconStyleClasses(iconStyle);
   return sectionHtml.replace(/\bfa-solid\b/g, replacement);
+}
+
+function injectSrcAttr(sectionHtml, filename) {
+  // 先頭の <section ...> 開始タグに data-sk-src="{フラグメント名}" を追加する
+  const safe = String(filename).replace(/["<>]/g, '');
+  return sectionHtml.replace(/<section\b/i, `<section data-sk-src="${safe}"`);
 }
 
 function maybeInjectPageNumber(sectionHtml, n, total, config) {

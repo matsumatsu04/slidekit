@@ -62,8 +62,12 @@
   input[type=text].hex{width:88px;font-family:ui-monospace,Menlo,monospace;font-size:13px;border:1px solid var(--line);
     border-radius:8px;padding:7px 9px;text-transform:uppercase}
   .swatches{display:flex;gap:6px}
-  .swatch{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
-  .swatch.active{box-shadow:0 0 0 2px var(--ink)}
+  .palettes{display:flex;gap:6px;flex-wrap:wrap}
+  .pal-chip{display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px 5px 8px;cursor:pointer;color:#555;white-space:nowrap}
+  .pal-chip .dots{display:flex}
+  .pal-chip .d{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);margin-left:-4px}
+  .pal-chip .d:first-child{margin-left:0}
+  .pal-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);color:var(--ink);font-weight:700}
   .link-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;white-space:nowrap}
   .divider{width:1px;height:22px;background:var(--line);flex:0 0 auto}
   .chip-btn{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#555;white-space:nowrap}
@@ -215,6 +219,7 @@
     </div>
     <div class="side-bottom">
       <a href="#designs">デザインシステム</a>
+      <a href="/gallery/deck.html">デッキビューア ↗</a>
       <a href="/gallery/deck-review.html">デッキレビュー ↗</a>
       <a id="repoLink" href="#">GitHub ↗</a>
     </div>
@@ -232,11 +237,9 @@
         <span class="match-count" id="matchCount"></span>
       </div>
       <div class="toolbar-row">
-        <span class="lab">プレビューの色</span>
-        <input type="color" id="tint" value="#1E2E53" aria-label="プレビューの色">
-        <input type="text" class="hex" id="tintHex" value="#1E2E53" maxlength="7" aria-label="カラーコード">
-        <div class="swatches" id="swatches"></div>
-        <button class="link-btn" id="tintReset">グレーに戻す</button>
+        <span class="lab">カラーパレット</span>
+        <div class="palettes" id="palettes"></div>
+        <button class="link-btn" id="palReset">グレーに戻す</button>
         <span class="divider"></span>
         <label class="chk"><input type="checkbox" id="headOn" checked> 見出しをつける</label>
         <span class="lab">見出しデザイン</span>
@@ -299,6 +302,7 @@
   <div class="modal-pos" id="mPos"></div>
 </div>
 
+<script src="/gallery/palettes.js"></script>
 <script>
 const REPO_URL="https://github.com/matsumatsu04/slidekit";
 document.getElementById('repoLink').href=REPO_URL;
@@ -307,13 +311,13 @@ const PV='v7';  // パターンHTMLの大改修時に上げる（iframeキャッ
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro導入時はパターン/デッキ側のCDN linkもKit URLに差し替える。docs/html-deck-generation.md参照）
 
-// ===== プレビューの色味（グレースケールを選択色にティント）=====
-let TINT=null; // null = グレーのまま
-function lightMix(hex, ratio){ // hex を白と混ぜた淡色トーン（ratio=元色の割合）
-  const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
-  const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');
-  return '#'+m(r)+m(g)+m(b);
-}
+// ===== プレビューの色（カラーパレット切替。定義は palettes.js）=====
+// パレット＝メイン(--sk-accent)/アクセント(--sk-accent2)/ベース(--sk-soft)/フォント#333固定 の4色セット。
+let PAL=(function(){
+  const saved=localStorage.getItem('sk-pal');
+  if(saved==='gray') return null;                       // 明示的にグレーを選んだ状態
+  return skFindPalette(saved) || skFindPalette('navy'); // 既定はネイビー
+})();
 const HSTYLE_VALUES=['a','b','c','d','e','f'];
 let HEADING=true, HSTYLE=(function(){
   const saved=localStorage.getItem('sk-hstyle');
@@ -324,48 +328,39 @@ let LAST_LIST=[], MODAL_LIST=[], MODAL_IDX=-1, MODAL_OPEN=false;
 
 // ※アイコンは Font Awesome の Solid で固定（スタイル切替UIは2026/7に廃止・Pro契約予定なしのため）
 function skInk(fr){
-  // テキストは黒#333固定（HTML側）。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
+  // テキストは黒#333固定（HTML側）。装飾=メイン(--sk-accent)、淡い面=ベース(--sk-soft)、差し色=--sk-accent2。
   try{
     const root = fr && fr.contentDocument && fr.contentDocument.documentElement;
     if(!root) return;
-    if(TINT){ root.style.setProperty('--sk-accent', TINT); root.style.setProperty('--sk-soft', lightMix(TINT,0.18)); }
-    else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
+    skApplyPaletteVars(root, PAL);
     root.dataset.heading = HEADING ? 'on' : 'off';   // 見出しON/OFF
     root.dataset.hstyle  = HSTYLE;                    // 見出しデザインA/B
   }catch(e){}
 }
-function applyTint(){
+function applyPalette(){
   document.querySelectorAll('.thumb iframe').forEach(skInk);
   if(MODAL_OPEN){
     const mf=document.getElementById('mFrame');
     if(mf) skInk(mf);
   }
 }
-function setTint(hex){
-  if(!/^#?[0-9a-fA-F]{6}$/.test(hex)) return;
-  TINT=hex[0]==='#'?hex:'#'+hex;
-  const ti=document.getElementById('tint'),th=document.getElementById('tintHex');
-  ti.value=TINT; th.value=TINT.toUpperCase();
-  [...document.querySelectorAll('.swatch')].forEach(s=>s.classList.toggle('active',s.dataset.c.toLowerCase()===TINT.toLowerCase()));
-  applyTint();
+function setPalette(palOrNull){
+  PAL=palOrNull;
+  localStorage.setItem('sk-pal', PAL ? PAL.key : 'gray');
+  [...document.querySelectorAll('.pal-chip')].forEach(b=>b.classList.toggle('active', !!PAL && b.dataset.key===PAL.key));
+  applyPalette();
 }
-(function initTint(){
-  const sw=document.getElementById('swatches');
-  ['#1E2E53','#5AA9E6','#2F6BFF','#12A150','#8B3FA8','#E2641F','#0EA5B5','#E11D74'].forEach(c=>{
-    const b=document.createElement('span'); b.className='swatch'; b.dataset.c=c; b.style.background=c;
-    b.onclick=()=>setTint(c); sw.appendChild(b);
-  });
-  document.getElementById('tint').addEventListener('input',e=>setTint(e.target.value));
-  document.getElementById('tintHex').addEventListener('input',e=>setTint(e.target.value.trim()));
-  document.getElementById('tintReset').addEventListener('click',()=>{TINT=null;[...document.querySelectorAll('.swatch')].forEach(s=>s.classList.remove('active'));applyTint();});
+(function initPalette(){
+  skRenderPaletteChips(document.getElementById('palettes'), PAL ? PAL.key : null, setPalette);
+  document.getElementById('palReset').addEventListener('click',()=>setPalette(null));
   // 見出し: ON/OFF と デザインA〜F
   const hBtns={};
   HSTYLE_VALUES.forEach(v=>{ hBtns[v]=document.getElementById('h'+v.toUpperCase()); });
   function syncH(){
     HSTYLE_VALUES.forEach(v=>hBtns[v].classList.toggle('active',HSTYLE===v));
-    applyTint();
+    applyPalette();
   }
-  document.getElementById('headOn').addEventListener('change',e=>{HEADING=e.target.checked; applyTint();});
+  document.getElementById('headOn').addEventListener('change',e=>{HEADING=e.target.checked; applyPalette();});
   HSTYLE_VALUES.forEach(v=>{
     hBtns[v].addEventListener('click',()=>{HSTYLE=v; localStorage.setItem('sk-hstyle',HSTYLE); syncH();});
   });
@@ -384,10 +379,6 @@ const DESIGNS=[
    md:'/design-systems/dark-tech/SLIDEKIT-DESIGN.md',sample:'/design-systems/dark-tech/sample.html'},
   {name:'vivid-gradient',mood:'明るい / 大胆 / 先進的 / ピッチ向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
    md:'/design-systems/vivid-gradient/SLIDEKIT-DESIGN.md',sample:'/design-systems/vivid-gradient/sample.html'},
-  {name:'brand-a-brand',mood:'brand-a公式 / Blue×Pink / 講座・集客',font:'Noto Sans JP',swatches:['#2F62A6','#2B4894','#D72550','#FFFFFF'],
-   md:'/design-systems/brand-a-brand/SLIDEKIT-DESIGN.md',sample:'/design-systems/brand-a-brand/sample.html'},
-  {name:'brand-b-sales',mood:'brand-b公式 / ネイビー×ゴールド / 営業・提案',font:'Noto Sans JP',swatches:['#1E2E53','#FED307','#E8EBF2','#FFFFFF'],
-   md:'/design-systems/brand-b-sales/SLIDEKIT-DESIGN.md',sample:'/design-systems/brand-b-sales/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
@@ -550,7 +541,7 @@ function render(){
       </div>`;
     grid.appendChild(card);
   });
-  applyTint();
+  applyPalette();
   requestAnimationFrame(fit);
 }
 function syncNavActive(){
@@ -672,7 +663,7 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   totop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   render();
   setDensity(DENSITY);
-  setTint('#1E2E53'); // デフォルト：brand-bネイビー（ブランドガイド navy）
+  applyPalette(); // 保存済みパレット（既定: ネイビー）を初回描画に反映
 }).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
 
 renderTray();

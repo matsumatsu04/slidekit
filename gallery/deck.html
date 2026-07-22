@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideKit デッキビューア — 貼り付けて表示・フィードバック・PDF保存</title>
+<meta name="description" content="SlideKitで生成したHTMLデッキを貼り付けるとスライドとして表示。スライド別フィードバックから修正プロンプトを出力し、ブラウザ印刷でPDF保存できます。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink)}
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .bar a.back{color:var(--brand);text-decoration:none;font-size:14px;white-space:nowrap}
+  .bar .ttl{font-weight:700;font-size:14px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar .cnt{font-size:12px;color:var(--muted);white-space:nowrap}
+  .bar .sp{flex:1}
+  .btn{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--ink);white-space:nowrap}
+  .btn:hover{border-color:var(--brand);color:var(--brand)}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+  .btn.primary:hover{opacity:.85;color:#fff}
+  .btn.gray{color:var(--muted)}
+  .lab{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+  .palettes{display:flex;gap:6px;flex-wrap:wrap}
+  .pal-chip{display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px 5px 8px;cursor:pointer;color:#555;white-space:nowrap}
+  .pal-chip .dots{display:flex}
+  .pal-chip .d{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);margin-left:-4px}
+  .pal-chip .d:first-child{margin-left:0}
+  .pal-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);color:var(--ink);font-weight:700}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 120px}
+
+  /* 入力パネル */
+  .input-panel h1{font-size:20px;margin:8px 0 6px}
+  .input-panel p{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:14px}
+  .drop{border:2px dashed var(--line);border-radius:14px;background:#fff;padding:22px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px;cursor:pointer}
+  .drop.on{border-color:var(--brand);color:var(--brand);background:#f5f8ff}
+  .input-panel textarea{width:100%;height:220px;border:1px solid var(--line);border-radius:14px;padding:14px;font-family:ui-monospace,monospace;font-size:12px;background:#fff;resize:vertical}
+  .input-actions{display:flex;gap:10px;margin-top:12px;align-items:center}
+  .err{color:#C0392B;font-size:13px;font-weight:700;display:none}
+
+  /* スライドカード */
+  .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px;margin-top:18px}
+  .s-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .s-card.has-fb{border-color:#E2A93B;box-shadow:0 0 0 1px #E2A93B}
+  .s-thumb{position:relative;width:100%;aspect-ratio:16/9;background:#E8E8E8;overflow:hidden}
+  .s-thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none}
+  .s-meta{display:flex;align-items:center;gap:8px;padding:10px 14px 0}
+  .s-no{font-size:12px;font-weight:700;background:var(--surf);border-radius:6px;padding:2px 8px}
+  .s-src{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .s-fb{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+  .s-fb textarea{width:100%;min-height:56px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical}
+  .s-fb textarea::placeholder,.s-fb input::placeholder{color:#B4B9C2}
+  .s-fb .prow{display:flex;align-items:center;gap:8px}
+  .s-fb .prow .lab{font-weight:400}
+  .s-fb input{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px}
+
+  /* 全体フィードバック */
+  .g-fb{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .g-fb h2{font-size:14px;margin-bottom:8px}
+  .g-fb textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;resize:vertical}
+
+  /* プロンプトモーダル */
+  .overlay{position:fixed;inset:0;background:rgba(20,22,28,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
+  .overlay.show{display:flex}
+  .p-modal{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+  .p-modal .p-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .p-modal .p-head h2{font-size:15px;flex:1}
+  .p-modal pre{flex:1;overflow:auto;padding:16px 18px;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;background:var(--surf);margin:0}
+  .copy-ok{color:#12A150 !important;border-color:#12A150 !important}
+
+  .hidden-print{position:fixed;left:-99999px;top:0;width:960px;height:540px;border:0}
+  .fbcount{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <a class="back" href="/gallery/">← ギャラリーへ</a>
+    <span class="ttl" id="deckTitle">デッキビューア</span>
+    <span class="cnt" id="deckCount"></span>
+    <span class="sp"></span>
+    <span class="lab" id="palLab" style="display:none">カラーパレット</span>
+    <div class="palettes" id="palettes" style="display:none"></div>
+    <button class="btn gray" id="palReset" style="display:none">デッキの配色に戻す</button>
+    <button class="btn" id="printBtn" style="display:none">PDFとして保存（印刷）</button>
+    <button class="btn" id="openTabBtn" style="display:none">新しいタブで開く</button>
+    <button class="btn primary" id="promptBtn" style="display:none">修正プロンプトを出力</button>
+    <button class="btn gray" id="clearBtn" style="display:none">別のデッキを読み込む</button>
+  </div>
+
+  <div class="wrap">
+    <div class="input-panel" id="inputPanel">
+      <h1>デッキビューア</h1>
+      <p>
+        SlideKitで生成したHTMLデッキ（index.html）を読み込むと、スライドとして表示できます。<br>
+        気になるスライドにフィードバックを書き込み、「修正プロンプトを出力」でコピーした文章をClaude Codeに貼り付けると、デッキを修正できます。<br>
+        表示中のデッキは「PDFとして保存（印刷）」からそのままPDF化できます（印刷ダイアログで「PDFに保存」を選択）。
+      </p>
+      <div class="drop" id="drop">ここに index.html をドラッグ＆ドロップ（またはクリックしてファイル選択）</div>
+      <input type="file" id="file" accept=".html,.htm,text/html" style="display:none">
+      <textarea id="src" placeholder="または、index.html の中身（テキスト全文）をここに貼り付け"></textarea>
+      <div class="input-actions">
+        <button class="btn primary" id="loadBtn">デッキを表示</button>
+        <span class="err" id="err"></span>
+      </div>
+    </div>
+
+    <div id="viewer" style="display:none">
+      <div class="deck-grid" id="deckGrid"></div>
+      <div class="g-fb">
+        <h2>全体へのフィードバック（トーン・構成・共通の修正指示など）</h2>
+        <textarea id="gfb" placeholder="例）全体的に文字が多いので各スライド3行以内に要約してほしい／表紙のタイトルを「◯◯」に変更 など"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pOverlay">
+    <div class="p-modal">
+      <div class="p-head">
+        <h2>修正プロンプト（Claude Codeに貼り付け）</h2>
+        <button class="btn" id="pCopy">コピー</button>
+        <button class="btn gray" id="pClose">閉じる</button>
+      </div>
+      <pre id="pText"></pre>
+    </div>
+  </div>
+
+  <iframe id="printFrame" class="hidden-print" title="印刷用" sandbox="allow-same-origin allow-modals"></iframe>
+
+<script src="/gallery/palettes.js"></script>
+<script>
+// ================= デッキHTMLのパース =================
+// build-html-deck.mjs の出力（1ファイルHTML・<section class="slide">の連結）を読み込む。
+// 依存: <style>群をhead相当として全スライドに共有、sectionごとに1枚のスライド。
+function parseDeck(html){
+  const titleM=html.match(/<title>([\s\S]*?)<\/title>/i);
+  const title=titleM?titleM[1].trim():'SlideKit Deck';
+  const styles=[...html.matchAll(/<style[^>]*>[\s\S]*?<\/style>/gi)].map(m=>m[0]);
+  const links=[...html.matchAll(/<link[^>]*>/gi)].map(m=>m[0])
+    .filter(l=>/fonts\.googleapis|fonts\.gstatic|font-awesome|cdnjs/i.test(l));
+  const sections=extractSections(html);
+  if(!sections.length) throw new Error('スライド（<section class="slide">）が見つかりません。SlideKitのデッキ index.html を貼り付けてください。');
+  // デッキ自身のテーマ色（:root{--sk-accent:...}）を控えておく（パレット比較・プロンプト用）
+  const themeM=html.match(/--sk-accent:\s*([^;]+);/);
+  const softM=html.match(/--sk-soft:\s*([^;]+);/);
+  return {title,styles,links,sections,theme:{accent:themeM?themeM[1].trim():null,soft:softM?softM[1].trim():null}};
+}
+// 深さカウントで <section class="...slide..."> を順に取り出す（入れ子対応・build-html-deck.mjsと同方式）
+function extractSections(html){
+  const tagRe=/<section\b[^>]*>|<\/section\s*>/gi;
+  const tokens=[];let m;
+  while((m=tagRe.exec(html))!==null){
+    tokens.push({isClose:/^<\/section/i.test(m[0]),raw:m[0],start:m.index,end:m.index+m[0].length});
+  }
+  const out=[];
+  for(let i=0;i<tokens.length;i++){
+    const t=tokens[i];
+    if(t.isClose) continue;
+    const cm=t.raw.match(/class\s*=\s*["']([^"']*)["']/i);
+    if(!cm||!cm[1].trim().split(/\s+/).includes('slide')) continue;
+    let depth=0,endIdx=-1;
+    for(let j=i;j<tokens.length;j++){
+      depth+=tokens[j].isClose?-1:1;
+      if(depth===0){endIdx=j;break;}
+    }
+    if(endIdx===-1) break;
+    out.push(html.slice(t.start,tokens[endIdx].end));
+    i=endIdx; // 次のトップレベルsectionへ
+  }
+  return out;
+}
+// アセットパスの解決:
+// build-html-deck.mjs はデッキ内アセットを src="assets/{basename}" に書き換え、
+// リポジトリ由来のアセットには data-sk-asset="assets/covers/..." を残す（2026/7改修）。
+// ギャラリー上では data-sk-asset をルート絶対パスに読み替えて画像を復元する。
+function resolveAssetPaths(sectionHtml){
+  return sectionHtml.replace(/(<[^>]*?)\bdata-sk-asset\s*=\s*(["'])([^"']+)\2([^>]*?>)/gi,(full,pre,q,orig,post)=>{
+    const replaced=(pre+post).replace(/\bsrc\s*=\s*(["'])[^"']*\1/i,`src=${q}/${orig}${q}`);
+    return replaced.slice(0,replaced.length-1)+` data-sk-asset=${q}${orig}${q}>`;
+  });
+}
+function sectionSrcFile(sectionHtml,idx){
+  const m=sectionHtml.match(/data-sk-src\s*=\s*["']([^"']+)["']/i);
+  return m?m[1]:null;
+}
+
+// ================= 状態 =================
+let DECK=null;      // {title,styles,links,sections,theme}
+let RAW='';         // 貼り付け原文
+let PAL=null;       // 上書きパレット（null=デッキの配色のまま）
+let FB={global:'',slides:{}}; // フィードバック {slides:{n:{text,pattern}}}
+const $=id=>document.getElementById(id);
+
+function storageKey(){ return DECK?`sk-deckfb:${DECK.title}:${DECK.sections.length}`:null; }
+function saveFb(){ if(DECK) localStorage.setItem(storageKey(),JSON.stringify(FB)); }
+function loadFb(){
+  try{ const v=localStorage.getItem(storageKey()); if(v){ FB=JSON.parse(v); } }catch(e){}
+  if(!FB||typeof FB!=='object') FB={global:'',slides:{}};
+  FB.slides=FB.slides||{}; FB.global=FB.global||'';
+}
+
+// ================= 表示 =================
+function slideDoc(section){
+  const head=DECK.links.join('\n')+'\n'+DECK.styles.join('\n')+
+    '\n<style>html,body{margin:0;padding:0;background:#fff;display:block;overflow:hidden}.slide{margin:0;box-shadow:none}.sk-pageno{}</style>';
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8">${head}</head><body>${resolveAssetPaths(section)}</body></html>`;
+}
+function applyPal(){
+  document.querySelectorAll('.s-thumb iframe').forEach(fr=>{
+    try{ skApplyPaletteVars(fr.contentDocument&&fr.contentDocument.documentElement, PAL); }catch(e){}
+  });
+  [...document.querySelectorAll('.pal-chip')].forEach(b=>b.classList.toggle('active',!!PAL&&b.dataset.key===PAL.key));
+}
+function fitThumbs(){
+  document.querySelectorAll('.s-thumb').forEach(t=>{
+    const fr=t.querySelector('iframe');
+    if(fr) fr.style.transform=`scale(${t.clientWidth/960})`;
+  });
+}
+function renderDeck(){
+  $('deckTitle').textContent=DECK.title;
+  $('deckCount').textContent=`全 ${DECK.sections.length} 枚`;
+  const grid=$('deckGrid');grid.innerHTML='';
+  DECK.sections.forEach((sec,i)=>{
+    const n=i+1;
+    const src=sectionSrcFile(sec,i);
+    const card=document.createElement('div');card.className='s-card';card.id=`card-${n}`;
+    card.innerHTML=`
+      <div class="s-thumb"><iframe title="スライド${n}" sandbox="allow-same-origin"></iframe></div>
+      <div class="s-meta"><span class="s-no">スライド ${n}</span>${src?`<span class="s-src">${src}</span>`:''}</div>
+      <div class="s-fb">
+        <textarea data-n="${n}" class="fb-text" placeholder="このスライドへのフィードバック（文言修正・構成の指示など）"></textarea>
+        <div class="prow">
+          <span class="lab">構図パターン変更（任意）</span>
+          <input data-n="${n}" class="fb-pattern" placeholder="例）P045 や three-kpi-big-number（ギャラリーで探してID指定）">
+        </div>
+      </div>`;
+    grid.appendChild(card);
+    const fr=card.querySelector('iframe');
+    fr.onload=()=>{ try{ skApplyPaletteVars(fr.contentDocument.documentElement, PAL); }catch(e){} };
+    fr.srcdoc=slideDoc(sec);
+    const fb=FB.slides[n]||{};
+    const ta=card.querySelector('.fb-text');const pi=card.querySelector('.fb-pattern');
+    ta.value=fb.text||''; pi.value=fb.pattern||'';
+    const upd=()=>{
+      FB.slides[n]={text:ta.value.trim(),pattern:pi.value.trim()};
+      if(!FB.slides[n].text&&!FB.slides[n].pattern) delete FB.slides[n];
+      card.classList.toggle('has-fb',!!FB.slides[n]);
+      saveFb();
+    };
+    ta.addEventListener('input',upd); pi.addEventListener('input',upd);
+    card.classList.toggle('has-fb',!!(fb.text||fb.pattern));
+  });
+  $('gfb').value=FB.global||'';
+  $('gfb').oninput=()=>{FB.global=$('gfb').value.trim();saveFb();};
+  requestAnimationFrame(fitThumbs);
+}
+
+// ================= 読み込み =================
+function loadDeck(html){
+  const err=$('err');err.style.display='none';
+  try{
+    DECK=parseDeck(html);RAW=html;
+  }catch(e){ err.textContent=e.message;err.style.display='inline';return; }
+  PAL=null;
+  loadFb();
+  $('inputPanel').style.display='none';
+  $('viewer').style.display='block';
+  ['palLab','palettes','palReset','printBtn','openTabBtn','promptBtn','clearBtn'].forEach(id=>$(id).style.display='');
+  renderDeck();
+}
+$('loadBtn').addEventListener('click',()=>loadDeck($('src').value));
+$('drop').addEventListener('click',()=>$('file').click());
+$('file').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  f.text().then(t=>{$('src').value=t;loadDeck(t);});
+});
+['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('on');}));
+['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('on');}));
+$('drop').addEventListener('drop',e=>{
+  const f=e.dataTransfer.files[0];if(!f)return;
+  f.text().then(t=>{$('src').value=t;loadDeck(t);});
+});
+$('clearBtn').addEventListener('click',()=>{
+  DECK=null;RAW='';
+  $('viewer').style.display='none';
+  $('inputPanel').style.display='block';
+  $('deckTitle').textContent='デッキビューア';$('deckCount').textContent='';
+  ['palLab','palettes','palReset','printBtn','openTabBtn','promptBtn','clearBtn'].forEach(id=>$(id).style.display='none');
+});
+
+// ================= パレット =================
+skRenderPaletteChips($('palettes'),null,pal=>{PAL=pal;applyPal();});
+$('palReset').addEventListener('click',()=>{PAL=null;applyPal();});
+
+// ================= 印刷・別タブ =================
+function printableHtml(){
+  let html=RAW;
+  // アセット復元（data-sk-asset → ルート絶対パス）を全文に適用
+  html=html.replace(/<section[\s\S]*?<\/section\s*>/gi,m=>resolveAssetPaths(m));
+  if(PAL){
+    html=html.replace('</head>',`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};}</style></head>`);
+  }
+  return html;
+}
+$('printBtn').addEventListener('click',()=>{
+  const fr=$('printFrame');
+  fr.onload=()=>{ try{ fr.contentWindow.focus();fr.contentWindow.print(); }catch(e){ openInTab(); } };
+  fr.srcdoc=printableHtml();
+});
+function openInTab(){
+  const url=URL.createObjectURL(new Blob([printableHtml()],{type:'text/html'}));
+  window.open(url,'_blank');
+}
+$('openTabBtn').addEventListener('click',openInTab);
+
+// ================= 修正プロンプト出力 =================
+function buildPrompt(){
+  const lines=[];
+  lines.push('# SlideKitデッキ修正依頼');
+  lines.push('');
+  lines.push(`対象デッキ: ${DECK.title}（全${DECK.sections.length}枚）`);
+  lines.push('');
+  lines.push('以下のフィードバックに沿って、このデッキのフォルダ内 slides/*.html を修正し、');
+  lines.push('`node tools/html-deck/build-html-deck.mjs <デッキフォルダ>` で再ビルドしてください。');
+  lines.push('構図パターン変更の指定があるスライドは patterns/SLIDE-PATTERN-{name}/ の構図に沿って作り直してください。');
+  lines.push('修正が終わったら index.html を返してください（ギャラリーのデッキビューアで再確認します）。');
+  if(PAL){
+    lines.push('');
+    lines.push('## カラーパレット変更');
+    lines.push(`- パレット「${PAL.label}」に変更: メイン ${PAL.main} ／ アクセント ${PAL.accent} ／ ベース ${PAL.base} ／ フォント ${SK_FONT_COLOR}`);
+    lines.push(`- deck-config.json の theme を accent=${PAL.main}, soft=${PAL.base} に更新（差し色はフラグメント側で ${PAL.accent} を使用）`);
+  }
+  if(FB.global){
+    lines.push('');
+    lines.push('## 全体への指示');
+    FB.global.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
+  }
+  const ns=Object.keys(FB.slides).map(Number).sort((a,b)=>a-b);
+  if(ns.length){
+    lines.push('');
+    lines.push('## スライド別の指示');
+    ns.forEach(n=>{
+      const fb=FB.slides[n];
+      const src=sectionSrcFile(DECK.sections[n-1]||'',n-1);
+      lines.push('');
+      lines.push(`### スライド${n}${src?`（元ファイル: slides/${src}）`:''}`);
+      if(fb.pattern) lines.push(`- 構図パターンを「${fb.pattern}」に変更`);
+      if(fb.text) fb.text.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
+    });
+  }
+  if(!PAL&&!FB.global&&!ns.length){
+    return null;
+  }
+  return lines.join('\n');
+}
+$('promptBtn').addEventListener('click',()=>{
+  const p=buildPrompt();
+  if(!p){ alert('フィードバックがまだ入力されていません。スライドのフィードバック欄・全体欄に記入するか、パレットを変更してから出力してください。'); return; }
+  $('pText').textContent=p;
+  $('pOverlay').classList.add('show');
+});
+$('pClose').addEventListener('click',()=>$('pOverlay').classList.remove('show'));
+$('pOverlay').addEventListener('click',e=>{if(e.target.id==='pOverlay')$('pOverlay').classList.remove('show');});
+$('pCopy').addEventListener('click',async()=>{
+  const btn=$('pCopy');
+  let ok=false;
+  try{ await navigator.clipboard.writeText($('pText').textContent); ok=true; }catch(e){
+    try{
+      const ta=document.createElement('textarea');ta.value=$('pText').textContent;ta.style.position='fixed';ta.style.left='-9999px';
+      document.body.appendChild(ta);ta.select();ok=document.execCommand('copy');document.body.removeChild(ta);
+    }catch(e2){}
+  }
+  btn.textContent=ok?'コピーしました ✓':'コピー失敗';
+  btn.classList.toggle('copy-ok',ok);
+  setTimeout(()=>{btn.textContent='コピー';btn.classList.remove('copy-ok');},1800);
+});
+
+window.addEventListener('resize',()=>requestAnimationFrame(fitThumbs));
+</script>
+</body>
+</html>

@@ -154,7 +154,11 @@ bash tools/html-deck/export-pdf.sh <デッキフォルダ>
 
 ### 8. 納品して使い方を伝える
 - 既定: **`index.html`（画面表示・そのままプレゼン可）＋ `deck.pdf`（共有・印刷用）** を渡す。
+- 納品時に**ギャラリーのデッキビューア**（`https://slidekit-sigma.vercel.app/gallery/deck.html`）を必ず案内する:
+  「index.html をビューアに読み込むと、スライド確認・スライド別フィードバック記入・修正プロンプトのコピー・PDF保存（ブラウザ印刷）ができます。
+  出力された修正プロンプトをそのまま貼り付けてもらえれば、こちらで修正して再ビルドします」。
 - **文字修正はユーザーからの指示を受けてAIが即修正**する（フラグメント編集→再ビルド。ユーザーはHTMLを触らない前提）。
+  デッキビューアの「修正プロンプト」が貼られた場合はその指示（スライド番号・元ファイル名・構図パターン変更・パレット変更）に従って修正→再ビルド→再納品する。
 - **編集可能形式（Google Slides）が必要な案件のみ**、代替として `tools/pptx` ルート
   （deck.json→build-pptx.mjs→Google Slides変換。docs/pptx-generation.md）を使う。PowerPointは所有していないため納品先はGoogle Slides。
 
@@ -170,6 +174,7 @@ bash tools/html-deck/export-pdf.sh <デッキフォルダ>
 | サブエージェント機構（Agent tool / spawn_agent 等） | 生成に関与していない別エージェントに視覚QAさせる | **自分でQA画像を1枚ずつ開いて客観チェック**（観点: はみ出し/重なり/語中折返し/整列ズレ/余白の偏り）。1サイクルで止める |
 | Google Drive 連携（MCP等・Google Slides納品時のみ） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→開くとGoogle Slidesとして編集可」と一言案内 |
 | ローカルWebサーバー（デッキレビューア） | `/gallery/deck-review.html` で通し確認 | QA画像ファイルを直接開いて確認（レビューアは任意の補助） |
+| デッキビューア（フィードバックループ） | 本番 `https://slidekit-sigma.vercel.app/gallery/deck.html`（またはローカル `/gallery/deck.html`）を納品時に案内 | index.html をブラウザで開いて確認し、修正指示はチャットで受ける |
 
 - パスは正本リポジトリからの相対（`tools/html-deck/` `tools/pptx/` `docs/` `patterns/` `assets/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
 - 承認ゲート・自己検証・成果物提示の表形式など**このSKILLの手順自体は環境によらず同一**。

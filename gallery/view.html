@@ -16,15 +16,18 @@
   .bar .cat{font-size:11px;color:#fff;background:var(--ink);border-radius:5px;padding:1px 8px}
   .bar .sp{flex:1}
   .bar .lab{font-size:12px;color:var(--muted);font-weight:700}
-  .bar input[type=color]{width:32px;height:32px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;padding:2px}
-  .bar input[type=text]{width:90px;font-family:ui-monospace,monospace;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;text-transform:uppercase}
   .bar .btn{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;text-decoration:none;color:var(--ink);cursor:pointer}
   .bar .btn:hover{border-color:#2f6bff;color:#2f6bff}
   .bar .btn.gray{color:var(--muted)}
+  .palettes{display:flex;gap:6px;flex-wrap:wrap}
+  .pal-chip{display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px 5px 8px;cursor:pointer;color:#555;white-space:nowrap}
+  .pal-chip .dots{display:flex}
+  .pal-chip .d{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);margin-left:-4px}
+  .pal-chip .d:first-child{margin-left:0}
+  .pal-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);color:var(--ink);font-weight:700}
   .stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px}
   .holder{position:relative;width:960px;height:540px;transform-origin:center center}
   .holder iframe{position:absolute;inset:0;width:960px;height:540px;border:0;background:#e8e8e8}
-  .holder .tintlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color;background:transparent}
 </style>
 </head>
 <body>
@@ -34,9 +37,8 @@
     <span class="name" id="pname"></span>
     <span class="cat" id="pcat"></span>
     <span class="sp"></span>
-    <span class="lab">色</span>
-    <input type="color" id="tint" value="#1E2E53">
-    <input type="text" id="tintHex" value="#1E2E53" maxlength="7">
+    <span class="lab">カラーパレット</span>
+    <div class="palettes" id="palettes"></div>
     <button class="btn gray" id="reset">グレーに戻す</button>
     <a class="btn" id="dl" download>.md DL</a>
   </div>
@@ -46,10 +48,10 @@
     </div>
   </div>
 
+<script src="/gallery/palettes.js"></script>
 <script>
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
-let tint=qs.get('tint')||''; if(tint && tint[0]!=='#') tint='#'+tint;
 let heading=qs.get('head')!=='off'; // 既定ON
 const HSTYLE_VALUES=['a','b','c','d','e','f'];
 let hstyle=HSTYLE_VALUES.includes(qs.get('hstyle'))?qs.get('hstyle'):'a';
@@ -64,25 +66,32 @@ if(!pid) document.getElementById('pid').style.display='none';
 document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html?v7`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
-const frame=document.getElementById('frame'),ti=document.getElementById('tint'),th=document.getElementById('tintHex');
-function lightMix(hex,ratio){const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);const m=v=>Math.round(v*ratio+255*(1-ratio)).toString(16).padStart(2,'0');return '#'+m(r)+m(g)+m(b);}
+// パレット状態: ?pal=キー ＞ localStorage（sk-pal）＞ 既定ネイビー。'gray'はグレー表示
+let PAL=(function(){
+  const q=qs.get('pal')||localStorage.getItem('sk-pal');
+  if(q==='gray') return null;
+  return skFindPalette(q) || skFindPalette('navy');
+})();
+const frame=document.getElementById('frame');
 function apply(){
-  // テキストは黒#333固定。装飾=アクセント色(--sk-accent)、背景図形/面=淡色トーン(--sk-soft)。
+  // テキストは黒#333固定。装飾=メイン(--sk-accent)、淡い面=ベース(--sk-soft)、差し色=--sk-accent2。
   try{
     const root=frame.contentDocument&&frame.contentDocument.documentElement;
     if(root){
-      if(tint){ root.style.setProperty('--sk-accent',tint); root.style.setProperty('--sk-soft',lightMix(tint,0.18)); }
-      else { root.style.removeProperty('--sk-accent'); root.style.removeProperty('--sk-soft'); }
+      skApplyPaletteVars(root, PAL);
       root.dataset.heading = heading ? 'on':'off';
       root.dataset.hstyle  = hstyle;
     }
   }catch(e){}
-  if(tint){ti.value=tint;th.value=tint.toUpperCase();}
 }
-function set(hex){ if(!/^#?[0-9a-fA-F]{6}$/.test(hex))return; tint=hex[0]==='#'?hex:'#'+hex; apply(); }
-ti.addEventListener('input',e=>set(e.target.value));
-th.addEventListener('input',e=>set(e.target.value.trim()));
-document.getElementById('reset').addEventListener('click',()=>{tint='';apply();});
+function setPal(palOrNull){
+  PAL=palOrNull;
+  localStorage.setItem('sk-pal', PAL ? PAL.key : 'gray');
+  [...document.querySelectorAll('.pal-chip')].forEach(b=>b.classList.toggle('active', !!PAL && b.dataset.key===PAL.key));
+  apply();
+}
+skRenderPaletteChips(document.getElementById('palettes'), PAL ? PAL.key : null, setPal);
+document.getElementById('reset').addEventListener('click',()=>setPal(null));
 
 // 画面に合わせてスケール
 function fit(){
