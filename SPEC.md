@@ -23,8 +23,8 @@ SLIDE-PATTERN-{name}.md     ← 構図（要素の配置・カラム構造）を
 | `SLIDE-PATTERN-{name}.md` | 構図パターン | 要素の配置・構造・各要素の役割 | 色・フォント・実コンテンツ |
 | `SLIDEKIT-DECK.md` | 設計書（ブリーフ） | 上記2種＋全スライドの構成＋実コンテンツ | （これ自体が完成形） |
 
-> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は [slide-pattern-library/slide.md](https://github.com/slide-pattern-library/slide.md)（MIT License）を
-> 取り込んで利用している。詳細は [`patterns/CREDITS.md`](./patterns/CREDITS.md)。SlideKit の構図パターンはこの形式に統一する。
+> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は本リポジトリのオリジナル成果物
+> （作者の旧ライブラリ slide-pattern-library から統合）。SlideKit の構図パターンはこの形式に統一する。
 
 **設計思想：色と構図を分離する。** デザインシステム（色・フォント）を 1 つ決めれば、
 どの構図パターンとも自由に組み合わせられます。逆に、お気に入りの構図を 1 度言語化すれば、
@@ -111,7 +111,6 @@ SLIDE-PATTERN-{name}.md     ← 構図（要素の配置・カラム構造）を
 patterns/
 ├─ SLIDE-PATTERN-INDEX.md          ← 全パターンの索引（カテゴリ別。assemble が参照）
 ├─ manifest.json                   ← 機械可読の一覧（name / category / summary）
-├─ CREDITS.md / UPSTREAM-LICENSE.txt
 └─ SLIDE-PATTERN-{name}/
    ├─ SLIDE-PATTERN-{name}.md      ← 構図定義
    └─ SLIDE-PATTERN-{name}.html    ← グレースケールの確認用プレビュー（960×540）
@@ -151,7 +150,7 @@ DESIGN 側の Frame で定義する旨を記す）
 - `category` は上記 14 種から選ぶ（INDEX とギャラリーの分類に使う）。
 - 確認用 HTML は **グレースケール**で作る（色は DESIGN 側が決めるため）。ファイルは `SLIDE-PATTERN-{name}.html`。
 - **新しいパターンを追加したら、`SLIDE-PATTERN-INDEX.md` の該当カテゴリと `manifest.json` を更新する**（`slidekit-layout` が実施）。
-- 既存ライブラリ（slide-pattern-library/slide.md, MIT）は内容・ライセンス表示を保持したまま利用する（[CREDITS](./patterns/CREDITS.md)）。
+- 既存ライブラリ（作者の旧ライブラリ slide-pattern-library 由来）も同じ形式・運用ルールに従う。
 
 ---
 

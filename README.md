@@ -91,5 +91,4 @@ slidekit/
 
 ## ライセンス
 
-- 本リポジトリ（スキル・仕様・デザインシステム・ギャラリー）: [MIT License](./LICENSE)
-- 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は第三者のMITライセンス成果物を含みます。該当ライセンス表示は [`patterns/UPSTREAM-LICENSE.txt`](./patterns/UPSTREAM-LICENSE.txt) を参照。
+- 本リポジトリの内容（スキル・仕様・デザインシステム・構図パターンライブラリ・ギャラリー）はすべて作者のオリジナル成果物であり、[MIT License](./LICENSE) で公開しています。
