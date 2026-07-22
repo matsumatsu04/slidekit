@@ -220,7 +220,7 @@
     <div class="side-bottom">
       <a href="#designs">デザインシステム</a>
       <a href="/gallery/deck.html">スライド確認・修正依頼 ↗</a>
-      <a id="repoLink" href="#">GitHub ↗</a>
+      <a href="/gallery/start.html">導入手順 ↗</a>
     </div>
   </aside>
 
@@ -304,8 +304,7 @@
 
 <script src="/gallery/palettes.js?v2"></script>
 <script>
-const REPO_URL="https://github.com/matsumatsu04/slidekit";
-document.getElementById('repoLink').href=REPO_URL;
+// リポジトリへの導線はナビから外し、導入手順ページ（/gallery/start.html）内のリンクに一本化（2026-07-22）
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
 const PV='v8';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
