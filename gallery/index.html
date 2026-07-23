@@ -508,8 +508,9 @@ function matches(p){
   else if(active==='__del'){ if(!isDel(p.id)) return false; }
   else if(active!=='all' && p.category!==active) return false;
   if(!QUERY) return true;
-  const q=QUERY.toLowerCase();
-  return p.name.toLowerCase().includes(q)||(p.summary||'').toLowerCase().includes(q)||p.category.includes(QUERY)||(p.id||'').toLowerCase()===q;
+  // 部分一致（ID含む）。スペース区切りは全語含むものだけに絞るAND検索
+  const hay=`${p.id||''} ${p.name} ${p.category} ${p.summary||''}`.toLowerCase();
+  return QUERY.toLowerCase().split(/\s+/).filter(Boolean).every(t=>hay.includes(t));
 }
 function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
