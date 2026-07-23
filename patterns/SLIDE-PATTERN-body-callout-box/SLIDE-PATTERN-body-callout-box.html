@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-body-callout-box</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:24px 88px 32px; display:flex; flex-direction:column; justify-content:center; gap:20px; }
+  .cb-body { font-size:14px; color:#333333; line-height:2.0; }
+  .cb-box { border-left:4px solid var(--sk-accent,#888888); background:var(--sk-soft,#F4F4F4); padding:16px 22px; display:flex; flex-direction:column; gap:6px; }
+  .cb-box-label { font-size:11px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.1em; }
+  .cb-box-text { font-size:15px; font-weight:bold; color:#333333; line-height:1.7; }
+  .cb-note { font-size:11.5px; color:#999999; line-height:1.7; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="cb-body">本文のテキストがここに入ります。背景・状況・前提などを3〜4行で説明します。読み手が次のポイントボックスの重要性を理解できるだけの文脈をここで用意します。文章は2.0の行間でゆったり組みます。</div>
+    <div class="cb-box">
+      <div class="cb-box-label">POINT</div>
+      <div class="cb-box-text">このスライドで最も重要なポイントの文章がここに入ります。左のアクセントバーと淡色地で本文から浮き上がらせます。</div>
+    </div>
+    <div class="cb-note">※補足・注記・出典などが入ります（省略可）</div>
+  </div>
+</div>
+</body>
+</html>

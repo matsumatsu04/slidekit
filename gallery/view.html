@@ -48,7 +48,7 @@
     </div>
   </div>
 
-<script src="/gallery/palettes.js?v4"></script>
+<script src="/gallery/palettes.js?v5"></script>
 <script>
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
@@ -63,7 +63,7 @@ document.getElementById('pcat').textContent=cat;
 if(!cat) document.getElementById('pcat').style.display='none';
 document.getElementById('pid').textContent=pid;
 if(!pid) document.getElementById('pid').style.display='none';
-document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html?v9`;
+document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html?v10`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
 // パレット状態: ?pal=キー ＞ localStorage（sk-pal）＞ 既定ネイビー。'gray'はグレー表示

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SlideKit ギャラリー — 構図パターン & デザインテーマ</title>
-<meta name="description" content="AIスライド生成のための構図パターン119種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<meta name="description" content="AIスライド生成のための構図パターン131種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -304,11 +304,11 @@
   <div class="modal-pos" id="mPos"></div>
 </div>
 
-<script src="/gallery/palettes.js?v4"></script>
+<script src="/gallery/palettes.js?v5"></script>
 <script>
 // リポジトリへの導線はナビから外し、導入手順ページ（/gallery/start.html）内のリンクに一本化（2026-07-22）
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
-const PV='v9';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
+const PV='v10';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
 const htmlPath=p=>`${base(p)}/SLIDE-PATTERN-${p}.html?${PV}`;
 const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro導入時はパターン/デッキ側のCDN linkもKit URLに差し替える。docs/html-deck-generation.md参照）
 
@@ -380,6 +380,12 @@ const DESIGNS=[
    sample:'/design-systems/dark/sample.html'},
   {name:'pop-gradient',label:'ポップグラデ',mood:'明るい / 大胆 / ピッチ・告知向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
    sample:'/design-systems/pop-gradient/sample.html'},
+  {name:'green',label:'グリーン',mood:'爽やか / やさしい / 教育・SaaS向き',font:'Noto Sans JP',swatches:['#1E7A55','#4CA97E','#E9F4EE','#FFFFFF'],
+   sample:'/design-systems/green/sample.html'},
+  {name:'light-blue',label:'ライトブルー',mood:'軽やか / 清潔感 / IR・サービス紹介向き',font:'Noto Sans JP',swatches:['#2E9BD6','#6FBFE8','#E8F4FB','#FFFFFF'],
+   sample:'/design-systems/light-blue/sample.html'},
+  {name:'black',label:'ブラック',mood:'ストイック / タイポ主役 / ブランド・ポートフォリオ向き',font:'Noto Sans JP',swatches:['#111111','#555555','#F2F2F2','#FFFFFF'],
+   sample:'/design-systems/black/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
@@ -644,6 +650,13 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
     if(ca!==cb) return (ca<0?99:ca)-(cb<0?99:cb);
     return (a.id||'').localeCompare(b.id||'');
   });
+  // 存在しないID（削除済みパターン）のお気に入り・削除予定を自動掃除（バッジの数字が残り続けるのを防ぐ）
+  const validIds=new Set(DATA.map(p=>p.id));
+  const favBefore=FAVS.size, delBefore=DELS.size;
+  FAVS=new Set([...FAVS].filter(id=>validIds.has(id)));
+  DELS=new Set([...DELS].filter(id=>validIds.has(id)));
+  if(FAVS.size!==favBefore) saveFavs();
+  if(DELS.size!==delBefore) saveDels();
   document.getElementById('loading').style.display='none';
   document.getElementById('allCount').textContent=DATA.length;
   document.getElementById('favCount').textContent=FAVS.size; // 初回表示時点のお気に入り件数を反映

@@ -72,7 +72,7 @@ Claude Code で話しかけます。
 ## 同梱物
 
 - **デザインテーマ**: `design-systems/`（汎用・ブランド中立のサンプル）
-- **構図パターン**: `patterns/`（14カテゴリ・119種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slidekit-sigma.vercel.app/gallery/)で一覧・プレビュー・DL可。カラーパレット切替つき）
+- **構図パターン**: `patterns/`（14カテゴリ・131種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slidekit-sigma.vercel.app/gallery/)で一覧・プレビュー・DL可。カラーパレット切替つき）
 - **スライド確認・修正依頼ページ**: [`/gallery/deck.html`](https://slidekit-sigma.vercel.app/gallery/deck.html)（生成した `index.html` を貼り付け→スライド表示・スライド別フィードバック→修正プロンプト出力・ブラウザ印刷でPDF保存）
 - **設計書の例**: `examples/sample-proposal/SLIDEKIT-DECK.md`
 

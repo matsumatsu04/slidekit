@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-toc-section-cards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:32px 72px; display:flex; flex-direction:column; justify-content:center; gap:22px; }
+  .tsc-head { display:flex; align-items:baseline; gap:14px; }
+  .tsc-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; }
+  .tsc-title { font-size:24px; font-weight:bold; color:#333333; }
+  .tsc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .tsc-card { border:1px solid var(--sk-soft,#E0E0E0); border-top:3px solid var(--sk-accent,#888888); padding:18px 16px 16px; display:flex; flex-direction:column; gap:8px; min-height:150px; }
+  .tsc-no { font-size:30px; font-weight:bold; color:var(--sk-accent,#BBBBBB); line-height:1; }
+  .tsc-name { font-size:14px; font-weight:bold; color:#333333; line-height:1.5; }
+  .tsc-desc { font-size:11px; color:#888888; line-height:1.6; }
+  .tsc-page { margin-top:auto; font-size:10.5px; color:#AAAAAA; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="tsc-head"><div class="tsc-label">CONTENTS</div><div class="tsc-title">本日の流れ</div></div>
+    <div class="tsc-grid">
+      <div class="tsc-card"><div class="tsc-no">01</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.3〜</div></div>
+      <div class="tsc-card"><div class="tsc-no">02</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.9〜</div></div>
+      <div class="tsc-card"><div class="tsc-no">03</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.15〜</div></div>
+      <div class="tsc-card"><div class="tsc-no">04</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.21〜</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

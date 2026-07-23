@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-stacked-bar-two-composition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; align-items:center; gap:64px; padding:32px 110px; }
+  .sb-chart { display:flex; gap:88px; align-items:flex-end; height:330px; border-bottom:2px solid var(--sk-accent,#999999); padding:0 24px; }
+  .sb-col { width:120px; display:flex; flex-direction:column; justify-content:flex-end; height:100%; position:relative; }
+  .sb-label { position:absolute; bottom:-30px; width:100%; text-align:center; font-size:13px; font-weight:bold; color:#333333; }
+  .seg { width:100%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; }
+  .seg-a { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .seg-b { background:color-mix(in srgb, var(--sk-accent,#555555) 55%, #FFFFFF); color:#FFFFFF; }
+  .seg-c { background:var(--sk-soft,#E0E0E0); color:#333333; }
+  .col1 .seg-a { height:26%; } .col1 .seg-b { height:34%; } .col1 .seg-c { height:40%; }
+  .col2 .seg-a { height:60%; } .col2 .seg-b { height:26%; } .col2 .seg-c { height:14%; }
+  .sb-legend { flex:1; display:flex; flex-direction:column; gap:16px; }
+  .lg-row { display:flex; align-items:flex-start; gap:12px; }
+  .lg-chip { width:14px; height:14px; border-radius:3px; flex-shrink:0; margin-top:3px; }
+  .lg-a { background:var(--sk-accent,#555555); } .lg-b { background:color-mix(in srgb, var(--sk-accent,#555555) 55%, #FFFFFF); } .lg-c { background:var(--sk-soft,#E0E0E0); }
+  .lg-name { font-size:13px; font-weight:bold; color:#333333; }
+  .lg-desc { font-size:11px; color:#888888; margin-top:2px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="sb-chart">
+      <div class="sb-col col1"><div class="seg seg-c">40%</div><div class="seg seg-b">34%</div><div class="seg seg-a">26%</div><div class="sb-label">現在</div></div>
+      <div class="sb-col col2"><div class="seg seg-c">14%</div><div class="seg seg-b">26%</div><div class="seg seg-a">60%</div><div class="sb-label">3年後（目標）</div></div>
+    </div>
+    <div class="sb-legend">
+      <div class="lg-row"><div class="lg-chip lg-a"></div><div><div class="lg-name">セグメントAが入ります</div><div class="lg-desc">説明が入ります（伸ばす領域）</div></div></div>
+      <div class="lg-row"><div class="lg-chip lg-b"></div><div><div class="lg-name">セグメントBが入ります</div><div class="lg-desc">説明が入ります</div></div></div>
+      <div class="lg-row"><div class="lg-chip lg-c"></div><div><div class="lg-name">セグメントCが入ります</div><div class="lg-desc">説明が入ります（縮小する領域）</div></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

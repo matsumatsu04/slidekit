@@ -69,8 +69,8 @@ N. [締め]      まとめと次の一歩
 （名前を創作しない。INDEX/manifest の全パターン・14カテゴリ）。各スライドの内容に最も合うカテゴリ→パターンを選ぶ。
 
 > **再現性tier（manifest.json の `tier`）を必ず考慮する：**
-> - `high`（81種）: シンプルで自動生成でも崩れない。**既定はここから選ぶ**
-> - `mid`（38種）: 規則的だが要素多め。内容が合うときに使う
+> - `high`（92種）: シンプルで自動生成でも崩れない。**既定はここから選ぶ**
+> - `mid`（39種）: 規則的だが要素多め。内容が合うときに使う
 > - `low`（現在0種。今後追加された場合：円環図/ハブスポーク/ドーナツ図/組織図等）: 自動生成では崩れやすい。
 >   **ユーザーが明示的に指定した場合のみ**使い、「複雑な構図のため生成結果が崩れる可能性がある」ことを一言添える。
 >   同じ内容は high/mid の代替（例: 円環図→four-step-flow、ドーナツ図→three-kpi-big-number）で表現できないか先に検討する。
@@ -79,26 +79,26 @@ N. [締め]      まとめと次の一歩
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙 | cover-gradient-text-bottom / cover-split-two-tone（画像不要の2トーン） / cover-photo-overlay-center / cover-blob-side-left / cover-curve-shape-left ほか（画像背景表紙は assets/covers/ の素材を使用・色ティント対象外） |
-| セクション | section-divider / section-tag-progress（現在地タグナビ） / section-photo-overlay-left / section-geo-texture-left / section-soft-3d-number-row（画像背景中扉は assets/covers/ の素材を使用・色ティント対象外） |
-| 目次 | agenda-toc / sidebar-toc-panel / toc-two-column（5項目以上の2カラム） / toc-current-highlight（章再掲・現在地） |
-| 本文 | key-message-single / key-message-inverted（反転配色の山場） / left-context-data（左文脈固定×右データ） / quote-single-large（1名大型引用） / value-three-pillars（MVV3段） / two-col-text-body / image-left-text-right |
+| 表紙 | cover-split-two-tone（画像不要の2トーン） / cover-big-typography（特大タイポ・画像不要） / cover-photo-overlay-center / cover-blob-side-left / cover-curve-shape-left ほか（画像背景表紙は assets/covers/ の素材を使用・色ティント対象外） |
+| セクション | section-divider / section-minimal-center（ミニマル中央） / section-tag-progress（現在地タグナビ） / section-photo-overlay-left / section-geo-texture-left / section-soft-3d-number-row（画像背景中扉は assets/covers/ の素材を使用・色ティント対象外） |
+| 目次 | agenda-toc / toc-two-column（5項目以上の2カラム） / toc-section-cards（カード型・4章） / toc-current-highlight（章再掲・現在地） |
+| 本文 | key-message-single / key-message-inverted（反転配色の山場） / left-context-data（左文脈固定×右データ） / quote-single-large（1名大型引用） / value-three-pillars（MVV3段） / body-callout-box（本文＋POINT囲み） / concept-keyword-three（大キーワード3つ） / two-col-text-body |
 | リスト | numbered-list-with-body / icon-left-text-list / three-tier-segment-list / checklist-two-column（チェックリスト） |
-| ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow |
+| ステップ | four-step-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow / history-year-list（沿革） |
 | 図解・ダイアグラム | two-column-split-boxes / four-quadrant-center-circle / ok-ng-comparison（NG×OK対比） / flow-branch-two-outcomes（条件分岐） / business-model-three-party（3者商流） |
-| カード | four-card-2x2 / three-column-icon-card / six-card-2x3-grid |
-| グラフ | waterfall-bridge-chart / positioning-map-scatter / bar-actual-forecast（実績×予想） / bar-diff-bracket（2本の差） / line-trend-target（目標線つき折れ線） / donut-share-single（シェア1つ） |
-| テーブル | before-after-two-col / comparison-matrix-table / estimate-amount-table / line-item-table |
-| KPI | three-kpi-big-number / goal-kgi-kpi-dashboard / giant-number-badge（1数字特大） / kpi-two-contrast（前後対比） / stats-grid-six（数字で見る◯◯） |
-| まとめ | summary-three-points / action-items-list / next-step-cta-band（まとめ＋CTA帯） / closing-blob-thanks-left / closing-curve-shape-footer / closing-art-brush-contact（画像背景の締めは assets/covers/ の素材を使用・色ティント対象外） |
-| FAQ | faq-grid / faq-single-column |
-| プロフィール | profile-bio / profile-two-speakers（2名） / team-members-grid（4〜8名） |
+| カード | four-card-2x2 / three-column-icon-card / six-card-2x3-grid / card-photo-caption-three（写真3枚） / target-audience-three（こんな方におすすめ） |
+| グラフ | waterfall-bridge-chart / bar-actual-forecast（実績×予想） / bar-diff-bracket（2本の差） / line-trend-target（目標線つき折れ線） / donut-share-single（シェア1つ） / stacked-bar-two-composition（構成変化） / area-growth-curve（成長カーブ） |
+| テーブル | before-after-two-col / comparison-matrix-table / comparison-vs-two-column（自社vs他社） / estimate-amount-table / line-item-table |
+| KPI | three-kpi-big-number / goal-kgi-kpi-dashboard / giant-number-badge（1数字特大） / kpi-two-contrast（前後対比） / stats-grid-six（数字で見る◯◯） / kpi-progress-bars（達成率バー） |
+| まとめ | summary-three-points / summary-key-takeaways（持ち帰り3点） / action-items-list / next-step-cta-band（まとめ＋CTA帯） / closing-blob-thanks-left / closing-curve-shape-footer / closing-art-brush-contact（画像背景の締めは assets/covers/ の素材を使用・色ティント対象外） |
+| FAQ | faq-grid / faq-single-column / faq-accordion-list（4問コンパクト） |
+| プロフィール | profile-bio / profile-skill-tags（1名詳細＋スキル） / profile-two-speakers（2名） / team-members-grid（4〜8名） |
 
 割り当て表の例（**使用した構図パターン名とID（manifest.jsonの`id`）を必ず列に含める**。見出しの有無も示す）：
 
 | # | 種類 | ID | 構図パターン（SLIDE-PATTERN名） | 見出し | 内容（1行） |
 |---|---|---|---|---|---|
-| 1 | 表紙 | P002 | cover-gradient-text-bottom | なし | タイトル・対象・日付 |
+| 1 | 表紙 | P133 | cover-split-two-tone | なし | タイトル・対象・日付 |
 | 2 | 目次 | P006 | agenda-toc | なし | 本日の流れ |
 | 4 | 本文 | P015 | key-message-single | あり | 現状の課題 |
 | … | … | … | … | … | … |

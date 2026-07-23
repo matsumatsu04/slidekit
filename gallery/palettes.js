@@ -12,6 +12,9 @@ const SK_PALETTES = [
   { key: 'purple-pink',  label: 'パープル×ピンク',    main: '#635BFF', accent: '#FF5CA8', base: '#EEEDFF' },
   { key: 'blue-pink',    label: 'ブルー×ピンク',      main: '#2B4894', accent: '#D72550', base: '#E8EEF7' },
   { key: 'navy-gold',    label: 'ネイビー×ゴールド',  main: '#1E2E53', accent: '#C9A227', base: '#E8EBF2' },
+  { key: 'green',        label: 'グリーン',           main: '#1E7A55', accent: '#4CA97E', base: '#E9F4EE' },
+  { key: 'light-blue',   label: 'ライトブルー',       main: '#2E9BD6', accent: '#1668A1', base: '#E8F4FB' },
+  { key: 'black',        label: 'ブラック',           main: '#111111', accent: '#555555', base: '#F2F2F2' },
 ];
 const SK_FONT_COLOR = '#333333';
 

@@ -48,7 +48,7 @@
 ## Slide Plan
 | # | 種類 | 構図パターン | 見出し | 内容（1行） |
 |---|---|---|---|---|
-| 1 | 表紙 | cover-gradient-text-bottom | なし | タイトル・サブタイトル・日付 |
+| 1 | 表紙 | cover-split-two-tone | なし | タイトル・サブタイトル・日付 |
 | 2 | 目次 | agenda-toc | なし | 本日のアジェンダ（4項目） |
 | 3 | セクション | section-divider | なし | 01 なぜ今、生成AIなのか |
 | 4 | 本文 | key-message-single | あり | 差を広げるのは「使うかどうか」 |
@@ -68,7 +68,7 @@
 
 ## Slides
 
-### Slide 1 — 表紙（cover-gradient-text-bottom）
+### Slide 1 — 表紙（cover-split-two-tone）
 **見出し:** なし
 **Structure:** グラデーション背景をフルスクリーンに使い、左下に小ラベル＋大型タイトル、その下にサブ情報・日付を配置。
 **Content:**

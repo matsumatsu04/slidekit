@@ -1,13 +1,6 @@
 {
-  "count": 119,
+  "count": 131,
   "patterns": [
-    {
-      "name": "cover-gradient-text-bottom",
-      "category": "表紙",
-      "summary": "グラデーション背景をフルスクリーンに使い、左下にロゴと大型テキストを配置するカバーページ。企業情報を下部に集約。",
-      "tier": "high",
-      "id": "P002"
-    },
     {
       "name": "cover-minimal-disclaimer",
       "category": "表紙",
@@ -28,13 +21,6 @@
       "summary": "左上にセクションラベルとタイトルを配置し、その下に番号付き目次リストを縦に並べた1カラムレイアウト。各行は大きな番号・縦線・項目名・点線・ページ番号で構成される。",
       "tier": "high",
       "id": "P006"
-    },
-    {
-      "name": "sidebar-toc-panel",
-      "category": "目次",
-      "summary": "スライド全体を左右に二分割し、左側に「INDEX」などのセクション見出しを縦書きまたは横書きで大きく置き、右側に番号付き目次項目を縦に並べる目次専用レイアウト。",
-      "tier": "high",
-      "id": "P009"
     },
     {
       "name": "key-message-single",
@@ -154,13 +140,6 @@
       "summary": "4〜6つのステップを縦方向（上から下）に流れ矢印でつなぎ、各ステップに番号・見出し・説明を配置するフローチャートレイアウト",
       "tier": "mid",
       "id": "P030"
-    },
-    {
-      "name": "vertical-step-flow-with-sidebar",
-      "category": "ステップ",
-      "summary": "左サイドバーにセクションラベルを置き、右側にSTEPラベル付きの縦並びフローを表示するレイアウト。各STEPは「ステップ番号ボックス＋内容ボックス」の横並びペアで構成され、下矢印でつながれる。",
-      "tier": "mid",
-      "id": "P031"
     },
     {
       "name": "vertical-step-three-col",
@@ -833,6 +812,111 @@
       "summary": "MISSION/VISION/VALUEのチップ＋大きな文言を3段で縦に積む理念提示。会社紹介・採用資料の定番。",
       "tier": "high",
       "id": "P134"
+    },
+    {
+      "name": "faq-accordion-list",
+      "category": "FAQ",
+      "summary": "Q行（淡色帯＋Q丸バッジ）とA行を1枠にまとめ4問を縦積みするコンパクトFAQ。説明会・営業資料の巻末に。",
+      "tier": "high",
+      "id": "P135"
+    },
+    {
+      "name": "profile-skill-tags",
+      "category": "プロフィール",
+      "summary": "左に円形写真120px＋氏名・肩書、右に経歴・スキルタグ群・実績ミニ数値3つの1名詳細プロフィール。講師・登壇者紹介に。",
+      "tier": "high",
+      "id": "P136"
+    },
+    {
+      "name": "stacked-bar-two-composition",
+      "category": "グラフ",
+      "summary": "構成比の積み上げ棒2本（現在→将来）＋凡例。伸ばすセグメントほど濃色（color-mixでパレット連動）。中期計画の定番。",
+      "tier": "mid",
+      "id": "P137"
+    },
+    {
+      "name": "area-growth-curve",
+      "category": "グラフ",
+      "summary": "成長カーブを線＋薄い面（塗り）で描き右上に最終値を添えるエリアグラフ（SVG）。成長ストーリーの演出用。",
+      "tier": "mid",
+      "id": "P138"
+    },
+    {
+      "name": "kpi-progress-bars",
+      "category": "KPI",
+      "summary": "指標名＋達成値＋横プログレスバーを3段積む進捗ダッシュボード。KPI達成状況・OKR進捗の報告に。",
+      "tier": "high",
+      "id": "P139"
+    },
+    {
+      "name": "comparison-vs-two-column",
+      "category": "テーブル",
+      "summary": "左（一般・グレー）と右（自社・アクセント）の比較カード＋中央VSバッジ（差し色）。競合との差別化提示に。",
+      "tier": "high",
+      "id": "P140"
+    },
+    {
+      "name": "card-photo-caption-three",
+      "category": "カード",
+      "summary": "上半分が写真エリア・下半分がタグ＋タイトル＋説明の3枚カード。制作事例・導入事例のショーケース。",
+      "tier": "high",
+      "id": "P141"
+    },
+    {
+      "name": "summary-key-takeaways",
+      "category": "まとめ",
+      "summary": "特大の淡色番号＋アクセント短線＋要点＋補足を3カラム横並びにする「持ち帰り3点」まとめ。セミナー・研修の締めに。",
+      "tier": "high",
+      "id": "P142"
+    },
+    {
+      "name": "section-minimal-center",
+      "category": "セクション",
+      "summary": "余白極大の中央に章番号・短い線・章タイトルだけを置く最小構成の中扉。ミニマル系デッキの章区切りに。",
+      "tier": "high",
+      "id": "P143"
+    },
+    {
+      "name": "cover-big-typography",
+      "category": "表紙",
+      "summary": "58px極太タイトル（1フレーズだけアクセント色）で語るタイポグラフィ表紙。画像不要・言葉が主役の資料に。",
+      "tier": "high",
+      "id": "P144"
+    },
+    {
+      "name": "body-callout-box",
+      "category": "本文",
+      "summary": "本文3〜4行の下に左アクセントバー＋淡色地のPOINTボックスで要点を浮き上がらせる文章系レイアウト。",
+      "tier": "high",
+      "id": "P145"
+    },
+    {
+      "name": "concept-keyword-three",
+      "category": "本文",
+      "summary": "短い大キーワード（40px極太・アクセント色）×3を細罫線で区切って並べる概念提示。コンセプト・選ばれる理由に。",
+      "tier": "high",
+      "id": "P146"
+    },
+    {
+      "name": "history-year-list",
+      "category": "ステップ",
+      "summary": "年号＋縦タイムライン（ドット付き・端点ルール準拠）＋出来事の沿革リスト。重要な年だけ差し色の大ドット。",
+      "tier": "high",
+      "id": "P147"
+    },
+    {
+      "name": "target-audience-three",
+      "category": "カード",
+      "summary": "「こんな方におすすめ」リード＋上辺アクセントライン付きカード3枚で対象者を示す定番。講座・サービス案内に。",
+      "tier": "high",
+      "id": "P148"
+    },
+    {
+      "name": "toc-section-cards",
+      "category": "目次",
+      "summary": "章カード（大番号＋章名＋一言説明＋開始ページ）を4枚横並びにするカード型目次。研修・ワークショップ資料に。",
+      "tier": "high",
+      "id": "P149"
     }
   ]
 }

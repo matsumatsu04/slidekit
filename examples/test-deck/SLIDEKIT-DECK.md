@@ -48,7 +48,7 @@
 ## Slide Plan
 | # | 種類 | 構図パターン | 見出し | 内容（1行） |
 |---|---|---|---|---|
-| 1 | 表紙 | cover-gradient-text-bottom | なし | サービス名・キャッチ・日付 |
+| 1 | 表紙 | cover-split-two-tone | なし | サービス名・キャッチ・日付 |
 | 2 | 目次 | numbered-toc | なし | 本日の流れ（5項目） |
 | 3 | セクション | section-divider | なし | 01 現状の課題 |
 | 4 | 本文（リスト） | numbered-list-with-body | あり | 現状の3つの課題 |
@@ -63,7 +63,7 @@
 
 ## Slides
 
-### Slide 1 — 表紙（cover-gradient-text-bottom）
+### Slide 1 — 表紙（cover-split-two-tone）
 **見出し:** なし
 **Structure:** グラデーション背景をフルスクリーンに使い、左下に小ラベル＋大型タイトル、その下にサブ情報・日付を配置。
 **Content:**

@@ -69,7 +69,7 @@
 ## Slide Plan
 | # | 種類 | 構図パターン（SLIDE-PATTERN） | 内容（1行） |
 |---|---|---|---|
-| 1 | 表紙 | cover-gradient-text-bottom | タイトル・対象・日付 |
+| 1 | 表紙 | cover-split-two-tone | タイトル・対象・日付 |
 | 2 | 目次 | agenda-toc | 本日の流れ |
 | 3 | 主張 | key-message-single | 課題提起のキーメッセージ |
 | 4 | 本文 | numbered-list-with-body | 現状と3つの課題 |
@@ -80,7 +80,7 @@
 
 ## Slides
 
-### Slide 1 — 表紙（cover-gradient-text-bottom）
+### Slide 1 — 表紙（cover-split-two-tone）
 **Structure:** グラデーション背景 ／ 左下に大型タイトル ／ 下部にサブ情報・日付
 **Content:**
 - main-title: 資料作成を、もっと速く・きれいに

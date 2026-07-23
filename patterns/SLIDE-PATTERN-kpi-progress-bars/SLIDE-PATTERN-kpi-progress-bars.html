@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-kpi-progress-bars</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:32px 110px; display:flex; flex-direction:column; justify-content:center; gap:34px; }
+  .pb-row { display:flex; flex-direction:column; gap:8px; }
+  .pb-head { display:flex; align-items:baseline; justify-content:space-between; }
+  .pb-name { font-size:14px; font-weight:bold; color:#333333; }
+  .pb-nums { display:flex; align-items:baseline; gap:6px; }
+  .pb-val { font-size:24px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
+  .pb-target { font-size:12px; color:#999999; }
+  .pb-track { height:14px; background:var(--sk-soft,#EEEEEE); border-radius:7px; overflow:hidden; }
+  .pb-fill { height:100%; background:var(--sk-accent,#666666); border-radius:7px; }
+  .f1 { width:82%; } .f2 { width:64%; } .f3 { width:91%; }
+  .pb-note { font-size:11px; color:#999999; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{border-bottom:2px solid var(--sk-soft,#DDDDDD);}
+html[data-heading="on"][data-hstyle="d"] .sk-head::after{content:"";position:absolute;left:0;bottom:-2px;width:120px;height:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="e"] .sk-head{border-bottom:none;}
+html[data-heading="on"][data-hstyle="e"] .sk-head::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="f"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="f"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">82%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f1"></div></div><div class="pb-note">補足が入ります（前月比+5pt など）</div></div>
+    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">64%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f2"></div></div><div class="pb-note">補足が入ります</div></div>
+    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">91%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f3"></div></div><div class="pb-note">補足が入ります</div></div>
+  </div>
+</div>
+</body>
+</html>
