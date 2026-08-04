@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SlideKit スライド確認・修正依頼 — 貼り付けて表示・フィードバック・PDF保存</title>
-<meta name="description" content="SlideKitで生成したスライド（index.html）を貼り付けて確認。スライド別フィードバックから修正プロンプトを出力し、ブラウザ印刷でPDF保存できます。">
+<title>SlideKit スライド確認・修正依頼 — 貼り付けて表示・直接編集・フィードバック・PDF保存</title>
+<meta name="description" content="SlideKitで生成したスライド（index.html）を貼り付けて確認。Googleスライド風の編集モードで文言・配置・書式・画像・スライド構成を直接調整し、修正プロンプトを一括出力。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7}
@@ -14,12 +14,15 @@
   .bar a.back{color:var(--brand);text-decoration:none;font-size:14px;white-space:nowrap}
   .bar .ttl{font-weight:700;font-size:14px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .bar .cnt{font-size:12px;color:var(--muted);white-space:nowrap}
-  .bar .sp{flex:1}
+  .bar .sp,.sp{flex:1}
   .btn{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--ink);white-space:nowrap}
   .btn:hover{border-color:var(--brand);color:var(--brand)}
   .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
   .btn.primary:hover{opacity:.85;color:#fff}
   .btn.gray{color:var(--muted)}
+  .btn.mini{padding:4px 10px;font-size:12px}
+  .btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn:disabled{opacity:.35;cursor:default;pointer-events:none}
   .lab{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
   .palettes{display:flex;gap:6px;flex-wrap:wrap}
   .pal-chip{display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px 5px 8px;cursor:pointer;color:#555;white-space:nowrap}
@@ -30,7 +33,6 @@
 
   .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 120px}
 
-  /* 入力パネル */
   .input-panel h1{font-size:20px;margin:8px 0 6px}
   .input-panel p{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:14px}
   .drop{border:2px dashed var(--line);border-radius:14px;background:#fff;padding:22px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px;cursor:pointer}
@@ -39,15 +41,17 @@
   .input-actions{display:flex;gap:10px;margin-top:12px;align-items:center}
   .err{color:#C0392B;font-size:13px;font-weight:700;display:none}
 
-  /* スライドカード */
   .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px;margin-top:18px}
   .s-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
   .s-card.has-fb{border-color:#E2A93B;box-shadow:0 0 0 1px #E2A93B}
-  .s-thumb{position:relative;width:100%;aspect-ratio:16/9;background:#E8E8E8;overflow:hidden}
+  .s-thumb{position:relative;width:100%;aspect-ratio:16/9;background:#E8E8E8;overflow:hidden;cursor:pointer}
+  .s-thumb::after{content:'クリックで編集モード';position:absolute;right:8px;bottom:8px;font-size:11px;font-weight:700;color:#fff;background:rgba(20,22,28,.62);border-radius:6px;padding:3px 8px;opacity:0;transition:opacity .15s}
+  .s-thumb:hover::after{opacity:1}
   .s-thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none}
   .s-meta{display:flex;align-items:center;gap:8px;padding:10px 14px 0}
   .s-no{font-size:12px;font-weight:700;background:var(--surf);border-radius:6px;padding:2px 8px}
   .s-src{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .s-edit-badge{font-size:11px;font-weight:700;color:#B8860B;background:#FDF3D7;border-radius:6px;padding:2px 8px;white-space:nowrap}
   .s-fb{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
   .s-fb textarea{width:100%;min-height:56px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical}
   .s-fb textarea::placeholder,.s-fb input::placeholder{color:#B4B9C2}
@@ -55,12 +59,10 @@
   .s-fb .prow .lab{font-weight:400}
   .s-fb input{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px}
 
-  /* 全体フィードバック */
   .g-fb{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
   .g-fb h2{font-size:14px;margin-bottom:8px}
   .g-fb textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;resize:vertical}
 
-  /* プロンプトモーダル */
   .overlay{position:fixed;inset:0;background:rgba(20,22,28,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
   .overlay.show{display:flex}
   .p-modal{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
@@ -69,12 +71,78 @@
   .p-modal pre{flex:1;overflow:auto;padding:16px 18px;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;background:var(--surf);margin:0}
   .copy-ok{color:#12A150 !important;border-color:#12A150 !important}
 
+  /* ===== 編集モード ===== */
+  #editMode{display:none;flex-direction:column;background:#E9EAEC}
+  .em-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .em-counter{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;min-width:52px;text-align:center}
+  .em-sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
+  .em-selchip{font-size:11px;font-family:ui-monospace,monospace;color:var(--muted);max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fmt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap}
+  #ffSel,#bwSel,#zoomSel{border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-size:12.5px;background:#fff;max-width:150px}
+  #ffSel:disabled,#bwSel:disabled{opacity:.35}
+  #fsInput{width:52px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:6px 4px;font-size:13px}
+  #fsInput:disabled{opacity:.35}
+  #fwBold{font-weight:900;width:36px;padding:8px 0;text-align:center}
+  #fwBold.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .colbtn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:700;gap:2px}
+  .colbtn.dis{opacity:.35;pointer-events:none}
+  .colbtn .swatch{width:18px;height:4px;border-radius:2px;background:#333}
+  .em-body{flex:1;display:flex;min-height:0}
+  .em-rail{width:176px;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+  .em-addslide{border:1.5px dashed var(--line);border-radius:8px;background:#fff;color:var(--muted);font-size:12px;font-weight:700;padding:8px 0;cursor:pointer;flex-shrink:0}
+  .em-addslide:hover{border-color:var(--brand);color:var(--brand)}
+  .em-thumb{position:relative;cursor:grab;border:2px solid transparent;border-radius:8px;padding:2px;flex-shrink:0}
+  .em-thumb:hover{border-color:#B9CBFF}
+  .em-thumb.cur{border-color:var(--brand)}
+  .em-thumb.dragging{opacity:.4}
+  .em-thumb.drop-before{box-shadow:0 -3px 0 0 var(--brand)}
+  .em-thumb.drop-after{box-shadow:0 3px 0 0 var(--brand)}
+  .em-no{position:absolute;left:-2px;top:-2px;z-index:2;font-size:10px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 5px}
+  .em-dot{position:absolute;right:4px;top:4px;z-index:2;width:9px;height:9px;border-radius:50%;background:#E2A93B;border:1.5px solid #fff}
+  .em-tag{position:absolute;right:4px;bottom:4px;z-index:2;font-size:9px;font-weight:700;color:#fff;background:var(--brand);border-radius:5px;padding:1px 5px}
+  .em-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#fff;border-radius:4px;border:1px solid var(--line)}
+  .em-frame iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none}
+  .em-stagewrap{flex:1;display:flex;min-width:0;padding:16px;overflow:auto}
+  .e-stage{position:relative;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.18);margin:auto;flex-shrink:0}
+  .e-stage iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left}
+  .em-panel{width:284px;background:#fff;border-left:1px solid var(--line);display:none;flex-direction:column;min-height:0;flex-shrink:0}
+  .em-panel.open{display:flex}
+  .em-panel .ph{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .em-panel .ph h3{font-size:13px;flex:1}
+  #eList{flex:1;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+  .e-item{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px}
+  .e-item .e-kind{flex-shrink:0;font-weight:700;font-size:11px;background:var(--surf);border-radius:6px;padding:2px 6px;margin-top:1px}
+  .e-item .e-desc{flex:1;line-height:1.6;word-break:break-all}
+  .e-item code{font-size:11px;background:var(--surf);padding:1px 4px;border-radius:4px}
+  .e-empty{font-size:12px;color:var(--muted);line-height:1.9;padding:8px 2px}
+  .e-note{font-size:11px;color:var(--muted);line-height:1.7;padding:10px 14px;border-top:1px solid var(--line)}
+  .helpwrap{position:relative}
+  .helppop{position:absolute;right:0;top:42px;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.16);padding:14px 16px;width:360px;display:none}
+  .helppop.show{display:block}
+  .helppop h4{font-size:12.5px;margin-bottom:8px}
+  .helppop table{width:100%;border-collapse:collapse;font-size:12px}
+  .helppop td{padding:4px 0;vertical-align:top;line-height:1.5}
+  .helppop td.k{width:148px;color:var(--muted);font-family:ui-monospace,monospace;font-size:11.5px}
+  .cpop{position:fixed;z-index:70;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.18);padding:12px;width:248px;display:none}
+  .cpop.show{display:block}
+  .cpop .cpop-lab{font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin:2px 0 6px}
+  .cpop .cpop-row{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+  .cpop-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:10px}
+  .csw{width:24px;height:24px;border-radius:50%;border:1px solid rgba(0,0,0,.15);cursor:pointer;padding:0}
+  .csw:hover{outline:2px solid var(--brand);outline-offset:1px}
+  .cpop-hex{display:flex;align-items:center;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+  .cpop-hex span{font-size:13px;color:var(--muted);font-family:ui-monospace,monospace}
+  .cpop-hex input{flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px;font-family:ui-monospace,monospace;text-transform:lowercase}
+  .cpop-foot{margin-top:8px}
+  @media (max-width:900px){
+    .em-rail{width:120px}
+    .em-panel.open{position:fixed;right:0;top:0;bottom:0;z-index:40;box-shadow:-6px 0 24px rgba(0,0,0,.2)}
+  }
   .hidden-print{position:fixed;left:-99999px;top:0;width:960px;height:540px;border:0}
-  .fbcount{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-  <div class="bar">
+  <div class="bar" id="mainBar">
     <a class="back" href="/gallery/">← ギャラリーへ</a>
     <span class="ttl" id="deckTitle">スライド確認・修正依頼</span>
     <span class="cnt" id="deckCount"></span>
@@ -82,19 +150,20 @@
     <span class="lab" id="palLab" style="display:none">カラーパレット</span>
     <div class="palettes" id="palettes" style="display:none"></div>
     <button class="btn gray" id="palReset" style="display:none">デッキの配色に戻す</button>
-    <button class="btn" id="printBtn" style="display:none">PDFとして保存（印刷）</button>
-    <button class="btn" id="openTabBtn" style="display:none">新しいタブで開く</button>
+    <button class="btn" id="editModeBtn" style="display:none">✎ 編集モード</button>
+    <button class="btn" id="printBtn" style="display:none" title="表示中の内容（画面編集・スライド構成の変更を含む）をブラウザの印刷ダイアログからPDF保存">PDFとして保存</button>
     <button class="btn primary" id="promptBtn" style="display:none">修正プロンプトを出力</button>
+    <button class="btn gray" id="discardAllBtn" style="display:none" title="全スライドの画面編集・構成変更をまとめて破棄">全編集を破棄</button>
     <button class="btn gray" id="clearBtn" style="display:none">別のデッキを読み込む</button>
   </div>
 
-  <div class="wrap">
+  <div class="wrap" id="listWrap">
     <div class="input-panel" id="inputPanel">
       <h1>スライド確認・修正依頼</h1>
       <p>
         SlideKitで生成したスライド（index.html）を読み込むと、この画面でそのまま確認できます。<br>
-        気になるスライドにフィードバックを書き込み、「修正プロンプトを出力」でコピーした文章をClaude Codeに貼り付けると、デッキを修正できます。<br>
-        表示中のデッキは「PDFとして保存（印刷）」からそのままPDF化できます（印刷ダイアログで「PDFに保存」を選択）。
+        「✎ 編集モード」では、Googleスライドのように<b>文字・配置・色・サイズ・画像・スライドの追加/複製/削除</b>まで直接調整できます。<br>
+        編集内容とフィードバックは「修正プロンプトを出力」で1つにまとまり、Claude Codeに貼り付けるとデッキ本体に反映されます。
       </p>
       <div class="drop" id="drop">ここに index.html をドラッグ＆ドロップ（またはクリックしてファイル選択）</div>
       <input type="file" id="file" accept=".html,.htm,text/html" style="display:none">
@@ -114,6 +183,99 @@
     </div>
   </div>
 
+  <!-- ===== 編集モード ===== -->
+  <div id="editMode">
+    <div class="em-toolbar">
+      <button class="btn" id="emBack" title="スライド一覧に戻る">← 一覧へ</button>
+      <button class="btn mini" id="emPrev" title="前のスライド">‹</button>
+      <span class="em-counter" id="emCounter">- / -</span>
+      <button class="btn mini" id="emNext" title="次のスライド">›</button>
+      <select id="zoomSel" title="ズーム（⌘＋マウスホイールでも変更可）">
+        <option value="fit" selected>合わせる</option>
+        <option value="0.5">50%</option>
+        <option value="0.75">75%</option>
+        <option value="0.9">90%</option>
+        <option value="1">100%</option>
+        <option value="1.25">125%</option>
+        <option value="1.5">150%</option>
+        <option value="2">200%</option>
+      </select>
+      <span class="em-sep"></span>
+      <select id="ffSel" disabled title="フォント">
+        <option value="">フォント（既定）</option>
+        <option value="'Noto Sans JP', sans-serif">Noto Sans JP</option>
+        <option value="'Noto Serif JP', serif">Noto Serif JP（明朝）</option>
+        <option value="'Zen Kaku Gothic New', sans-serif">Zen Kaku Gothic New</option>
+        <option value="'Zen Old Mincho', serif">Zen Old Mincho</option>
+        <option value="'M PLUS Rounded 1c', sans-serif">M PLUS Rounded 1c（丸ゴ）</option>
+        <option value="sans-serif">ゴシック（システム）</option>
+        <option value="serif">明朝（システム）</option>
+        <option value="monospace">等幅</option>
+      </select>
+      <span class="fmt"><span id="szLab">サイズ</span>
+        <button class="btn mini" id="fsMinus" disabled title="小さく">−</button><input id="fsInput" inputmode="numeric" disabled><span>px</span><button class="btn mini" id="fsPlus" disabled title="大きく">＋</button>
+      </span>
+      <button class="btn" id="fwBold" disabled title="太字">B</button>
+      <button class="colbtn dis" id="fcBtn" title="文字色">A<span class="swatch" id="fcSw"></span></button>
+      <button class="colbtn dis" id="bgBtn" title="塗りつぶしの色"><span style="font-size:12px">◧</span><span class="swatch" id="bgSw"></span></button>
+      <span class="fmt" title="枠線の太さと色">
+        <select id="bwSel" disabled>
+          <option value="">枠線</option>
+          <option value="none">なし</option>
+          <option value="1">1px</option>
+          <option value="2">2px</option>
+          <option value="3">3px</option>
+          <option value="4">4px</option>
+        </select>
+        <button class="colbtn dis" id="bcBtn" title="枠線の色"><span style="font-size:11px">□</span><span class="swatch" id="bcSw"></span></button>
+      </span>
+      <span class="em-sep"></span>
+      <button class="btn" id="imgAddBtn" title="画像をアップロードしてスライドに配置（⌘Vで貼り付けも可）">🖼 画像</button>
+      <input type="file" id="imgFile" accept="image/*" style="display:none">
+      <button class="btn" id="grpBtn" disabled title="複数選択（Shift+クリック）した要素をグループ化／解除">グループ化</button>
+      <span class="em-selchip" id="emSelChip"></span>
+      <span class="sp"></span>
+      <button class="btn mini" id="emUndoBtn" title="元に戻す（⌘Z / Ctrl+Z）">↶</button>
+      <button class="btn mini" id="emRedoBtn" title="やり直す（⇧⌘Z / Ctrl+Y）">↷</button>
+      <span class="helpwrap">
+        <button class="btn mini" id="emHelp" title="操作方法">？</button>
+        <div class="helppop" id="helpPop">
+          <h4>操作方法</h4>
+          <table>
+            <tr><td class="k">ダブルクリック</td><td>文字を編集（Enterで確定・Escで取消）</td></tr>
+            <tr><td class="k">クリック→ドラッグ</td><td>要素を移動（矢印キー1px・Shiftで10px）。<br>ドラッグ中は<b>中央・端・等間隔に自動スナップ</b>（ピンクのガイド表示）</td></tr>
+            <tr><td class="k">余白からドラッグ</td><td><b>範囲選択</b>：囲った要素をまとめて選択</td></tr>
+            <tr><td class="k">Shift+クリック</td><td>選択に追加／除外（→「グループ化」で固定）</td></tr>
+            <tr><td class="k">サムネをドラッグ</td><td>スライドの並べ替え（ページ番号は自動更新）</td></tr>
+            <tr><td class="k">角の●をドラッグ</td><td>追加画像・複製要素のサイズ変更</td></tr>
+            <tr><td class="k">⌘Z / ⇧⌘Z</td><td>元に戻す／やり直す（構成変更も対象）</td></tr>
+            <tr><td class="k">⌘C → ⌘V</td><td>要素を複製。<b>未選択ならスライドを複製</b></td></tr>
+            <tr><td class="k">⌘V（画像）</td><td>コピーした画像・スクショを貼り付け</td></tr>
+            <tr><td class="k">Delete</td><td>要素を削除。<b>未選択ならスライドを削除</b></td></tr>
+            <tr><td class="k">⌘＋ホイール</td><td>キャンバスをズーム</td></tr>
+            <tr><td class="k">←→（未選択時）</td><td>スライドを移動</td></tr>
+            <tr><td class="k">Esc</td><td>選択を解除</td></tr>
+          </table>
+        </div>
+      </span>
+      <button class="btn" id="emEditsToggle" title="このスライドの編集一覧">編集内容 <span id="emEditsCnt">0</span>件</button>
+    </div>
+    <div class="em-body">
+      <div class="em-rail" id="emRailWrap">
+        <button class="em-addslide" id="addSlideBtn" title="現在のスライドの後ろに空白スライドを追加">＋ 新規スライド</button>
+        <div id="emRail" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+      <div class="em-stagewrap" id="eStageWrap">
+        <div class="e-stage" id="eStage"><iframe id="eFrame" title="編集対象スライド" sandbox="allow-same-origin allow-scripts"></iframe></div>
+      </div>
+      <div class="em-panel" id="emPanel">
+        <div class="ph"><h3>このスライドの編集内容</h3><button class="btn mini gray" id="emReset" title="このスライドの編集をすべて破棄">全破棄</button></div>
+        <div id="eList"></div>
+        <div class="e-note">ここでの編集は<b>反映指示用のプレビュー</b>です。実ファイルには「修正プロンプトを出力」→ Claude Code 貼り付けで反映されます。</div>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="pOverlay">
     <div class="p-modal">
       <div class="p-head">
@@ -125,13 +287,20 @@
     </div>
   </div>
 
+  <div class="cpop" id="cPop">
+    <div class="cpop-lab">デッキの色</div>
+    <div class="cpop-row" id="cpopThemeRow"></div>
+    <div class="cpop-lab">カラー</div>
+    <div class="cpop-grid" id="cpopGrid"></div>
+    <div class="cpop-hex"><span>#</span><input id="cpopHex" maxlength="6" placeholder="333333" spellcheck="false"><button class="btn mini" id="cpopApply">適用</button></div>
+    <div class="cpop-foot" id="cpopFoot"><button class="btn mini" id="cpopTransparent">透明にする</button></div>
+  </div>
+
   <iframe id="printFrame" class="hidden-print" title="印刷用" sandbox="allow-same-origin allow-modals"></iframe>
 
-<script src="/gallery/palettes.js?v5"></script>
+<script src="palettes.js?v6"></script>
 <script>
-// ================= デッキHTMLのパース =================
-// build-html-deck.mjs の出力（1ファイルHTML・<section class="slide">の連結）を読み込む。
-// 依存: <style>群をhead相当として全スライドに共有、sectionごとに1枚のスライド。
+// ================= パース =================
 function parseDeck(html){
   const titleM=html.match(/<title>([\s\S]*?)<\/title>/i);
   const title=titleM?titleM[1].trim():'SlideKit Deck';
@@ -140,12 +309,10 @@ function parseDeck(html){
     .filter(l=>/fonts\.googleapis|fonts\.gstatic|font-awesome|cdnjs/i.test(l));
   const sections=extractSections(html);
   if(!sections.length) throw new Error('スライド（<section class="slide">）が見つかりません。SlideKitのデッキ index.html を貼り付けてください。');
-  // デッキ自身のテーマ色（:root{--sk-accent:...}）を控えておく（パレット比較・プロンプト用）
   const themeM=html.match(/--sk-accent:\s*([^;]+);/);
   const softM=html.match(/--sk-soft:\s*([^;]+);/);
   return {title,styles,links,sections,theme:{accent:themeM?themeM[1].trim():null,soft:softM?softM[1].trim():null}};
 }
-// 深さカウントで <section class="...slide..."> を順に取り出す（入れ子対応・build-html-deck.mjsと同方式）
 function extractSections(html){
   const tagRe=/<section\b[^>]*>|<\/section\s*>/gi;
   const tokens=[];let m;
@@ -165,78 +332,228 @@ function extractSections(html){
     }
     if(endIdx===-1) break;
     out.push(html.slice(t.start,tokens[endIdx].end));
-    i=endIdx; // 次のトップレベルsectionへ
+    i=endIdx;
   }
   return out;
 }
-// アセットパスの解決:
-// build-html-deck.mjs はデッキ内アセットを src="assets/{basename}" に書き換え、
-// リポジトリ由来のアセットには data-sk-asset="assets/covers/..." を残す（2026/7改修）。
-// ギャラリー上では data-sk-asset をルート絶対パスに読み替えて画像を復元する。
+const ASSET_PREFIX=(location.protocol==='file:')?'../':'/';
 function resolveAssetPaths(sectionHtml){
   return sectionHtml.replace(/(<[^>]*?)\bdata-sk-asset\s*=\s*(["'])([^"']+)\2([^>]*?>)/gi,(full,pre,q,orig,post)=>{
-    const replaced=(pre+post).replace(/\bsrc\s*=\s*(["'])[^"']*\1/i,`src=${q}/${orig}${q}`);
+    const replaced=(pre+post).replace(/\bsrc\s*=\s*(["'])[^"']*\1/i,`src=${q}${ASSET_PREFIX}${orig}${q}`);
     return replaced.slice(0,replaced.length-1)+` data-sk-asset=${q}${orig}${q}>`;
   });
 }
-function sectionSrcFile(sectionHtml,idx){
-  const m=sectionHtml.match(/data-sk-src\s*=\s*["']([^"']+)["']/i);
+function srcFileOf(sectionHtml){
+  const m=(sectionHtml||'').match(/data-sk-src\s*=\s*["']([^"']+)["']/i);
   return m?m[1]:null;
 }
 
 // ================= 状態 =================
-let DECK=null;      // {title,styles,links,sections,theme}
-let RAW='';         // 貼り付け原文
-let PAL=null;       // 上書きパレット（null=デッキの配色のまま）
-let FB={global:'',slides:{}}; // フィードバック {slides:{n:{text,pattern}}}
+// スライドは「インスタンス」{id,src} の並び（FB.order）で管理する。
+// src=元スライド番号（1始まり）／src=0 は新規空白。編集(edits)・グループ・FB文はインスタンスid単位。
+// 初期状態は id=元番号 なので、旧形式の保存データ（スライド番号キー）とそのまま互換。
+let DECK=null, RAW='', PAL=null;
+let FB={global:'',slides:{},order:null,nextId:1};
+let IMGS={};
+let MODE_EDIT=false;
+let COPIED=null;        // 要素コピー {srcIid,sel,nth,count,label}
+let SLIDE_CLIP=null;    // スライドコピー {iid}
+let LAST_COPY=null;     // 'el' | 'slide'
+let pasteImageHandled=false;
+const HIST={undo:[],redo:[]}; // 全体スナップショット（編集＋構成）
 const $=id=>document.getElementById(id);
-
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function short(s,n){s=String(s);return s.length>n?s.slice(0,n)+'…':s;}
+function rgbToHex(v){
+  if(!v) return null;
+  const m=v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s\/]+([\d.]+))?\s*\)/);
+  if(!m) return /^#/.test(v)?v:null;
+  if(m[4]!==undefined&&parseFloat(m[4])===0) return null;
+  const h=x=>('0'+parseInt(x,10).toString(16)).slice(-2);
+  return '#'+h(m[1])+h(m[2])+h(m[3]);
+}
 function deckHash(){
-  // デッキ内容のハッシュ。1文字でも変わると別キーになる＝修正版の再読み込みで前回コメントを持ち越さない
-  let h=5381; const s=DECK.title+' '+DECK.sections.join(' ');
+  let h=5381; const s=DECK.title+' '+DECK.sections.join(' ');
   for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; }
   return (h>>>0).toString(36);
 }
 function storageKey(){ return DECK?`sk-deckfb:${DECK.title}:${DECK.sections.length}:${deckHash()}`:null; }
+function imgStorageKey(){ return DECK?`sk-deckimg:${DECK.title}:${DECK.sections.length}:${deckHash()}`:null; }
 function pruneFbKeys(){
-  // 古いデッキのフィードバックを掃除（新しい順に10件だけ残す）
   try{
     const entries=[];
     for(let i=0;i<localStorage.length;i++){
       const k=localStorage.key(i);
-      if(!k||!k.startsWith('sk-deckfb:')) continue;
+      if(!k||!(k.startsWith('sk-deckfb:')||k.startsWith('sk-deckimg:'))) continue;
       let t=0;
       try{ const o=JSON.parse(localStorage.getItem(k)); if(o&&typeof o.t==='number') t=o.t; }catch(e){}
       entries.push({k,t});
     }
-    entries.sort((a,b)=>b.t-a.t).slice(10).forEach(e=>localStorage.removeItem(e.k));
+    entries.sort((a,b)=>b.t-a.t).slice(20).forEach(e=>localStorage.removeItem(e.k));
   }catch(e){}
 }
 function saveFb(){
   if(!DECK) return;
-  localStorage.setItem(storageKey(),JSON.stringify({t:Date.now(),fb:FB}));
+  try{ localStorage.setItem(storageKey(),JSON.stringify({t:Date.now(),fb:FB})); }catch(e){}
   pruneFbKeys();
 }
+function saveImgs(){
+  if(!DECK) return;
+  try{ localStorage.setItem(imgStorageKey(),JSON.stringify({t:Date.now(),imgs:IMGS})); }catch(e){}
+}
 function loadFb(){
-  FB={global:'',slides:{}}; // 必ず白紙から開始（別デッキのコメントを引き継がない）
+  FB={global:'',slides:{},order:null,nextId:1}; IMGS={};
   try{
     const v=localStorage.getItem(storageKey());
-    if(v){ const o=JSON.parse(v); FB=(o&&o.fb)?o.fb:o; } // o.fbが新形式、素のオブジェクトは旧形式
+    if(v){ const o=JSON.parse(v); FB=(o&&o.fb)?o.fb:o; }
   }catch(e){}
-  if(!FB||typeof FB!=='object') FB={global:'',slides:{}};
+  if(!FB||typeof FB!=='object') FB={global:'',slides:{},order:null,nextId:1};
   FB.slides=FB.slides||{}; FB.global=FB.global||'';
+  if(!Array.isArray(FB.order)||!FB.order.length){
+    FB.order=DECK.sections.map((_,i)=>({id:i+1,src:i+1}));
+    FB.nextId=DECK.sections.length+1;
+  }
+  if(!FB.nextId||FB.nextId<=Math.max(0,...FB.order.map(o=>o.id))) FB.nextId=Math.max(0,...FB.order.map(o=>o.id))+1;
+  try{
+    const v=localStorage.getItem(imgStorageKey());
+    if(v){ const o=JSON.parse(v); if(o&&o.imgs) IMGS=o.imgs; }
+  }catch(e){}
+  HIST.undo.length=0; HIST.redo.length=0;
+}
+const ORDER=()=>FB.order;
+function instAt(pos){ return FB.order[pos-1]||null; }
+function posOfIid(iid){ return FB.order.findIndex(o=>o.id===iid)+1; }
+function slideRec(iid){ return FB.slides[iid]||null; }
+function slideEdits(iid){ const s=FB.slides[iid]; return (s&&Array.isArray(s.edits))?s.edits:[]; }
+function slideGroups(iid){ const s=FB.slides[iid]; return (s&&Array.isArray(s.groups))?s.groups:[]; }
+function structChanged(){
+  const o=FB.order;
+  if(o.length!==DECK.sections.length) return true;
+  return o.some((x,i)=>x.src!==i+1);
+}
+function slideHasFb(iid){ const s=FB.slides[iid]; return !!(s&&(s.text||s.pattern||(s.edits&&s.edits.length))); }
+// 変更確定（スナップショット→undo/redo。編集も構成変更もこれを通す）
+function snapshot(){ return JSON.stringify({slides:FB.slides,order:FB.order,nextId:FB.nextId}); }
+function commit(mut){
+  HIST.undo.push(snapshot());
+  if(HIST.undo.length>80) HIST.undo.shift();
+  HIST.redo.length=0;
+  mut();
+  saveFb();
+}
+function restore(json){
+  const o=JSON.parse(json);
+  FB.slides=o.slides; FB.order=o.order; FB.nextId=o.nextId;
+  saveFb();
+}
+function undoEdit(){
+  if(!HIST.undo.length) return;
+  if(ED.editingEl) cancelTextEdit();
+  HIST.redo.push(snapshot());
+  restore(HIST.undo.pop());
+  afterStructureChange();
+}
+function redoEdit(){
+  if(!HIST.redo.length) return;
+  HIST.undo.push(snapshot());
+  restore(HIST.redo.pop());
+  afterStructureChange();
+}
+function afterStructureChange(){
+  // 位置がずれている可能性があるため現在位置を補正して全面更新
+  if(MODE_EDIT){
+    if(posOfIid(ED.iid)===0){ ED.iid=(instAt(Math.min(ED.pos,FB.order.length))||FB.order[0]).id; }
+    buildRail(); gotoIid(ED.iid,true);
+  }
+  renderDeck();
 }
 
-// ================= 表示 =================
-function slideDoc(section){
-  const head=DECK.links.join('\n')+'\n'+DECK.styles.join('\n')+
+// ================= 表示（共通） =================
+const EXTRA_FONT_LINKS={
+  "'Noto Serif JP', serif":'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap',
+  "'Zen Kaku Gothic New', sans-serif":'https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap',
+  "'Zen Old Mincho', serif":'https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;700&display=swap',
+  "'M PLUS Rounded 1c', sans-serif":'https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap'
+};
+function extraFontLinksFor(iid){
+  const fams=new Set();
+  slideEdits(iid).forEach(e=>{ if(e.type==='style'&&e.prop==='font-family'&&EXTRA_FONT_LINKS[e.after]) fams.add(e.after); });
+  return [...fams].map(f=>`<link href="${EXTRA_FONT_LINKS[f]}" rel="stylesheet">`).join('\n');
+}
+function sectionHtmlOf(inst){
+  if(inst.src>0) return DECK.sections[inst.src-1]||'<section class="slide"></section>';
+  return '<section class="slide"></section>'; // 新規空白
+}
+function slideDocFor(inst){
+  const head=DECK.links.join('\n')+'\n'+extraFontLinksFor(inst.id)+'\n'+DECK.styles.join('\n')+
     '\n<style>html,body{margin:0;padding:0;background:#fff;display:block;overflow:hidden}.slide{margin:0;box-shadow:none}.sk-pageno{}</style>';
-  return `<!doctype html><html lang="ja"><head><meta charset="utf-8">${head}</head><body>${resolveAssetPaths(section)}</body></html>`;
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8">${head}</head><body>${resolveAssetPaths(sectionHtmlOf(inst))}</body></html>`;
+}
+function wireImgFallback(doc){
+  doc.querySelectorAll('img').forEach(img=>{
+    if(img.dataset.skFb) return;
+    img.dataset.skFb='1';
+    img.addEventListener('error',()=>{
+      const name=(img.getAttribute('src')||'').split('/').pop();
+      img.style.cssText+=';background:repeating-linear-gradient(45deg,#f3f3f3,#f3f3f3 8px,#e7e7e7 8px,#e7e7e7 16px);outline:1px dashed #bbb;min-width:80px;min-height:40px;';
+      img.alt=`画像が見つかりません（${name}）`;
+      img.title=img.alt;
+    });
+  });
+}
+function applyEditsToDoc(doc,edits,iid){
+  const slideEl=doc.querySelector('.slide'); if(!slideEl) return;
+  const D=doc.createElement?doc:(doc.ownerDocument||document);
+  edits.forEach(e=>{
+    if(e.type==='imgadd'){
+      const data=IMGS[`${iid}:${e.id}`];
+      let el;
+      if(data){ el=D.createElement('img'); el.src=data; }
+      else{
+        el=D.createElement('div');
+        el.textContent=`🖼 ${e.name}（プレビュー切れ・再アップロードで復元）`;
+        el.style.cssText='display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;background:repeating-linear-gradient(45deg,#f3f3f3,#f3f3f3 8px,#e7e7e7 8px,#e7e7e7 16px);outline:1px dashed #bbb;min-height:60px;text-align:center;padding:6px;';
+      }
+      el.className=`sk-added sk-added-${e.id}`;
+      el.style.position='absolute'; el.style.left=e.x+'px'; el.style.top=e.y+'px';
+      el.style.width=e.w+'px'; el.style.height='auto'; el.style.zIndex='60';
+      slideEl.appendChild(el);
+      return;
+    }
+    if(e.type==='dup'){
+      let srcRoot=slideEl, sameDoc=(e.srcIid===iid);
+      if(!sameDoc){
+        const srcInst=FB.order.find(o=>o.id===e.srcIid)||{id:e.srcIid,src:e.srcOrig||0};
+        const tpl=D.createElement('template');
+        tpl.innerHTML=resolveAssetPaths(sectionHtmlOf(srcInst));
+        srcRoot=tpl.content.querySelector('.slide');
+      }
+      if(!srcRoot) return;
+      const list=[...srcRoot.querySelectorAll(e.sel)].filter(x=>!x.classList.contains('sk-added'));
+      const srcEl=list[e.nth]; if(!srcEl) return;
+      const w=(sameDoc&&srcEl.getBoundingClientRect)?srcEl.getBoundingClientRect().width:0;
+      const clone=srcEl.cloneNode(true);
+      clone.classList.add('sk-added',`sk-added-${e.id}`);
+      clone.style.position='absolute'; clone.style.left=e.x+'px'; clone.style.top=e.y+'px';
+      clone.style.margin='0'; clone.style.zIndex='59';
+      if(e.w) clone.style.width=e.w+'px'; else if(w) clone.style.width=Math.round(w)+'px';
+      slideEl.appendChild(clone);
+      return;
+    }
+    const list=[...slideEl.querySelectorAll(e.sel)];
+    const el=list[e.nth]; if(!el) return;
+    if(e.type==='text') el.innerHTML=escapeHtml(e.after).replace(/\n/g,'<br>');
+    else if(e.type==='move') el.style.translate=`${e.dx}px ${e.dy}px`;
+    else if(e.type==='style') el.style.setProperty(e.prop,e.after);
+    else if(e.type==='remove') el.style.display='none';
+  });
+  if(doc.querySelectorAll) wireImgFallback(doc);
 }
 function applyPal(){
-  document.querySelectorAll('.s-thumb iframe').forEach(fr=>{
+  document.querySelectorAll('.s-thumb iframe, .em-frame iframe').forEach(fr=>{
     try{ skApplyPaletteVars(fr.contentDocument&&fr.contentDocument.documentElement, PAL); }catch(e){}
   });
+  try{ if(MODE_EDIT&&ED.doc) skApplyPaletteVars(ED.doc.documentElement,PAL); }catch(e){}
   [...document.querySelectorAll('.pal-chip')].forEach(b=>b.classList.toggle('active',!!PAL&&b.dataset.key===PAL.key));
 }
 function fitThumbs(){
@@ -245,43 +562,68 @@ function fitThumbs(){
     if(fr) fr.style.transform=`scale(${t.clientWidth/960})`;
   });
 }
+function instLabel(inst){
+  if(inst.src>0){
+    const f=srcFileOf(DECK.sections[inst.src-1]);
+    return f||`元スライド${inst.src}`;
+  }
+  return '新規スライド';
+}
 function renderDeck(){
+  if(!DECK) return;
   $('deckTitle').textContent=DECK.title;
-  $('deckCount').textContent=`全 ${DECK.sections.length} 枚`;
+  $('deckCount').textContent=`全 ${FB.order.length} 枚`;
   const grid=$('deckGrid');grid.innerHTML='';
-  DECK.sections.forEach((sec,i)=>{
-    const n=i+1;
-    const src=sectionSrcFile(sec,i);
-    const card=document.createElement('div');card.className='s-card';card.id=`card-${n}`;
+  FB.order.forEach((inst,idx)=>{
+    const pos=idx+1, iid=inst.id;
+    const card=document.createElement('div');card.className='s-card';card.id=`card-${iid}`;
     card.innerHTML=`
-      <div class="s-thumb"><iframe title="スライド${n}" sandbox="allow-same-origin"></iframe></div>
-      <div class="s-meta"><span class="s-no">スライド ${n}</span>${src?`<span class="s-src">${src}</span>`:''}</div>
+      <div class="s-thumb" title="クリックで編集モード"><iframe title="スライド${pos}" sandbox="allow-same-origin"></iframe></div>
+      <div class="s-meta"><span class="s-no">スライド ${pos}</span><span class="s-src">${escapeHtml(instLabel(inst))}</span><span class="sp"></span><span class="s-edit-badge" id="ebadge-${iid}" style="display:none"></span><button class="btn mini e-open">✎ 編集</button></div>
       <div class="s-fb">
-        <textarea data-n="${n}" class="fb-text" placeholder="このスライドへのフィードバック（文言修正・構成の指示など）"></textarea>
+        <textarea class="fb-text" placeholder="このスライドへのフィードバック（文言修正・構成の指示など）"></textarea>
         <div class="prow">
           <span class="lab">構図パターン変更（任意）</span>
-          <input data-n="${n}" class="fb-pattern" placeholder="例）P045 や three-kpi-big-number（ギャラリーで探してID指定）">
+          <input class="fb-pattern" placeholder="例）P045 や three-kpi-big-number（ギャラリーで探してID指定）">
         </div>
       </div>`;
     grid.appendChild(card);
     const fr=card.querySelector('iframe');
-    fr.onload=()=>{ try{ skApplyPaletteVars(fr.contentDocument.documentElement, PAL); }catch(e){} };
-    fr.srcdoc=slideDoc(sec);
-    const fb=FB.slides[n]||{};
+    fr.onload=()=>{
+      try{ skApplyPaletteVars(fr.contentDocument.documentElement, PAL); }catch(e){}
+      try{ applyEditsToDoc(fr.contentDocument, slideEdits(iid), iid); }catch(e){}
+      try{ renumberPageno(fr.contentDocument,pos,FB.order.length); }catch(e){}
+    };
+    fr.srcdoc=slideDocFor(inst);
+    card.querySelector('.e-open').addEventListener('click',()=>enterEditMode(iid));
+    card.querySelector('.s-thumb').addEventListener('click',()=>enterEditMode(iid));
+    const fb=FB.slides[iid]||{};
     const ta=card.querySelector('.fb-text');const pi=card.querySelector('.fb-pattern');
     ta.value=fb.text||''; pi.value=fb.pattern||'';
     const upd=()=>{
-      FB.slides[n]={text:ta.value.trim(),pattern:pi.value.trim()};
-      if(!FB.slides[n].text&&!FB.slides[n].pattern) delete FB.slides[n];
-      card.classList.toggle('has-fb',!!FB.slides[n]);
+      const prev=FB.slides[iid]||{};
+      const rec={text:ta.value.trim(),pattern:pi.value.trim()};
+      if(prev.edits&&prev.edits.length) rec.edits=prev.edits;
+      if(prev.groups&&prev.groups.length) rec.groups=prev.groups;
+      if(!rec.text&&!rec.pattern&&!rec.edits&&!rec.groups) delete FB.slides[iid]; else FB.slides[iid]=rec;
+      card.classList.toggle('has-fb',slideHasFb(iid));
       saveFb();
     };
     ta.addEventListener('input',upd); pi.addEventListener('input',upd);
-    card.classList.toggle('has-fb',!!(fb.text||fb.pattern));
+    refreshCardBadge(iid);
   });
   $('gfb').value=FB.global||'';
   $('gfb').oninput=()=>{FB.global=$('gfb').value.trim();saveFb();};
   requestAnimationFrame(fitThumbs);
+}
+function refreshCardBadge(iid){
+  const b=document.getElementById(`ebadge-${iid}`);
+  const card=document.getElementById(`card-${iid}`);
+  if(!b||!card) return;
+  const cnt=slideEdits(iid).length;
+  b.style.display=cnt?'':'none';
+  b.textContent=cnt?`画面編集 ${cnt}件`:'';
+  card.classList.toggle('has-fb',slideHasFb(iid));
 }
 
 // ================= 読み込み =================
@@ -290,11 +632,12 @@ function loadDeck(html){
   try{
     DECK=parseDeck(html);RAW=html;
   }catch(e){ err.textContent=e.message;err.style.display='inline';return; }
-  PAL=null;
+  PAL=null; COPIED=null; SLIDE_CLIP=null; LAST_COPY=null;
+  $('emRail').innerHTML='';
   loadFb();
   $('inputPanel').style.display='none';
   $('viewer').style.display='block';
-  ['palLab','palettes','palReset','printBtn','openTabBtn','promptBtn','clearBtn'].forEach(id=>$(id).style.display='');
+  ['palLab','palettes','palReset','editModeBtn','printBtn','promptBtn','discardAllBtn','clearBtn'].forEach(id=>$(id).style.display='');
   renderDeck();
 }
 $('loadBtn').addEventListener('click',()=>loadDeck($('src').value));
@@ -310,49 +653,1403 @@ $('drop').addEventListener('drop',e=>{
   f.text().then(t=>{$('src').value=t;loadDeck(t);});
 });
 $('clearBtn').addEventListener('click',()=>{
-  DECK=null;RAW='';
+  exitEditMode();
+  DECK=null;RAW='';$('emRail').innerHTML='';
   $('viewer').style.display='none';
   $('inputPanel').style.display='block';
   $('deckTitle').textContent='スライド確認・修正依頼';$('deckCount').textContent='';
-  ['palLab','palettes','palReset','printBtn','openTabBtn','promptBtn','clearBtn'].forEach(id=>$(id).style.display='none');
+  ['palLab','palettes','palReset','editModeBtn','printBtn','promptBtn','discardAllBtn','clearBtn'].forEach(id=>$(id).style.display='none');
+});
+$('discardAllBtn').addEventListener('click',()=>{
+  const total=Object.keys(FB.slides).reduce((a,k)=>a+slideEdits(+k).length,0);
+  const st=structChanged();
+  if(!total&&!st){ alert('画面編集・構成変更はありません。'); return; }
+  if(!confirm(`全スライドの画面編集 ${total}件${st?'＋スライド構成の変更':''} をすべて破棄しますか？\n（フィードバック欄の記入内容は残ります）`)) return;
+  ED.editingEl=null; SELSET=[];
+  Object.keys(FB.slides).forEach(k=>{
+    const s=FB.slides[k]; delete s.edits; delete s.groups;
+    if(!s.text&&!s.pattern) delete FB.slides[k];
+  });
+  FB.order=DECK.sections.map((_,i)=>({id:i+1,src:i+1}));
+  FB.nextId=DECK.sections.length+1;
+  IMGS={}; saveFb(); saveImgs();
+  try{ localStorage.removeItem(imgStorageKey()); }catch(e){}
+  HIST.undo.length=0; HIST.redo.length=0;
+  afterStructureChange();
 });
 
-// ================= パレット =================
-skRenderPaletteChips($('palettes'),null,pal=>{PAL=pal;applyPal();});
-$('palReset').addEventListener('click',()=>{PAL=null;applyPal();});
-
-// ================= 印刷・別タブ =================
+// ================= 印刷（編集＋構成を反映） =================
+function allExtraFontLinks(){
+  const out=new Set();
+  FB.order.forEach(inst=>{ const l=extraFontLinksFor(inst.id); if(l) out.add(l); });
+  return [...out].join('\n');
+}
 function printableHtml(){
-  let html=RAW;
-  // アセット復元（data-sk-asset → ルート絶対パス）を全文に適用
-  html=html.replace(/<section[\s\S]*?<\/section\s*>/gi,m=>resolveAssetPaths(m));
-  if(PAL){
-    html=html.replace('</head>',`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};}</style></head>`);
-  }
-  return html;
+  const pal=PAL?`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};}</style>`:'';
+  const head=DECK.links.join('\n')+'\n'+allExtraFontLinks()+'\n'+DECK.styles.join('\n')+pal;
+  const body=FB.order.map((inst,idx)=>{
+    const tpl=document.createElement('template');
+    tpl.innerHTML=resolveAssetPaths(sectionHtmlOf(inst));
+    try{ applyEditsToDoc(tpl.content,slideEdits(inst.id),inst.id); }catch(e){}
+    try{ renumberPageno(tpl.content,idx+1,FB.order.length); }catch(e){}
+    const div=document.createElement('div');
+    div.appendChild(tpl.content.cloneNode(true));
+    return div.innerHTML;
+  }).join('\n');
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>${escapeHtml(DECK.title)}</title>${head}</head><body>${body}</body></html>`;
 }
 $('printBtn').addEventListener('click',()=>{
   const fr=$('printFrame');
   fr.onload=()=>{ try{ fr.contentWindow.focus();fr.contentWindow.print(); }catch(e){ openInTab(); } };
   fr.srcdoc=printableHtml();
 });
-function openInTab(){
+function openInTab(){ // 印刷が開けない環境向けのフォールバック（ボタンは廃止・内部利用のみ）
   const url=URL.createObjectURL(new Blob([printableHtml()],{type:'text/html'}));
   window.open(url,'_blank');
 }
-$('openTabBtn').addEventListener('click',openInTab);
 
-// ================= 修正プロンプト出力 =================
+// ================= 編集モード =================
+const ED={iid:0,pos:0,fr:null,doc:null,editingEl:'',editOriginal:'',drag:null,rz:null};
+let SELSET=[]; // 複数選択（先頭=プライマリ）
+let ZOOM='fit';
+
+function cleanClasses(el){
+  return [...(el.classList||[])].filter(c=>c!=='slide'&&!/^sk-(hovered|selected|editing|rz)$/.test(c));
+}
+function addedIdOf(el){
+  const m=[...(el.classList||[])].join(' ').match(/sk-added-(\d+)/);
+  return m?parseInt(m[1],10):null;
+}
+function findAddedRec(el){
+  const id=addedIdOf(el);
+  if(id==null) return null;
+  return slideEdits(ED.iid).find(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===id)||null;
+}
+function descFor(el){
+  const slideEl=el.closest('.slide');
+  let sel;
+  const own=cleanClasses(el);
+  if(own.length){ sel='.'+own.join('.'); }
+  else{
+    let a=el.parentElement, asel='';
+    while(a&&!(a.classList&&a.classList.contains('slide'))){
+      const ac=cleanClasses(a);
+      if(ac.length){ asel='.'+ac.join('.'); break; }
+      a=a.parentElement;
+    }
+    sel=(asel?asel+' ':'')+el.tagName.toLowerCase();
+  }
+  const list=[...slideEl.querySelectorAll(sel)];
+  return {sel,nth:Math.max(0,list.indexOf(el)),count:list.length};
+}
+function descLabel(el){
+  const rec=findAddedRec(el);
+  if(rec) return rec.type==='imgadd'?`追加画像「${short(rec.name,18)}」`:`複製要素（${rec.sel}）`;
+  const d=descFor(el);
+  const t=(el.innerText||'').trim().replace(/\s+/g,' ');
+  return `${d.sel}${d.count>1?`（${d.nth+1}個目）`:''}${t?`｜${short(t,22)}`:''}`;
+}
+function pickTarget(t,doc){
+  let el=t&&t.nodeType===1?t:(t?t.parentElement:null);
+  while(el&&el!==doc.body){
+    if(el.classList&&el.classList.contains('sk-rz')) return null;
+    if(el.classList&&el.classList.contains('slide')) return null;
+    if(cleanClasses(el).length) return el;
+    el=el.parentElement;
+  }
+  return null;
+}
+// 範囲選択（Canva/Figma式）:
+// ・矩形に「完全に含まれる」要素は、その単位で選択（中の子には降りない）
+// ・「部分的に交差する」親は子へ委譲（囲んだ分だけが選ばれる）
+function rubberSelect(rect,doc){
+  const slideEl=doc.querySelector('.slide');
+  const inter=r=>!(r.right<rect.left||r.left>rect.right||r.bottom<rect.top||r.top>rect.bottom);
+  const fully=r=>r.left>=rect.left&&r.right<=rect.right&&r.top>=rect.top&&r.bottom<=rect.bottom;
+  const centerIn=r=>{
+    const cx=(r.left+r.right)/2, cy=(r.top+r.bottom)/2;
+    return cx>=rect.left&&cx<=rect.right&&cy>=rect.top&&cy<=rect.bottom;
+  };
+  function pick(el){
+    if(el.classList&&(el.classList.contains('sk-rb')||el.classList.contains('sk-rz'))) return [];
+    const r=el.getBoundingClientRect();
+    if(r.width===0||r.height===0) return [];
+    if(!inter(r)) return [];
+    const classed=cleanClasses(el).length>0;
+    if(classed&&fully(r)) return [el];
+    const kids=[...el.children].flatMap(pick);
+    if(kids.length) return kids;
+    return (classed&&centerIn(r))?[el]:[]; // かすっただけの要素は選ばない（中心が入っていること）
+  }
+  return [...slideEl.children].flatMap(pick);
+}
+// ===== Canva式スナップガイド =====
+// 「見た目の外接矩形（インクバウンズ）」: DOMの箱ではなく、実際に見えている
+// 文字・画像・背景/枠線つきボックスだけから外接矩形を計算する。
+// （要素内の余白を含めた箱で中央揃えすると見た目がズレる問題への対処）
+function visualRect(el,doc){
+  const win=doc.defaultView;
+  const rects=[];
+  const hasChrome=e=>{
+    const cs=win.getComputedStyle(e);
+    if(parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderBottomWidth)>0||
+       parseFloat(cs.borderLeftWidth)>0||parseFloat(cs.borderRightWidth)>0) return true;
+    const bg=cs.backgroundColor;
+    if(bg&&bg!=='transparent'&&!/rgba\(\s*\d+[,\s]+\d+[,\s]+\d+[,\s\/]+0\)/.test(bg.replace(/\s/g,''))) return true;
+    if(cs.backgroundImage&&cs.backgroundImage!=='none') return true;
+    if(cs.outlineWidth&&parseFloat(cs.outlineWidth)>0&&cs.outlineStyle!=='none') return false; // 選択枠は無視
+    return false;
+  };
+  (function walk(n){
+    if(n.nodeType===3){
+      if(n.textContent&&n.textContent.trim()){
+        const rg=doc.createRange(); rg.selectNodeContents(n);
+        for(const r of rg.getClientRects()) if(r.width>0&&r.height>0) rects.push(r);
+      }
+      return;
+    }
+    if(n.nodeType!==1) return;
+    if(n.classList&&/sk-(rz|rb|guide)/.test(n.className)) return;
+    const cs=win.getComputedStyle(n);
+    if(cs.display==='none'||cs.visibility==='hidden') return;
+    if(/^(IMG|SVG|VIDEO|CANVAS|I)$/i.test(n.tagName)||hasChrome(n)){
+      const r=n.getBoundingClientRect();
+      if(r.width>0&&r.height>0) rects.push(r);
+      if(!/^(IMG|SVG|VIDEO|CANVAS)$/i.test(n.tagName)&&!hasChrome(n)) [...n.childNodes].forEach(walk);
+      return;
+    }
+    [...n.childNodes].forEach(walk);
+  })(el);
+  if(!rects.length) return el.getBoundingClientRect();
+  const left=Math.min(...rects.map(r=>r.left)), top=Math.min(...rects.map(r=>r.top));
+  const right=Math.max(...rects.map(r=>r.right)), bottom=Math.max(...rects.map(r=>r.bottom));
+  return {left,top,right,bottom,width:right-left,height:bottom-top};
+}
+// ドラッグ開始時に、スナップ対象（他要素のインクバウンズ＋スライド枠）を収集
+function startSnapSession(doc){
+  const slideEl=doc.querySelector('.slide');
+  const sr=slideEl.getBoundingClientRect();
+  const selSet=new Set(SELSET);
+  const excluded=el=>{
+    if(selSet.has(el)) return true;
+    for(const s of selSet){ if(el.contains(s)||s.contains(el)) return true; }
+    return false;
+  };
+  const targets=[];
+  [...slideEl.querySelectorAll('*')].forEach(el=>{
+    const cl=cleanClasses(el).filter(c=>!/^sk-(?!added)/.test(c));
+    if(!cl.length) return;
+    if(excluded(el)) return;
+    const r=visualRect(el,doc);
+    if(r.width<2||r.height<2) return;
+    targets.push(r);
+  });
+  let l=1e9,t=1e9,rt=-1e9,b=-1e9;
+  SELSET.forEach(el=>{ const r=visualRect(el,doc); l=Math.min(l,r.left);t=Math.min(t,r.top);rt=Math.max(rt,r.right);b=Math.max(b,r.bottom); });
+  const layer=doc.createElement('div'); layer.className='sk-guide';
+  slideEl.appendChild(layer);
+  return {sr,targets,base:{left:l,top:t,right:rt,bottom:b},layer};
+}
+// 端・中央の揃え → 無ければ左右/上下の等間隔、の順でスナップ量を計算
+function computeSnap(sess,dx,dy){
+  const TH=5;
+  const M={left:sess.base.left+dx,right:sess.base.right+dx,top:sess.base.top+dy,bottom:sess.base.bottom+dy};
+  M.cx=(M.left+M.right)/2; M.cy=(M.top+M.bottom)/2;
+  const sr=sess.sr;
+  const xt=[{v:sr.left,c:0},{v:sr.left+sr.width/2,c:1},{v:sr.right,c:0}];
+  const yt=[{v:sr.top,c:0},{v:sr.top+sr.height/2,c:1},{v:sr.bottom,c:0}];
+  sess.targets.forEach(r=>{
+    xt.push({v:r.left,c:0},{v:(r.left+r.right)/2,c:0},{v:r.right,c:0});
+    yt.push({v:r.top,c:0},{v:(r.top+r.bottom)/2,c:0},{v:r.bottom,c:0});
+  });
+  let sx=null,gx=null,sy=null,gy=null;
+  xt.forEach(t=>{[M.left,M.cx,M.right].forEach(m=>{const d=t.v-m;if(Math.abs(d)<=TH&&(sx===null||Math.abs(d)<Math.abs(sx))){sx=d;gx=t;}});});
+  yt.forEach(t=>{[M.top,M.cy,M.bottom].forEach(m=>{const d=t.v-m;if(Math.abs(d)<=TH&&(sy===null||Math.abs(d)<Math.abs(sy))){sy=d;gy=t;}});});
+  // 等間隔スナップ（左右／上下の隣接要素との余白を揃える）
+  let gapX=null,gapY=null;
+  if(sx===null){
+    const ov=r=>!(r.bottom<M.top||r.top>M.bottom);
+    let L=null,R=null;
+    sess.targets.forEach(r=>{ if(!ov(r)) return;
+      if(r.right<=M.left+TH&&(L===null||r.right>L.right)) L=r;
+      if(r.left>=M.right-TH&&(R===null||r.left<R.left)) R=r;
+    });
+    if(L&&R){
+      const gL=M.left-L.right, gR=R.left-M.right;
+      if(Math.abs(gR-gL)<=TH*2){ sx=(gR-gL)/2; gapX={L,R,g:Math.round(gL+(gR-gL)/2)}; }
+    }
+  }
+  if(sy===null){
+    const ov=r=>!(r.right<M.left||r.left>M.right);
+    let T=null,B=null;
+    sess.targets.forEach(r=>{ if(!ov(r)) return;
+      if(r.bottom<=M.top+TH&&(T===null||r.bottom>T.bottom)) T=r;
+      if(r.top>=M.bottom-TH&&(B===null||r.top<B.top)) B=r;
+    });
+    if(T&&B){
+      const gT=M.top-T.bottom, gB=B.top-M.bottom;
+      if(Math.abs(gB-gT)<=TH*2){ sy=(gB-gT)/2; gapY={T,B,g:Math.round(gT+(gB-gT)/2)}; }
+    }
+  }
+  return {sx:sx||0,sy:sy||0,gx,gy,gapX,gapY};
+}
+function drawGuides(sess,s,fx,fy){
+  const layer=sess.layer; if(!layer) return;
+  layer.innerHTML='';
+  const sr=sess.sr;
+  const M={left:sess.base.left+fx,right:sess.base.right+fx,top:sess.base.top+fy,bottom:sess.base.bottom+fy};
+  const add=(cls,style,text)=>{
+    const d=layer.ownerDocument.createElement('div');
+    d.className=cls; Object.assign(d.style,style);
+    if(text!=null) d.textContent=text;
+    layer.appendChild(d);
+  };
+  if(s.gx) add('gv'+(s.gx.c?' c':''),{left:(s.gx.v-sr.left)+'px'});
+  if(s.gy) add('gh'+(s.gy.c?' c':''),{top:(s.gy.v-sr.top)+'px'});
+  const cy=(M.top+M.bottom)/2-sr.top, cx=(M.left+M.right)/2-sr.left;
+  if(s.gapX){
+    add('gb',{left:((s.gapX.L.right+M.left)/2-sr.left)+'px',top:cy+'px'},s.gapX.g);
+    add('gb',{left:((M.right+s.gapX.R.left)/2-sr.left)+'px',top:cy+'px'},s.gapX.g);
+  }
+  if(s.gapY){
+    add('gb',{left:cx+'px',top:((s.gapY.T.bottom+M.top)/2-sr.top)+'px'},s.gapY.g);
+    add('gb',{left:cx+'px',top:((M.bottom+s.gapY.B.top)/2-sr.top)+'px'},s.gapY.g);
+  }
+}
+function pickTextTarget(t,doc){
+  let el=t&&t.nodeType===1?t:(t?t.parentElement:null);
+  while(el&&el!==doc.body&&!(el.classList&&el.classList.contains('slide'))){
+    const ok=(el.innerText||'').trim()!==''&&![...el.children].some(c=>!/^(BR|SPAN|B|STRONG|I|EM|A|U|SMALL)$/i.test(c.tagName));
+    if(ok) return el;
+    el=el.parentElement;
+  }
+  return null;
+}
+function injectEditorCss(doc){
+  const st=doc.createElement('style');
+  st.textContent=`
+    .slide,.slide *{user-select:none;-webkit-user-select:none}
+    .sk-editing,.sk-editing *{user-select:text !important;-webkit-user-select:text !important}
+    .sk-hovered{outline:1.5px dashed rgba(47,107,255,.7) !important;outline-offset:-1px;cursor:move}
+    .sk-selected{outline:2px solid #2f6bff !important;outline-offset:-2px;cursor:move}
+    .sk-editing{outline:2px solid #12A150 !important;outline-offset:-2px;cursor:text}
+    .sk-rz{position:absolute;width:14px;height:14px;background:#2f6bff;border:2.5px solid #fff;border-radius:50%;cursor:nwse-resize;z-index:999;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+    .sk-rb{position:absolute;border:1.5px dashed #2f6bff;background:rgba(47,107,255,.08);z-index:998;pointer-events:none}
+    .sk-guide{position:absolute;inset:0;pointer-events:none;z-index:997}
+    .sk-guide .gv{position:absolute;top:0;bottom:0;width:0;border-left:1px solid #FF2D8D}
+    .sk-guide .gv.c{border-left-style:dashed}
+    .sk-guide .gh{position:absolute;left:0;right:0;height:0;border-top:1px solid #FF2D8D}
+    .sk-guide .gh.c{border-top-style:dashed}
+    .sk-guide .gb{position:absolute;background:#FF2D8D;color:#fff;font-size:10px;line-height:1;padding:2px 5px;border-radius:4px;transform:translate(-50%,-50%);font-family:ui-monospace,monospace;white-space:nowrap}
+    ::selection{background:rgba(47,107,255,.25)}
+  `;
+  doc.head.appendChild(st);
+}
+// ページ番号（n / N）を現在の並びに合わせて振り直す
+function renumberPageno(root,pos,total){
+  const el=root.querySelector&&root.querySelector('.sk-pageno');
+  if(el) el.textContent=`${pos} / ${total}`;
+}
+function layoutEditMode(){
+  if(!MODE_EDIT) return;
+  $('editMode').style.height=(window.innerHeight-$('mainBar').offsetHeight)+'px';
+  fitEditor();
+  fitRailThumbs();
+}
+function fitEditor(){
+  let sc;
+  if(ZOOM==='fit'){
+    const w=$('eStageWrap').clientWidth-32, h=$('eStageWrap').clientHeight-32;
+    sc=Math.max(0.15,Math.min(w/960,h/540));
+  }else{
+    sc=parseFloat(ZOOM)||1;
+  }
+  $('eStage').style.width=(960*sc)+'px';
+  $('eStage').style.height=(540*sc)+'px';
+  $('eFrame').style.transform=`scale(${sc})`;
+}
+$('zoomSel').addEventListener('change',()=>{ ZOOM=$('zoomSel').value; fitEditor(); });
+function setZoomNumeric(z){
+  ZOOM=Math.max(0.15,Math.min(3,z));
+  let opt=$('zoomSel').querySelector('option[data-custom]');
+  if(!opt){ opt=document.createElement('option'); opt.setAttribute('data-custom','1'); $('zoomSel').appendChild(opt); }
+  opt.value=String(ZOOM); opt.textContent=Math.round(ZOOM*100)+'%';
+  $('zoomSel').value=String(ZOOM);
+  fitEditor();
+}
+function wheelZoom(e){
+  if(!MODE_EDIT) return;
+  if(!(e.ctrlKey||e.metaKey)) return;
+  e.preventDefault();
+  const cur=(ZOOM==='fit')?(parseFloat($('eStage').style.width)||960)/960:parseFloat(ZOOM)||1;
+  setZoomNumeric(cur*(e.deltaY<0?1.1:0.9));
+}
+$('eStageWrap').addEventListener('wheel',wheelZoom,{passive:false});
+function fitRailThumbs(){
+  document.querySelectorAll('.em-frame').forEach(t=>{
+    const fr=t.querySelector('iframe');
+    if(fr) fr.style.transform=`scale(${t.clientWidth/960})`;
+  });
+}
+let RAIL_DRAG=null; // ドラッグ中のiid
+function buildRail(){
+  const rail=$('emRail');rail.innerHTML='';
+  FB.order.forEach((inst,idx)=>{
+    const pos=idx+1, iid=inst.id;
+    const d=document.createElement('div');d.className='em-thumb';d.id=`emthumb-${iid}`;
+    d.draggable=true;
+    const tag=inst.src===0?'新規':(FB.order.filter(o=>o.src===inst.src).length>1?'複製':'');
+    d.innerHTML=`<span class="em-no">${pos}</span><div class="em-frame"><iframe sandbox="allow-same-origin" title="スライド${pos}サムネ"></iframe></div><span class="em-dot" id="emdot-${iid}" style="display:none"></span>${tag&&inst.src!==pos?`<span class="em-tag">${tag}</span>`:''}`;
+    rail.appendChild(d);
+    const fr=d.querySelector('iframe');
+    fr.onload=()=>{
+      try{ skApplyPaletteVars(fr.contentDocument.documentElement,PAL); }catch(e){}
+      try{ applyEditsToDoc(fr.contentDocument,slideEdits(iid),iid); }catch(e){}
+      try{ renumberPageno(fr.contentDocument,posOfIid(iid),FB.order.length); }catch(e){}
+    };
+    fr.srcdoc=slideDocFor(inst);
+    d.addEventListener('click',()=>gotoIid(iid));
+    // ドラッグ＆ドロップで並べ替え
+    d.addEventListener('dragstart',e=>{
+      RAIL_DRAG=iid;
+      d.classList.add('dragging');
+      try{ e.dataTransfer.setData('text/plain',String(iid)); e.dataTransfer.effectAllowed='move'; }catch(err){}
+    });
+    d.addEventListener('dragend',()=>{
+      RAIL_DRAG=null;
+      document.querySelectorAll('.em-thumb').forEach(x=>x.classList.remove('dragging','drop-before','drop-after'));
+    });
+    d.addEventListener('dragover',e=>{
+      if(RAIL_DRAG==null||RAIL_DRAG===iid) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      const r=d.getBoundingClientRect();
+      const before=(e.clientY-r.top)<r.height/2;
+      d.classList.toggle('drop-before',before);
+      d.classList.toggle('drop-after',!before);
+    });
+    d.addEventListener('dragleave',()=>{ d.classList.remove('drop-before','drop-after'); });
+    d.addEventListener('drop',e=>{
+      e.preventDefault();
+      const before=d.classList.contains('drop-before');
+      d.classList.remove('drop-before','drop-after');
+      if(RAIL_DRAG==null||RAIL_DRAG===iid) return;
+      reorderSlide(RAIL_DRAG,iid,before);
+      RAIL_DRAG=null;
+    });
+    updateRailDot(iid);
+  });
+  requestAnimationFrame(fitRailThumbs);
+}
+// fromIid のスライドを targetIid の前/後へ移動（undo対象）
+function reorderSlide(fromIid,targetIid,before){
+  if(fromIid===targetIid) return;
+  commit(()=>{
+    const fromIdx=FB.order.findIndex(o=>o.id===fromIid);
+    if(fromIdx<0) return;
+    const [item]=FB.order.splice(fromIdx,1);
+    let toIdx=FB.order.findIndex(o=>o.id===targetIid);
+    if(toIdx<0){ FB.order.splice(fromIdx,0,item); return; }
+    if(!before) toIdx+=1;
+    FB.order.splice(toIdx,0,item);
+  });
+  buildRail(); renderDeck();
+  gotoIid(ED.iid,true); // カウンタ・ページ番号を更新
+  flashChip('スライドを並べ替えました（⌘Zで戻せます）');
+}
+function updateRailDot(iid){
+  const dot=document.getElementById(`emdot-${iid}`);
+  if(dot) dot.style.display=slideEdits(iid).length?'':'none';
+}
+function refreshRailThumb(iid){
+  const d=document.getElementById(`emthumb-${iid}`); if(!d) return;
+  const fr=d.querySelector('iframe'); if(!fr) return;
+  const inst=FB.order.find(o=>o.id===iid); if(!inst) return;
+  fr.srcdoc=slideDocFor(inst);
+  updateRailDot(iid);
+}
+function enterEditMode(iid){
+  if(!DECK) return;
+  MODE_EDIT=true;
+  $('editModeBtn').style.display='none'; // 編集モード中は切替ボタン不要
+  $('listWrap').style.display='none';
+  $('editMode').style.display='flex';
+  buildRail();
+  gotoIid(iid||FB.order[0].id,true);
+  layoutEditMode();
+}
+function exitEditMode(){
+  if(!MODE_EDIT) return;
+  commitTextEdit();
+  MODE_EDIT=false;
+  if(DECK) $('editModeBtn').style.display='';
+  $('editMode').style.display='none';
+  $('listWrap').style.display='';
+  renderDeck();
+}
+function gotoIid(iid,force){
+  if(!DECK) return;
+  const pos=posOfIid(iid);
+  if(!pos){ return; }
+  if(!force&&ED.iid===iid) return;
+  commitTextEdit();
+  ED.iid=iid; ED.pos=pos;
+  $('emCounter').textContent=`${pos} / ${FB.order.length}`;
+  document.querySelectorAll('.em-thumb.cur').forEach(x=>x.classList.remove('cur'));
+  const th=document.getElementById(`emthumb-${iid}`);
+  if(th){ th.classList.add('cur'); th.scrollIntoView({block:'nearest'}); }
+  rebuildEditorDoc();
+}
+function gotoPos(pos){
+  pos=Math.max(1,Math.min(FB.order.length,pos));
+  const inst=instAt(pos);
+  if(inst) gotoIid(inst.id);
+}
+function rebuildEditorDoc(){
+  const fr=$('eFrame'); ED.fr=fr; SELSET=[]; ED.editingEl=null; ED.drag=null; ED.rz=null;
+  updateFormatControls();
+  fr.onload=()=>{
+    const doc=fr.contentDocument; ED.doc=doc;
+    try{ skApplyPaletteVars(doc.documentElement,PAL); }catch(e){}
+    injectEditorCss(doc);
+    applyEditsToDoc(doc,slideEdits(ED.iid),ED.iid);
+    try{ renumberPageno(doc,ED.pos,FB.order.length); }catch(e){}
+    wireEditor(doc);
+    renderEditList();
+  };
+  const inst=FB.order.find(o=>o.id===ED.iid);
+  fr.srcdoc=slideDocFor(inst);
+}
+// --- 選択（複数対応） ---
+function groupOf(el){
+  const d=descFor(el);
+  return slideGroups(ED.iid).find(g=>g.members.some(m=>m.sel===d.sel&&m.nth===d.nth))||null;
+}
+function resolveMembers(g,doc){
+  const slideEl=doc.querySelector('.slide'); const out=[];
+  g.members.forEach(m=>{
+    const el=[...slideEl.querySelectorAll(m.sel)][m.nth];
+    if(el) out.push(el);
+  });
+  return out;
+}
+function clearSelVisual(){
+  if(!ED.doc) return;
+  ED.doc.querySelectorAll('.sk-selected').forEach(x=>x.classList.remove('sk-selected'));
+  ED.doc.querySelectorAll('.sk-hovered').forEach(x=>x.classList.remove('sk-hovered'));
+  ED.doc.querySelectorAll('.sk-rz').forEach(x=>x.remove());
+}
+function setSelection(els){
+  clearSelVisual();
+  SELSET=els.filter(Boolean);
+  SELSET.forEach(el=>el.classList.add('sk-selected'));
+  if(SELSET.length===1) placeResizeHandle(SELSET[0]);
+  if(SELSET.length){ try{ ED.fr.contentWindow.focus(); }catch(e){} }
+  updateFormatControls();
+}
+function selectEl(t,additive){
+  if(!t){ setSelection([]); return; }
+  const g=groupOf(t);
+  let targets=g?resolveMembers(g,ED.doc):[t];
+  if(additive){
+    const set=SELSET.slice();
+    targets.forEach(x=>{
+      const i=set.indexOf(x);
+      if(i>=0) set.splice(i,1); else set.push(x);
+    });
+    setSelection(set);
+  }else{
+    setSelection(targets);
+  }
+}
+// 追加要素（画像・複製）のリサイズハンドル
+function placeResizeHandle(el){
+  if(!ED.doc) return;
+  const rec=findAddedRec(el);
+  if(!rec) return; // 既存要素はハンドル無し（サイズはツールバーの文字サイズで）
+  const slideEl=ED.doc.querySelector('.slide');
+  const h=ED.doc.createElement('div'); h.className='sk-rz';
+  const put=()=>{
+    const sr=slideEl.getBoundingClientRect(), er=el.getBoundingClientRect();
+    h.style.left=(er.right-sr.left-7)+'px';
+    h.style.top=(er.bottom-sr.top-7)+'px';
+  };
+  put();
+  h.addEventListener('mousedown',e=>{
+    e.preventDefault(); e.stopPropagation();
+    const startX=e.clientX, startW=el.getBoundingClientRect().width;
+    ED.rz={el,rec,startX,startW,h,put};
+  });
+  slideEl.appendChild(h);
+}
+function updateFormatControls(){
+  const one=SELSET.length===1?SELSET[0]:null;
+  const isImg=one?(!!findAddedRec(one)&&findAddedRec(one).type==='imgadd'):false;
+  const on=SELSET.length>0&&!ED.editingEl&&MODE_EDIT;
+  const textOn=on&&!isImg;
+  $('szLab').textContent=isImg?'幅':'サイズ';
+  ['fsMinus','fsInput','fsPlus'].forEach(id=>{$(id).disabled=!on;});
+  $('fwBold').disabled=!textOn;
+  $('ffSel').disabled=!textOn;
+  $('bwSel').disabled=!on;
+  $('grpBtn').disabled=!(SELSET.length>=2||(one&&groupOf(one)));
+  $('grpBtn').textContent=(one&&groupOf(one))||SELSET.length>1&&SELSET.every(x=>groupOf(x))?'グループ解除':'グループ化';
+  if(on&&one){
+    const cs=ED.doc.defaultView.getComputedStyle(one);
+    if(isImg){
+      const rec=findAddedRec(one);
+      $('fsInput').value=rec?rec.w:Math.round(one.getBoundingClientRect().width);
+    }else{
+      $('fsInput').value=Math.round(parseFloat(cs.fontSize));
+    }
+    $('fwBold').classList.toggle('on',parseInt(cs.fontWeight,10)>=600);
+    const fam=(cs.fontFamily||'').split(',')[0].trim().replace(/^["']|["']$/g,'');
+    let matched='';
+    [...$('ffSel').options].forEach(o=>{ if(o.value&&fam&&o.value.toLowerCase().includes(fam.toLowerCase())) matched=o.value; });
+    $('ffSel').value=matched;
+    const fc=rgbToHex(cs.color)||'#333333';
+    setColBtn('fcBtn','fcSw',fc,textOn);
+    const bg=rgbToHex(cs.backgroundColor);
+    setColBtn('bgBtn','bgSw',bg,on);
+    const bw=Math.round(parseFloat(cs.borderTopWidth)||0);
+    $('bwSel').value=bw>0?String(Math.min(bw,4)):'none';
+    BC=rgbToHex(cs.borderTopColor)||'#333333';
+    setColBtn('bcBtn','bcSw',BC,on);
+    $('emSelChip').textContent=descLabel(one);
+  }else if(on){
+    $('fsInput').value='';
+    $('emSelChip').textContent=`${SELSET.length}個の要素を選択中`;
+    setColBtn('fcBtn','fcSw','#333333',true);
+    setColBtn('bgBtn','bgSw',null,true);
+    setColBtn('bcBtn','bcSw','#333333',true);
+  }else{
+    $('fsInput').value='';
+    $('fwBold').classList.remove('on');
+    $('ffSel').value='';
+    $('bwSel').value='';
+    setColBtn('fcBtn','fcSw',null,false);
+    setColBtn('bgBtn','bgSw',null,false);
+    setColBtn('bcBtn','bcSw',null,false);
+    $('emSelChip').textContent=ED.editingEl?'文字を編集中…（Enterで確定）':'';
+  }
+}
+function setColBtn(btnId,swId,hex,enabled){
+  $(btnId).classList.toggle('dis',!enabled);
+  if(hex) $(swId).style.background=hex;
+  else $(swId).style.background='repeating-linear-gradient(45deg,#ddd,#ddd 2px,#fff 2px,#fff 4px)';
+}
+// --- 編集レコード ---
+function findEdit(type,el,prop){
+  const d=descFor(el);
+  return slideEdits(ED.iid).find(x=>x.type===type&&x.sel===d.sel&&x.nth===d.nth&&(type!=='style'||x.prop===prop))||null;
+}
+function mutateEdits(mut){ // 現スライドのedits配列を変更して確定
+  commit(()=>{
+    const s=FB.slides[ED.iid]||(FB.slides[ED.iid]={});
+    const arr=(s.edits||[]).slice();
+    const out=mut(arr);
+    if(out.length) s.edits=out; else delete s.edits;
+    if(!s.text&&!s.pattern&&!s.edits&&!(s.groups&&s.groups.length)) delete FB.slides[ED.iid];
+  });
+  afterEditCommit();
+}
+function afterEditCommit(){
+  renderEditList(); refreshCardBadge(ED.iid); updateRailDot(ED.iid); refreshRailThumb(ED.iid);
+}
+function upsertMove(arr,el,dx,dy){
+  const d=descFor(el);
+  const i=arr.findIndex(x=>x.type==='move'&&x.sel===d.sel&&x.nth===d.nth);
+  if(dx===0&&dy===0){ if(i>=0) arr.splice(i,1); el.style.translate=''; return arr; }
+  const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
+  const rec={type:'move',sel:d.sel,nth:d.nth,count:d.count,label,dx,dy};
+  if(i>=0) arr[i]=rec; else arr.push(rec);
+  return arr;
+}
+function commitMove(el,dx,dy){
+  const added=findAddedRec(el);
+  if(added){
+    mutateEdits(arr=>{
+      const i=arr.findIndex(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===added.id);
+      if(i>=0){ arr[i]={...arr[i],x:Math.round(added.x+dx),y:Math.round(added.y+dy)}; }
+      return arr;
+    });
+    el.style.translate='';
+    const rec=findAddedRec(el);
+    if(rec){ el.style.left=rec.x+'px'; el.style.top=rec.y+'px'; }
+    if(SELSET.length===1){ clearSelVisual(); setSelection([el]); }
+    return;
+  }
+  mutateEdits(arr=>upsertMove(arr,el,dx,dy));
+}
+function setTextEditRec(el,before,after){
+  mutateEdits(arr=>{
+    const d=descFor(el);
+    const i=arr.findIndex(x=>x.type==='text'&&x.sel===d.sel&&x.nth===d.nth);
+    if(after===before){ if(i>=0) arr.splice(i,1); return arr; }
+    const rec={type:'text',sel:d.sel,nth:d.nth,count:d.count,before,after};
+    if(i>=0){ rec.before=arr[i].before; arr[i]=rec; } else arr.push(rec);
+    return arr;
+  });
+}
+function setStyleEditRec(el,prop,before,after){
+  const d=descFor(el);
+  mutateEdits(arr=>{
+    const i=arr.findIndex(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop===prop);
+    if(after===before){ if(i>=0){ arr.splice(i,1); el.style.removeProperty(prop); } return arr; }
+    const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
+    const rec={type:'style',sel:d.sel,nth:d.nth,count:d.count,label,prop,before,after};
+    if(i>=0){ rec.before=arr[i].before; arr[i]=rec; } else arr.push(rec);
+    el.style.setProperty(prop,after);
+    return arr;
+  });
+}
+// --- 文言 ---
+function startTextEdit(el){
+  const a=findAddedRec(el);
+  if(a&&a.type==='imgadd') return;
+  setSelection([]);
+  ED.editingEl=el;
+  const ex=findEdit('text',el);
+  ED.editOriginal=ex?ex.before:el.innerText;
+  el.setAttribute('contenteditable','true');
+  el.classList.add('sk-editing');
+  el.focus();
+  updateFormatControls();
+}
+function commitTextEdit(){
+  const el=ED.editingEl; if(!el) return;
+  el.classList.remove('sk-editing');
+  el.removeAttribute('contenteditable');
+  ED.editingEl=null;
+  setTextEditRec(el,ED.editOriginal,el.innerText);
+  updateFormatControls();
+}
+function cancelTextEdit(){
+  const el=ED.editingEl; if(!el) return;
+  el.classList.remove('sk-editing');
+  el.removeAttribute('contenteditable');
+  ED.editingEl=null;
+  rebuildEditorDoc();
+}
+// --- 配置・書式（複数選択対応） ---
+function nudgeSel(ddx,ddy){
+  SELSET.forEach(el=>{
+    const added=findAddedRec(el);
+    if(added){ commitMove(el,ddx,ddy); return; }
+    const cur=findEdit('move',el);
+    const dx=(cur?cur.dx:0)+ddx, dy=(cur?cur.dy:0)+ddy;
+    el.style.translate=`${dx}px ${dy}px`;
+    mutateEdits(arr=>upsertMove(arr,el,dx,dy));
+  });
+}
+function changeFontSize(delta,absolute){
+  if(!SELSET.length||!ED.doc) return;
+  SELSET.forEach(el=>{
+    const added=findAddedRec(el);
+    if(added&&added.type==='imgadd'){
+      mutateEdits(arr=>{
+        const i=arr.findIndex(x=>x.type==='imgadd'&&x.id===added.id);
+        if(i<0) return arr;
+        let next=(absolute!=null)?absolute:arr[i].w+(delta*10);
+        next=Math.max(24,Math.min(960,Math.round(next)));
+        arr[i]={...arr[i],w:next};
+        el.style.width=next+'px';
+        $('fsInput').value=next;
+        return arr;
+      });
+      return;
+    }
+    const ex=findEdit('style',el,'font-size');
+    const curPx=Math.round(parseFloat(ED.doc.defaultView.getComputedStyle(el).fontSize));
+    const before=ex?ex.before:curPx+'px';
+    let next=(absolute!=null)?absolute:curPx+delta;
+    if(!isFinite(next)) return;
+    next=Math.max(6,Math.min(200,Math.round(next)));
+    setStyleEditRec(el,'font-size',before,next+'px');
+    if(SELSET.length===1) $('fsInput').value=next;
+  });
+}
+function toggleBold(){
+  if(!SELSET.length||!ED.doc) return;
+  SELSET.forEach(el=>{
+    const ex=findEdit('style',el,'font-weight');
+    const cur=String(ED.doc.defaultView.getComputedStyle(el).fontWeight);
+    const isB=parseInt(cur,10)>=600;
+    const before=ex?ex.before:cur;
+    setStyleEditRec(el,'font-weight',before,isB?'400':'700');
+  });
+  updateFormatControls();
+}
+function changeColorProp(prop,hex){
+  if(!SELSET.length||!ED.doc) return;
+  SELSET.forEach(el=>{
+    const ex=findEdit('style',el,prop);
+    const cs=ED.doc.defaultView.getComputedStyle(el);
+    const curV=prop==='color'?cs.color:cs.backgroundColor;
+    const before=ex?ex.before:(rgbToHex(curV)||(prop==='background-color'?'transparent':'#333333'));
+    setStyleEditRec(el,prop,before,hex);
+  });
+  updateFormatControls();
+}
+function currentBorderBefore(cs){
+  const w=Math.round(parseFloat(cs.borderTopWidth)||0);
+  if(!w) return 'none';
+  return `${w}px ${cs.borderTopStyle||'solid'} ${rgbToHex(cs.borderTopColor)||cs.borderTopColor}`;
+}
+let BC='#333333';
+function changeBorder(){
+  if(!SELSET.length||!ED.doc) return;
+  const wSel=$('bwSel').value;
+  if(wSel==='') return;
+  SELSET.forEach(el=>{
+    const ex=findEdit('style',el,'border');
+    const cs=ED.doc.defaultView.getComputedStyle(el);
+    const before=ex?ex.before:currentBorderBefore(cs);
+    const after=(wSel==='none')?'none':`${wSel}px solid ${BC}`;
+    setStyleEditRec(el,'border',before,after);
+  });
+  updateFormatControls();
+}
+function changeFontFamily(){
+  if(!SELSET.length||!ED.doc) return;
+  const v=$('ffSel').value;
+  if(!v) return;
+  if(EXTRA_FONT_LINKS[v]&&!ED.doc.querySelector(`link[href="${EXTRA_FONT_LINKS[v]}"]`)){
+    const l=ED.doc.createElement('link'); l.rel='stylesheet'; l.href=EXTRA_FONT_LINKS[v];
+    ED.doc.head.appendChild(l);
+  }
+  SELSET.forEach(el=>{
+    const ex=findEdit('style',el,'font-family');
+    const cs=ED.doc.defaultView.getComputedStyle(el);
+    const before=ex?ex.before:cs.fontFamily;
+    setStyleEditRec(el,'font-family',before,v);
+  });
+}
+// --- グループ化 ---
+function toggleGroup(){
+  if(!ED.doc) return;
+  const one=SELSET.length===1?SELSET[0]:null;
+  const g=one?groupOf(one):(SELSET.length&&SELSET.every(x=>groupOf(x))?groupOf(SELSET[0]):null);
+  commit(()=>{
+    const s=FB.slides[ED.iid]||(FB.slides[ED.iid]={});
+    const groups=(s.groups||[]).slice();
+    if(g){
+      const i=groups.findIndex(x=>x.id===g.id);
+      if(i>=0) groups.splice(i,1);
+    }else if(SELSET.length>=2){
+      const members=SELSET.map(el=>{const d=descFor(el);return {sel:d.sel,nth:d.nth};});
+      const gid=1+groups.reduce((a,x)=>Math.max(a,x.id),0);
+      groups.push({id:gid,members});
+    }
+    if(groups.length) s.groups=groups; else delete s.groups;
+    if(!s.text&&!s.pattern&&!s.edits&&!s.groups) delete FB.slides[ED.iid];
+  });
+  updateFormatControls();
+  flashChip(g?'グループを解除しました':'グループ化しました（クリックでまとめて選択）');
+}
+// --- 画像・複製・削除 ---
+function nextAddedId(){
+  let mx=0;
+  slideEdits(ED.iid).forEach(e=>{ if((e.type==='imgadd'||e.type==='dup')&&e.id>mx) mx=e.id; });
+  return mx+1;
+}
+function addImageRecord(dataUrl,origName){
+  if(!MODE_EDIT) return;
+  const id=nextAddedId();
+  IMGS[`${ED.iid}:${id}`]=dataUrl;
+  saveImgs();
+  const img=new Image();
+  img.onload=()=>{
+    const w=Math.max(48,Math.min(320,img.naturalWidth||320));
+    const ext=(dataUrl.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
+    const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
+    mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:origName||'',w,x:Math.round((960-w)/2),y:160}); return arr; });
+    rebuildEditorDoc();
+  };
+  img.src=dataUrl;
+}
+// --- 追加画像の自動保存 ---
+// File System Access API: 初回だけ保存先フォルダ（推奨: ダウンロード）を選ぶと、
+// 以後は保存ダイアログなしで直接書き込む。フォルダ権限はIndexedDBに記憶。
+function idbKv(op,key,val){
+  return new Promise((resolve)=>{
+    const req=indexedDB.open('sk-viewer',1);
+    req.onupgradeneeded=()=>req.result.createObjectStore('kv');
+    req.onerror=()=>resolve(null);
+    req.onsuccess=()=>{
+      const db=req.result;
+      const tx=db.transaction('kv',op==='get'?'readonly':'readwrite');
+      const st=tx.objectStore('kv');
+      const r=op==='get'?st.get(key):st.put(val,key);
+      r.onsuccess=()=>resolve(op==='get'?r.result:true);
+      r.onerror=()=>resolve(null);
+    };
+  });
+}
+let DIR_HANDLE=null;
+async function getDirHandle(interactive){
+  const ok=async h=>{
+    try{
+      if(await h.queryPermission({mode:'readwrite'})==='granted') return true;
+      if(interactive&&await h.requestPermission({mode:'readwrite'})==='granted') return true;
+    }catch(e){}
+    return false;
+  };
+  if(DIR_HANDLE&&await ok(DIR_HANDLE)) return DIR_HANDLE;
+  try{
+    const saved=await idbKv('get','imgdir');
+    if(saved&&await ok(saved)){ DIR_HANDLE=saved; return saved; }
+  }catch(e){}
+  if(!interactive||!window.showDirectoryPicker) return null;
+  try{
+    const h=await window.showDirectoryPicker({id:'sk-img-dir',mode:'readwrite',startIn:'downloads'});
+    DIR_HANDLE=h;
+    try{ await idbKv('put','imgdir',h); }catch(e){}
+    return h;
+  }catch(e){ return null; } // キャンセル・非対応
+}
+function dataUrlToBlob(dataUrl){
+  const [head,b64]=dataUrl.split(',');
+  const mime=(head.match(/data:([^;]+)/)||[])[1]||'image/png';
+  const bin=atob(b64);
+  const arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime});
+}
+function collectImageJobs(){
+  const jobs=[];
+  FB.order.forEach(inst=>{
+    slideEdits(inst.id).forEach(e=>{
+      if(e.type==='imgadd'){
+        const data=IMGS[`${inst.id}:${e.id}`];
+        if(data) jobs.push({name:e.name,data});
+      }
+    });
+  });
+  return jobs;
+}
+async function saveAddedImages(){
+  const jobs=collectImageJobs();
+  if(!jobs.length) return {n:0,mode:'none'};
+  const dir=await getDirHandle(true);
+  if(dir){
+    for(const j of jobs){
+      try{
+        const fh=await dir.getFileHandle(j.name,{create:true});
+        const w=await fh.createWritable();
+        await w.write(dataUrlToBlob(j.data));
+        await w.close();
+      }catch(e){ console.warn('image write failed:',j.name,e); }
+    }
+    return {n:jobs.length,mode:'fs',folder:dir.name};
+  }
+  // フォールバック: 通常ダウンロード（Chromeの設定次第で保存ダイアログが出る）
+  jobs.forEach((j,i)=>{
+    setTimeout(()=>{
+      const a=document.createElement('a');
+      a.href=j.data; a.download=j.name;
+      document.body.appendChild(a); a.click(); a.remove();
+    },i*350);
+  });
+  return {n:jobs.length,mode:'dl'};
+}
+function duplicateFromCopied(){
+  if(!COPIED) return;
+  const id=nextAddedId();
+  const rec={type:'dup',id,srcIid:COPIED.srcIid,srcOrig:COPIED.srcOrig,sel:COPIED.sel,nth:COPIED.nth,count:COPIED.count,label:COPIED.label,x:120,y:120};
+  if(COPIED.srcIid===ED.iid&&ED.doc){
+    const slideEl=ED.doc.querySelector('.slide');
+    const list=[...slideEl.querySelectorAll(COPIED.sel)].filter(x=>!x.classList.contains('sk-added'));
+    const src=list[COPIED.nth];
+    if(src){
+      const sr=src.getBoundingClientRect(), pr=slideEl.getBoundingClientRect();
+      rec.x=Math.round(sr.left-pr.left+24); rec.y=Math.round(sr.top-pr.top+24);
+    }
+  }
+  mutateEdits(arr=>{ arr.push(rec); return arr; });
+  rebuildEditorDoc();
+}
+function deleteSelectedEls(){
+  if(!SELSET.length) return;
+  const targets=SELSET.slice();
+  setSelection([]);
+  targets.forEach(el=>{
+    const added=findAddedRec(el);
+    if(added){
+      mutateEdits(arr=>arr.filter(x=>{
+        if((x.type==='imgadd'||x.type==='dup')&&x.id===added.id) return false;
+        if(x.sel&&x.sel.includes(`sk-added-${added.id}`)) return false;
+        return true;
+      }));
+      delete IMGS[`${ED.iid}:${added.id}`]; saveImgs();
+    }else{
+      const d=descFor(el);
+      const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
+      mutateEdits(arr=>{ arr.push({type:'remove',sel:d.sel,nth:d.nth,count:d.count,label}); return arr; });
+    }
+  });
+  rebuildEditorDoc();
+}
+// --- スライド操作（コピー／ペースト／削除／新規） ---
+function copySlide(){
+  SLIDE_CLIP={iid:ED.iid};
+  LAST_COPY='slide';
+  flashChip(`スライド${ED.pos}をコピーしました（⌘Vで複製を挿入）`);
+}
+function pasteSlide(){
+  if(!SLIDE_CLIP) return;
+  const srcInst=FB.order.find(o=>o.id===SLIDE_CLIP.iid);
+  if(!srcInst){ flashChip('コピー元のスライドが見つかりません'); return; }
+  let newId=0;
+  commit(()=>{
+    newId=FB.nextId++;
+    // 編集・グループ・画像データも複製（独立して編集できる）
+    const srcRec=FB.slides[srcInst.id];
+    if(srcRec){
+      const cp=JSON.parse(JSON.stringify(srcRec));
+      delete cp.text; delete cp.pattern; // フィードバック文は複製しない
+      if(cp.edits||cp.groups) FB.slides[newId]=cp;
+    }
+    Object.keys(IMGS).forEach(k=>{
+      const [iid,imgId]=k.split(':');
+      if(+iid===srcInst.id) IMGS[`${newId}:${imgId}`]=IMGS[k];
+    });
+    saveImgs();
+    FB.order.splice(ED.pos,0,{id:newId,src:srcInst.src});
+  });
+  buildRail(); renderDeck();
+  gotoIid(newId,true);
+}
+function addBlankSlide(){
+  let newId=0;
+  commit(()=>{
+    newId=FB.nextId++;
+    FB.order.splice(ED.pos||FB.order.length,0,{id:newId,src:0});
+  });
+  buildRail(); renderDeck();
+  gotoIid(newId,true);
+}
+function deleteSlide(){
+  if(FB.order.length<=1){ flashChip('最後の1枚は削除できません'); return; }
+  const delPos=ED.pos, delIid=ED.iid;
+  commit(()=>{
+    FB.order.splice(delPos-1,1);
+  });
+  buildRail(); renderDeck();
+  const next=instAt(Math.min(delPos,FB.order.length));
+  gotoIid(next.id,true);
+  flashChip(`スライド${delPos}を削除しました（⌘Zで戻せます）`);
+}
+// --- キャンバス配線 ---
+function wireEditor(doc){
+  doc.addEventListener('dragstart',e=>e.preventDefault());
+  doc.addEventListener('wheel',wheelZoom,{passive:false});
+  doc.addEventListener('mousemove',e=>{
+    if(ED.rb){
+      const b=ED.rb;
+      if(Math.hypot(e.clientX-b.sx,e.clientY-b.sy)>3) b.moved=true;
+      const sr=b.slideEl.getBoundingClientRect();
+      const x1=Math.min(b.sx,e.clientX)-sr.left, y1=Math.min(b.sy,e.clientY)-sr.top;
+      const x2=Math.max(b.sx,e.clientX)-sr.left, y2=Math.max(b.sy,e.clientY)-sr.top;
+      b.box.style.left=x1+'px'; b.box.style.top=y1+'px';
+      b.box.style.width=(x2-x1)+'px'; b.box.style.height=(y2-y1)+'px';
+      b.rect={left:x1+sr.left,top:y1+sr.top,right:x2+sr.left,bottom:y2+sr.top};
+      return;
+    }
+    if(ED.rz){
+      const r=ED.rz;
+      const w=Math.max(24,Math.min(960,Math.round(r.startW+(e.clientX-r.startX))));
+      r.el.style.width=w+'px';
+      r.cur=w; r.put&&r.put();
+      return;
+    }
+    if(ED.drag){
+      const d=ED.drag;
+      const dx=e.clientX-d.sx, dy=e.clientY-d.sy;
+      if(!d.moved&&Math.hypot(dx,dy)<3) return;
+      d.moved=true;
+      if(!d.snap){ try{ d.snap=startSnapSession(doc); }catch(err){ d.snap={sr:{left:0,top:0,width:960,height:540,right:960,bottom:540},targets:[],base:{left:0,top:0,right:0,bottom:0},layer:null}; } }
+      const s=computeSnap(d.snap,dx,dy);
+      const fx=dx+s.sx, fy=dy+s.sy;
+      d.cur={dx:fx,dy:fy};
+      d.items.forEach(it=>{ it.el.style.translate=`${it.bx+fx}px ${it.by+fy}px`; });
+      try{ drawGuides(d.snap,s,fx,fy); }catch(err){}
+      return;
+    }
+    if(ED.editingEl) return;
+    const t=pickTarget(e.target,doc);
+    doc.querySelectorAll('.sk-hovered').forEach(x=>x.classList.remove('sk-hovered'));
+    if(t&&!SELSET.includes(t)) t.classList.add('sk-hovered');
+  });
+  doc.addEventListener('mousedown',e=>{
+    if(ED.editingEl){
+      if(!ED.editingEl.contains(e.target)) commitTextEdit();
+      return;
+    }
+    if(e.target.classList&&e.target.classList.contains('sk-rz')) return; // ハンドル側で処理
+    const t=pickTarget(e.target,doc);
+    if(e.shiftKey){ e.preventDefault(); selectEl(t,true); return; }
+    if(!t){
+      // 余白からのドラッグ＝範囲選択（Canva風）。クリックだけなら選択解除
+      const slideEl=doc.querySelector('.slide');
+      const box=doc.createElement('div'); box.className='sk-rb';
+      slideEl.appendChild(box);
+      ED.rb={sx:e.clientX,sy:e.clientY,box,slideEl,moved:false};
+      e.preventDefault();
+      return;
+    }
+    if(t&&SELSET.includes(t)){
+      // 選択済み要素はそのままドラッグ開始（複数選択を保持）
+    }else{
+      selectEl(t,false);
+    }
+    if(t){
+      const items=SELSET.map(el=>{
+        const added=findAddedRec(el);
+        const cur=added?null:findEdit('move',el);
+        return {el,added,bx:added?0:(cur?cur.dx:0),by:added?0:(cur?cur.dy:0)};
+      });
+      ED.drag={items,sx:e.clientX,sy:e.clientY,moved:false,cur:null};
+      e.preventDefault();
+    }
+  });
+  doc.addEventListener('mouseup',()=>{
+    if(ED.rb){
+      const b=ED.rb; ED.rb=null;
+      b.box.remove();
+      if(!b.moved||!b.rect){ setSelection([]); return; }
+      const els=rubberSelect(b.rect,doc);
+      setSelection(els);
+      if(els.length) flashChip(`${els.length}個の要素を選択しました（「グループ化」でまとめられます）`);
+      return;
+    }
+    if(ED.rz){
+      const r=ED.rz; ED.rz=null;
+      if(r.cur){
+        mutateEdits(arr=>{
+          const i=arr.findIndex(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===r.rec.id);
+          if(i>=0) arr[i]={...arr[i],w:r.cur};
+          return arr;
+        });
+        if(SELSET.length===1) $('fsInput').value=r.cur;
+      }
+      return;
+    }
+    const d=ED.drag; ED.drag=null;
+    if(d&&d.snap&&d.snap.layer) d.snap.layer.remove();
+    if(d&&d.moved&&d.cur){
+      d.items.forEach(it=>{
+        if(it.added) commitMove(it.el,Math.round(d.cur.dx),Math.round(d.cur.dy));
+        else mutateEdits(arr=>upsertMove(arr,it.el,Math.round(it.bx+d.cur.dx),Math.round(it.by+d.cur.dy)));
+      });
+      if(SELSET.length===1) placeResizeHandle(SELSET[0]);
+    }
+  });
+  doc.addEventListener('dblclick',e=>{
+    if(ED.editingEl) return;
+    const t=pickTextTarget(e.target,doc);
+    if(t) startTextEdit(t);
+  });
+  doc.addEventListener('keydown',e=>handleEditorKey(e));
+  doc.addEventListener('paste',e=>handlePaste(e));
+}
+function handleEditorKey(e){
+  const meta=e.metaKey||e.ctrlKey;
+  if(ED.editingEl){
+    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); commitTextEdit(); }
+    else if(e.key==='Escape'){ cancelTextEdit(); }
+    return;
+  }
+  if(meta&&(e.key==='z'||e.key==='Z')){ e.preventDefault(); if(e.shiftKey) redoEdit(); else undoEdit(); return; }
+  if(meta&&(e.key==='y'||e.key==='Y')){ e.preventDefault(); redoEdit(); return; }
+  if(meta&&(e.key==='c'||e.key==='C')){
+    if(SELSET.length===1){
+      const el=SELSET[0]; const d=descFor(el);
+      const inst=FB.order.find(o=>o.id===ED.iid);
+      COPIED={srcIid:ED.iid,srcOrig:inst?inst.src:0,sel:d.sel,nth:d.nth,count:d.count,label:(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16)};
+      LAST_COPY='el';
+      flashChip('要素をコピーしました（⌘Vで配置）');
+    }else if(SELSET.length===0){
+      copySlide();
+    }else{
+      flashChip('複製は1要素ずつ選択してください');
+    }
+    return;
+  }
+  if(meta&&(e.key==='v'||e.key==='V')){
+    setTimeout(()=>{
+      if(pasteImageHandled){ pasteImageHandled=false; return; }
+      if(LAST_COPY==='slide'&&SLIDE_CLIP) pasteSlide();
+      else if(COPIED) duplicateFromCopied();
+    },120);
+    return;
+  }
+  if(e.key==='Delete'||e.key==='Backspace'){
+    e.preventDefault();
+    if(SELSET.length) deleteSelectedEls();
+    else deleteSlide();
+    return;
+  }
+  if(SELSET.length){
+    const step=e.shiftKey?10:1; let dx=0,dy=0;
+    if(e.key==='ArrowLeft')dx=-step;
+    else if(e.key==='ArrowRight')dx=step;
+    else if(e.key==='ArrowUp')dy=-step;
+    else if(e.key==='ArrowDown')dy=step;
+    else if(e.key==='Escape'){ setSelection([]); return; }
+    else return;
+    e.preventDefault();
+    nudgeSel(dx,dy);
+    return;
+  }
+  handleNavKey(e);
+}
+function handlePaste(e){
+  if(!MODE_EDIT) return;
+  const items=(e.clipboardData&&e.clipboardData.items)||[];
+  for(const it of items){
+    if(it.kind==='file'&&it.type.startsWith('image/')){
+      const f=it.getAsFile();
+      if(f){
+        pasteImageHandled=true;
+        e.preventDefault();
+        const rd=new FileReader();
+        rd.onload=()=>addImageRecord(rd.result,f.name||'clipboard.png');
+        rd.readAsDataURL(f);
+        return;
+      }
+    }
+  }
+}
+function flashChip(msg){
+  const c=$('emSelChip'); c.textContent=msg;
+  setTimeout(()=>{ if(c.textContent===msg) updateFormatControls(); },1600);
+}
+function handleNavKey(e){
+  if(!MODE_EDIT||!DECK) return false;
+  if(['ArrowRight','ArrowDown','PageDown'].includes(e.key)){ e.preventDefault&&e.preventDefault(); gotoPos(ED.pos+1); return true; }
+  if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault&&e.preventDefault(); gotoPos(ED.pos-1); return true; }
+  return false;
+}
+window.addEventListener('keydown',e=>{
+  if(!MODE_EDIT) return;
+  const t=e.target;
+  if(t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable)) return;
+  handleEditorKey(e);
+});
+window.addEventListener('paste',e=>handlePaste(e));
+// --- 編集リスト ---
+function moveText(e){
+  const p=[];
+  if(e.dx) p.push(`${e.dx>0?'右':'左'}へ${Math.abs(e.dx)}px`);
+  if(e.dy) p.push(`${e.dy>0?'下':'上'}へ${Math.abs(e.dy)}px`);
+  return p.length?p.join('・')+' 移動':'移動なし';
+}
+function styleValJa(prop,v){
+  if(prop==='font-weight') return parseInt(v,10)>=600?`太字(${v})`:`標準(${v})`;
+  return v;
+}
+function editTargetLabel(e){
+  return `${e.sel}${e.count>1?`（${e.nth+1}個目）`:''}`;
+}
+function renderEditList(){
+  const list=$('eList'); const edits=slideEdits(ED.iid);
+  $('emEditsCnt').textContent=edits.length;
+  list.innerHTML='';
+  if(!edits.length){
+    list.innerHTML='<div class="e-empty">まだ編集はありません。<br>スライド上の要素を直接クリック／ダブルクリックして編集できます（操作方法は「？」）。</div>';
+    return;
+  }
+  edits.forEach((e,i)=>{
+    const div=document.createElement('div'); div.className='e-item';
+    if(e.type==='text'){
+      div.innerHTML=`<div class="e-kind">文言</div><div class="e-desc"><code>${escapeHtml(editTargetLabel(e))}</code><br>「${escapeHtml(short(e.before.replace(/\n/g,'⏎'),34))}」<br>→「${escapeHtml(short(e.after.replace(/\n/g,'⏎'),34))}」</div>`;
+    }else if(e.type==='move'){
+      div.innerHTML=`<div class="e-kind">配置</div><div class="e-desc"><code>${escapeHtml(editTargetLabel(e))}</code>${e.label?`（${escapeHtml(e.label)}…）`:''}<br>${escapeHtml(moveText(e))}</div>`;
+    }else if(e.type==='style'){
+      div.innerHTML=`<div class="e-kind">書式</div><div class="e-desc"><code>${escapeHtml(editTargetLabel(e))}</code>${e.label?`（${escapeHtml(e.label)}…）`:''}<br>${escapeHtml(e.prop)}: ${escapeHtml(short(styleValJa(e.prop,e.before),22))} → ${escapeHtml(short(styleValJa(e.prop,e.after),22))}</div>`;
+    }else if(e.type==='imgadd'){
+      div.innerHTML=`<div class="e-kind">画像</div><div class="e-desc">「${escapeHtml(short(e.name,22))}」を追加<br>位置(${e.x}, ${e.y})・幅${e.w}px</div>`;
+    }else if(e.type==='dup'){
+      div.innerHTML=`<div class="e-kind">複製</div><div class="e-desc"><code>${escapeHtml(editTargetLabel(e))}</code><br>位置(${e.x}, ${e.y})に配置${e.w?`・幅${e.w}px`:''}</div>`;
+    }else if(e.type==='remove'){
+      div.innerHTML=`<div class="e-kind">削除</div><div class="e-desc"><code>${escapeHtml(editTargetLabel(e))}</code>${e.label?`（${escapeHtml(e.label)}…）`:''}<br>要素を削除</div>`;
+    }
+    const btn=document.createElement('button'); btn.className='btn mini'; btn.textContent='取消';
+    btn.addEventListener('click',()=>{
+      mutateEdits(arr=>{ arr.splice(i,1); return arr; });
+      rebuildEditorDoc();
+    });
+    div.appendChild(btn);
+    list.appendChild(div);
+  });
+}
+// --- ツールバー配線 ---
+$('emBack').addEventListener('click',exitEditMode);
+$('editModeBtn').addEventListener('click',()=>enterEditMode(ED.iid&&posOfIid(ED.iid)?ED.iid:0));
+$('emPrev').addEventListener('click',()=>gotoPos(ED.pos-1));
+$('emNext').addEventListener('click',()=>gotoPos(ED.pos+1));
+$('addSlideBtn').addEventListener('click',addBlankSlide);
+$('fsMinus').addEventListener('click',()=>changeFontSize(-1,null));
+$('fsPlus').addEventListener('click',()=>changeFontSize(1,null));
+$('fsInput').addEventListener('change',()=>changeFontSize(0,parseFloat($('fsInput').value)));
+$('fsInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('fsInput').blur();});
+$('fwBold').addEventListener('click',toggleBold);
+$('ffSel').addEventListener('change',changeFontFamily);
+$('bwSel').addEventListener('change',changeBorder);
+$('grpBtn').addEventListener('click',toggleGroup);
+$('imgAddBtn').addEventListener('click',()=>$('imgFile').click());
+$('imgFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; e.target.value='';
+  if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>addImageRecord(rd.result,f.name);
+  rd.readAsDataURL(f);
+});
+$('emUndoBtn').addEventListener('click',undoEdit);
+$('emRedoBtn').addEventListener('click',redoEdit);
+$('emReset').addEventListener('click',()=>{
+  if(!slideEdits(ED.iid).length){ rebuildEditorDoc(); return; }
+  if(!confirm('このスライドの画面編集をすべて破棄しますか？')) return;
+  ED.editingEl=null;
+  mutateEdits(()=>[]);
+  rebuildEditorDoc();
+});
+$('emEditsToggle').addEventListener('click',()=>{
+  $('emPanel').classList.toggle('open');
+  layoutEditMode();
+});
+$('emHelp').addEventListener('click',e=>{
+  e.stopPropagation();
+  $('helpPop').classList.toggle('show');
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.helpwrap')) $('helpPop').classList.remove('show');
+  if(!e.target.closest('#cPop')&&!e.target.closest('.colbtn')) $('cPop').classList.remove('show');
+});
+
+// --- カラーピッカー ---
+const CPOP_COLORS=[
+  '000000','434343','666666','999999','b7b7b7','cccccc','efefef','ffffff',
+  'e53935','fb8c00','fdd835','43a047','00acc1','1e88e5','5e35b1','d81b60',
+  'b71c1c','e65100','f57f17','1b5e20','006064','0d47a1','311b92','880e4f',
+  'ef9a9a','ffcc80','fff59d','a5d6a7','80deea','90caf9','b39ddb','f48fb1',
+  'ffcdd2','ffe0b2','fff9c4','c8e6c9','b2ebf2','bbdefb','d1c4e9','f8bbd0'
+];
+let CPOP_MODE=null;
+function cpopApplyColor(hex){
+  if(CPOP_MODE==='color') changeColorProp('color',hex);
+  else if(CPOP_MODE==='background-color') changeColorProp('background-color',hex);
+  else if(CPOP_MODE==='border-color'){
+    BC=hex; setColBtn('bcBtn','bcSw',BC,true);
+    if(!$('bwSel').value||$('bwSel').value==='none') $('bwSel').value='1';
+    changeBorder();
+  }
+  $('cPop').classList.remove('show');
+}
+function buildCpop(){
+  const grid=$('cpopGrid'); grid.innerHTML='';
+  CPOP_COLORS.forEach(c=>{
+    const b=document.createElement('button'); b.className='csw'; b.style.background='#'+c; b.title='#'+c;
+    b.addEventListener('click',()=>cpopApplyColor('#'+c));
+    grid.appendChild(b);
+  });
+}
+function openCpop(mode,anchor){
+  if(!SELSET.length) return;
+  CPOP_MODE=mode;
+  const row=$('cpopThemeRow'); row.innerHTML='';
+  const theme=[DECK.theme.accent,DECK.theme.soft,'#333333','#8A8F98','#FFFFFF'].filter(Boolean);
+  theme.forEach(c=>{
+    const b=document.createElement('button'); b.className='csw'; b.style.background=c; b.title=c;
+    b.addEventListener('click',()=>cpopApplyColor(c.toLowerCase()));
+    row.appendChild(b);
+  });
+  $('cpopFoot').style.display=(mode==='background-color')?'':'none';
+  $('cpopHex').value='';
+  const r=anchor.getBoundingClientRect();
+  const pop=$('cPop');
+  pop.classList.add('show');
+  const pw=248;
+  pop.style.left=Math.max(8,Math.min(window.innerWidth-pw-8,r.left))+'px';
+  pop.style.top=(r.bottom+6)+'px';
+}
+$('fcBtn').addEventListener('click',e=>{e.stopPropagation();openCpop('color',$('fcBtn'));});
+$('bgBtn').addEventListener('click',e=>{e.stopPropagation();openCpop('background-color',$('bgBtn'));});
+$('bcBtn').addEventListener('click',e=>{e.stopPropagation();openCpop('border-color',$('bcBtn'));});
+$('cpopApply').addEventListener('click',()=>{
+  const v=$('cpopHex').value.trim().replace(/^#/,'');
+  if(!/^[0-9a-f]{6}$/i.test(v)){ $('cpopHex').focus(); return; }
+  cpopApplyColor('#'+v.toLowerCase());
+});
+$('cpopHex').addEventListener('keydown',e=>{ if(e.key==='Enter') $('cpopApply').click(); });
+$('cpopTransparent').addEventListener('click',()=>cpopApplyColor('transparent'));
+buildCpop();
+
+// ================= 修正プロンプト =================
+function instPromptName(inst,pos){
+  if(inst.src>0){
+    const f=srcFileOf(DECK.sections[inst.src-1]);
+    return f?`slides/${f}`:`元スライド${inst.src}`;
+  }
+  return '新規空白スライド';
+}
 function buildPrompt(){
   const lines=[];
   lines.push('# SlideKitデッキ修正依頼');
   lines.push('');
-  lines.push(`対象デッキ: ${DECK.title}（全${DECK.sections.length}枚）`);
+  lines.push(`対象デッキ: ${DECK.title}（元 全${DECK.sections.length}枚 → 変更後 全${FB.order.length}枚）`);
   lines.push('');
   lines.push('以下のフィードバックに沿って、このデッキのフォルダ内 slides/*.html を修正し、');
   lines.push('`node tools/html-deck/build-html-deck.mjs <デッキフォルダ>` で再ビルドしてください。');
   lines.push('構図パターン変更の指定があるスライドは patterns/SLIDE-PATTERN-{name}/ の構図に沿って作り直してください。');
   lines.push('修正が終わったら index.html を返してください（ギャラリーの「スライド確認・修正依頼」ページで再確認します）。');
+  const iids=FB.order.map(o=>o.id);
+  const allEdits=iids.flatMap(iid=>slideEdits(iid));
+  const anyEdits=allEdits.length>0;
+  const anyImg=allEdits.some(e=>e.type==='imgadd');
+  if(anyEdits){
+    lines.push('');
+    lines.push('## 画面編集の反映ルール（ビューアー上の直接編集を含みます）');
+    lines.push('- 【文言修正】は該当要素のテキストを「変更前」→「変更後」に置換する。⏎ は改行（フラグメントでは <br>）。');
+    lines.push('- 【配置調整】は 960×540px 座標系での見た目の移動量。該当フラグメントのCSSを調整して同じ量だけ動かす');
+    lines.push('  （transform / margin / position など、周囲のレイアウトを崩さない実装を選ぶ）。');
+    lines.push('- 【書式変更】は該当要素のCSSプロパティ値を変更する。font-family変更時は最終ビルドでもその');
+    lines.push('  フォントが読み込まれるよう、フラグメントの<style>にGoogle Fontsの@importを追加すること。');
+    lines.push('- 【画像追加】は指定位置（スライド左上基準px）に<img>を絶対配置で追加する。画像ファイルは');
+    lines.push('  **ユーザーのダウンロードフォルダ（~/Downloads/）に同名で自動保存済み**。そこからデッキフォルダの');
+    lines.push('  assets/ にコピーし、フラグメントから相対参照する。見つからない場合のみユーザーに添付を依頼する。');
+    lines.push('- 【要素複製】は元要素をコピーし、指定位置（スライド左上基準px）に絶対配置で追加する。');
+    lines.push('- 【要素削除】は該当要素をフラグメントから削除する。');
+    lines.push('- 対象のセレクタは各スライドのフラグメント内のクラス。（n個目）は同セレクタの出現順（1始まり）。');
+  }
+  if(anyImg){
+    lines.push('');
+    lines.push('> 画像ファイルは修正プロンプト出力時にブラウザから自動ダウンロードされています（通常 ~/Downloads/sk-img-*.png）。');
+  }
+  if(structChanged()){
+    lines.push('');
+    lines.push('## スライド構成の変更（追加・複製・削除・並び）');
+    lines.push('最終的なスライド構成は以下の通り（上から1枚目〜）。slides/ のフラグメントを複製・削除・連番リネームで再構成する:');
+    const usedSrc=new Set();
+    FB.order.forEach((inst,idx)=>{
+      const pos=idx+1;
+      let desc;
+      if(inst.src>0){
+        const dup=usedSrc.has(inst.src);
+        usedSrc.add(inst.src);
+        desc=`${instPromptName(inst,pos)}${dup?' の複製（新規追加）':''}`;
+      }else{
+        desc='新規空白スライド（白地の新フラグメントを作成）';
+      }
+      lines.push(`${pos}. ${desc}`);
+    });
+    const deleted=DECK.sections.map((_,i)=>i+1).filter(n=>!FB.order.some(o=>o.src===n));
+    if(deleted.length){
+      lines.push(`削除する元スライド: ${deleted.map(n=>{const f=srcFileOf(DECK.sections[n-1]);return f?`slides/${f}`:`元${n}`;}).join('、')}`);
+    }
+    lines.push('※ deck-config.json の noPageNoOn 等、枚数に依存する設定があれば合わせて更新する。');
+  }
   if(PAL){
     lines.push('');
     lines.push('## カラーパレット変更');
@@ -364,28 +2061,49 @@ function buildPrompt(){
     lines.push('## 全体への指示');
     FB.global.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
   }
-  const ns=Object.keys(FB.slides).map(Number).sort((a,b)=>a-b);
-  if(ns.length){
+  const hasSlideItems=FB.order.some(o=>{const s=FB.slides[o.id];return s&&(s.text||s.pattern||(s.edits&&s.edits.length));});
+  if(hasSlideItems){
     lines.push('');
-    lines.push('## スライド別の指示');
-    ns.forEach(n=>{
-      const fb=FB.slides[n];
-      const src=sectionSrcFile(DECK.sections[n-1]||'',n-1);
+    lines.push('## スライド別の指示（番号は変更後の並び）');
+    FB.order.forEach((inst,idx)=>{
+      const pos=idx+1, iid=inst.id;
+      const fb=FB.slides[iid];
+      if(!fb||(!fb.text&&!fb.pattern&&!(fb.edits&&fb.edits.length))) return;
       lines.push('');
-      lines.push(`### スライド${n}${src?`（元ファイル: slides/${src}）`:''}`);
+      lines.push(`### スライド${pos}（${instPromptName(inst,pos)}）`);
       if(fb.pattern) lines.push(`- 構図パターンを「${fb.pattern}」に変更`);
       if(fb.text) fb.text.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
+      (fb.edits||[]).forEach(e=>{
+        if(e.type==='text'){
+          lines.push(`- 【文言修正】${editTargetLabel(e)}：「${e.before.replace(/\n/g,'⏎')}」→「${e.after.replace(/\n/g,'⏎')}」`);
+        }else if(e.type==='move'){
+          lines.push(`- 【配置調整】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を ${moveText(e)}`);
+        }else if(e.type==='style'){
+          lines.push(`- 【書式変更】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''}：${e.prop} を ${styleValJa(e.prop,e.before)} → ${styleValJa(e.prop,e.after)}`);
+        }else if(e.type==='imgadd'){
+          lines.push(`- 【画像追加】「${e.name}」${e.orig?`（元ファイル名: ${e.orig}）`:''}を 位置(${e.x}, ${e.y})・幅${e.w}px で配置（実ファイルは ~/Downloads/${e.name}）`);
+        }else if(e.type==='dup'){
+          const from=(e.srcIid!==iid)?`スライド${posOfIid(e.srcIid)||'元'}の`:'';
+          lines.push(`- 【要素複製】${from}${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を複製し、位置(${e.x}, ${e.y})${e.w?`・幅${e.w}px`:''}に配置`);
+        }else if(e.type==='remove'){
+          lines.push(`- 【要素削除】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を削除`);
+        }
+      });
     });
   }
-  if(!PAL&&!FB.global&&!ns.length){
+  if(!PAL&&!FB.global&&!hasSlideItems&&!structChanged()){
     return null;
   }
   return lines.join('\n');
 }
-$('promptBtn').addEventListener('click',()=>{
+$('promptBtn').addEventListener('click',async()=>{
   const p=buildPrompt();
-  if(!p){ alert('フィードバックがまだ入力されていません。スライドのフィードバック欄・全体欄に記入するか、パレットを変更してから出力してください。'); return; }
-  $('pText').textContent=p;
+  if(!p){ alert('フィードバックがまだ入力されていません。編集モードで直接編集するか、フィードバック欄に記入 or パレット変更をしてから出力してください。'); return; }
+  const r=await saveAddedImages();
+  let note='';
+  if(r.mode==='fs') note=`\n\n（※追加画像 ${r.n}件 をフォルダ「${r.folder}」へ自動保存しました。保存ダイアログは出ません）`;
+  else if(r.mode==='dl') note=`\n\n（※追加画像 ${r.n}件 をダウンロードしました）`;
+  $('pText').textContent=p+note;
   $('pOverlay').classList.add('show');
 });
 $('pClose').addEventListener('click',()=>$('pOverlay').classList.remove('show'));
@@ -404,7 +2122,15 @@ $('pCopy').addEventListener('click',async()=>{
   setTimeout(()=>{btn.textContent='コピー';btn.classList.remove('copy-ok');},1800);
 });
 
-window.addEventListener('resize',()=>requestAnimationFrame(fitThumbs));
+// ================= パレット =================
+try{
+  skRenderPaletteChips($('palettes'),null,pal=>{PAL=pal;applyPal();});
+  $('palReset').addEventListener('click',()=>{PAL=null;applyPal();});
+}catch(e){ console.warn('palettes.js unavailable:',e); }
+
+window.addEventListener('resize',()=>{
+  requestAnimationFrame(()=>{ fitThumbs(); layoutEditMode(); });
+});
 </script>
 </body>
 </html>
