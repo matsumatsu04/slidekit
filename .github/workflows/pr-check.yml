@@ -26,12 +26,12 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: チェックアウト
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -101,7 +101,7 @@ jobs:
       - name: スクリーンショットを artifact に保存（pattern-previews）
         if: steps.changed.outputs.names != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pattern-previews
           path: previews/
