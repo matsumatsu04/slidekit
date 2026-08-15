@@ -1,3 +1,11 @@
+---
+name: cover-big-typography
+category: 表紙
+summary: 58px極太タイトル（1フレーズだけアクセント色）で語るタイポグラフィ表紙。画像不要・言葉が主役の資料に。
+scenes: メッセージ性の強い資料・ビジョン系資料・ミニマル系デッキの表紙
+tier: high
+id: P144
+---
 # SLIDE-PATTERN-cover-big-typography
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

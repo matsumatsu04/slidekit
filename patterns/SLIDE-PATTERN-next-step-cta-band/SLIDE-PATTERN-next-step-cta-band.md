@@ -1,3 +1,11 @@
+---
+name: next-step-cta-band
+category: まとめ
+summary: 上2/3にまとめ（結論2行＋補足）、下1/3に全幅アクセント帯のCTA（誘導文＋白ボタン風ラベル）を置く締めスライド。
+scenes: セミナー・提案・講座資料の最終ページ。まとめと次のアクション誘導を1枚で完結
+tier: high
+id: P129
+---
 # SLIDE-PATTERN-next-step-cta-band
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

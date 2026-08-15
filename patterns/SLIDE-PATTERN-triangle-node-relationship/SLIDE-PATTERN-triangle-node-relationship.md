@@ -1,3 +1,11 @@
+---
+name: triangle-node-relationship
+category: 図解・ダイアグラム
+summary: 円3つを三角形の頂点に置き直線で結ぶ三位一体図。中央に統合ラベル。3要素の対等な関係・支え合う構造の表現に。
+scenes: 3要素の対等な関係・支え合う構造の表現に
+tier: high
+id: P086
+---
 # SLIDE-PATTERN-triangle-node-relationship
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

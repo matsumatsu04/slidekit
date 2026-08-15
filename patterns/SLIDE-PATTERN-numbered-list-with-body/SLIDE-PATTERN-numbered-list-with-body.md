@@ -1,3 +1,11 @@
+---
+name: numbered-list-with-body
+category: リスト
+summary: 3つの項目を縦に並べ、各項目に番号バッジ（または図形アイコン）・見出し・本文を配置する縦リストレイアウト
+scenes: 特徴・メリット・要素の列挙、優先度付きリスト、段階的な説明
+tier: high
+id: P016
+---
 # SLIDE-PATTERN-numbered-list-with-body
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

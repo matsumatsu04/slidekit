@@ -1,3 +1,11 @@
+---
+name: card-photo-caption-three
+category: カード
+summary: 上半分が写真エリア・下半分がタグ＋タイトル＋説明の3枚カード。制作事例・導入事例のショーケース。
+scenes: 制作実績・導入事例・商品ラインナップを写真付きで3つ並べる場面
+tier: high
+id: P141
+---
 # SLIDE-PATTERN-card-photo-caption-three
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

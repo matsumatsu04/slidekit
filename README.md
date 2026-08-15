@@ -35,39 +35,43 @@ SlideKit は **「色・フォント」と「構図」を別々のファイル�
 
 | スキル | できること |
 |---|---|
-| [`slidekit-design`](./skills/slidekit-design) | 参考スライド・サイト・画像から**デザインテーマ**を生成（確認用 sample.html 付き） |
-| [`slidekit-layout`](./skills/slidekit-layout) | キャプチャ等から**構図パターン**を抽出・定義（グレースケール確認HTML付き） |
-| [`slidekit-assemble`](./skills/slidekit-assemble) | 内容をヒアリングし、デザイン×構図を組み合わせて**設計書 SLIDEKIT-DECK.md** を生成 |
+| [`slidekit-design`](./.claude/skills/slidekit-design) | 参考スライド・サイト・画像から**デザインテーマ**を生成（確認用 sample.html 付き） |
+| [`slidekit-layout`](./.claude/skills/slidekit-layout) | キャプチャ等から**構図パターン**を抽出・定義（グレースケール確認HTML付き）。ギャラリーへの提案もここから |
+| [`slidekit-assemble`](./.claude/skills/slidekit-assemble) | 内容をヒアリングし、デザイン×構図を組み合わせて**HTMLデッキ（index.html＋PDF）**と設計書 SLIDEKIT-DECK.md を生成 |
 
-## クイックスタート
+スキルは `.claude/skills/` にプロジェクトスキルとして入っているため、**このリポジトリのフォルダで Claude Code を起動するだけ**で使えます（コピー不要）。
 
-### 1. スキルを導入する
-このリポジトリを取得し、`skills/` の3フォルダを Claude Code のスキル置き場にコピーします。
+## クイックスタート（2ステップ）
+
+### 1. リポジトリを取得する
 
 ```bash
 git clone https://github.com/matsumatsu04/slidekit.git
-# 例: 各スキルを ~/.claude/skills/ にコピー
-cp -r slidekit/skills/slidekit-* ~/.claude/skills/
 ```
 
-`design-systems/` と `patterns/` は、作業したいプロジェクトフォルダにコピーして使います。
+### 2. そのフォルダで Claude Code を起動して話しかける
 
-### 2. 設計書をつくる
-Claude Code で話しかけます。
-
-```
-プレゼンの設計書を作って
+```bash
+cd slidekit && claude
 ```
 
-ヒアリング（タイトル・対象・目的・枚数・トーン）→ 内容を渡す → デザインを選ぶ →
-構成案とパターン割り当てを承認 → `SLIDEKIT-DECK.md` が生成されます。
+```
+スライドを作って
+```
 
-### 3. スライドに変換する
-生成された `SLIDEKIT-DECK.md` を、スライド生成AI（Claude のデザイン機能の Slides など）に
-アップロードして「このブリーフ通りに生成して」と指示します。出力は **PDF 推奨**。
+ヒアリング（タイトル・対象・目的・枚数・トーン）→ 内容を渡す → デザインテーマを選ぶ →
+構成案とパターン割り当てを承認 → `index.html`（そのまま画面表示できるスライド）と `deck.pdf` が生成されます。
+設計書 `SLIDEKIT-DECK.md` も併せて出力されるので、他のスライド生成AIに渡すこともできます。
+
+> 以前の手順で `~/.claude/skills/` にスキルをコピーした方は、二重登録を避けるため削除してください:
+> `rm -rf ~/.claude/skills/slidekit-*`
 
 > オリジナルのデザインを作りたいときは `slidekit-design`、
 > 好きな構図を追加したいときは `slidekit-layout` を使います。
+
+### 更新する
+構図パターンは随時増えます。`slidekit` フォルダで `git pull` するだけです
+（「スライドを作って」の最初に Claude Code が更新の有無を確認し、あれば「更新しますか？」と聞きます）。
 
 ## 同梱物
 
@@ -81,14 +85,27 @@ Claude Code で話しかけます。
 ```
 slidekit/
 ├─ SPEC.md                 # 3ファイル形式の仕様
-├─ skills/                 # 3つのスキル（SKILL.md）
+├─ CONTRIBUTING.md         # 構図パターンの提案方法
+├─ .claude/skills/         # 3つのスキル（SKILL.md）— プロジェクトスキルとして自動で有効
 ├─ design-systems/         # デザインテーマ + sample.html
-├─ patterns/               # 構図パターン + グレースケール確認
+├─ patterns/               # 構図パターン + グレースケール確認（manifest.json / INDEX.md は生成物）
+├─ tools/                  # デッキビルド・lint・manifest生成・提案スクリプト
+├─ docs/                   # 生成ガイド・装飾ルール
 ├─ examples/               # SLIDEKIT-DECK.md の例
 ├─ gallery/                # 公開ギャラリー（静的サイト）
 └─ index.html              # ルート → /gallery/ へ
 ```
 
+## コントリビュート（構図パターンの提案）
+
+構図パターンは誰でも提案できます。詳しくは [`CONTRIBUTING.md`](./CONTRIBUTING.md) を参照してください。流れは次の3行です。
+
+1. Claude Code の `slidekit-layout` でパターンを作る（`node tools/lint-pattern.mjs {name}` を通す）
+2. 「このパターンをギャラリーに提案して」→ `bash tools/propose-pattern.sh {name}` で Pull Request が作られる
+3. レビュー → マージ → ID が自動採番され、ギャラリーに反映（次回の `git pull` で手元にも届く）
+
+パターンが欲しいだけの方は、Issue の「パターンリクエスト」テンプレートからどうぞ（対応期限はありません。誰が拾って PR にしても構いません）。
+
 ## ライセンス
 
-- 本リポジトリの内容（スキル・仕様・デザインテーマ・構図パターンライブラリ・ギャラリー）はすべて作者のオリジナル成果物であり、[MIT License](./LICENSE) で公開しています。
+- 本リポジトリの内容（スキル・仕様・デザインテーマ・構図パターンライブラリ・ギャラリー）は作者およびコントリビューターのオリジナル成果物であり、[MIT License](./LICENSE) で公開しています。提案（Pull Request）されたパターンも同ライセンスで公開されます。

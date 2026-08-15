@@ -1,3 +1,11 @@
+---
+name: team-members-grid
+category: プロフィール
+summary: 円形写真＋氏名＋役職＋一言のメンバーカードを4列×2行で並べるチーム紹介。会社紹介・採用資料・講師陣紹介に。
+scenes: 会社紹介・採用資料のチーム紹介、講座の講師陣紹介（4〜8名）
+tier: high
+id: P119
+---
 # SLIDE-PATTERN-team-members-grid
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

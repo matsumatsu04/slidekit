@@ -1,3 +1,11 @@
+---
+name: cover-curve-shape-left
+category: 表紙
+summary: 右端の大きな曲面シェイプ背景に種別ラベル＋特大タイトルを載せるモダン表紙。背景は画像アセット（色ティント対象外）
+scenes: 会社紹介・営業資料・ピッチ
+tier: high
+id: P105
+---
 # SLIDE-PATTERN: cover-curve-shape-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

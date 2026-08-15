@@ -1,3 +1,11 @@
+---
+name: kpi-progress-bars
+category: KPI
+summary: 指標名＋達成値＋横プログレスバーを3段積む進捗ダッシュボード。KPI達成状況・OKR進捗の報告に。
+scenes: KPIの達成状況報告・OKR進捗・キャンペーン途中経過
+tier: high
+id: P139
+---
 # SLIDE-PATTERN-kpi-progress-bars
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

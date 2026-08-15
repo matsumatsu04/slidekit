@@ -1,3 +1,11 @@
+---
+name: concept-keyword-three
+category: 本文
+summary: 短い大キーワード（40px極太・アクセント色）×3を細罫線で区切って並べる概念提示。コンセプト・選ばれる理由に。
+scenes: コンセプト・価値観・選ばれる理由を「3つの言葉」に凝縮して見せる場面
+tier: high
+id: P146
+---
 # SLIDE-PATTERN-concept-keyword-three
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

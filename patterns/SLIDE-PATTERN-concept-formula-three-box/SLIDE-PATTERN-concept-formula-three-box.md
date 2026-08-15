@@ -1,3 +1,11 @@
+---
+name: concept-formula-three-box
+category: 図解・ダイアグラム
+summary: 角丸矩形3つを演算子（×・＝）でつなぎ「A×B=C」を表現する数式図。ビジネスモデル・価値の定義・料金構造の説明に。
+scenes: ビジネスモデル・価値の定義・料金構造の説明に
+tier: high
+id: P084
+---
 # SLIDE-PATTERN-concept-formula-three-box
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

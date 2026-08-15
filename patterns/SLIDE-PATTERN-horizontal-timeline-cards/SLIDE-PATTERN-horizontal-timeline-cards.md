@@ -1,3 +1,11 @@
+---
+name: horizontal-timeline-cards
+category: ステップ
+summary: 上部に水平タイムライン（点線＋ドットマーカー）を配置し、各マーカー下にステップカード（STEP番号・見出し・詳細）を縦に並べるレイアウト
+scenes: プロセスの4ステップ説明、時系列の流れを示す説明、四段階の手順説明
+tier: mid
+id: P026
+---
 # SLIDE-PATTERN-horizontal-timeline-cards
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

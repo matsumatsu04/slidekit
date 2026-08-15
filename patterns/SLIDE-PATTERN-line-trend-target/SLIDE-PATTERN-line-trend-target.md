@@ -1,3 +1,11 @@
+---
+name: line-trend-target
+category: グラフ
+summary: 右肩上がりの折れ線＋破線の目標ライン。終点だけ差し色ドット＋数値で「目標にどこまで迫ったか」を示すトレンドグラフ（SVG）。
+scenes: 達成率・継続率・進捗などの推移報告。目標との距離感を1枚で伝えたい場面
+tier: mid
+id: P121
+---
 # SLIDE-PATTERN-line-trend-target
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

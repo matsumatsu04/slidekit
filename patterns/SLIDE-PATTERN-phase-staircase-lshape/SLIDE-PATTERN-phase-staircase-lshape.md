@@ -1,3 +1,11 @@
+---
+name: phase-staircase-lshape
+category: ステップ
+summary: フェーズごとのL字ライン＋見出し＋箇条書きを左下→右上へ段違い配置する階段型ロードマップ。矢印・グラデ不要で右肩上がりを表現。
+scenes: 中期計画・成長ロードマップ・導入ステップ。右肩上がりの世界観を線だけで表現したい時
+tier: mid
+id: P118
+---
 # SLIDE-PATTERN-phase-staircase-lshape
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

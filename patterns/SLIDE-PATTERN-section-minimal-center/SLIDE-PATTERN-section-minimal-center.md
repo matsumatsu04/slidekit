@@ -1,3 +1,11 @@
+---
+name: section-minimal-center
+category: セクション
+summary: 余白極大の中央に章番号・短い線・章タイトルだけを置く最小構成の中扉。ミニマル系デッキの章区切りに。
+scenes: 落ち着いた・上質なトーンのデッキの章区切り。ミニマル系デッキに
+tier: high
+id: P143
+---
 # SLIDE-PATTERN-section-minimal-center
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

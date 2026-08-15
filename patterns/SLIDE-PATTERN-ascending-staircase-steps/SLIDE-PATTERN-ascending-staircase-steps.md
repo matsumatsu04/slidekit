@@ -1,3 +1,11 @@
+---
+name: ascending-staircase-steps
+category: ステップ
+summary: 矩形カードを右肩上がりの階段状に配置し矢印でつなぐ成長ステップ図。成熟度モデル・成長フェーズ・段階的な目標の表現に。
+scenes: 成熟度モデル・成長フェーズ・段階的な目標の表現に
+tier: high
+id: P079
+---
 # SLIDE-PATTERN-ascending-staircase-steps
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

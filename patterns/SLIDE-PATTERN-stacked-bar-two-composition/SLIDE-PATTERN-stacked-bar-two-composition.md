@@ -1,3 +1,11 @@
+---
+name: stacked-bar-two-composition
+category: グラフ
+summary: 構成比の積み上げ棒2本（現在→将来）＋凡例。伸ばすセグメントほど濃色（color-mixでパレット連動）。中期計画の定番。
+scenes: 売上構成・事業ポートフォリオの「今と将来」の変化。中期経営計画の定番
+tier: mid
+id: P137
+---
 # SLIDE-PATTERN-stacked-bar-two-composition
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

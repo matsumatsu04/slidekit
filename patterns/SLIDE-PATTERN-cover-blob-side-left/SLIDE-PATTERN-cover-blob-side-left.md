@@ -1,3 +1,11 @@
+---
+name: cover-blob-side-left
+category: 表紙
+summary: 右側の有機的ブロブ背景＋左の特大太字タイトルの明るい表紙。背景は画像アセット（色ティント対象外）
+scenes: SaaS・スタートアップ・採用系の明るい表紙
+tier: high
+id: P104
+---
 # SLIDE-PATTERN: cover-blob-side-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

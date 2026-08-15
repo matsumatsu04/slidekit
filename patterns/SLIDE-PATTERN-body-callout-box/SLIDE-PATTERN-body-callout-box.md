@@ -1,3 +1,11 @@
+---
+name: body-callout-box
+category: 本文
+summary: 本文3〜4行の下に左アクセントバー＋淡色地のPOINTボックスで要点を浮き上がらせる文章系レイアウト。
+scenes: 規約・前提・考え方の説明など文章主体のページで、結論だけは確実に読ませたい場面
+tier: high
+id: P145
+---
 # SLIDE-PATTERN-body-callout-box
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

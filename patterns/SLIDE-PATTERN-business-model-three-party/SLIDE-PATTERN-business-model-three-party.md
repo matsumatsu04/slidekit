@@ -1,3 +1,11 @@
+---
+name: business-model-three-party
+category: 図解・ダイアグラム
+summary: 顧客・自社（中央強調）・パートナーの3者を双方向矢印＋ラベルで結ぶ商流・ビジネスモデル図。事業説明の定番。
+scenes: ビジネスモデルの説明、お金と価値の流れの図解。会社紹介・事業計画の定番
+tier: mid
+id: P132
+---
 # SLIDE-PATTERN-business-model-three-party
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

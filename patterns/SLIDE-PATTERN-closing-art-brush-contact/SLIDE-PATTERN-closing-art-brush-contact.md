@@ -1,3 +1,11 @@
+---
+name: closing-art-brush-contact
+category: まとめ
+summary: 手描き画材モチーフ背景に締めメッセージと連絡先カードを載せるクリエイティブな締めスライド。背景は画像アセット（色ティント対象外）
+scenes: プレゼンの最終スライド（挨拶・連絡先提示）。表紙 cover-art-brush-left と揃えて使うと統一感が出る
+tier: high
+id: P111
+---
 # SLIDE-PATTERN: closing-art-brush-contact
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する締め（クロージング）パターンで、テキストはHTMLとして画像の上に載せます。

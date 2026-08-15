@@ -1,3 +1,11 @@
+---
+name: checklist-two-column
+category: リスト
+summary: チェックボックス付き項目（見出し＋補足）を2カラム×4行で並べるチェックリスト。準備物・対応範囲・提供内容の一覧に。
+scenes: 準備物・対応範囲・提供内容・確認事項の一覧。6〜8項目を「もれなく」見せたい場面
+tier: high
+id: P130
+---
 # SLIDE-PATTERN-checklist-two-column
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

@@ -1,3 +1,11 @@
+---
+name: executive-summary-banner-stack
+category: まとめ
+summary: 左端にカテゴリタグ付きの横長バナー行を3本積むエグゼクティブサマリー。決算・レポート・進捗報告の要点まとめに。
+scenes: 決算・レポート・進捗報告の要点まとめに
+tier: high
+id: P094
+---
 # SLIDE-PATTERN-executive-summary-banner-stack
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

@@ -1,3 +1,11 @@
+---
+name: closing-curve-shape-footer
+category: まとめ
+summary: 右端の曲面シェイプ背景に結びラベル＋特大メッセージ＋下部の連絡先行を載せるモダンな締めスライド。背景は画像アセット（色ティント対象外）
+scenes: プレゼンの最終スライド（挨拶・連絡先提示）。表紙 cover-curve-shape-left と揃えて使うと統一感が出る
+tier: high
+id: P110
+---
 # SLIDE-PATTERN: closing-curve-shape-footer
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する締め（クロージング）パターンで、テキストはHTMLとして画像の上に載せます。

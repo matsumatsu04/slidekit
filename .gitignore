@@ -2,3 +2,9 @@ node_modules/
 *.pdf
 tools/pptx/out/
 .DS_Store
+# 生成したデッキ等の成果物（各自のローカルに置く）
+output/
+# 一時ファイル（check-update.sh の pending 退避先など）
+tmp/
+# pr-check の実寸スクリーンショット出力先（tools/shot-pattern.sh の既定）
+previews/

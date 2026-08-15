@@ -49,7 +49,7 @@
 | # | 種類 | 構図パターン | 見出し | 内容（1行） |
 |---|---|---|---|---|
 | 1 | 表紙 | cover-split-two-tone | なし | サービス名・キャッチ・日付 |
-| 2 | 目次 | numbered-toc | なし | 本日の流れ（5項目） |
+| 2 | 目次 | agenda-toc | なし | 本日の流れ（5項目） |
 | 3 | セクション | section-divider | なし | 01 現状の課題 |
 | 4 | 本文（リスト） | numbered-list-with-body | あり | 現状の3つの課題 |
 | 5 | 比較 | before-after-two-col | あり | 導入で変わること |
@@ -71,7 +71,7 @@
 - main-title: 商談を、もっと成約に。
 - sub-title: オンライン商談支援ツール「ConeMeet」のご紹介　｜　2026.06
 
-### Slide 2 — 目次（numbered-toc）
+### Slide 2 — 目次（agenda-toc）
 **見出し:** なし
 **Structure:** 「本日の流れ」見出し＋番号付きリストを縦に。番号はアクセント色。
 **Content:**

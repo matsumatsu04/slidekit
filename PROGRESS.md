@@ -19,6 +19,11 @@
 - [x] **形式の整合** — SPEC を 1.1 に更新し、構図を `SLIDE-PATTERN` 形式・`patterns/` ライブラリに統一。
   `slidekit-layout`（新規パターンも SLIDE-PATTERN 形式で作成＋INDEX/manifest更新）・`slidekit-assemble`（INDEX/manifestから実在99種・12カテゴリを選択して埋め込み）・デモDECK（実在パターン名）を全て整合。旧 SLIDEKIT-LAYOUT 参照は一掃。
 - [x] **ギャラリー色付け** — 閲覧者がカラーコード選択でプレビューをティント（mix-blend-mode・default ブルー）。
+- [x] **コントリビュート運用（2026-08）** — スキルを `.claude/skills/` へ移動（clone→そのフォルダで起動するだけで発動・コピー不要）。
+  パターン `.md` にフロントマター（name/category/summary/scenes/tier/id）を新設し、`manifest.json` / `SLIDE-PATTERN-INDEX.md` を
+  `tools/build-manifest.mjs` の生成物に変更（手編集禁止・新規は `id: pending` → mainマージ時に自動採番）。
+  `tools/lint-pattern.mjs`（規約チェック）・`tools/propose-pattern.sh`（fork＋PR）・`tools/check-update.sh`（assemble Step 0 の更新確認）、
+  CONTRIBUTING.md・PR/Issueテンプレ・start.html の2ステップ導入＋提案手順を整備。
 
 ## 決定事項
 - 命名: SlideKit。ファイル= `SLIDEKIT-DESIGN.md` / `SLIDEKIT-LAYOUT-{name}.md` / `SLIDEKIT-DECK.md`。スキル= `slidekit-design` / `slidekit-layout` / `slidekit-assemble`
@@ -28,7 +33,8 @@
 
 ## 成果物の場所
 - 仕様: `SPEC.md`
-- スキル: `skills/{slidekit-design,slidekit-layout,slidekit-assemble}/SKILL.md`
+- スキル: `.claude/skills/{slidekit-design,slidekit-layout,slidekit-assemble}/SKILL.md`（プロジェクトスキル。リポジトリのフォルダで起動すれば有効）
 - デザインテーマ: `design-systems/{name}/SLIDEKIT-DESIGN.md` + `sample.html`
-- 構図パターン: `patterns/{category}/SLIDEKIT-LAYOUT-{name}.md`
+- 構図パターン: `patterns/SLIDE-PATTERN-{name}/SLIDE-PATTERN-{name}.md` + `.html`（一覧 `patterns/manifest.json` / `SLIDE-PATTERN-INDEX.md` は `tools/build-manifest.mjs` の生成物）
+- 提案の決まり: `CONTRIBUTING.md`／PR・Issueテンプレ: `.github/`
 - ギャラリー: `gallery/`

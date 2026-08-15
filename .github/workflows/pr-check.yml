@@ -1,0 +1,109 @@
+# .github/workflows/pr-check.yml — 構図パターン提案 PR の自動チェック
+#
+#   ① lint（変更されたパターン＋参照チェック）   node tools/lint-pattern.mjs --refs <names>
+#   ② manifest / INDEX の整合                     node tools/build-manifest.mjs --check
+#   ③ 変更範囲（所有者以外の PR は patterns/SLIDE-PATTERN-*/ 以外を変更していないこと）
+#   ④ 変更パターンの実寸スクリーンショット → artifact「pattern-previews」
+#
+# fork からの PR ではトークンが読み取り専用のため、PR へのコメントは行わない（チェック結果と artifact で確認する）。
+
+name: pr-check
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 変更されたパターン名を抽出
+        id: changed
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -eu
+          names=""
+          for n in $(git diff --name-only "origin/${BASE_REF}...HEAD" -- patterns/ \
+                     | sed -nE 's#^patterns/SLIDE-PATTERN-([a-z0-9-]+)/.*#\1#p' | sort -u); do
+            # 削除されたパターンは lint 対象外（--refs で残存参照を見る）
+            if [ -d "patterns/SLIDE-PATTERN-${n}" ]; then names="${names} ${n}"; fi
+          done
+          names="$(echo "${names}" | sed -E 's/^ +//')"
+          echo "names=${names}" >> "$GITHUB_OUTPUT"
+          if [ -n "${names}" ]; then echo "変更されたパターン: ${names}"; else echo "パターンの変更なし（全件を lint します）"; fi
+
+      - name: ① lint（規約チェック＋参照チェック）
+        env:
+          NAMES: ${{ steps.changed.outputs.names }}
+        run: |
+          set -eu
+          # shellcheck disable=SC2086
+          node tools/lint-pattern.mjs --refs ${NAMES}
+
+      - name: ② manifest / INDEX の整合（生成物を手で編集していないか）
+        run: node tools/build-manifest.mjs --check
+
+      - name: ③ 変更範囲（所有者以外の PR は patterns/SLIDE-PATTERN-*/ 以外を変更しない）
+        if: github.event.pull_request.user.login != github.repository_owner
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -eu
+          bad="$(git diff --name-only "origin/${BASE_REF}...HEAD" | grep -vE '^patterns/SLIDE-PATTERN-[a-z0-9-]+/' || true)"
+          if [ -n "${bad}" ]; then
+            echo "::error::パターン提案の PR で patterns/SLIDE-PATTERN-*/ 以外のファイルが変更されています:"
+            echo "${bad}"
+            echo "manifest.json / INDEX.md / README 等は生成物のため PR に含めないでください（採番と再生成はマージ時に自動で行われます）"
+            exit 1
+          fi
+          echo "OK: 変更は patterns/SLIDE-PATTERN-*/ 内に収まっています"
+
+      - name: 日本語フォント（スクリーンショット用）
+        if: steps.changed.outputs.names != ''
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+
+      - name: ④ 変更パターンの実寸スクリーンショット
+        if: steps.changed.outputs.names != ''
+        continue-on-error: true
+        env:
+          NAMES: ${{ steps.changed.outputs.names }}
+        run: |
+          set -u
+          mkdir -p previews
+          # shellcheck disable=SC2086
+          for n in ${NAMES}; do
+            bash tools/shot-pattern.sh "${n}" "previews/${n}.png" || echo "::warning::${n} のスクリーンショットに失敗しました"
+          done
+          ls -la previews || true
+
+      - name: スクリーンショットを artifact に保存（pattern-previews）
+        if: steps.changed.outputs.names != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: pattern-previews
+          path: previews/
+          if-no-files-found: ignore
+          retention-days: 30

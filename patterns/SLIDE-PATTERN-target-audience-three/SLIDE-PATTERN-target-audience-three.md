@@ -1,3 +1,11 @@
+---
+name: target-audience-three
+category: カード
+summary: 「こんな方におすすめ」リード＋上辺アクセントライン付きカード3枚で対象者を示す定番。講座・サービス案内に。
+scenes: 講座・サービス・イベント案内の対象者提示。読み手に自分ごと化させる場面
+tier: high
+id: P148
+---
 # SLIDE-PATTERN-target-audience-three
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

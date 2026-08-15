@@ -1,3 +1,11 @@
+---
+name: testimonial-quote-grid
+category: カード
+summary: 引用マーク付きの声カードを3×2グリッドに並べるお客様の声。導入事例・受講生の声・レビューの列挙に。
+scenes: 導入事例・受講生の声・レビューの列挙に
+tier: high
+id: P088
+---
 # SLIDE-PATTERN-testimonial-quote-grid
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

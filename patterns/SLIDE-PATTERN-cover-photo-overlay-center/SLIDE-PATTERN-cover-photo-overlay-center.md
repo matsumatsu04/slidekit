@@ -1,3 +1,11 @@
+---
+name: cover-photo-overlay-center
+category: 表紙
+summary: 実写写真＋暗色オーバーレイの上に白文字タイトルを中央配置する表紙。背景は画像アセット（差し替え可・色ティント対象外）
+scenes: 高級感・ブランド訴求のオープニング、事業/サービス紹介の表紙
+tier: high
+id: P100
+---
 # SLIDE-PATTERN: cover-photo-overlay-center
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

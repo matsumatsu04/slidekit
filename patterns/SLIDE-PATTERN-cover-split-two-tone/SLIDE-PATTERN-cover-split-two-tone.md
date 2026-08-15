@@ -1,3 +1,11 @@
+---
+name: cover-split-two-tone
+category: 表紙
+summary: 左42%アクセント色ベタ（白抜きタイトル）×右58%白（余白＋右下メタ）の2トーン分割表紙。画像素材なしで使える表紙。
+scenes: 提案書・報告書・勉強会資料の表紙。画像を使わずに締まった表紙を作りたい場面
+tier: high
+id: P133
+---
 # SLIDE-PATTERN-cover-split-two-tone
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

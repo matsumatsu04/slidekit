@@ -1,3 +1,11 @@
+---
+name: section-geo-texture-left
+category: セクション
+summary: 紙質感の幾何学装飾背景の左中央に特大章番号・区切り線・章タイトルを縦積みする上品な中扉。背景は画像アセット（色ティント対象外）
+scenes: 上品・堅実なトーンのデッキの章区切り。表紙 cover-geo-texture-left と揃えて使うと統一感が出る
+tier: high
+id: P107
+---
 # SLIDE-PATTERN: section-geo-texture-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用するセクション中扉パターンで、テキストはHTMLとして画像の上に載せます。

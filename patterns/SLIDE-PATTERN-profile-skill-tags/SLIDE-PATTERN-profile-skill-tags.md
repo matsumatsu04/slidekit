@@ -1,3 +1,11 @@
+---
+name: profile-skill-tags
+category: プロフィール
+summary: 左に円形写真120px＋氏名・肩書、右に経歴・スキルタグ群・実績ミニ数値3つの1名詳細プロフィール。講師・登壇者紹介に。
+scenes: 講師・コンサルタント・登壇者の自己紹介。スキルと実績数値で信頼を作る場面
+tier: high
+id: P136
+---
 # SLIDE-PATTERN-profile-skill-tags
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

@@ -1,3 +1,11 @@
+---
+name: flow-branch-two-outcomes
+category: 図解・ダイアグラム
+summary: 起点→ひし形の条件判断→YES（アクセント）/NO（グレー）の2分岐で結果へ流れる条件分岐フロー図。診断・場合分けに。
+scenes: 判定フロー・診断チャート・申込条件の説明。「あなたはどっち？」の場合分け
+tier: mid
+id: P131
+---
 # SLIDE-PATTERN-flow-branch-two-outcomes
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

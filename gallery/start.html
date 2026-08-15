@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SlideKit 導入手順 — Claude Codeでスライドを自動生成する</title>
-<meta name="description" content="SlideKitの導入手順。リポジトリの取得からスキル設置、最初のスライド生成、確認・修正・PDF保存までの流れをまとめています。">
+<meta name="description" content="SlideKitの導入手順。リポジトリの取得から最初のスライド生成、確認・修正・PDF保存、更新、構図パターンの提案までの流れをまとめています。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7}
@@ -43,17 +43,18 @@
     <h1>SlideKit 導入手順</h1>
     <p class="lead">
       SlideKitは、スライドの「デザイン」と「構図」を型として固定し、Claude Codeとの会話だけで
-      統一感のあるスライド（HTML＋PDF）を生成する仕組みです。導入は3ステップ、5分程度で終わります。
+      統一感のあるスライド（HTML＋PDF）を生成する仕組みです。導入は2ステップ、数分で終わります。
     </p>
 
     <h2>準備するもの</h2>
     <ul>
       <li><strong>Claude Code</strong>（ターミナルで <code>claude</code> が起動できる状態）</li>
-      <li><strong>Node.js</strong>（バージョン14以上を推奨。無くてもスライド生成は可能ですが、あるとビルドが速く安定します）</li>
+      <li><strong>Node.js</strong>（バージョン18以上。ビルド・一覧の更新・チェックのツールが使います。<code>node -v</code> で確認）</li>
       <li><strong>Google Chrome</strong>（PDF書き出しに使用。ブラウザ印刷でも代替できます）</li>
+      <li><strong>GitHub CLI（<code>gh</code>）</strong>（<strong>構図パターンを提案するときだけ</strong>必要。スライドを作るだけなら不要）</li>
     </ul>
 
-    <h2>導入（3ステップ）</h2>
+    <h2>導入（2ステップ）</h2>
 
     <div class="step">
       <div class="no">1</div>
@@ -61,29 +62,28 @@
         <h3>リポジトリを取得する</h3>
         <p>ターミナルで次を実行します（フォルダはどこでもOK）。</p>
         <pre>git clone https://github.com/matsumatsu04/slidekit.git</pre>
-        <p>gitを使ったことがない場合は、<a href="https://github.com/matsumatsu04/slidekit" target="_blank" rel="noopener">GitHubのページ</a>右上の「Code → Download ZIP」からダウンロードして解凍しても同じです。</p>
+        <p>gitを使ったことがない場合は、<a href="https://github.com/matsumatsu04/slidekit" target="_blank" rel="noopener">GitHubのページ</a>右上の「Code → Download ZIP」からダウンロードして解凍しても動きます
+        （ただし後述の「更新」と「提案」にはgitが必要です。Claude Codeに「gitを入れて」と頼めば導入できます）。</p>
       </div>
     </div>
 
     <div class="step">
       <div class="no">2</div>
       <div class="body">
-        <h3>スキルを設置する</h3>
-        <p>3つのスキルをClaude Codeのスキル置き場にコピーします。</p>
-        <pre>cp -r slidekit/skills/slidekit-* ~/.claude/skills/</pre>
-        <p>これで、どのフォルダでClaude Codeを起動しても「スライドを作って」が使えるようになります。</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="no">3</div>
-      <div class="body">
-        <h3>最初のスライドを作る</h3>
-        <p>取得した <code>slidekit</code> フォルダでClaude Codeを起動し、こう話しかけます。</p>
+        <h3>そのフォルダでClaude Codeを起動して、話しかける</h3>
+        <pre>cd slidekit
+claude</pre>
         <pre>スライドを作って</pre>
+        <p>スキルはリポジトリの中（<code>.claude/skills/</code>）に入っているので、コピーや設置は不要です。
+        <code>slidekit</code> フォルダの中でClaude Codeを起動すれば自動で使えます。</p>
         <p>タイトル・対象・目的・枚数などのヒアリングに答え、構成案を承認すると、
         <code>index.html</code>（そのまま画面表示できるスライド）と <code>deck.pdf</code> が生成されます。</p>
       </div>
+    </div>
+
+    <div class="note">
+      以前の手順で <code>~/.claude/skills/</code> にスキルをコピーした方は、二重登録を避けるため削除してください：
+      <code>rm -rf ~/.claude/skills/slidekit-*</code>
     </div>
 
     <h2>できたスライドの確認・修正・PDF保存</h2>
@@ -98,10 +98,39 @@
       気に入った配色があれば、修正プロンプトに自動で含まれるので、そのままClaude Codeに渡せば反映されます。
     </div>
 
+    <h2>更新（新しい構図パターンを受け取る）</h2>
+    <p>構図パターンは随時増えます。<code>slidekit</code> フォルダで次を実行するだけです。</p>
+    <pre>git pull</pre>
+    <p>自分で実行しなくても、「スライドを作って」と言った最初にClaude Codeが更新の有無を確認し、
+    新しいパターンがあれば「更新しますか？」と聞いてくれます（「はい」で反映）。</p>
+
+    <h2>構図パターンを提案する（任意）</h2>
+    <p>自分で作った構図パターンを<a href="/gallery/">ギャラリー</a>（誰でも使える公開ライブラリ）に提案できます。
+    承認されるとギャラリーに載り、SlideKitを使う全員の手元に「更新」で届きます。</p>
+    <ol>
+      <li><strong>初回のみ：</strong>GitHub CLIを導入してログインします（GitHubアカウントが必要）。
+        <pre>brew install gh
+gh auth login</pre>
+        （macOS以外は <a href="https://cli.github.com/" target="_blank" rel="noopener">cli.github.com</a> から導入）</li>
+      <li>Claude Codeで構図パターンを作ります（「構図パターンを作って」）。作った時点で自分の環境ではすぐ使えます。</li>
+      <li>Claude Codeにこう頼みます。<pre>このパターンをギャラリーに提案して</pre>
+        提出前チェック（ダミー文言のみ・素材追加なし等）のあと、Pull Request（提案）が自動で作られ、URLが返ってきます。</li>
+      <li>承認されるとギャラリーに反映され、次回の更新確認で手元にも届きます（パターンIDはこの時に確定します）。
+        修正コメントが付いた場合は、直してもう一度「このパターンをギャラリーに提案して」と言えば同じ提案が更新されます。</li>
+    </ol>
+    <div class="note">
+      提案したパターンはMIT Licenseで公開されます。実案件の文言・社名・人名・画像は入れず、ダミー文言だけで作ってください。
+      詳しい決まりは <a href="https://github.com/matsumatsu04/slidekit/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING</a> にまとめています。
+      「こういう構図が欲しい」だけの場合は、GitHubのIssue「パターンリクエスト」からどうぞ（対応期限はありません。誰が作ってもOKです）。
+    </div>
+
     <h2>うまくいかないとき</h2>
     <ul>
-      <li><strong>「スライドを作って」に反応しない</strong> → ステップ2のコピー先が <code>~/.claude/skills/</code> になっているか確認し、Claude Codeを再起動</li>
-      <li><strong>ビルドでNode.jsのエラーが出る</strong> → <code>node -v</code> が14以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）</li>
+      <li><strong>「スライドを作って」に反応しない</strong> → <code>slidekit</code> フォルダの<strong>中で</strong> <code>claude</code> を起動しているか確認（<code>pwd</code> の末尾が <code>/slidekit</code>）。別のフォルダで起動しているとスキルが読み込まれません</li>
+      <li><strong>以前 <code>~/.claude/skills/</code> にコピーしたことがある</strong> → 二重登録を避けるため <code>rm -rf ~/.claude/skills/slidekit-*</code> で削除し、Claude Codeを再起動</li>
+      <li><strong>ビルドでNode.jsのエラーが出る</strong> → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）</li>
+      <li><strong>更新確認でエラーが出る</strong> → ZIPで取得した場合はgit管理外のため更新確認が働きません。<code>git clone</code> で取得し直すか、そのまま使い続けても問題ありません（スライド生成は止まりません）</li>
+      <li><strong>提案でエラーが出る</strong> → <code>gh auth status</code> でログイン済みか確認。未ログインなら <code>gh auth login</code> をもう一度</li>
       <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P →「PDFに保存」でも同じものが得られます</li>
     </ul>
 
@@ -110,6 +139,7 @@
       <a href="/gallery/">構図パターンギャラリー</a>
       <a href="/gallery/deck.html">スライド確認・修正依頼</a>
       <a href="https://github.com/matsumatsu04/slidekit" target="_blank" rel="noopener">GitHubリポジトリ</a>
+      <a href="https://github.com/matsumatsu04/slidekit/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING（提案の決まり）</a>
     </div>
   </div>
 </body>

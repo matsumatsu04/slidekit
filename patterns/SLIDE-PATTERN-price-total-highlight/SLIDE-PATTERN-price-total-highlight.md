@@ -1,3 +1,11 @@
+---
+name: price-total-highlight
+category: テーブル
+summary: 上部に見積内訳（項目名｜説明｜金額を縦罫1本で区切る3〜4行）、下部に合計金額を特大数字＋単位・税注記で提示する金額サマリーレイアウト。
+scenes: 見積提示・料金の最終確認・提案書の金額サマリーページ
+tier: high
+id: P076
+---
 # SLIDE-PATTERN-price-total-highlight
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾は

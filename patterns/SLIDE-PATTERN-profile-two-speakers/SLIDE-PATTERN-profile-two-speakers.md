@@ -1,3 +1,11 @@
+---
+name: profile-two-speakers
+category: プロフィール
+summary: 円形写真96px＋氏名＋肩書＋経歴の同一カード2枚を並べる2名紹介。登壇者・共同創業者・対談相手の紹介に。
+scenes: セミナーの登壇者紹介、対談相手の紹介、共同創業者・共同代表の紹介
+tier: high
+id: P125
+---
 # SLIDE-PATTERN-profile-two-speakers
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

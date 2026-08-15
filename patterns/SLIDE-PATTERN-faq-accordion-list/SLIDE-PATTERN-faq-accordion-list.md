@@ -1,3 +1,11 @@
+---
+name: faq-accordion-list
+category: FAQ
+summary: Q行（淡色帯＋Q丸バッジ）とA行を1枠にまとめ4問を縦積みするコンパクトFAQ。説明会・営業資料の巻末に。
+scenes: 質問数が4〜5問で、1画面に一覧で収めたい場面。説明会・営業資料の巻末FAQ
+tier: high
+id: P135
+---
 # SLIDE-PATTERN-faq-accordion-list
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

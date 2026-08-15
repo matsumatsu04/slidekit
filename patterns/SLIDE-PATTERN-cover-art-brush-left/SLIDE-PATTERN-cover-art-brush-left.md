@@ -1,3 +1,11 @@
+---
+name: cover-art-brush-left
+category: 表紙
+summary: 手描き画材モチーフ背景＋左縦バー付き2行タイトルのクリエイティブ表紙。背景は画像アセット（色ティント対象外）
+scenes: クリエイティブ・デザイン・イベント系資料
+tier: high
+id: P102
+---
 # SLIDE-PATTERN: cover-art-brush-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

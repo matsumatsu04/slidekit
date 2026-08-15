@@ -1,3 +1,11 @@
+---
+name: three-card-icon-with-subheading
+category: カード
+summary: 上部に区切り見出しと説明、下部に3つのカード（見出し＋アイコン＋説明）を横並びで配置する強み訴求レイアウト。
+scenes: 企業の3つの強み・差別化ポイント、サービス特徴の紹介、選ばれる理由の説明
+tier: high
+id: P048
+---
 # SLIDE-PATTERN-three-card-icon-with-subheading
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。スライド生成AIや人間のデザイナーが一貫したレイアウトを再現できるよう、構造・要素・使用方法を定義します。

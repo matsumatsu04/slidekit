@@ -1,3 +1,11 @@
+---
+name: faq-single-column
+category: FAQ
+summary: 3つのQ&Aを縦一列に並べ、各質問と回答をひとつのボックスにまとめた1列FAQレイアウト
+scenes: 重要なよくある質問3点の詳細説明、サービス購入前の懸念事項への回答
+tier: high
+id: P069
+---
 # SLIDE-PATTERN-faq-single-column
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

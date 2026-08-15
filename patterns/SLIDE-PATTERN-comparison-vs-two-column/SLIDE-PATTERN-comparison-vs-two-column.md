@@ -1,3 +1,11 @@
+---
+name: comparison-vs-two-column
+category: テーブル
+summary: 左（一般・グレー）と右（自社・アクセント）の比較カード＋中央VSバッジ（差し色）。競合との差別化提示に。
+scenes: 競合・従来手法との差別化提示。「他社と何が違うの？」への回答1枚
+tier: high
+id: P140
+---
 # SLIDE-PATTERN-comparison-vs-two-column
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

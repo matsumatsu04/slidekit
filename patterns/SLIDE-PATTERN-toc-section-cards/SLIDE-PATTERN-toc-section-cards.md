@@ -1,3 +1,11 @@
+---
+name: toc-section-cards
+category: 目次
+summary: 章カード（大番号＋章名＋一言説明＋開始ページ）を4枚横並びにするカード型目次。研修・ワークショップ資料に。
+scenes: 章ごとの内容を一言添えて予告したい目次。ワークショップ・研修資料の冒頭
+tier: high
+id: P149
+---
 # SLIDE-PATTERN-toc-section-cards
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

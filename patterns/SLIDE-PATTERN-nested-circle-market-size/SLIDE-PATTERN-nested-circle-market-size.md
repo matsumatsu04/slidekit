@@ -1,3 +1,11 @@
+---
+name: nested-circle-market-size
+category: 図解・ダイアグラム
+summary: 大中小の同心円で包含関係を示し、各円へ引き出し線でラベル+数値を添える市場規模図（TAM/SAM/SOM）。事業計画・市場性の説明に。
+scenes: 事業計画・市場性の説明に
+tier: high
+id: P085
+---
 # SLIDE-PATTERN-nested-circle-market-size
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

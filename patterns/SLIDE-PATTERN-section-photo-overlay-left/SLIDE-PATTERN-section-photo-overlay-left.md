@@ -1,3 +1,11 @@
+---
+name: section-photo-overlay-left
+category: セクション
+summary: 実写写真＋暗色オーバーレイの左中央に縦バー付きで章番号・章タイトルを載せる中扉。背景は画像アセット（差し替え可・色ティント対象外）
+scenes: 高級感・ブランド訴求のデッキの章区切り。表紙 cover-photo-overlay-center と揃えて使うと統一感が出る
+tier: high
+id: P106
+---
 # SLIDE-PATTERN: section-photo-overlay-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用するセクション中扉パターンで、テキストはHTMLとして画像の上に載せます。

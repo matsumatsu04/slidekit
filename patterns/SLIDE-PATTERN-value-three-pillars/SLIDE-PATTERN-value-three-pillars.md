@@ -1,3 +1,11 @@
+---
+name: value-three-pillars
+category: 本文
+summary: MISSION/VISION/VALUEのチップ＋大きな文言を3段で縦に積む理念提示。会社紹介・採用資料の定番。
+scenes: 会社紹介・採用資料のミッション/ビジョン/バリュー。3つの理念・約束を格調高く見せる場面
+tier: high
+id: P134
+---
 # SLIDE-PATTERN-value-three-pillars
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

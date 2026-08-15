@@ -1,3 +1,11 @@
+---
+name: area-growth-curve
+category: グラフ
+summary: 成長カーブを線＋薄い面（塗り）で描き右上に最終値を添えるエリアグラフ（SVG）。成長ストーリーの演出用。
+scenes: 売上・ユーザー数の成長ストーリー。勢いを演出したい1枚
+tier: mid
+id: P138
+---
 # SLIDE-PATTERN-area-growth-curve
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

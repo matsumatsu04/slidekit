@@ -1,3 +1,11 @@
+---
+name: positioning-map-scatter
+category: グラフ
+summary: 十字軸＋四端ラベルの平面にドットを配置する2軸ポジショニングマップ（ドット最大8・%座標）。競合比較・自社の立ち位置の提示に。
+scenes: 競合比較・自社の立ち位置の提示に
+tier: mid
+id: P090
+---
 # SLIDE-PATTERN-positioning-map-scatter
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

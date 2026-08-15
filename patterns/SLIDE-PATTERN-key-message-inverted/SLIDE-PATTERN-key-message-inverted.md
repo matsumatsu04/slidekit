@@ -1,3 +1,11 @@
+---
+name: key-message-inverted
+category: 本文
+summary: 全面アクセント色ベタ＋白抜きキーメッセージ中央配置の反転配色。背景トーン切替でデッキの山場を作る（1デッキ1〜2枚まで）。
+scenes: 章の結論・最重要メッセージ。デッキの山場（1デッキ1〜2枚まで）
+tier: high
+id: P116
+---
 # SLIDE-PATTERN-key-message-inverted
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

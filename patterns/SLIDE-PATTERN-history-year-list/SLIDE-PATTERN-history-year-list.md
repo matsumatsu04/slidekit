@@ -1,3 +1,11 @@
+---
+name: history-year-list
+category: ステップ
+summary: 年号＋縦タイムライン（ドット付き・端点ルール準拠）＋出来事の沿革リスト。重要な年だけ差し色の大ドット。
+scenes: 会社沿革・サービスの歩み・プロジェクト履歴（5〜7項目）
+tier: high
+id: P147
+---
 # SLIDE-PATTERN-history-year-list
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

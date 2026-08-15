@@ -23,8 +23,9 @@ SLIDE-PATTERN-{name}.md     ← 構図（要素の配置・カラム構造）を
 | `SLIDE-PATTERN-{name}.md` | 構図パターン | 要素の配置・構造・各要素の役割 | 色・フォント・実コンテンツ |
 | `SLIDEKIT-DECK.md` | 設計書（ブリーフ） | 上記2種＋全スライドの構成＋実コンテンツ | （これ自体が完成形） |
 
-> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は本リポジトリのオリジナル成果物
-> （作者の旧ライブラリ slide-pattern-library から統合）。SlideKit の構図パターンはこの形式に統一する。
+> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は作者およびコントリビューターのオリジナル成果物（MIT License）。
+> 初期分は作者の旧ライブラリ slide-pattern-library から統合し、以降は `CONTRIBUTING.md` の流れで追加される。
+> SlideKit の構図パターンはこの形式に統一する。
 
 **設計思想：色と構図を分離する。** デザインテーマ（色・フォント）を 1 つ決めれば、
 どの構図パターンとも自由に組み合わせられます。逆に、お気に入りの構図を 1 度言語化すれば、
@@ -109,19 +110,52 @@ SLIDE-PATTERN-{name}.md     ← 構図（要素の配置・カラム構造）を
 
 ```
 patterns/
-├─ SLIDE-PATTERN-INDEX.md          ← 全パターンの索引（カテゴリ別。assemble が参照）
-├─ manifest.json                   ← 機械可読の一覧（name / category / summary）
-└─ SLIDE-PATTERN-{name}/
-   ├─ SLIDE-PATTERN-{name}.md      ← 構図定義
+├─ SLIDE-PATTERN-INDEX.md          ← 全パターンの索引（カテゴリ別。assemble が参照）【生成物】
+├─ manifest.json                   ← 機械可読の一覧（name / category / summary / tier / id）【生成物】
+└─ SLIDE-PATTERN-{name}/           ← 1 パターン ＝ 1 ディレクトリ（中身はこの 2 ファイルのみ）
+   ├─ SLIDE-PATTERN-{name}.md      ← 構図定義（冒頭にフロントマター）
    └─ SLIDE-PATTERN-{name}.html    ← グレースケールの確認用プレビュー（960×540）
 ```
 
 カテゴリは 14 種：`表紙 / セクション / 目次 / 本文 / リスト / ステップ /
 図解・ダイアグラム / カード / グラフ / テーブル / KPI / まとめ / FAQ / プロフィール`。
 
+**`manifest.json` と `SLIDE-PATTERN-INDEX.md` は `tools/build-manifest.mjs` の生成物**であり、手で編集しない。
+各パターン `.md` のフロントマター（下記）が唯一の入力で、`node tools/build-manifest.mjs` を実行すると
+両ファイル（および README・ギャラリーの件数表記）が再生成される。
+
+### フロントマター（`.md` の冒頭・必須）
+
+```yaml
+---
+name: cover-split-two-tone        # フォルダ名 SLIDE-PATTERN-{name} の {name} と完全一致
+category: 表紙                     # 14 カテゴリのいずれか（表記どおり）
+summary: 左42%をアクセント色ベタ…   # 1〜2 文。manifest の summary ＝ INDEX の「概要」列
+scenes: 提案書・報告書の表紙…       # INDEX の「適したシーン」列
+tier: high                        # high | mid | low（再現性。下記「再現性」節）
+id: P133                          # 確定 ID。新規提出は pending（マージ時に自動採番）
+---
+```
+
+| キー | 意味 | 値の決まり |
+|---|---|---|
+| `name` | パターン名 | `^[a-z0-9]+(-[a-z0-9]+)*$`。フォルダ名の `{name}` と完全一致 |
+| `category` | 分類 | 上記 14 種のいずれか（INDEX・ギャラリーの見出しに使う） |
+| `summary` | 概要 | 1〜2 文。ギャラリーのカード・INDEX の「概要」列に表示 |
+| `scenes` | 適したシーン | INDEX の「適したシーン」列に表示 |
+| `tier` | 再現性 | `high` / `mid` / `low` |
+| `id` | 恒久 ID | 既存パターンは確定 ID（`P001`〜）。**新規は `pending`**（自分で番号を付けない） |
+
+- 各値は 1 行で書く。`author` などのキーは持たない（出所は git 履歴で足りる）。
+- `id: pending` のパターンは、ローカルの `build-manifest` では一覧の末尾に `"id": "pending"` で含まれる（作った本人が assemble・ローカルギャラリーで即使える）。
+  CI の整合チェック（`--check`）では pending を除外して比較する。
+
 ### 必須セクション
 
 ```markdown
+---
+（上記フロントマター）
+---
 # SLIDE-PATTERN-{name}
 
 （前書き：このファイルはコンテンツエリアのレイアウト定義であり、タイトル枠・ページ番号・装飾は
@@ -149,7 +183,14 @@ DESIGN 側の Frame で定義する旨を記す）
 - **タイトル枠・ページ番号・装飾は持たない**（DESIGN の `Frame` が担当）。このファイルは「タイトル行より下のコンテンツエリア」を定義する。
 - `category` は上記 14 種から選ぶ（INDEX とギャラリーの分類に使う）。
 - 確認用 HTML は **グレースケール**で作る（色は DESIGN 側が決めるため）。ファイルは `SLIDE-PATTERN-{name}.html`。
-- **新しいパターンを追加したら、`SLIDE-PATTERN-INDEX.md` の該当カテゴリと `manifest.json` を更新する**（`slidekit-layout` が実施）。
+  使ってよい色はグレー階調（r=g=b）と `var(--sk-*)`（`color-mix(... var(--sk-accent) ...)` を含む）のみ。
+  `<script>`・`on*=` 属性・`javascript:`・`<iframe>`/`<object>`/`<embed>` は禁止（公開ギャラリーが iframe で描画するため）。
+  絵文字をアイコンに使わない（Font Awesome Solid）。素材ファイルの追加は不可（既存 `assets/` の参照のみ）。
+- **パターンを追加・変更・削除したら `node tools/build-manifest.mjs` を実行して生成物を更新する**（`slidekit-layout` が実施）。
+  `SLIDE-PATTERN-INDEX.md` と `manifest.json` を手で編集しない。削除時は `node tools/lint-pattern.mjs --refs` で
+  スキル・SPEC・docs・examples に残存参照が無いことを確認する。
+- 規約チェックは `node tools/lint-pattern.mjs {name}`（省略時は全件）。公開ギャラリーへの提案は `bash tools/propose-pattern.sh {name}`
+  （流れは `CONTRIBUTING.md`）。
 - 既存ライブラリ（作者の旧ライブラリ slide-pattern-library 由来）も同じ形式・運用ルールに従う。
 
 ---
@@ -277,7 +318,7 @@ DESIGN 側の Frame で定義する旨を記す）
 - 詳細な装飾ノウハウは `docs/polish-rules.md` と `docs/slideland-notes.md` を参照。
 
 ### 再現性（複雑な構図を避ける）
-- 各パターンは `manifest.json` の **`tier`**（high / mid / low）で「スライド生成AI・pptx自動生成での再現性」を示す。
+- 各パターンはフロントマターの **`tier`**（high / mid / low・`manifest.json` に反映される）で「スライド生成AI・pptx自動生成での再現性」を示す。
 - **既定は `high` から選ぶ**。`low`（円環図・ハブスポーク・ドーナツ図・組織図など多要素図解）は
   ユーザーが明示的に指定した場合のみ使い、崩れる可能性を添える。
 - 装飾は「矩形・線・円・テキストだけで作れる」ものに限定する（画像・複雑なSVG・手描き風は標準にしない）。
@@ -287,13 +328,18 @@ DESIGN 側の Frame で定義する旨を記す）
 - `slidekit-assemble` がユーザーに構成・成果物を提示する際は、**使用した構図パターン名（SLIDE-PATTERN）・恒久ID・見出し有無を列に含む表**で示す（例：`# / 種類 / ID / 構図パターン / 見出し / 内容`）。
 
 ### パターンの恒久ID
-- `patterns/manifest.json` の各パターンは **`id`**（`P001`〜、3桁ゼロ埋め連番）を持つ。
-- 追加時は既存の最大ID+1を採番する。**削除しても欠番のまま残し、そのIDを再利用しない**（並び順・件数が変わっても既存パターンのIDは不変）。
-- ギャラリー（gallery/index.html・view.html）のカード・拡大ビューに同じIDを表示する。検索もIDの完全一致に対応する。
+- 各パターンは **`id`**（`P001`〜、3桁ゼロ埋め連番）を持つ。正本は各 `.md` のフロントマター `id`（`manifest.json` はその生成物）。
+- **新規は `id: pending` で提出し、main へのマージ時に自動採番される**（`manifest.json` の `next_id` を使う。GitHub Action が
+  `node tools/build-manifest.mjs --assign` を実行し、各 `.md` の `id` を書き戻す。Action が動かないときは所有者が手元で同じコマンドを実行する）。
+  提出者・作成者が番号を決めない。
+- `next_id` は単調増加。**削除しても欠番のまま残し、そのIDを再利用しない**（並び順・件数が変わっても既存パターンのIDは不変）。
+- ギャラリー（gallery/index.html・view.html）のカード・拡大ビューに同じIDを表示する。検索もIDに対応する。
 - `slidekit-assemble` は成果物提示の表にこのIDを含め、「どのスライドにどのパターン（ID）を使ったか」をユーザーがギャラリーと突き合わせて確認できるようにする。
+  `pending` のパターンを使った場合は ID 列に `pending` と書く。
 
 ## バージョン
-- SPEC version: 1.6（共通見出し sk-head v4→v5。Bの縦バーをタイトル文字高に合わせた短尺バーへ、Fをタブ型からドット＋英字ラベル型へ変更）
+- SPEC version: 1.7（パターン `.md` にフロントマター（name/category/summary/scenes/tier/id）を新設。manifest.json / INDEX.md を `tools/build-manifest.mjs` の生成物とし、新規パターンは `id: pending` → マージ時に自動採番へ変更）
+- 1.6（共通見出し sk-head v4→v5。Bの縦バーをタイトル文字高に合わせた短尺バーへ、Fをタブ型からドット＋英字ラベル型へ変更）
 - 1.5（共通見出しをデザインA/Bの2種からA〜Fの6種へ拡張）
 - 1.4: パターンの恒久ID・成果物提示へのID表示を追加
 - 1.3: メッセージライン＝アクションタイトル・本文余白64px・強調の節度ルールを追加

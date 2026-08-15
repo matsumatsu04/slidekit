@@ -1,3 +1,11 @@
+---
+name: donut-share-single
+category: グラフ
+summary: 大きなドーナツ1つ（アクセント×淡色）＋中央に割合数値、右に凡例と説明。市場シェア・構成比を1つだけ見せる。
+scenes: 市場シェア・構成比・利用率など「全体の中の割合」を1つだけ見せる場面
+tier: mid
+id: P122
+---
 # SLIDE-PATTERN-donut-share-single
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

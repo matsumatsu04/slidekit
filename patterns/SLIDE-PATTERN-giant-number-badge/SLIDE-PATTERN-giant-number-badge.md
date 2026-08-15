@@ -1,3 +1,11 @@
+---
+name: giant-number-badge
+category: KPI
+summary: 画面1/3を占める特大数字1つ＋種別バッジ＋補足・出典。背景に超薄色の大円2つ。市場規模・累計実績など1数字で語る1枚。
+scenes: 市場規模（TAM）・累計実績・達成率など、1つの数字を強烈に印象付けたい場面
+tier: high
+id: P114
+---
 # SLIDE-PATTERN-giant-number-badge
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

@@ -1,0 +1,68 @@
+# .github/workflows/assign-id.yml — main に入った新規パターン（id: pending）へ恒久IDを採番し、生成物を再生成する
+#
+#   node tools/build-manifest.mjs --assign
+#     → pending にフォルダ名順で next_id から採番 → 各 .md の id を書き戻し → manifest.json / INDEX.md / README・ギャラリーの件数を再生成
+#   → 差分があれば github-actions[bot] で commit → push（差分なしなら何もしない）
+#
+# GITHUB_TOKEN による push は新しい workflow 実行を起こさないので無限ループにはならない。
+# Vercel は通常どおり main の更新を検知して再デプロイする。
+# 失敗したときの手動フォールバック: 手元で `node tools/build-manifest.mjs --assign` → commit → push。
+
+name: assign-id
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'patterns/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: assign-id
+  cancel-in-progress: false
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 採番＋生成物の再生成 → 差分があれば commit → push
+        run: |
+          set -eu -o pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # push が競合（この実行中に main が進んだ）したら、最新の main でやり直す（最大3回）
+          for attempt in 1 2 3; do
+            node tools/build-manifest.mjs --assign | tee assign.log
+            ids="$(sed -nE 's/^採番: .* → (P[0-9]+)$/\1/p' assign.log | tr '\n' ',' | sed -E 's/,$//; s/,/, /g')"
+            rm -f assign.log
+            if git diff --quiet -- patterns README.md gallery/index.html; then
+              echo "差分なし（採番対象も再生成の変更もありません）"
+              exit 0
+            fi
+            git add -A -- patterns README.md gallery/index.html
+            if [ -n "${ids}" ]; then
+              git commit -m "chore: 採番＋manifest/INDEX再生成（${ids}）"
+            else
+              git commit -m "chore: manifest/INDEX再生成"
+            fi
+            if git push; then
+              echo "push 完了（試行 ${attempt} 回目）"
+              exit 0
+            fi
+            echo "push が競合しました。最新の main を取り直してやり直します（試行 ${attempt} 回目）"
+            git fetch origin main
+            git reset --hard origin/main
+          done
+          echo "::error::3回試しても push できませんでした。手元で node tools/build-manifest.mjs --assign → commit → push してください"
+          exit 1

@@ -1,3 +1,11 @@
+---
+name: toc-current-highlight
+category: 目次
+summary: 目次リストの現在章だけアクセント帯＋白文字＋NOWバッジで塗り、他章はグレーで沈める現在地ナビ型目次。章の再掲用。
+scenes: 章の切り替わりで目次を再掲し「いまここ」を示す場面。長尺デッキの迷子防止
+tier: high
+id: P126
+---
 # SLIDE-PATTERN-toc-current-highlight
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

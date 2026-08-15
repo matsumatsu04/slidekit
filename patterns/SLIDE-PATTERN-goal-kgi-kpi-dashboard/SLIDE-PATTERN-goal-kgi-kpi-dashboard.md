@@ -1,3 +1,11 @@
+---
+name: goal-kgi-kpi-dashboard
+category: KPI
+summary: 4層の階層構造（目標→KGI→KPI→施策）を上下に積層したダッシュボード。目標設定の全体像を体系化。
+scenes: 経営目標と階層KPI関連図、戦略体系図、目標展開の可視化、OKR/KPI体系の説明
+tier: mid
+id: P064
+---
 # SLIDE-PATTERN-goal-kgi-kpi-dashboard
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。スライド生成AIや人間のデザイナーが一貫したレイアウトを再現できるよう、構造・要素・使用方法を定義します。

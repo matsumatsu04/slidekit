@@ -1,3 +1,11 @@
+---
+name: cover-soft-3d-left
+category: 表紙
+summary: 半透明3Dオブジェクトの淡色背景に細身・字間広めの大タイトルを載せるIT/SaaS系表紙。背景は画像アセット（色ティント対象外）
+scenes: IT/SaaSの会社紹介・プロダクト資料
+tier: high
+id: P103
+---
 # SLIDE-PATTERN: cover-soft-3d-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

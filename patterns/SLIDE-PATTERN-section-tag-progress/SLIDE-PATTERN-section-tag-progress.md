@@ -1,3 +1,11 @@
+---
+name: section-tag-progress
+category: セクション
+summary: 上部に全章のタグナビ（現在章のみ塗り）＋中央左に特大章番号・章タイトルを置く現在地つき中扉。長尺デッキの章区切りに。
+scenes: 長尺デッキの章区切り。全体の中の現在地を示しながら章を切り替えたい場面
+tier: high
+id: P127
+---
 # SLIDE-PATTERN-section-tag-progress
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

@@ -1,3 +1,11 @@
+---
+name: comparison-matrix-table
+category: テーブル
+summary: 複数の比較軸（行）と複数の対象（列）を持つマトリクス表で、特定列をハイライトで強調する比較レイアウト
+scenes: ターゲットセグメント比較、競合比較、プラン別機能比較、顧客タイプ別分析
+tier: mid
+id: P053
+---
 # SLIDE-PATTERN-comparison-matrix-table
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

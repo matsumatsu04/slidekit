@@ -1,3 +1,11 @@
+---
+name: summary-key-takeaways
+category: まとめ
+summary: 特大の淡色番号＋アクセント短線＋要点＋補足を3カラム横並びにする「持ち帰り3点」まとめ。セミナー・研修の締めに。
+scenes: セミナー・研修・提案の締め。今日の要点を3つに凝縮して持ち帰らせる場面
+tier: high
+id: P142
+---
 # SLIDE-PATTERN-summary-key-takeaways
 
 このファイルはコンテンツエリアのレイアウト定義です。タイトル枠・ページ番号・装飾はデザインテーマ側の Frame で定義します。

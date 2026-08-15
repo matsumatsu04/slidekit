@@ -1,3 +1,11 @@
+---
+name: cover-geo-texture-left
+category: 表紙
+summary: 紙質感の幾何学装飾背景の左中央にタイトル・会社名・日付を縦積みする上品な表紙。背景は画像アセット（色ティント対象外）
+scenes: カルチャーデック、会社紹介、採用資料
+tier: high
+id: P101
+---
 # SLIDE-PATTERN: cover-geo-texture-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する表紙パターンで、テキストはHTMLとして画像の上に載せます。

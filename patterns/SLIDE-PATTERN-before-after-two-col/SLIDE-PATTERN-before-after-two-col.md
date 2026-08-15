@@ -1,3 +1,11 @@
+---
+name: before-after-two-col
+category: テーブル
+summary: 「Before（課題・現状）」と「After（改善後・目標）」を左右2カラムで対比するパターン。中央の矢印で変化の方向を明示する。
+scenes: ビジネス提案・改善提案・課題解決の提示・現状と目標の比較
+tier: high
+id: P058
+---
 # SLIDE-PATTERN-before-after-two-col
 
 このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。

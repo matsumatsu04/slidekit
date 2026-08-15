@@ -1,3 +1,11 @@
+---
+name: section-soft-3d-number-row
+category: セクション
+summary: 半透明3Dオブジェクトの淡色背景に特大章番号と章タイトルを横並びにするIT/SaaS系中扉。背景は画像アセット（色ティント対象外）
+scenes: IT/SaaS・テック系デッキの章区切り。表紙 cover-soft-3d-left と揃えて使うと統一感が出る
+tier: high
+id: P108
+---
 # SLIDE-PATTERN: section-soft-3d-number-row
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用するセクション中扉パターンで、テキストはHTMLとして画像の上に載せます。

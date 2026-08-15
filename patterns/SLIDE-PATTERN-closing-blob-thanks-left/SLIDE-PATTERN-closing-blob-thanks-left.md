@@ -1,3 +1,11 @@
+---
+name: closing-blob-thanks-left
+category: まとめ
+summary: 右側の有機的ブロブ背景＋左の太字締めメッセージ・会社名・連絡先で結ぶ明るい締めスライド。背景は画像アセット（色ティント対象外）
+scenes: プレゼンの最終スライド（挨拶・お問い合わせ誘導）。表紙 cover-blob-side-left と揃えて使うと統一感が出る
+tier: high
+id: P109
+---
 # SLIDE-PATTERN: closing-blob-thanks-left
 
 このファイルはスライドのレイアウトパターン定義書です。背景に画像アセット（assets/covers/）を使用する締め（クロージング）パターンで、テキストはHTMLとして画像の上に載せます。
