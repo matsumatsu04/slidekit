@@ -76,7 +76,7 @@
    （スキルは ~/slidekit/.claude/skills/ に入っているのでコピーは不要。二重にあると古い方が使われる）
 
 4. 動作確認（サンプルを1本ビルドする）
-   cd ~/slidekit &amp;&amp; rm -rf output/setup-check &amp;&amp; cp -R examples/html-deck-demo output/setup-check &amp;&amp; node tools/html-deck/build-html-deck.mjs output/setup-check &amp;&amp; bash tools/html-deck/export-pdf.sh output/setup-check
+   cd ~/slidekit &amp;&amp; rm -rf output/setup-check &amp;&amp; mkdir -p output &amp;&amp; cp -R examples/html-deck-demo output/setup-check &amp;&amp; node tools/html-deck/build-html-deck.mjs output/setup-check &amp;&amp; bash tools/html-deck/export-pdf.sh output/setup-check
    - index.html と deck.pdf ができれば成功。QA画像（qa-*.jpg）は無くてもよい。
    - node が古いと言われたら、手順2で案内された新しいNode.jsのパスで同じコマンドを実行する。
    - 確認できたら rm -rf ~/slidekit/output/setup-check で片付ける。
