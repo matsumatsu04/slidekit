@@ -15,6 +15,9 @@
   a{color:inherit}
   button{font-family:inherit}
 
+  /* ===== 所有者モード（お気に入り・削除予定は所有者だけに表示。?owner=1 で有効化／?owner=0 で解除）===== */
+  html:not([data-owner="1"]) .owner-only{display:none !important}
+
   /* ===== layout shell ===== */
   .app{display:flex;align-items:flex-start;min-height:100vh}
 
@@ -214,8 +217,8 @@
       <div class="side-logo"><span class="dot"></span>SlideKit</div>
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" id="navAll">すべて<span class="cnt" id="allCount">…</span></button>
-        <button class="nav-item" id="navFav">⭐ お気に入り<span class="cnt" id="favCount">0</span></button>
-        <button class="nav-item" id="navDel">🗑 削除予定<span class="cnt" id="delCount">0</span></button>
+        <button class="nav-item owner-only" id="navFav">⭐ お気に入り<span class="cnt" id="favCount">0</span></button>
+        <button class="nav-item owner-only" id="navDel">🗑 削除予定<span class="cnt" id="delCount">0</span></button>
         <div class="nav-sep"></div>
       </nav>
     </div>
@@ -257,7 +260,7 @@
     <div class="content">
       <div class="content-head">
         <h2 id="sectionTitle">構図パターン</h2>
-        <button class="btn" id="delCopy" style="display:none">削除予定のIDをコピー</button>
+        <button class="btn owner-only" id="delCopy" style="display:none">削除予定のIDをコピー</button>
       </div>
       <div class="grid" id="grid" data-density="3"></div>
       <div class="noresult" id="noresult" style="display:none">該当するパターンがありません</div>
@@ -289,8 +292,8 @@
     <span class="modal-cat" id="mCat"></span>
     <span class="modal-sp"></span>
     <a class="btn" id="mDl" download>.md DL</a>
-    <button class="btn" id="mFav">☆ お気に入り</button>
-    <button class="btn" id="mDelBtn">🗑 削除予定</button>
+    <button class="btn owner-only" id="mFav">☆ お気に入り</button>
+    <button class="btn owner-only" id="mDelBtn">🗑 削除予定</button>
     <button class="btn" id="mTray">＋ 構成に追加</button>
     <button class="modal-close" id="mClose" title="閉じる（Esc）" aria-label="閉じる">✕</button>
   </div>
@@ -306,6 +309,19 @@
 
 <script src="/gallery/palettes.js?v5"></script>
 <script>
+// ===== 所有者モード（お気に入り・削除予定は所有者だけが使う）=====
+// URL に ?owner=1 が付いていれば localStorage に保存（以後は無印URLでも所有者）。?owner=0 で解除。判定はここで1回だけ。
+// 非所有者には .owner-only 要素（お気に入り・削除予定のナビ／ボタン／IDコピー）を CSS で非表示にする。データ構造・保存キーは従来どおり。
+const OWNER=(function(){
+  try{
+    const q=new URLSearchParams(location.search).get('owner');
+    if(q==='1') localStorage.setItem('sk-owner','1');
+    else if(q==='0') localStorage.removeItem('sk-owner');
+    return localStorage.getItem('sk-owner')==='1';
+  }catch(e){ return false; }
+})();
+if(OWNER) document.documentElement.dataset.owner='1';
+
 // リポジトリへの導線はナビから外し、導入手順ページ（/gallery/start.html）内のリンクに一本化（2026-07-22）
 const base=p=>`/patterns/SLIDE-PATTERN-${p}`;
 const PV='v10';  // パターンHTMLの大改修時に上げる（iframeキャッシュ対策）
@@ -520,6 +536,8 @@ function fit(){
   });
 }
 function render(){
+  // 非所有者がお気に入り／削除予定ビューに入っていたら（URL・キー操作等）「すべて」に戻す（壊れない保険）
+  if(!OWNER && (active==='__fav'||active==='__del')){ active='all'; syncNavActive(); }
   grid.innerHTML='';
   const list=DATA.filter(matches);
   LAST_LIST=list; // モーダルのカルーセルが参照する「現在の絞り込み結果」
@@ -541,8 +559,8 @@ function render(){
         <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
         <div class="actions">
-          <button class="act ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
-          <button class="act ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
+          <button class="act owner-only ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
+          <button class="act owner-only ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
           <button class="act ${tray?'on-tray':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'✓ 追加済み':'＋ 構成に追加'}</button>
         </div>
       </div>`;

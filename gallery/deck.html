@@ -52,6 +52,9 @@
   .s-no{font-size:12px;font-weight:700;background:var(--surf);border-radius:6px;padding:2px 8px}
   .s-src{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .s-edit-badge{font-size:11px;font-weight:700;color:#B8860B;background:#FDF3D7;border-radius:6px;padding:2px 8px;white-space:nowrap}
+  /* 背景画像 ON/OFF トグル（一覧カード・編集ツールバー共通） */
+  .bgtog.off{color:var(--muted)}
+  .bgtog.none{color:var(--muted);border-style:dashed}
   .s-fb{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
   .s-fb textarea{width:100%;min-height:56px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical}
   .s-fb textarea::placeholder,.s-fb input::placeholder{color:#B4B9C2}
@@ -162,7 +165,7 @@
       <h1>スライド確認・修正依頼</h1>
       <p>
         SlideKitで生成したスライド（index.html）を読み込むと、この画面でそのまま確認できます。<br>
-        「✎ 編集モード」では、Googleスライドのように<b>文字・配置・色・サイズ・画像・スライドの追加/複製/削除</b>まで直接調整できます。<br>
+        「✎ 編集モード」では、Googleスライドのように<b>文字・配置・色・サイズ・画像・スライドの追加/複製/削除・背景画像のON/OFF</b>まで直接調整できます。<br>
         編集内容とフィードバックは「修正プロンプトを出力」で1つにまとまり、Claude Codeに貼り付けるとデッキ本体に反映されます。
       </p>
       <div class="drop" id="drop">ここに index.html をドラッグ＆ドロップ（またはクリックしてファイル選択）</div>
@@ -232,6 +235,7 @@
       <span class="em-sep"></span>
       <button class="btn" id="imgAddBtn" title="画像をアップロードしてスライドに配置（⌘Vで貼り付けも可）">🖼 画像</button>
       <input type="file" id="imgFile" accept="image/*" style="display:none">
+      <button class="btn bgtog" id="bgTogBtn" title="このスライドの背景画像（最下層の淡い画像）を ON/OFF。deck-config.json の slides[].bg として修正プロンプトに含まれます">背景画像: -</button>
       <button class="btn" id="grpBtn" disabled title="複数選択（Shift+クリック）した要素をグループ化／解除">グループ化</button>
       <span class="em-selchip" id="emSelChip"></span>
       <span class="sp"></span>
@@ -247,6 +251,7 @@
             <tr><td class="k">余白からドラッグ</td><td><b>範囲選択</b>：囲った要素をまとめて選択</td></tr>
             <tr><td class="k">Shift+クリック</td><td>選択に追加／除外（→「グループ化」で固定）</td></tr>
             <tr><td class="k">サムネをドラッグ</td><td>スライドの並べ替え（ページ番号は自動更新）</td></tr>
+            <tr><td class="k">背景画像</td><td>ツールバー／一覧カードの「背景画像」で、このスライドの最下層の淡い背景画像を ON/OFF（deck-config.json に反映）</td></tr>
             <tr><td class="k">角の●をドラッグ</td><td>追加画像・複製要素のサイズ変更</td></tr>
             <tr><td class="k">⌘Z / ⇧⌘Z</td><td>元に戻す／やり直す（構成変更も対象）</td></tr>
             <tr><td class="k">⌘C → ⌘V</td><td>要素を複製。<b>未選択ならスライドを複製</b></td></tr>
@@ -311,7 +316,10 @@ function parseDeck(html){
   if(!sections.length) throw new Error('スライド（<section class="slide">）が見つかりません。SlideKitのデッキ index.html を貼り付けてください。');
   const themeM=html.match(/--sk-accent:\s*([^;]+);/);
   const softM=html.match(/--sk-soft:\s*([^;]+);/);
-  return {title,styles,links,sections,theme:{accent:themeM?themeM[1].trim():null,soft:softM?softM[1].trim():null}};
+  // 背景画像レイヤー（ビルダーが background 設定時に各 section へ data-sk-bg / data-sk-bg-asset を付ける）
+  const bgAssetM=sections.map(s=>s.match(/data-sk-bg-asset\s*=\s*["']([^"']+)["']/i)).find(Boolean);
+  const bg={enabled:sections.some(s=>/data-sk-bg\s*=\s*["'](on|off)["']/i.test(s)),asset:bgAssetM?bgAssetM[1]:null};
+  return {title,styles,links,sections,theme:{accent:themeM?themeM[1].trim():null,soft:softM?softM[1].trim():null},bg};
 }
 function extractSections(html){
   const tagRe=/<section\b[^>]*>|<\/section\s*>/gi;
@@ -346,6 +354,67 @@ function resolveAssetPaths(sectionHtml){
 function srcFileOf(sectionHtml){
   const m=(sectionHtml||'').match(/data-sk-src\s*=\s*["']([^"']+)["']/i);
   return m?m[1]:null;
+}
+// ================= 背景画像レイヤー =================
+// ビルド結果の CSS は `section.slide[data-sk-bg="on"]{background-image:url("assets/xxx") !important}` と
+// デッキフォルダ相対で書かれているため、このページ上ではリポジトリ内の素材（data-sk-bg-asset）に読み替える。
+function bgStyleTag(){
+  if(!DECK||!DECK.bg||!DECK.bg.asset) return '';
+  return `<style>section.slide[data-sk-bg="on"]{background-image:url("${ASSET_PREFIX}${DECK.bg.asset}") !important}</style>`;
+}
+function builtinBgOf(inst){ // ビルド時の判定（'on' | 'off' | null=属性なし）
+  const m=sectionHtmlOf(inst).match(/<section\b[^>]*\bdata-sk-bg\s*=\s*["'](on|off)["']/i);
+  return m?m[1].toLowerCase():null;
+}
+function bgOverrideOf(iid){ const s=FB.slides[iid]; return (s&&typeof s.bg==='boolean')?s.bg:null; }
+function bgStateOf(inst){ // 表示上の状態（上書き優先）
+  const ov=bgOverrideOf(inst.id);
+  if(ov!==null) return ov?'on':'off';
+  return builtinBgOf(inst);
+}
+function bgLabel(state){ return `背景画像: ${state==='on'?'ON':state==='off'?'OFF':'なし'}`; }
+function styleBgBtn(btn,state){
+  if(!btn) return;
+  btn.textContent=bgLabel(state);
+  btn.classList.toggle('off',state==='off');
+  btn.classList.toggle('none',state===null);
+}
+const BG_NONE_MSG='このデッキには背景画像が設定されていません。\nClaude Code に「背景画像を敷いて」と依頼すると、deck-config.json の background を設定して再ビルドされます。\n再ビルド後のデッキを読み込めば、この画面でページごとに ON/OFF を切り替えられます。';
+function toggleSlideBg(iid){
+  if(!DECK) return;
+  if(!DECK.bg||!DECK.bg.enabled){ alert(BG_NONE_MSG); return; }
+  const inst=FB.order.find(o=>o.id===iid); if(!inst) return;
+  const next=bgStateOf(inst)!=='on';
+  const builtin=builtinBgOf(inst)==='on';
+  commit(()=>{
+    const s=FB.slides[iid]||(FB.slides[iid]={});
+    if(next===builtin) delete s.bg; else s.bg=next; // ビルド時の判定に戻ったら上書きを消す
+    if(!s.text&&!s.pattern&&!(s.edits&&s.edits.length)&&!(s.groups&&s.groups.length)&&typeof s.bg!=='boolean') delete FB.slides[iid];
+  });
+  applyBgToLiveDocs(iid);
+  refreshCardBadge(iid); refreshCardBgBtn(iid); updateRailDot(iid); updateBgToolbarBtn();
+  if(MODE_EDIT&&ED.iid===iid){ renderEditList(); flashChip(`背景画像を${next?'ON':'OFF'}にしました（⌘Zで戻せます）`); }
+}
+// 再読み込みせずに、表示中の iframe（一覧サムネ・レール・編集キャンバス）へ属性を反映する
+function applyBgToLiveDocs(iid){
+  const inst=FB.order.find(o=>o.id===iid); if(!inst) return;
+  const state=bgStateOf(inst);
+  const docs=[];
+  const card=document.querySelector(`#card-${iid} iframe`); if(card){ try{ docs.push(card.contentDocument); }catch(e){} }
+  const th=document.querySelector(`#emthumb-${iid} iframe`); if(th){ try{ docs.push(th.contentDocument); }catch(e){} }
+  if(MODE_EDIT&&ED.iid===iid&&ED.doc) docs.push(ED.doc);
+  docs.forEach(doc=>{
+    const el=doc&&doc.querySelector&&doc.querySelector('.slide'); if(!el) return;
+    if(state) el.setAttribute('data-sk-bg',state); else el.removeAttribute('data-sk-bg');
+  });
+}
+function refreshCardBgBtn(iid){
+  const btn=document.querySelector(`#card-${iid} .bgtog`); const inst=FB.order.find(o=>o.id===iid);
+  if(btn&&inst) styleBgBtn(btn,(DECK.bg&&DECK.bg.enabled)?bgStateOf(inst):null);
+}
+function updateBgToolbarBtn(){
+  const inst=FB.order.find(o=>o.id===ED.iid);
+  styleBgBtn($('bgTogBtn'),(inst&&DECK&&DECK.bg&&DECK.bg.enabled)?bgStateOf(inst):null);
 }
 
 // ================= 状態 =================
@@ -431,7 +500,7 @@ function structChanged(){
   if(o.length!==DECK.sections.length) return true;
   return o.some((x,i)=>x.src!==i+1);
 }
-function slideHasFb(iid){ const s=FB.slides[iid]; return !!(s&&(s.text||s.pattern||(s.edits&&s.edits.length))); }
+function slideHasFb(iid){ const s=FB.slides[iid]; return !!(s&&(s.text||s.pattern||(s.edits&&s.edits.length)||typeof s.bg==='boolean')); }
 // 変更確定（スナップショット→undo/redo。編集も構成変更もこれを通す）
 function snapshot(){ return JSON.stringify({slides:FB.slides,order:FB.order,nextId:FB.nextId}); }
 function commit(mut){
@@ -485,7 +554,7 @@ function sectionHtmlOf(inst){
   return '<section class="slide"></section>'; // 新規空白
 }
 function slideDocFor(inst){
-  const head=DECK.links.join('\n')+'\n'+extraFontLinksFor(inst.id)+'\n'+DECK.styles.join('\n')+
+  const head=DECK.links.join('\n')+'\n'+extraFontLinksFor(inst.id)+'\n'+DECK.styles.join('\n')+bgStyleTag()+
     '\n<style>html,body{margin:0;padding:0;background:#fff;display:block;overflow:hidden}.slide{margin:0;box-shadow:none}.sk-pageno{}</style>';
   return `<!doctype html><html lang="ja"><head><meta charset="utf-8">${head}</head><body>${resolveAssetPaths(sectionHtmlOf(inst))}</body></html>`;
 }
@@ -504,6 +573,9 @@ function wireImgFallback(doc){
 function applyEditsToDoc(doc,edits,iid){
   const slideEl=doc.querySelector('.slide'); if(!slideEl) return;
   const D=doc.createElement?doc:(doc.ownerDocument||document);
+  // 背景画像の ON/OFF 上書き（属性を変えるだけで、ビルド済みCSSがそのまま効く）
+  const bgo=bgOverrideOf(iid);
+  if(bgo!==null) slideEl.setAttribute('data-sk-bg',bgo?'on':'off');
   edits.forEach(e=>{
     if(e.type==='imgadd'){
       const data=IMGS[`${iid}:${e.id}`];
@@ -579,7 +651,7 @@ function renderDeck(){
     const card=document.createElement('div');card.className='s-card';card.id=`card-${iid}`;
     card.innerHTML=`
       <div class="s-thumb" title="クリックで編集モード"><iframe title="スライド${pos}" sandbox="allow-same-origin"></iframe></div>
-      <div class="s-meta"><span class="s-no">スライド ${pos}</span><span class="s-src">${escapeHtml(instLabel(inst))}</span><span class="sp"></span><span class="s-edit-badge" id="ebadge-${iid}" style="display:none"></span><button class="btn mini e-open">✎ 編集</button></div>
+      <div class="s-meta"><span class="s-no">スライド ${pos}</span><span class="s-src">${escapeHtml(instLabel(inst))}</span><span class="sp"></span><span class="s-edit-badge" id="ebadge-${iid}" style="display:none"></span><button class="btn mini bgtog" title="このスライドの背景画像（最下層の淡い画像）を ON/OFF">背景画像: -</button><button class="btn mini e-open">✎ 編集</button></div>
       <div class="s-fb">
         <textarea class="fb-text" placeholder="このスライドへのフィードバック（文言修正・構成の指示など）"></textarea>
         <div class="prow">
@@ -597,6 +669,8 @@ function renderDeck(){
     fr.srcdoc=slideDocFor(inst);
     card.querySelector('.e-open').addEventListener('click',()=>enterEditMode(iid));
     card.querySelector('.s-thumb').addEventListener('click',()=>enterEditMode(iid));
+    card.querySelector('.bgtog').addEventListener('click',()=>toggleSlideBg(iid));
+    refreshCardBgBtn(iid);
     const fb=FB.slides[iid]||{};
     const ta=card.querySelector('.fb-text');const pi=card.querySelector('.fb-pattern');
     ta.value=fb.text||''; pi.value=fb.pattern||'';
@@ -605,7 +679,8 @@ function renderDeck(){
       const rec={text:ta.value.trim(),pattern:pi.value.trim()};
       if(prev.edits&&prev.edits.length) rec.edits=prev.edits;
       if(prev.groups&&prev.groups.length) rec.groups=prev.groups;
-      if(!rec.text&&!rec.pattern&&!rec.edits&&!rec.groups) delete FB.slides[iid]; else FB.slides[iid]=rec;
+      if(typeof prev.bg==='boolean') rec.bg=prev.bg;
+      if(!rec.text&&!rec.pattern&&!rec.edits&&!rec.groups&&typeof rec.bg!=='boolean') delete FB.slides[iid]; else FB.slides[iid]=rec;
       card.classList.toggle('has-fb',slideHasFb(iid));
       saveFb();
     };
@@ -621,8 +696,12 @@ function refreshCardBadge(iid){
   const card=document.getElementById(`card-${iid}`);
   if(!b||!card) return;
   const cnt=slideEdits(iid).length;
-  b.style.display=cnt?'':'none';
-  b.textContent=cnt?`画面編集 ${cnt}件`:'';
+  const bgo=bgOverrideOf(iid);
+  const parts=[];
+  if(cnt) parts.push(`画面編集 ${cnt}件`);
+  if(bgo!==null) parts.push(`背景画像 ${bgo?'ON':'OFF'}`);
+  b.style.display=parts.length?'':'none';
+  b.textContent=parts.join('・');
   card.classList.toggle('has-fb',slideHasFb(iid));
 }
 
@@ -662,12 +741,13 @@ $('clearBtn').addEventListener('click',()=>{
 });
 $('discardAllBtn').addEventListener('click',()=>{
   const total=Object.keys(FB.slides).reduce((a,k)=>a+slideEdits(+k).length,0);
+  const bgTotal=Object.keys(FB.slides).filter(k=>bgOverrideOf(+k)!==null).length;
   const st=structChanged();
-  if(!total&&!st){ alert('画面編集・構成変更はありません。'); return; }
-  if(!confirm(`全スライドの画面編集 ${total}件${st?'＋スライド構成の変更':''} をすべて破棄しますか？\n（フィードバック欄の記入内容は残ります）`)) return;
+  if(!total&&!st&&!bgTotal){ alert('画面編集・構成変更はありません。'); return; }
+  if(!confirm(`全スライドの画面編集 ${total}件${bgTotal?`＋背景画像の切替 ${bgTotal}件`:''}${st?'＋スライド構成の変更':''} をすべて破棄しますか？\n（フィードバック欄の記入内容は残ります）`)) return;
   ED.editingEl=null; SELSET=[];
   Object.keys(FB.slides).forEach(k=>{
-    const s=FB.slides[k]; delete s.edits; delete s.groups;
+    const s=FB.slides[k]; delete s.edits; delete s.groups; delete s.bg;
     if(!s.text&&!s.pattern) delete FB.slides[k];
   });
   FB.order=DECK.sections.map((_,i)=>({id:i+1,src:i+1}));
@@ -686,7 +766,7 @@ function allExtraFontLinks(){
 }
 function printableHtml(){
   const pal=PAL?`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};}</style>`:'';
-  const head=DECK.links.join('\n')+'\n'+allExtraFontLinks()+'\n'+DECK.styles.join('\n')+pal;
+  const head=DECK.links.join('\n')+'\n'+allExtraFontLinks()+'\n'+DECK.styles.join('\n')+bgStyleTag()+pal;
   const body=FB.order.map((inst,idx)=>{
     const tpl=document.createElement('template');
     tpl.innerHTML=resolveAssetPaths(sectionHtmlOf(inst));
@@ -1059,7 +1139,7 @@ function reorderSlide(fromIid,targetIid,before){
 }
 function updateRailDot(iid){
   const dot=document.getElementById(`emdot-${iid}`);
-  if(dot) dot.style.display=slideEdits(iid).length?'':'none';
+  if(dot) dot.style.display=(slideEdits(iid).length||bgOverrideOf(iid)!==null)?'':'none';
 }
 function refreshRailThumb(iid){
   const d=document.getElementById(`emthumb-${iid}`); if(!d) return;
@@ -1098,6 +1178,7 @@ function gotoIid(iid,force){
   document.querySelectorAll('.em-thumb.cur').forEach(x=>x.classList.remove('cur'));
   const th=document.getElementById(`emthumb-${iid}`);
   if(th){ th.classList.add('cur'); th.scrollIntoView({block:'nearest'}); }
+  updateBgToolbarBtn();
   rebuildEditorDoc();
 }
 function gotoPos(pos){
@@ -1249,7 +1330,7 @@ function mutateEdits(mut){ // 現スライドのedits配列を変更して確定
     const arr=(s.edits||[]).slice();
     const out=mut(arr);
     if(out.length) s.edits=out; else delete s.edits;
-    if(!s.text&&!s.pattern&&!s.edits&&!(s.groups&&s.groups.length)) delete FB.slides[ED.iid];
+    if(!s.text&&!s.pattern&&!s.edits&&!(s.groups&&s.groups.length)&&typeof s.bg!=='boolean') delete FB.slides[ED.iid];
   });
   afterEditCommit();
 }
@@ -1607,8 +1688,8 @@ function pasteSlide(){
     const srcRec=FB.slides[srcInst.id];
     if(srcRec){
       const cp=JSON.parse(JSON.stringify(srcRec));
-      delete cp.text; delete cp.pattern; // フィードバック文は複製しない
-      if(cp.edits||cp.groups) FB.slides[newId]=cp;
+      delete cp.text; delete cp.pattern; // フィードバック文は複製しない（背景画像の切替は見た目なので複製する）
+      if(cp.edits||cp.groups||typeof cp.bg==='boolean') FB.slides[newId]=cp;
     }
     Object.keys(IMGS).forEach(k=>{
       const [iid,imgId]=k.split(':');
@@ -1854,11 +1935,28 @@ function editTargetLabel(e){
 }
 function renderEditList(){
   const list=$('eList'); const edits=slideEdits(ED.iid);
-  $('emEditsCnt').textContent=edits.length;
+  const bgo=bgOverrideOf(ED.iid);
+  $('emEditsCnt').textContent=edits.length+(bgo!==null?1:0);
   list.innerHTML='';
-  if(!edits.length){
+  if(!edits.length&&bgo===null){
     list.innerHTML='<div class="e-empty">まだ編集はありません。<br>スライド上の要素を直接クリック／ダブルクリックして編集できます（操作方法は「？」）。</div>';
     return;
+  }
+  if(bgo!==null){
+    const div=document.createElement('div'); div.className='e-item';
+    div.innerHTML=`<div class="e-kind">背景</div><div class="e-desc">背景画像を <b>${bgo?'ON':'OFF'}</b> に切替<br><span style="color:var(--muted)">deck-config.json の slides[].bg に反映</span></div>`;
+    const btn=document.createElement('button'); btn.className='btn mini'; btn.textContent='取消';
+    btn.addEventListener('click',()=>{
+      const iid=ED.iid;
+      commit(()=>{
+        const s=FB.slides[iid]; if(!s) return;
+        delete s.bg;
+        if(!s.text&&!s.pattern&&!(s.edits&&s.edits.length)&&!(s.groups&&s.groups.length)) delete FB.slides[iid];
+      });
+      applyBgToLiveDocs(iid); afterEditCommit(); refreshCardBgBtn(iid); updateBgToolbarBtn();
+    });
+    div.appendChild(btn);
+    list.appendChild(div);
   }
   edits.forEach((e,i)=>{
     const div=document.createElement('div'); div.className='e-item';
@@ -1909,12 +2007,19 @@ $('imgFile').addEventListener('change',e=>{
 $('emUndoBtn').addEventListener('click',undoEdit);
 $('emRedoBtn').addEventListener('click',redoEdit);
 $('emReset').addEventListener('click',()=>{
-  if(!slideEdits(ED.iid).length){ rebuildEditorDoc(); return; }
-  if(!confirm('このスライドの画面編集をすべて破棄しますか？')) return;
+  if(!slideEdits(ED.iid).length&&bgOverrideOf(ED.iid)===null){ rebuildEditorDoc(); return; }
+  if(!confirm('このスライドの画面編集（背景画像の切替を含む）をすべて破棄しますか？')) return;
   ED.editingEl=null;
-  mutateEdits(()=>[]);
+  const iid=ED.iid;
+  commit(()=>{
+    const s=FB.slides[iid]; if(!s) return;
+    delete s.edits; delete s.bg;
+    if(!s.text&&!s.pattern&&!(s.groups&&s.groups.length)) delete FB.slides[iid];
+  });
+  afterEditCommit(); refreshCardBgBtn(iid); updateBgToolbarBtn();
   rebuildEditorDoc();
 });
+$('bgTogBtn').addEventListener('click',()=>{ if(ED.iid) toggleSlideBg(ED.iid); });
 $('emEditsToggle').addEventListener('click',()=>{
   $('emPanel').classList.toggle('open');
   layoutEditMode();
@@ -2008,7 +2113,8 @@ function buildPrompt(){
   const allEdits=iids.flatMap(iid=>slideEdits(iid));
   const anyEdits=allEdits.length>0;
   const anyImg=allEdits.some(e=>e.type==='imgadd');
-  if(anyEdits){
+  const anyBg=iids.some(iid=>bgOverrideOf(iid)!==null);
+  if(anyEdits||anyBg){
     lines.push('');
     lines.push('## 画面編集の反映ルール（ビューアー上の直接編集を含みます）');
     lines.push('- 【文言修正】は該当要素のテキストを「変更前」→「変更後」に置換する。⏎ は改行（フラグメントでは <br>）。');
@@ -2022,6 +2128,10 @@ function buildPrompt(){
     lines.push('- 【要素複製】は元要素をコピーし、指定位置（スライド左上基準px）に絶対配置で追加する。');
     lines.push('- 【要素削除】は該当要素をフラグメントから削除する。');
     lines.push('- 対象のセレクタは各スライドのフラグメント内のクラス。（n個目）は同セレクタの出現順（1始まり）。');
+    if(anyBg){
+      lines.push('- 【背景画像】は deck-config.json の "slides" 配列で該当スライドの bg を true/false にして再ビルドする');
+      lines.push('  （フラグメントは触らない）。エントリが無ければ { "file": "<フラグメント名>", "bg": false } のように追加する。');
+    }
   }
   if(anyImg){
     lines.push('');
@@ -2061,17 +2171,22 @@ function buildPrompt(){
     lines.push('## 全体への指示');
     FB.global.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
   }
-  const hasSlideItems=FB.order.some(o=>{const s=FB.slides[o.id];return s&&(s.text||s.pattern||(s.edits&&s.edits.length));});
+  const hasSlideItems=FB.order.some(o=>{const s=FB.slides[o.id];return s&&(s.text||s.pattern||(s.edits&&s.edits.length)||typeof s.bg==='boolean');});
   if(hasSlideItems){
     lines.push('');
     lines.push('## スライド別の指示（番号は変更後の並び）');
     FB.order.forEach((inst,idx)=>{
       const pos=idx+1, iid=inst.id;
       const fb=FB.slides[iid];
-      if(!fb||(!fb.text&&!fb.pattern&&!(fb.edits&&fb.edits.length))) return;
+      if(!fb||(!fb.text&&!fb.pattern&&!(fb.edits&&fb.edits.length)&&typeof fb.bg!=='boolean')) return;
       lines.push('');
       lines.push(`### スライド${pos}（${instPromptName(inst,pos)}）`);
       if(fb.pattern) lines.push(`- 構図パターンを「${fb.pattern}」に変更`);
+      if(typeof fb.bg==='boolean'){
+        const f=inst.src>0?srcFileOf(DECK.sections[inst.src-1]):null;
+        const where=f?`deck-config.json の "slides" に { "file": "${f}", "bg": ${fb.bg} } を追加（既にあれば bg を ${fb.bg} に）`:`deck-config.json の "slides" で新規フラグメントのエントリを "bg": ${fb.bg} に`;
+        lines.push(`- 【背景画像】背景画像を ${fb.bg?'ON':'OFF'} にする（${where}。slides[${pos-1}].bg 相当）`);
+      }
       if(fb.text) fb.text.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
       (fb.edits||[]).forEach(e=>{
         if(e.type==='text'){

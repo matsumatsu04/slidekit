@@ -36,7 +36,7 @@ SlideKit は **「色・フォント」と「構図」を別々のファイル�
 | スキル | できること |
 |---|---|
 | [`slidekit-design`](./.claude/skills/slidekit-design) | 参考スライド・サイト・画像から**デザインテーマ**を生成（確認用 sample.html 付き） |
-| [`slidekit-layout`](./.claude/skills/slidekit-layout) | キャプチャ等から**構図パターン**を抽出・定義（グレースケール確認HTML付き）。ギャラリーへの提案もここから |
+| [`slidekit-layout`](./.claude/skills/slidekit-layout) | キャプチャ等から**構図パターン**を抽出・定義（グレースケール確認HTML付き） |
 | [`slidekit-assemble`](./.claude/skills/slidekit-assemble) | 内容をヒアリングし、デザイン×構図を組み合わせて**HTMLデッキ（index.html＋PDF）**と設計書 SLIDEKIT-DECK.md を生成 |
 
 スキルは `.claude/skills/` にプロジェクトスキルとして入っているため、**このリポジトリのフォルダで Claude Code を起動するだけ**で使えます（コピー不要）。
@@ -78,6 +78,7 @@ cd slidekit && claude
 - **デザインテーマ**: `design-systems/`（汎用・ブランド中立のサンプル）
 - **構図パターン**: `patterns/`（14カテゴリ・131種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slidekit-sigma.vercel.app/gallery/)で一覧・プレビュー・DL可。カラーパレット切替つき）
 - **スライド確認・修正依頼ページ**: [`/gallery/deck.html`](https://slidekit-sigma.vercel.app/gallery/deck.html)（生成した `index.html` を貼り付け→スライド表示・スライド別フィードバック→修正プロンプト出力・ブラウザ印刷でPDF保存）
+- **背景画像レイヤー**: `assets/backgrounds/`（各スライドの最下層に淡い抽象画像を敷ける。白背景のスライドだけ自動ON・表紙などはページ別にOFF可。`deck-config.json` の `background` ／ 確認ページのトグル）
 - **設計書の例**: `examples/sample-proposal/SLIDEKIT-DECK.md`
 
 ## リポジトリ構成
@@ -85,27 +86,18 @@ cd slidekit && claude
 ```
 slidekit/
 ├─ SPEC.md                 # 3ファイル形式の仕様
-├─ CONTRIBUTING.md         # 構図パターンの提案方法
 ├─ .claude/skills/         # 3つのスキル（SKILL.md）— プロジェクトスキルとして自動で有効
 ├─ design-systems/         # デザインテーマ + sample.html
 ├─ patterns/               # 構図パターン + グレースケール確認（manifest.json / INDEX.md は生成物）
-├─ tools/                  # デッキビルド・lint・manifest生成・提案スクリプト
+├─ tools/                  # デッキビルド・lint・manifest生成・更新確認スクリプト
 ├─ docs/                   # 生成ガイド・装飾ルール
 ├─ examples/               # SLIDEKIT-DECK.md の例
 ├─ gallery/                # 公開ギャラリー（静的サイト）
 └─ index.html              # ルート → /gallery/ へ
 ```
 
-## コントリビュート（構図パターンの提案）
-
-構図パターンは誰でも提案できます。詳しくは [`CONTRIBUTING.md`](./CONTRIBUTING.md) を参照してください。流れは次の3行です。
-
-1. Claude Code の `slidekit-layout` でパターンを作る（`node tools/lint-pattern.mjs {name}` を通す）
-2. 「このパターンをギャラリーに提案して」→ `bash tools/propose-pattern.sh {name}` で Pull Request が作られる
-3. レビュー → マージ → ID が自動採番され、ギャラリーに反映（次回の `git pull` で手元にも届く）
-
-パターンが欲しいだけの方は、Issue の「パターンリクエスト」テンプレートからどうぞ（対応期限はありません。誰が拾って PR にしても構いません）。
-
 ## ライセンス
 
-- 本リポジトリの内容（スキル・仕様・デザインテーマ・構図パターンライブラリ・ギャラリー）は作者およびコントリビューターのオリジナル成果物であり、[MIT License](./LICENSE) で公開しています。提案（Pull Request）されたパターンも同ライセンスで公開されます。
+- 本リポジトリの内容（スキル・仕様・デザインテーマ・構図パターンライブラリ・ギャラリー）は作者のオリジナル成果物であり、[MIT License](./LICENSE) で公開しています。
+
+※構図パターンの外部からの提案（Pull Request）は現在受け付けていません。

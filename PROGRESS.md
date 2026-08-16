@@ -19,11 +19,11 @@
 - [x] **形式の整合** — SPEC を 1.1 に更新し、構図を `SLIDE-PATTERN` 形式・`patterns/` ライブラリに統一。
   `slidekit-layout`（新規パターンも SLIDE-PATTERN 形式で作成＋INDEX/manifest更新）・`slidekit-assemble`（INDEX/manifestから実在99種・12カテゴリを選択して埋め込み）・デモDECK（実在パターン名）を全て整合。旧 SLIDEKIT-LAYOUT 参照は一掃。
 - [x] **ギャラリー色付け** — 閲覧者がカラーコード選択でプレビューをティント（mix-blend-mode・default ブルー）。
-- [x] **コントリビュート運用（2026-08）** — スキルを `.claude/skills/` へ移動（clone→そのフォルダで起動するだけで発動・コピー不要）。
+- [x] **一覧の生成物化・自動採番（内部運用・2026-08）** — スキルを `.claude/skills/` へ移動（clone→そのフォルダで起動するだけで発動・コピー不要）。
   パターン `.md` にフロントマター（name/category/summary/scenes/tier/id）を新設し、`manifest.json` / `SLIDE-PATTERN-INDEX.md` を
-  `tools/build-manifest.mjs` の生成物に変更（手編集禁止・新規は `id: pending` → mainマージ時に自動採番）。
-  `tools/lint-pattern.mjs`（規約チェック）・`tools/propose-pattern.sh`（fork＋PR）・`tools/check-update.sh`（assemble Step 0 の更新確認）、
-  CONTRIBUTING.md・PR/Issueテンプレ・start.html の2ステップ導入＋提案手順を整備。
+  `tools/build-manifest.mjs` の生成物に変更（手編集禁止・新規は `id: pending` → main への push 時に GitHub Action が自動採番）。
+  `tools/lint-pattern.mjs`（規約チェック）・`tools/check-update.sh`（assemble Step 0 の更新確認）・start.html の2ステップ導入を整備。
+  利用者は「使うだけ」（構図パターンの外部提案は受け付けない。ギャラリーのお気に入り・削除予定は所有者向け機能で既定では非表示）。
 
 ## 決定事項
 - 命名: SlideKit。ファイル= `SLIDEKIT-DESIGN.md` / `SLIDEKIT-LAYOUT-{name}.md` / `SLIDEKIT-DECK.md`。スキル= `slidekit-design` / `slidekit-layout` / `slidekit-assemble`
@@ -36,5 +36,5 @@
 - スキル: `.claude/skills/{slidekit-design,slidekit-layout,slidekit-assemble}/SKILL.md`（プロジェクトスキル。リポジトリのフォルダで起動すれば有効）
 - デザインテーマ: `design-systems/{name}/SLIDEKIT-DESIGN.md` + `sample.html`
 - 構図パターン: `patterns/SLIDE-PATTERN-{name}/SLIDE-PATTERN-{name}.md` + `.html`（一覧 `patterns/manifest.json` / `SLIDE-PATTERN-INDEX.md` は `tools/build-manifest.mjs` の生成物）
-- 提案の決まり: `CONTRIBUTING.md`／PR・Issueテンプレ: `.github/`
+- CI: `.github/workflows/`（`assign-id.yml`＝main push 時の自動採番・再生成／`pr-check.yml`＝lint・整合チェック）
 - ギャラリー: `gallery/`

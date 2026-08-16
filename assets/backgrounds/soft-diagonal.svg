@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- soft-diagonal: 白地に、ごく淡いグレーの斜めの面がうっすら重なる抽象背景（既定素材）。
+       文字の可読性を落とさない極小コントラスト。同名の .jpg / .png を置くとそちらが優先される。 -->
+  <rect width="1920" height="1080" fill="#FFFFFF"/>
+  <!-- 右上→左下へ流れる大きな帯（3枚・一部が重なって濃淡が出る） -->
+  <polygon points="-200,1020 2200,-420 2200,80 -200,1520" fill="#E9EBEF" fill-opacity="0.38"/>
+  <polygon points="-200,1560 2200,120 2200,470 -200,1910" fill="#EDEFF2" fill-opacity="0.55"/>
+  <polygon points="-200,420 2200,-1020 2200,-700 -200,740" fill="#EDEFF2" fill-opacity="0.5"/>
+  <!-- 逆向きの面を1枚だけ重ね、面が交差する奥行きを出す -->
+  <polygon points="-200,630 2200,1470 2200,1770 -200,930" fill="#EDEFF2" fill-opacity="0.38"/>
+  <!-- 左上のごく薄い面（画面全体が均一にならないように） -->
+  <polygon points="0,0 520,0 0,300" fill="#F1F2F5" fill-opacity="0.7"/>
+</svg>

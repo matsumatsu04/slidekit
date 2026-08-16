@@ -23,8 +23,8 @@ SLIDE-PATTERN-{name}.md     ← 構図（要素の配置・カラム構造）を
 | `SLIDE-PATTERN-{name}.md` | 構図パターン | 要素の配置・構造・各要素の役割 | 色・フォント・実コンテンツ |
 | `SLIDEKIT-DECK.md` | 設計書（ブリーフ） | 上記2種＋全スライドの構成＋実コンテンツ | （これ自体が完成形） |
 
-> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は作者およびコントリビューターのオリジナル成果物（MIT License）。
-> 初期分は作者の旧ライブラリ slide-pattern-library から統合し、以降は `CONTRIBUTING.md` の流れで追加される。
+> 構図パターンライブラリ（`patterns/SLIDE-PATTERN-*`）は作者のオリジナル成果物（MIT License）。
+> 初期分は作者の旧ライブラリ slide-pattern-library から統合し、以降は作者が `slidekit-layout` で追加する。
 > SlideKit の構図パターンはこの形式に統一する。
 
 **設計思想：色と構図を分離する。** デザインテーマ（色・フォント）を 1 つ決めれば、
@@ -133,7 +133,7 @@ category: 表紙                     # 14 カテゴリのいずれか（表記�
 summary: 左42%をアクセント色ベタ…   # 1〜2 文。manifest の summary ＝ INDEX の「概要」列
 scenes: 提案書・報告書の表紙…       # INDEX の「適したシーン」列
 tier: high                        # high | mid | low（再現性。下記「再現性」節）
-id: P133                          # 確定 ID。新規提出は pending（マージ時に自動採番）
+id: P133                          # 確定 ID。新規は pending（main への push 時に自動採番）
 ---
 ```
 
@@ -189,8 +189,7 @@ DESIGN 側の Frame で定義する旨を記す）
 - **パターンを追加・変更・削除したら `node tools/build-manifest.mjs` を実行して生成物を更新する**（`slidekit-layout` が実施）。
   `SLIDE-PATTERN-INDEX.md` と `manifest.json` を手で編集しない。削除時は `node tools/lint-pattern.mjs --refs` で
   スキル・SPEC・docs・examples に残存参照が無いことを確認する。
-- 規約チェックは `node tools/lint-pattern.mjs {name}`（省略時は全件）。公開ギャラリーへの提案は `bash tools/propose-pattern.sh {name}`
-  （流れは `CONTRIBUTING.md`）。
+- 規約チェックは `node tools/lint-pattern.mjs {name}`（省略時は全件）。
 - 既存ライブラリ（作者の旧ライブラリ slide-pattern-library 由来）も同じ形式・運用ルールに従う。
 
 ---
@@ -329,16 +328,23 @@ DESIGN 側の Frame で定義する旨を記す）
 
 ### パターンの恒久ID
 - 各パターンは **`id`**（`P001`〜、3桁ゼロ埋め連番）を持つ。正本は各 `.md` のフロントマター `id`（`manifest.json` はその生成物）。
-- **新規は `id: pending` で提出し、main へのマージ時に自動採番される**（`manifest.json` の `next_id` を使う。GitHub Action が
-  `node tools/build-manifest.mjs --assign` を実行し、各 `.md` の `id` を書き戻す。Action が動かないときは所有者が手元で同じコマンドを実行する）。
-  提出者・作成者が番号を決めない。
+- **新規は `id: pending` で置き、main への push 時に GitHub Action が `next_id` から自動採番する**（`manifest.json` の `next_id` を使う。
+  Action が `node tools/build-manifest.mjs --assign` を実行し、各 `.md` の `id` を書き戻す。手動で確定させたい場合・Action が動かないときは
+  所有者が手元で `node tools/build-manifest.mjs --assign` を実行してから push する）。作成者が番号を決めない。
 - `next_id` は単調増加。**削除しても欠番のまま残し、そのIDを再利用しない**（並び順・件数が変わっても既存パターンのIDは不変）。
 - ギャラリー（gallery/index.html・view.html）のカード・拡大ビューに同じIDを表示する。検索もIDに対応する。
 - `slidekit-assemble` は成果物提示の表にこのIDを含め、「どのスライドにどのパターン（ID）を使ったか」をユーザーがギャラリーと突き合わせて確認できるようにする。
   `pending` のパターンを使った場合は ID 列に `pending` と書く。
 
+### 背景画像レイヤー（任意・HTMLデッキビルダー）
+- `deck-config.json` の `background: { "image": "soft-diagonal", "default": "auto" }` で、各スライドの**最下層**に淡い抽象画像（`assets/backgrounds/`）を敷ける。
+- 既定（`auto`）は「白背景のスライド＝ON／表紙・全面塗り・写真背景＝OFF」。`slides[].bg: true|false` でページ単位に上書きできる（表紙などはここでOFF）。
+- 実装は `background-image` だけを上書きする。色・余白・共通見出しmetrics・本文の縦配置には影響せず、ON/OFF でレイアウトは動かない。
+- 成果物提示の表には「背景」列（ON/OFF）を含める。書式・判定規則の正は `docs/html-deck-generation.md`「背景画像レイヤー」節。
+
 ## バージョン
-- SPEC version: 1.7（パターン `.md` にフロントマター（name/category/summary/scenes/tier/id）を新設。manifest.json / INDEX.md を `tools/build-manifest.mjs` の生成物とし、新規パターンは `id: pending` → マージ時に自動採番へ変更）
+- SPEC version: 1.8（背景画像レイヤー（`background`・`slides[].bg`・auto判定）を新設）
+- SPEC version: 1.7（パターン `.md` にフロントマター（name/category/summary/scenes/tier/id）を新設。manifest.json / INDEX.md を `tools/build-manifest.mjs` の生成物とし、新規パターンは `id: pending` → main への push 時に自動採番へ変更）
 - 1.6（共通見出し sk-head v4→v5。Bの縦バーをタイトル文字高に合わせた短尺バーへ、Fをタブ型からドット＋英字ラベル型へ変更）
 - 1.5（共通見出しをデザインA/Bの2種からA〜Fの6種へ拡張）
 - 1.4: パターンの恒久ID・成果物提示へのID表示を追加
