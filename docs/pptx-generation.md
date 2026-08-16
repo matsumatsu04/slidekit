@@ -34,9 +34,13 @@ deck.json は SLIDEKIT-DECK.md と同じ内容の機械可読版（スキーマ�
 
 **レンダラ実装済みパターン**（それ以外は `bullets` フォールバック。増やす場合は build-pptx.mjs に追記）:
 agenda-toc / section-divider / key-message-single /
-numbered-list-with-body / three-column-icon-card / four-step-flow / two-column-split-boxes /
-summary-three-points / three-stage-circle-flow / icon-left-text-list / before-after-two-col /
-three-kpi-big-number / faq-single-column / bullets
+numbered-list-with-body / three-column-icon-card / two-column-split-boxes /
+summary-three-points / three-stage-circle-flow / before-after-two-col /
+three-kpi-big-number / faq-single-column / horizontal-timeline-cards / four-card-2x2 /
+price-total-highlight / bullets
+
+※ 一覧の正は `tools/pptx/build-pptx.mjs` のレンダラ表。ライブラリから削除されたパターンのレンダラが残っている場合があるが、
+そのパターン自体は使えない（`patterns/manifest.json` に無いものは選ばない）。
 
 **変換の約束事（ビルダー内で実装済み。新レンダラ追加時も従う）:**
 - キャンバス: `LAYOUT_16x9`（10in × 5.625in）。px指定は **128px = 1inch** で換算（1280×720基準）

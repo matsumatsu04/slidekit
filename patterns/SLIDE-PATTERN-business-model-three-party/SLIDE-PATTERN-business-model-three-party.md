@@ -28,4 +28,4 @@ id: P132
 
 ## Usage Guide（AIへの使い方）
 - 矢印のラベルは名詞で短く（「月額料金」「制作物」等）
-- 2者だけの関係なら two-circle-bilateral-flow を使う
+- 2者だけの関係なら two-column-split-boxes を使う

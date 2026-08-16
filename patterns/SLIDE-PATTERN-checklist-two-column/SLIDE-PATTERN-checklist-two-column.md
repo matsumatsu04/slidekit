@@ -27,5 +27,5 @@ id: P130
 | 補足 | 見出し下 | 1行の説明（省略可） |
 
 ## Usage Guide（AIへの使い方）
-- 項目は6〜8個。5個以下なら summary-three-points や icon-left-text-list を検討
+- 項目は6〜8個。5個以下なら summary-three-points や icon-left-text-list-detailed を検討
 - 「含まれないもの」を並べる場合は ok-ng-comparison を使う

@@ -85,7 +85,7 @@
       "message": "課題の本質は「人が足りない」ことより、「時間の使い方を変えられない」ことにある"
     },
     {
-      "pattern": "four-step-flow",
+      "pattern": "four-step-card-flow",
       "heading": "小さく回すほど効くAI活用",
       "content": {
         "steps": [
@@ -139,7 +139,7 @@
       "message": "毎日発生する定型作業から着手すると、追加投資なしでも2週間で効果が見える"
     },
     {
-      "pattern": "icon-left-text-list",
+      "pattern": "icon-left-text-list-detailed",
       "heading": "始める前のチェックリスト",
       "content": {
         "items": [

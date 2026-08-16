@@ -84,6 +84,9 @@ const REF_GLOBS = [
   { file: 'SPEC.md' },
   { dir: 'docs', re: /\.md$/ },
   { dir: 'examples', re: /\.(md|json|html)$/ },
+  // パターン同士の相互参照（Usage Guide の「〜等を検討」）も対象。
+  // 削除したパターンを他のパターンが案内し続ける事故を防ぐ。
+  { dir: 'patterns', re: /\/SLIDE-PATTERN-[a-z0-9-]+\.md$/ },
 ];
 
 // ---- 引数 ---------------------------------------------------------------
@@ -346,16 +349,21 @@ function listRefFiles() {
   return files;
 }
 
-/** git 履歴から、かつて存在して今は無いパターン名を集める（git が無ければ空） */
+/**
+ * かつて存在して今は無いパターン名を集める（git が無ければ空）。
+ * ① コミット済みの削除（git log --diff-filter=D）
+ * ② **まだコミットしていない削除**（index にはあるが作業ツリーに無い＝今まさに消した分）
+ *    ②が無いと「消した直後の残存参照」を見逃す（実際に取りこぼした事故あり・2026-08-16）。
+ */
 function deletedPatternNames(current) {
-  try {
-    const out = execFileSync('git', ['log', '--diff-filter=D', '--name-only', '--pretty=format:', '--', 'patterns/SLIDE-PATTERN-*/*.md'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-    const names = new Set();
+  const names = new Set();
+  const collect = (out) => {
     for (const m of out.matchAll(/patterns\/SLIDE-PATTERN-([a-z0-9-]+)\//g)) if (!current.has(m[1])) names.add(m[1]);
-    return names;
-  } catch {
-    return new Set();
-  }
+  };
+  const git = (args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  try { collect(git(['log', '--diff-filter=D', '--name-only', '--pretty=format:', '--', 'patterns/SLIDE-PATTERN-*/*.md'])); } catch { /* git 無し */ }
+  try { collect(git(['ls-files', '--', 'patterns/SLIDE-PATTERN-*/*.md'])); } catch { /* git 無し */ }
+  return names;
 }
 
 function lintRefs(currentNames) {
