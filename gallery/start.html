@@ -32,6 +32,7 @@
   .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
   .links a{display:inline-block;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:8px 14px;text-decoration:none}
   .links a:hover{border-color:var(--brand);color:var(--brand)}
+  pre.setup-prompt{white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto;font-size:12px;line-height:1.7}
 </style>
 </head>
 <body>
@@ -43,7 +44,7 @@
     <h1>SlideKit 導入手順</h1>
     <p class="lead">
       SlideKitは、スライドの「デザイン」と「構図」を型として固定し、Claude Codeとの会話だけで
-      統一感のあるスライド（HTML＋PDF）を生成する仕組みです。導入は2ステップ、数分で終わります。
+      統一感のあるスライド（HTML＋PDF）を生成する仕組みです。<strong>下のセットアップ用の文章をClaude Codeに貼り付ける</strong>だけで導入できます（3〜5分）。
     </p>
 
     <h2>準備するもの</h2>
@@ -53,7 +54,54 @@
       <li><strong>Google Chrome</strong>（PDF書き出しに使用。ブラウザ印刷でも代替できます）</li>
     </ul>
 
-    <h2>導入（2ステップ）</h2>
+    <h2>いちばん簡単な導入（Claude Codeに貼るだけ）</h2>
+    <p>下の内容をまるごとコピーして、<strong>Claude Codeにそのまま貼り付けて</strong>ください（起動フォルダはどこでもOK）。
+    取得・環境チェック・動作確認までをClaude Codeがやってくれます。所要3〜5分。</p>
+    <pre class="setup-prompt">SlideKit（スライド自動生成の仕組み）をこのPCで使えるようにセットアップしてください。
+下の手順どおりに実行し、最後に日本語で結果を報告してください。
+
+1. 取得する（置き場所は ~/slidekit）
+   if [ -d ~/slidekit/.git ]; then git -C ~/slidekit pull --ff-only; else git clone https://github.com/matsumatsu04/slidekit.git ~/slidekit; fi
+
+2. 環境チェック
+   cd ~/slidekit &amp;&amp; bash tools/doctor.sh
+   - ✗ が出たら解消する。Node.js 18以上が必須。すでに新しいNode.jsが別の場所にある場合は doctor が場所を教えるので、表示された export PATH=... を使う。
+     どこにも無い場合はインストール方法を提案し、許可を得てから実行する（Homebrewがあれば brew install node、無ければ https://nodejs.org/ja のLTS版）。
+   - △（Chrome / poppler）は無くてよい。無理に入れない（PDFはブラウザの「PDFに保存」でも作れる）。
+   - 解消したら doctor をもう一度実行し「✓ 準備OK」を確認する。
+
+3. 古いコピーの後片付け（該当する人だけ）
+   ls ~/.claude/skills 2&gt;/dev/null | grep &#x27;^slidekit-&#x27;
+   表示された場合のみ rm -rf ~/.claude/skills/slidekit-* を実行する。
+   （スキルは ~/slidekit/.claude/skills/ に入っているのでコピーは不要。二重にあると古い方が使われる）
+
+4. 動作確認（サンプルを1本ビルドする）
+   cd ~/slidekit &amp;&amp; rm -rf output/setup-check &amp;&amp; cp -R examples/html-deck-demo output/setup-check &amp;&amp; node tools/html-deck/build-html-deck.mjs output/setup-check &amp;&amp; bash tools/html-deck/export-pdf.sh output/setup-check
+   - index.html と deck.pdf ができれば成功。QA画像（qa-*.jpg）は無くてもよい。
+   - node が古いと言われたら、手順2で案内された新しいNode.jsのパスで同じコマンドを実行する。
+   - 確認できたら rm -rf ~/slidekit/output/setup-check で片付ける。
+
+5. 報告する（日本語で、次を必ず含める）
+   1) 導入先のパス／使えるようになった構図パターンの数／Node.jsのバージョン
+   2) 次にやること: 「一度このClaude Codeを終了し、ターミナルで cd ~/slidekit してから claude を起動し、『スライドを作って』と話しかける」
+      ※スライド生成のスキルは ~/slidekit フォルダの中でClaude Codeを起動したときだけ使えます
+   3) できること3つとURL:
+      - スライドを作る … ~/slidekit で claude →「スライドを作って」。出来上がりは ~/slidekit/output/ に入る
+      - 直す・PDFにする … https://slidekit-sigma.vercel.app/gallery/deck.html
+      - 構図を探す … https://slidekit-sigma.vercel.app/gallery/
+   4) 覚えておくとよいこと:
+      - 新しい構図パターンや機能は自動で追加される。「スライドを作って」と言うと最初に更新確認が入るので、聞かれたら「はい」と答える
+      - ~/slidekit の中のファイルは編集しない（更新を受け取れなくなる）。作ったスライドは output/ に入る
+      - スライドに淡い背景画像を敷ける。表紙など不要なページは1枚単位でオフにできる
+
+注意
+- システムに変更を加える操作（Node.jsの導入など）は、実行前に必ず何をするか説明して許可を取ること。
+- 手順が失敗したら、勝手に別の方法を試さず、失敗した内容と対処案を報告すること。</pre>
+    <div class="note">
+      Node.jsの導入など、PCに変更を加える操作は実行前に確認を求められます。内容を読んでから許可してください。
+    </div>
+
+    <h2>手動で入れる場合（2ステップ）</h2>
 
     <div class="step">
       <div class="no">1</div>
@@ -104,12 +152,15 @@ claude</pre>
     新しいパターンがあれば「更新しますか？」と聞いてくれます（「はい」で反映）。</p>
 
     <h2>うまくいかないとき</h2>
+    <p>まず環境チェックを流すと、原因と直し方がそのまま表示されます。</p>
+    <pre>cd ~/slidekit &amp;&amp; bash tools/doctor.sh</pre>
     <ul>
       <li><strong>「スライドを作って」に反応しない</strong> → <code>slidekit</code> フォルダの<strong>中で</strong> <code>claude</code> を起動しているか確認（<code>pwd</code> の末尾が <code>/slidekit</code>）。別のフォルダで起動しているとスキルが読み込まれません</li>
       <li><strong>以前 <code>~/.claude/skills/</code> にコピーしたことがある</strong> → 二重登録を避けるため <code>rm -rf ~/.claude/skills/slidekit-*</code> で削除し、Claude Codeを再起動</li>
-      <li><strong>ビルドでNode.jsのエラーが出る</strong> → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）</li>
+      <li><strong>ビルドでNode.jsのエラーが出る</strong>（<code>ERR_REQUIRE_ESM</code> 等） → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）。<code>tools/doctor.sh</code> がPC内の新しいNode.jsを探して場所を教えます</li>
       <li><strong>更新確認でエラーが出る</strong> → ZIPで取得した場合はgit管理外のため更新確認が働きません。<code>git clone</code> で取得し直すか、そのまま使い続けても問題ありません（スライド生成は止まりません）</li>
-      <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P →「PDFに保存」でも同じものが得られます</li>
+      <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P →「PDFに保存」でも同じものが得られます。Chromeが別の場所にある場合は <code>CHROME_BIN="/パス/chrome" bash tools/html-deck/export-pdf.sh &lt;フォルダ&gt;</code> で指定できます</li>
+      <li><strong>確認用画像（qa-*.jpg）ができない</strong> → <code>poppler</code> が未導入なだけで、PDFとHTMLは完成しています（<code>brew install poppler</code> で入れれば出ます）</li>
     </ul>
 
     <h2>リンク</h2>

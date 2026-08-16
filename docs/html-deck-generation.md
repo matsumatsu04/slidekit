@@ -366,6 +366,10 @@ bash tools/html-deck/export-pdf.sh <デッキフォルダ>
   960×540pxの1枚1ページに固定）、続けて `pdftoppm` で `qa-1.jpg`, `qa-2.jpg`… という
   目視確認用のJPEG画像を生成する。
 - `index.html` が無い場合は「先に build-html-deck.mjs を実行してください」と表示して終了する。
+- Chromeは `CHROME_BIN` → macOSの標準パス（Chrome / Chromium / Edge / Brave）→ `PATH` の順で探す。
+  見つからない場合は「ブラウザで開いて ⌘P →『PDFに保存』」を案内して終了する。
+- `pdftoppm`（poppler）が無い環境では **QA画像だけを飛ばし、PDFの生成は成功扱いにする**（止めない）。
+  その場合のQAは `index.html` をブラウザで開いて行う。
 - 生成された `qa-*.jpg` を実際に開いて目視確認する。確認観点:
   - はみ出し・要素の重なりがないか
   - 見出し（`.sk-h`）・メッセージライン（`.sk-msg`）と本文コンテンツが重なっていないか
