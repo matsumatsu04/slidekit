@@ -7,11 +7,11 @@
 <meta name="description" content="AIスライド生成のための構図パターン118種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Prompt:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#1a1a1a;--muted:#8a8f98;--line:#e6e7ea;--bg:#fafafa;--brand:#2f6bff;--surf:#f4f5f7;--side-w:240px}
+  :root{--navy:#1d2e54;--yellow:#fed309;--on-yellow:#333;--ink:#333;--muted:#6b7280;--line:#e6e7ea;--bg:#fafafa;--brand:var(--navy);--surf:#f5f5f5;--font-jp:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;--font-en:'Prompt','Zen Kaku Gothic New',sans-serif;--side-w:240px;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Noto Sans JP',sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  body{font-family:var(--font-jp);color:var(--ink);background:var(--bg);line-height:1.6}
   a{color:inherit}
   button{font-family:inherit}
 
@@ -25,13 +25,13 @@
   .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:0;height:100vh;
     display:flex;flex-direction:column;justify-content:space-between;background:#fff;
     border-right:1px solid var(--line);padding:22px 14px 16px;z-index:25}
-  .side-logo{font-size:15px;font-weight:900;letter-spacing:-.01em;padding:2px 10px 18px;display:flex;align-items:center;gap:6px}
-  .side-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);display:inline-block}
+  .side-logo{font-size:15px;font-weight:700;letter-spacing:.01em;padding:2px 10px 18px;display:flex;align-items:center;gap:6px;font-family:var(--font-en);color:var(--navy)}
+  .side-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);display:inline-block;flex:0 0 auto}
   .side-nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
   .nav-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
     border:none;background:none;font-size:13.5px;color:#444;padding:9px 11px;border-radius:9px;cursor:pointer;white-space:nowrap}
   .nav-item:hover{background:var(--surf)}
-  .nav-item.active{background:var(--ink);color:#fff;font-weight:700}
+  .nav-item.active{background:var(--navy);color:#fff;font-weight:700}
   .nav-item .cnt{font-size:11px;opacity:.55}
   .nav-item.active .cnt{opacity:.75;color:#fff}
   .nav-sep{height:1px;background:var(--line);margin:10px 6px}
@@ -71,7 +71,9 @@
   .pal-chip .d{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);margin-left:-4px}
   .pal-chip .d:first-child{margin-left:0}
   .pal-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);color:var(--ink);font-weight:700}
-  .link-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;white-space:nowrap}
+  /* 高さ17pxでタップ領域が小さかった（2026-08-19 UT指摘）。文字の見た目は据え置きで当たり判定だけ広げる */
+  .link-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;
+    white-space:nowrap;padding:8px 6px;margin:-8px -6px;min-height:24px}
   .divider{width:1px;height:22px;background:var(--line);flex:0 0 auto}
   .chip-btn{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#555;white-space:nowrap}
   .chip-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -79,12 +81,12 @@
 
   .content{padding:22px 28px 60px}
   .content-head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
-  .content-head h2{font-size:16px;font-weight:900}
+  .content-head h2{font-size:16px;font-weight:700;color:var(--navy)}
 
-  .btn{display:inline-block;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--ink);
-       border-radius:8px;padding:7px 12px;cursor:pointer;text-decoration:none;margin-right:8px}
-  .btn:hover{border-color:var(--brand);color:var(--brand)}
-  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn{display:inline-block;font-size:13px;font-weight:700;border:1px solid var(--navy);background:#fff;color:var(--navy);
+       border-radius:999px;padding:7px 16px;cursor:pointer;text-decoration:none;margin-right:8px}
+  .btn:hover{background:var(--navy);color:#fff}
+  .btn.primary{background:var(--yellow);color:var(--on-yellow);border-color:var(--yellow);font-weight:700}
 
   .noresult{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
   .loading{color:var(--muted);font-size:14px;padding:20px 0}
@@ -214,7 +216,7 @@
 <div class="app">
   <aside class="sidebar">
     <div>
-      <div class="side-logo"><span class="dot"></span>SlideKit</div>
+      <h1 class="side-logo"><span class="dot"></span>SlideKit</h1>
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" id="navAll">すべて<span class="cnt" id="allCount">…</span></button>
         <button class="nav-item owner-only" id="navFav">⭐ お気に入り<span class="cnt" id="favCount">0</span></button>
