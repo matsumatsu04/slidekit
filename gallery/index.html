@@ -218,8 +218,9 @@
 .mm-header{position:fixed;top:0;left:0;right:0;height:80px;background:#1d2e54;z-index:100}
 .mm-header-inner{max-width:1230px;height:100%;margin:0 auto;padding:0 24px;
   display:flex;align-items:center;justify-content:space-between;gap:24px}
-.mm-logo{display:flex;align-items:center;flex:0 0 auto}
-.mm-logo img{width:180px;height:auto;display:block}
+.mm-logo{display:flex;align-items:center;flex:0 0 auto;text-decoration:none}
+.mm-wordmark{color:#fff;font-family:'Prompt','Zen Kaku Gothic New',system-ui,sans-serif;
+  font-size:22px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap}
 .mm-nav{display:flex;align-items:center;gap:36px}
 .mm-nav a{color:#fff;font-size:16px;font-weight:400;text-decoration:none;white-space:nowrap;
   padding:6px 0;border-bottom:2px solid transparent}
@@ -231,7 +232,7 @@ body{padding-top:80px}
 
 @media (max-width:900px){
   .mm-header-inner{padding:0 16px}
-  .mm-logo img{width:148px}
+  .mm-wordmark{font-size:19px}
   .mm-burger{display:flex}
   .mm-nav{position:fixed;top:80px;left:0;right:0;background:#1d2e54;flex-direction:column;
     align-items:stretch;gap:0;padding:8px 16px 20px;display:none}
@@ -244,7 +245,7 @@ body{padding-top:80px}
 </style>
 </head>
 <body>
-<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/gallery/"><img src="/assets/brand/macminol-logo-w.png" alt="Macminol"></a><nav class="mm-nav" id="mmNav"><a href="/gallery/#patterns">構図パターン</a><a href="/gallery/#designs">デザインテーマ</a><a href="/gallery/deck.html">スライド確認・修正依頼</a><a href="/gallery/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
+<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/gallery/"><span class="mm-wordmark">SlideKit</span></a><nav class="mm-nav" id="mmNav"><a href="/gallery/#patterns">パターン</a><a href="/gallery/#designs">デザインテーマ</a><a href="/gallery/deck.html">スライド確認</a><a href="/gallery/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
 
 <div class="app">
   <aside class="sidebar">
@@ -420,11 +421,11 @@ function setPalette(palOrNull){
 // design systems（本リポジトリのオリジナル）
 // 3種に絞る（2026-08-19 代表指示）。自社3ブランドの配色を持つが、名前は色由来の中立名のみ
 const DESIGNS=[
-  {name:'formal-navy',label:'フォーマルネイビー',mood:'信頼感 / 論理的 / 提案・報告向き',font:'Noto Sans JP',swatches:['#1E2E53','#C2CCDE','#E8EBF2','#FFFFFF'],
+  {name:'formal-navy',label:'フォーマルネイビー',mood:'信頼感 / 論理的',font:'Noto Sans JP',swatches:['#1E2E53','#FDD317','#E8EBF2','#FFFFFF'],
    sample:'/design-systems/formal-navy/sample.html'},
-  {name:'gradient-blue',label:'グラデーションブルー',mood:'モダン / 前向き / 説明会・受講生向き',font:'Noto Sans JP',swatches:['#2B4894','#D72550','#E8EEF7','#FFFFFF'],
+  {name:'gradient-blue',label:'グラデーションブルー',mood:'モダン / 前向き',font:'Noto Sans JP',swatches:['#2B4894','#D72550','#E8EEF7','#FFFFFF'],
    sample:'/design-systems/gradient-blue/sample.html'},
-  {name:'warm-orange',label:'ウォームオレンジ',mood:'温かい / 距離が近い / 個別提案向き',font:'Noto Sans JP',swatches:['#FC5807','#C79A3A','#FDEAD8','#FFFFFF'],
+  {name:'warm-orange',label:'ウォームオレンジ',mood:'温かい / 距離が近い',font:'Noto Sans JP',swatches:['#FC5807','#C79A3A','#FDEAD8','#FFFFFF'],
    sample:'/design-systems/warm-orange/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
