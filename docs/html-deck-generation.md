@@ -288,7 +288,7 @@ node tools/html-deck/build-html-deck.mjs <デッキフォルダ>
 ## スライド確認・修正依頼ページ（確認・直接編集・フィードバック・PDF保存）
 
 生成した `index.html` は、ギャラリーの **スライド確認・修正依頼ページ**
-（本番: `https://slide.macminol.com/gallery/deck.html` ／ ローカル: `/gallery/deck.html`）に
+（本番: `https://slide.macminol.com/deck.html` ／ ローカル: `/deck.html`）に
 貼り付け（またはドラッグ＆ドロップ）するとスライドとして表示できる。
 
 - **編集モード（Googleスライド風・2026/8追加）**: ヘッダーの「✎ 編集モード」またはサムネイルのクリックで、

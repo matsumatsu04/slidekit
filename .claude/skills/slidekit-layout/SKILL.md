@@ -138,7 +138,7 @@ node tools/build-manifest.mjs           # ②manifest.json / INDEX.md を再生�
   ```
   （Chrome が無い環境では `.html` をブラウザで開き、100%表示で目視する。スクショは**パターンフォルダの中に保存しない**）
 - 利用者に .md / .html のパスを伝え、ローカルギャラリーでの見え方も案内する（利用者が別ターミナルで実行。AIが常駐させる必要はない）:
-  `python3 -m http.server 8930`（リポジトリ直下で実行）→ `http://localhost:8930/gallery/view.html?p={name}&pal=navy`
+  `python3 -m http.server 8930`（リポジトリ直下で実行）→ `http://localhost:8930/view.html?p={name}&pal=navy`
 - ID について一言添える: 「IDは `pending` のままで使えます。main へ push すると GitHub Action が自動採番します
   （手元で確定させたい場合は `node tools/build-manifest.mjs --assign` を実行してから push してください）」。ここで終了。
 

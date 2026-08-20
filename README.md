@@ -6,7 +6,7 @@ SlideKit は、スライドの「見た目」と「構図」をマークダウ�
 最終的に1枚の設計書にまとめてスライド生成AI（Claude のデザイン機能・NotebookLM など）に渡すための仕組みです。
 3つの Claude Code / Agent スキルと、すぐ使えるデザインテーマ・構図パターンが付属します。
 
-🎨 **ギャラリー（構図パターン一覧）:** https://slide.macminol.com/gallery/
+🎨 **ギャラリー（構図パターン一覧）:** https://slide.macminol.com/
 
 ---
 
@@ -76,8 +76,8 @@ cd slidekit && claude
 ## 同梱物
 
 - **デザインテーマ**: `design-systems/`（3種。フォーマルネイビー／グラデーションブルー／ウォームオレンジ）
-- **構図パターン**: `patterns/`（14カテゴリ・118種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slide.macminol.com/gallery/)で一覧・プレビュー・DL可。カラーパレット3種の切替つき）
-- **スライド確認・修正依頼ページ**: [`/gallery/deck.html`](https://slide.macminol.com/gallery/deck.html)（生成した `index.html` を貼り付け→スライド表示・スライド別フィードバック→修正プロンプト出力・ブラウザ印刷でPDF保存）
+- **構図パターン**: `patterns/`（14カテゴリ・118種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slide.macminol.com/)で一覧・プレビュー・DL可。カラーパレット3種の切替つき）
+- **スライド確認・修正依頼ページ**: [`/deck.html`](https://slide.macminol.com/deck.html)（生成した `index.html` を貼り付け→スライド表示・スライド別フィードバック→修正プロンプト出力・ブラウザ印刷でPDF保存）
 - **背景画像レイヤー**: `assets/backgrounds/`（各スライドの最下層に淡い抽象画像を敷ける。白背景のスライドだけ自動ON・表紙などはページ別にOFF可。`deck-config.json` の `background` ／ 確認ページのトグル）
 - **設計書の例**: `examples/sample-proposal/SLIDEKIT-DECK.md`
 
@@ -92,8 +92,8 @@ slidekit/
 ├─ tools/                  # デッキビルド・lint・manifest生成・更新確認スクリプト
 ├─ docs/                   # 生成ガイド・装飾ルール
 ├─ examples/               # SLIDEKIT-DECK.md の例
-├─ gallery/                # 公開ギャラリー（静的サイト）
-└─ index.html              # ルート → /gallery/ へ
+└─ index.html / deck.html / start.html / view.html / palettes.js
+                           # 公開ギャラリー（静的サイト。サイトのルートがそのまま入口）
 ```
 
 ## ライセンス

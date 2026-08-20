@@ -63,10 +63,10 @@ body{padding-top:80px}
 </style>
 </head>
 <body>
-<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/gallery/"><span class="mm-wordmark">SlideKit</span></a><nav class="mm-nav" id="mmNav"><a href="/gallery/#patterns">パターン</a><a href="/gallery/#designs">デザインテーマ</a><a href="/gallery/deck.html">スライド確認</a><a href="/gallery/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
+<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/"><span class="mm-wordmark">SlideKit</span></a><nav class="mm-nav" id="mmNav"><a href="/#patterns">パターン</a><a href="/#designs">デザインテーマ</a><a href="/deck.html">スライド確認</a><a href="/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
 
   <div class="bar">
-    <a class="back" href="/gallery/">← ギャラリーへ</a>
+    <a class="back" href="/">← ギャラリーへ</a>
     <span class="pid" id="pid" title="恒久ID（追加・削除があっても変わりません）"></span>
     <span class="name" id="pname"></span>
     <span class="cat" id="pcat"></span>
@@ -82,7 +82,7 @@ body{padding-top:80px}
     </div>
   </div>
 
-<script src="/gallery/palettes.js?v5"></script>
+<script src="/palettes.js?v5"></script>
 <script>
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
