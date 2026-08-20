@@ -75,8 +75,8 @@ cd slidekit && claude
 
 ## 同梱物
 
-- **デザインテーマ**: `design-systems/`（汎用・ブランド中立のサンプル）
-- **構図パターン**: `patterns/`（14カテゴリ・118種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slide.macminol.com/gallery/)で一覧・プレビュー・DL可。カラーパレット切替つき）
+- **デザインテーマ**: `design-systems/`（3種。フォーマルネイビー／グラデーションブルー／ウォームオレンジ）
+- **構図パターン**: `patterns/`（14カテゴリ・118種。各パターンに恒久ID（P001〜）。[ギャラリー](https://slide.macminol.com/gallery/)で一覧・プレビュー・DL可。カラーパレット3種の切替つき）
 - **スライド確認・修正依頼ページ**: [`/gallery/deck.html`](https://slide.macminol.com/gallery/deck.html)（生成した `index.html` を貼り付け→スライド表示・スライド別フィードバック→修正プロンプト出力・ブラウザ印刷でPDF保存）
 - **背景画像レイヤー**: `assets/backgrounds/`（各スライドの最下層に淡い抽象画像を敷ける。白背景のスライドだけ自動ON・表紙などはページ別にOFF可。`deck-config.json` の `background` ／ 確認ページのトグル）
 - **設計書の例**: `examples/sample-proposal/SLIDEKIT-DECK.md`

@@ -53,7 +53,7 @@
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
 let heading=qs.get('head')!=='off'; // 既定ON
-const HSTYLE_VALUES=['a','b','c','d','e','f'];
+const HSTYLE_VALUES=['a','b','c','f'];  // d(2トーン)・e(ショートバー)は2026-08-19廃止
 let hstyle=HSTYLE_VALUES.includes(qs.get('hstyle'))?qs.get('hstyle'):'a';
 const cat=qs.get('cat')||'';
 const pid=qs.get('id')||'';
@@ -70,7 +70,7 @@ document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 let PAL=(function(){
   const q=qs.get('pal')||localStorage.getItem('sk-pal');
   if(q==='gray') return null;
-  return skFindPalette(q) || skFindPalette('navy');
+  return skFindPalette(q) || skFindPalette('navy-gold');
 })();
 const frame=document.getElementById('frame');
 function apply(){

@@ -5,16 +5,12 @@
 // - base   : 淡い面の色（--sk-soft として注入。カード地・背景図形など）
 // - font   : 全パレット共通 #333333（パターンHTML側で固定済み）
 // 名前は色由来の中立名のみを使う（由来・用途がわかる固有名詞は入れない）。
+// 3種に絞る（2026-08-19 代表指示）。自社3ブランドの配色をそのまま持つが、
+// **名前は色由来の中立名だけを使う**。ギャラリーにブランド名は出さない。
 const SK_PALETTES = [
-  { key: 'blue',         label: 'ブルー',             main: '#2F6BFF', accent: '#1A1A1A', base: '#F4F5F7' },
-  { key: 'navy',         label: 'ネイビー',           main: '#1F3A5F', accent: '#4A6A8F', base: '#EEF2F7' },
-  { key: 'brown',        label: 'ブラウン',           main: '#A6572E', accent: '#9B938A', base: '#EFE6D8' },
-  { key: 'purple-pink',  label: 'パープル×ピンク',    main: '#635BFF', accent: '#FF5CA8', base: '#EEEDFF' },
-  { key: 'blue-pink',    label: 'ブルー×ピンク',      main: '#2B4894', accent: '#D72550', base: '#E8EEF7' },
   { key: 'navy-gold',    label: 'ネイビー×ゴールド',  main: '#1E2E53', accent: '#C9A227', base: '#E8EBF2' },
-  { key: 'green',        label: 'グリーン',           main: '#1E7A55', accent: '#4CA97E', base: '#E9F4EE' },
-  { key: 'light-blue',   label: 'ライトブルー',       main: '#2E9BD6', accent: '#1668A1', base: '#E8F4FB' },
-  { key: 'black',        label: 'ブラック',           main: '#111111', accent: '#555555', base: '#F2F2F2' },
+  { key: 'blue-pink',    label: 'ブルー×ピンク',      main: '#2B4894', accent: '#D72550', base: '#E8EEF7' },
+  { key: 'orange-gold',  label: 'オレンジ×ゴールド',  main: '#FC5807', accent: '#C79A3A', base: '#FDEAD8' },
 ];
 const SK_FONT_COLOR = '#333333';
 

@@ -253,8 +253,6 @@
         <button class="chip-btn" id="hA" data-h="a">A：下線</button>
         <button class="chip-btn" id="hB" data-h="b">B：縦バー</button>
         <button class="chip-btn" id="hC" data-h="c">C：塗り帯</button>
-        <button class="chip-btn" id="hD" data-h="d">D：2トーン</button>
-        <button class="chip-btn" id="hE" data-h="e">E：ショートバー</button>
         <button class="chip-btn" id="hF" data-h="f">F：ラベル</button>
       </div>
     </div>
@@ -335,9 +333,9 @@ const FA_KIT_URL=null; // Pro Kit URLを入れると全スタイル有効（Pro�
 let PAL=(function(){
   const saved=localStorage.getItem('sk-pal');
   if(saved==='gray') return null;                       // 明示的にグレーを選んだ状態
-  return skFindPalette(saved) || skFindPalette('navy'); // 既定はネイビー
+  return skFindPalette(saved) || skFindPalette('navy-gold'); // 既定はネイビー×ゴールド
 })();
-const HSTYLE_VALUES=['a','b','c','d','e','f'];
+const HSTYLE_VALUES=['a','b','c','f'];  // d(2トーン)・e(ショートバー)は2026-08-19廃止
 let HEADING=true, HSTYLE=(function(){
   const saved=localStorage.getItem('sk-hstyle');
   return HSTYLE_VALUES.includes(saved) ? saved : 'a';
@@ -387,23 +385,14 @@ function setPalette(palOrNull){
 })();
 
 // design systems（本リポジトリのオリジナル）
+// 3種に絞る（2026-08-19 代表指示）。自社3ブランドの配色を持つが、名前は色由来の中立名のみ
 const DESIGNS=[
-  {name:'minimal',label:'ミニマル',mood:'静か / 知的 / 余白多め',font:'Noto Sans JP',swatches:['#1A1A1A','#2F6BFF','#F4F5F7','#FFFFFF'],
-   sample:'/design-systems/minimal/sample.html'},
-  {name:'formal-navy',label:'フォーマルネイビー',mood:'信頼感 / 論理的 / 報告・提案向き',font:'Noto Sans JP',swatches:['#1F3A5F','#4A6A8F','#EEF2F7','#FFFFFF'],
+  {name:'formal-navy',label:'フォーマルネイビー',mood:'信頼感 / 論理的 / 提案・報告向き',font:'Noto Sans JP',swatches:['#1E2E53','#C2CCDE','#E8EBF2','#FFFFFF'],
    sample:'/design-systems/formal-navy/sample.html'},
-  {name:'warm',label:'ウォーム',mood:'上質 / 温かい / 雑誌風・明朝見出し',font:'見出し Noto Serif JP ／ 本文 Noto Sans JP',swatches:['#3A3733','#A6572E','#EFE6D8','#F7F3EC'],
-   sample:'/design-systems/warm/sample.html'},
-  {name:'dark',label:'ダーク',mood:'モダン / シャープ / スクリーン投影向き',font:'Noto Sans JP',swatches:['#0E1116','#6E8BFF','#1A2029','#E6E9EE'],
-   sample:'/design-systems/dark/sample.html'},
-  {name:'pop-gradient',label:'ポップグラデ',mood:'明るい / 大胆 / ピッチ・告知向き',font:'Noto Sans JP',swatches:['#635BFF','#FF5CA8','#EEEDFF','#FFFFFF'],
-   sample:'/design-systems/pop-gradient/sample.html'},
-  {name:'green',label:'グリーン',mood:'爽やか / やさしい / 教育・SaaS向き',font:'Noto Sans JP',swatches:['#1E7A55','#4CA97E','#E9F4EE','#FFFFFF'],
-   sample:'/design-systems/green/sample.html'},
-  {name:'light-blue',label:'ライトブルー',mood:'軽やか / 清潔感 / IR・サービス紹介向き',font:'Noto Sans JP',swatches:['#2E9BD6','#6FBFE8','#E8F4FB','#FFFFFF'],
-   sample:'/design-systems/light-blue/sample.html'},
-  {name:'black',label:'ブラック',mood:'ストイック / タイポ主役 / ブランド・ポートフォリオ向き',font:'Noto Sans JP',swatches:['#111111','#555555','#F2F2F2','#FFFFFF'],
-   sample:'/design-systems/black/sample.html'},
+  {name:'gradient-blue',label:'グラデーションブルー',mood:'モダン / 前向き / 説明会・受講生向き',font:'Noto Sans JP',swatches:['#2B4894','#D72550','#E8EEF7','#FFFFFF'],
+   sample:'/design-systems/gradient-blue/sample.html'},
+  {name:'warm-orange',label:'ウォームオレンジ',mood:'温かい / 距離が近い / 個別提案向き',font:'Noto Sans JP',swatches:['#FC5807','#C79A3A','#FDEAD8','#FFFFFF'],
+   sample:'/design-systems/warm-orange/sample.html'},
 ];
 const dsGrid=document.getElementById('dsGrid');
 for(const d of DESIGNS){
