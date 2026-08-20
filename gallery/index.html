@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SlideKit ギャラリー — 構図パターン & デザインテーマ</title>
-<meta name="description" content="AIスライド生成のための構図パターン118種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
+<title>SlideKit ギャラリー — パターン & デザインテーマ</title>
+<meta name="description" content="AIスライド生成のためのパターン118種とデザインテーマのギャラリー。各パターンのMarkdownをダウンロードして使えます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Prompt:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -256,7 +256,7 @@ body{padding-top:80px}
     </div>
     <div class="side-bottom">
       <a href="#designs">デザインテーマ</a>
-      <a href="/gallery/deck.html">スライド確認・修正依頼 ↗</a>
+      <a href="/gallery/deck.html">スライド確認 ↗</a>
       <a href="/gallery/start.html">導入手順 ↗</a>
     </div>
   </aside>
@@ -289,7 +289,7 @@ body{padding-top:80px}
 
     <div class="content">
       <div class="content-head" id="patterns">
-        <h2 id="sectionTitle">構図パターン</h2>
+        <h2 id="sectionTitle">パターン</h2>
         <button class="btn owner-only" id="delCopy" style="display:none">削除予定のIDをコピー</button>
       </div>
       <div class="grid" id="grid" data-density="3"></div>
@@ -564,7 +564,7 @@ function render(){
   LAST_LIST=list; // モーダルのカルーセルが参照する「現在の絞り込み結果」
   document.getElementById('noresult').style.display=list.length?'none':'block';
   document.getElementById('matchCount').textContent=DATA.length?`${list.length} / ${DATA.length} 件`:'';
-  const titleMap={all:'構図パターン',__fav:'⭐ お気に入り',__del:'🗑 削除予定'};
+  const titleMap={all:'パターン',__fav:'⭐ お気に入り',__del:'🗑 削除予定'};
   document.getElementById('sectionTitle').textContent=titleMap[active]||active;
   document.getElementById('delCopy').style.display=(active==='__del'&&list.length)?'inline-block':'none';
   list.forEach((p,i)=>{

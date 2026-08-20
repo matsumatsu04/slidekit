@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SlideKit スライド確認・修正依頼 — 貼り付けて表示・直接編集・フィードバック・PDF保存</title>
+<title>SlideKit スライド確認 — 貼り付けて表示・直接編集・フィードバック・PDF保存</title>
 <meta name="description" content="SlideKitで生成したスライド（index.html）を貼り付けて確認。Googleスライド風の編集モードで文言・配置・書式・画像・スライド構成を直接調整し、修正プロンプトを一括出力。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -178,7 +178,7 @@ body{padding-top:80px}
 
   <div class="bar" id="mainBar">
     <a class="back" href="/gallery/">← ギャラリーへ</a>
-    <span class="ttl" id="deckTitle">スライド確認・修正依頼</span>
+    <span class="ttl" id="deckTitle">スライド確認</span>
     <span class="cnt" id="deckCount"></span>
     <span class="sp"></span>
     <span class="lab" id="palLab" style="display:none">カラーパレット</span>
@@ -193,7 +193,7 @@ body{padding-top:80px}
 
   <div class="wrap" id="listWrap">
     <div class="input-panel" id="inputPanel">
-      <h1>スライド確認・修正依頼</h1>
+      <h1>スライド確認</h1>
       <p>
         SlideKitで生成したスライド（index.html）を読み込むと、この画面でそのまま確認できます。<br>
         「✎ 編集モード」では、Googleスライドのように<b>文字・配置・色・サイズ・画像・スライドの追加/複製/削除・背景画像のON/OFF</b>まで直接調整できます。<br>
@@ -686,7 +686,7 @@ function renderDeck(){
       <div class="s-fb">
         <textarea class="fb-text" placeholder="このスライドへのフィードバック（文言修正・構成の指示など）"></textarea>
         <div class="prow">
-          <span class="lab">構図パターン変更（任意）</span>
+          <span class="lab">パターン変更（任意）</span>
           <input class="fb-pattern" placeholder="例）P045 や three-kpi-big-number（ギャラリーで探してID指定）">
         </div>
       </div>`;
@@ -767,7 +767,7 @@ $('clearBtn').addEventListener('click',()=>{
   DECK=null;RAW='';$('emRail').innerHTML='';
   $('viewer').style.display='none';
   $('inputPanel').style.display='block';
-  $('deckTitle').textContent='スライド確認・修正依頼';$('deckCount').textContent='';
+  $('deckTitle').textContent='スライド確認';$('deckCount').textContent='';
   ['palLab','palettes','palReset','editModeBtn','printBtn','promptBtn','discardAllBtn','clearBtn'].forEach(id=>$(id).style.display='none');
 });
 $('discardAllBtn').addEventListener('click',()=>{
@@ -2139,7 +2139,7 @@ function buildPrompt(){
   lines.push('以下のフィードバックに沿って、このデッキのフォルダ内 slides/*.html を修正し、');
   lines.push('`node tools/html-deck/build-html-deck.mjs <デッキフォルダ>` で再ビルドしてください。');
   lines.push('構図パターン変更の指定があるスライドは patterns/SLIDE-PATTERN-{name}/ の構図に沿って作り直してください。');
-  lines.push('修正が終わったら index.html を返してください（ギャラリーの「スライド確認・修正依頼」ページで再確認します）。');
+  lines.push('修正が終わったら index.html を返してください（ギャラリーの「スライド確認」ページで再確認します）。');
   const iids=FB.order.map(o=>o.id);
   const allEdits=iids.flatMap(iid=>slideEdits(iid));
   const anyEdits=allEdits.length>0;
