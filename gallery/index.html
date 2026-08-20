@@ -22,7 +22,7 @@
   .app{display:flex;align-items:flex-start;min-height:100vh}
 
   /* ===== sidebar ===== */
-  .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:0;height:100vh;
+  .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:80px;height:calc(100vh - 80px);
     display:flex;flex-direction:column;justify-content:space-between;background:#fff;
     border-right:1px solid var(--line);padding:22px 14px 16px;z-index:25}
   .side-logo{font-size:15px;font-weight:700;letter-spacing:.01em;padding:2px 10px 18px;display:flex;align-items:center;gap:6px;font-family:var(--font-en);color:var(--navy)}
@@ -41,7 +41,7 @@
 
   /* ===== main ===== */
   .main{flex:1;min-width:0}
-  .toolbar-sticky{position:sticky;top:0;z-index:20;background:rgba(250,250,250,.94);backdrop-filter:blur(8px);
+  .toolbar-sticky{position:sticky;top:80px;z-index:20;background:rgba(250,250,250,.94);backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);padding:14px 28px}
   .toolbar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .toolbar-row + .toolbar-row{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
@@ -210,9 +210,42 @@
     .content{padding:18px 16px 60px}
     .toolbar-sticky{padding:12px 16px}
   }
+
+/* ===================================================== 共通ヘッダー（macminol.com 準拠）
+   実測値: 高さ80px・position:fixed・背景 #1D2E54・影なし・ロゴ180x58・
+   ナビ16px/weight400/白・項目ピッチ約110px。CTAピルはこの2サイトでは置かない（2026-08-19 代表判断）。
+   モバイルはネイビー地に白ハンバーガー。 */
+.mm-header{position:fixed;top:0;left:0;right:0;height:80px;background:#1d2e54;z-index:100}
+.mm-header-inner{max-width:1230px;height:100%;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px}
+.mm-logo{display:flex;align-items:center;flex:0 0 auto}
+.mm-logo img{width:180px;height:auto;display:block}
+.mm-nav{display:flex;align-items:center;gap:36px}
+.mm-nav a{color:#fff;font-size:16px;font-weight:400;text-decoration:none;white-space:nowrap;
+  padding:6px 0;border-bottom:2px solid transparent}
+.mm-nav a:hover{border-bottom-color:#fed309}
+.mm-burger{display:none;width:44px;height:44px;background:none;border:none;cursor:pointer;
+  flex-direction:column;justify-content:center;gap:7px;padding:0 8px}
+.mm-burger span{display:block;height:2px;background:#fff;border-radius:2px}
+body{padding-top:80px}
+
+@media (max-width:900px){
+  .mm-header-inner{padding:0 16px}
+  .mm-logo img{width:148px}
+  .mm-burger{display:flex}
+  .mm-nav{position:fixed;top:80px;left:0;right:0;background:#1d2e54;flex-direction:column;
+    align-items:stretch;gap:0;padding:8px 16px 20px;display:none}
+  .mm-nav[data-open="1"]{display:flex}
+  .mm-nav a{padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.16)}
+  .mm-nav a:hover{border-bottom-color:rgba(255,255,255,.16)}
+}
+  /* 固定ヘッダー80pxの下にアンカー先が潜らないようにする */
+  #patterns, #designs{scroll-margin-top:96px}
 </style>
 </head>
 <body>
+<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/gallery/"><img src="/assets/brand/macminol-logo-w.png" alt="Macminol"></a><nav class="mm-nav" id="mmNav"><a href="/gallery/#patterns">構図パターン</a><a href="/gallery/#designs">デザインテーマ</a><a href="/gallery/deck.html">スライド確認・修正依頼</a><a href="/gallery/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
+
 <div class="app">
   <aside class="sidebar">
     <div>
@@ -258,7 +291,7 @@
     </div>
 
     <div class="content">
-      <div class="content-head">
+      <div class="content-head" id="patterns">
         <h2 id="sectionTitle">構図パターン</h2>
         <button class="btn owner-only" id="delCopy" style="display:none">削除予定のIDをコピー</button>
       </div>
@@ -692,6 +725,17 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
 renderTray();
 window.addEventListener('resize',()=>requestAnimationFrame(fit));
 window.addEventListener('load',()=>requestAnimationFrame(fit));
+</script>
+<script>
+(function(){
+  var b=document.querySelector('[data-role="mm-burger"]'), n=document.getElementById('mmNav');
+  if(!b||!n) return;
+  function set(on){ n.setAttribute('data-open',on?'1':'0'); b.setAttribute('aria-expanded',on?'true':'false'); }
+  set(false);
+  b.addEventListener('click',function(){ set(n.getAttribute('data-open')!=='1'); });
+  n.addEventListener('click',function(e){ if(e.target.tagName==='A') set(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); });
+})();
 </script>
 </body>
 </html>
