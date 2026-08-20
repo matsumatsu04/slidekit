@@ -52,8 +52,8 @@ Google Slidesへの編集可能ファイルとしての納品が必要な場合�
 - `font` 省略時は `"Noto Sans JP"`、`pageNumbers` 省略時は `true`、`noPageNoOn` 省略時は `[]`。
 - `background` / `slides` は省略可（省略時は従来と完全に同じ出力）。淡い背景画像を各スライドの最下層に敷き、
   ページごとに ON/OFF する仕組み。詳細は下記「背景画像レイヤー」節。
-- `headingStyle` 省略時は `"a"`。共通見出し（`.sk-h`）のデザインを `"a"`〜`"f"` の6種から選ぶ
-  （`patterns/` 側の sk-head v5・`data-hstyle` と同じ6種。詳細は SPEC.md の「共通見出し」節）。
+- `headingStyle` 省略時は `"a"`。共通見出し（`.sk-h`）のデザインを `"a"`〜`"d"` の4種から選ぶ
+  （`patterns/` 側の sk-head v5・`data-hstyle` と同じ4種。詳細は SPEC.md の「共通見出し」節）。
   未対応の値を指定した場合はビルド時に警告を出し `"a"` にフォールバックする。
 - `iconStyle` 省略時は `"solid"`。`"solid"` / `"regular"` / `"light"` / `"thin"` / `"duotone"` /
   `"sharp"` の6種から選べる（詳細は下記「アイコンの使用ルール」）。フラグメント側は常に
@@ -100,9 +100,9 @@ Google Slidesへの編集可能ファイルとしての納品が必要な場合�
    フラグメント側は `<div class="sk-h">タイトル文言</div>` と、必要なら
    `<div class="sk-msg">結論1行</div>` を書くだけでよい。
 
-   - `headingStyle: "f"`（ドット＋英字ラベル型）を使う場合のみ、`.sk-h` に
+   - `headingStyle: "d"`（ドット＋英字ラベル型）を使う場合のみ、`.sk-h` に
      `data-label` 属性で英字ラベル文言を渡す（例: `<div class="sk-h" data-label="Flow">ご利用フロー</div>`）。
-     他のスタイル（a〜e）では不要。
+     他のスタイル（a〜c）では不要。
    - **見出しのみ**の場合、本文コンテンツは `top:76px` 以降に配置する。
    - **見出し＋メッセージライン**の場合、本文コンテンツは `top:128px` 以降に配置する。
 

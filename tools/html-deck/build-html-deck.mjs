@@ -41,9 +41,10 @@ const DEFAULT_THEME = {
 
 // 共通見出し（sk-h）のスタイル一覧。patterns/ 側の sk-head v5（data-hstyle="a"〜"f"）と
 // 同じ見た目になるよう対応させている。詳細は SPEC.md の「共通見出し」節を参照。
-// d（2トーン下線）・e（ショートバー）は 2026-08-19 に廃止（代表指示）。
+// 旧d（2トーン下線）・旧e（ショートバー）は 2026-08-19 に廃止（代表指示）。
+// 残った4種を連番に揃えるため、旧f（ドット＋英字ラベル）を d に改称した（2026-08-20）。
 // 既にビルド済みのデッキはCSSを焼き込んであるので表示は変わらない。再ビルド時のみここで弾かれる。
-const HEADING_STYLES = ['a', 'b', 'c', 'f'];
+const HEADING_STYLES = ['a', 'b', 'c', 'd'];
 
 // Font Awesome 6 のアイコンスタイル一覧。solid/regular はFree CDNで有効。
 // light/thin/duotone/sharp はPro Kit導入時のみ有効（詳細は docs/html-deck-generation.md）。
@@ -678,7 +679,7 @@ function buildHeadingCss(style) {
 .sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; border-radius:2px; background:var(--sk-accent); }`;
     case 'c': // 塗り帯（全幅アクセント帯・白文字）
       return `.sk-h { position:absolute; top:0; left:0; right:0; height:76px; box-sizing:border-box; display:flex; align-items:center; padding:0 40px; background:var(--sk-accent); font-size:24px; font-weight:700; color:#FFFFFF; }`;
-    case 'f': // ドット＋英字ラベル型（`.sk-h` に data-label 属性でラベル文言を渡す）
+    case 'd': // ドット＋英字ラベル型（`.sk-h` に data-label 属性でラベル文言を渡す）
       return `.sk-h { position:absolute; top:0; left:40px; right:40px; padding:16px 0 0; display:flex; flex-direction:column; align-items:flex-start; gap:4px; font-size:24px; font-weight:700; color:#333; }
 .sk-h::before { content:"● " attr(data-label); font-size:12px; font-weight:700; color:var(--sk-accent); letter-spacing:.06em; }`;
     case 'a': // 全幅下線（既定）

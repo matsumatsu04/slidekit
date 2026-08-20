@@ -38,7 +38,7 @@
   display:flex;align-items:center;justify-content:space-between;gap:24px}
 .mm-logo{display:flex;align-items:center;flex:0 0 auto;text-decoration:none}
 .mm-wordmark{color:#fff;font-family:'Prompt','Zen Kaku Gothic New',system-ui,sans-serif;
-  font-size:22px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap}
+  font-size:22px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;margin:0}
 .mm-nav{display:flex;align-items:center;gap:36px}
 .mm-nav a{color:#fff;font-size:16px;font-weight:400;text-decoration:none;white-space:nowrap;
   padding:6px 0;border-bottom:2px solid transparent}
@@ -85,7 +85,7 @@ body{padding-top:80px}
 const qs=new URLSearchParams(location.search);
 const name=(qs.get('p')||'').replace(/[^a-zA-Z0-9_-]/g,'');
 let heading=qs.get('head')!=='off'; // 既定ON
-const HSTYLE_VALUES=['a','b','c','f'];  // d(2トーン)・e(ショートバー)は2026-08-19廃止
+const HSTYLE_VALUES=['a','b','c','d'];  // 旧d(2トーン)・旧e(ショートバー)は廃止。旧f(ラベル)をdへ改称
 let hstyle=HSTYLE_VALUES.includes(qs.get('hstyle'))?qs.get('hstyle'):'a';
 const cat=qs.get('cat')||'';
 const pid=qs.get('id')||'';
