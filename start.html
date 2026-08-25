@@ -85,10 +85,11 @@ body{padding-top:80px}
     <ul>
       <li><strong>Claude Code</strong>（ターミナルで <code>claude</code> が起動できる状態）</li>
       <li><strong>Node.js</strong>（バージョン18以上。ビルド・一覧の更新・チェックのツールが使います。<code>node -v</code> で確認）</li>
+      <li><strong>git</strong>（macOSは最初から入っていることが多い。無ければ導入までClaude Codeが案内します）</li>
       <li><strong>Google Chrome</strong>（PDF書き出しに使用。ブラウザ印刷でも代替できます）</li>
     </ul>
 
-    <h2>いちばん簡単な導入（Claude Codeに貼るだけ）</h2>
+    <h2>導入（Claude Codeに貼るだけ）</h2>
     <p>下の内容をまるごとコピーして、<strong>Claude Codeにそのまま貼り付けて</strong>ください（起動フォルダはどこでもOK）。
     取得・環境チェック・動作確認までをClaude Codeがやってくれます。所要3〜5分。</p>
     <pre class="setup-prompt">SlideKit（スライド自動生成の仕組み）をこのPCで使えるようにセットアップしてください。
@@ -135,38 +136,6 @@ body{padding-top:80px}
       Node.jsの導入など、PCに変更を加える操作は実行前に確認を求められます。内容を読んでから許可してください。
     </div>
 
-    <h2>手動で入れる場合（2ステップ）</h2>
-
-    <div class="step">
-      <div class="no">1</div>
-      <div class="body">
-        <h3>リポジトリを取得する</h3>
-        <p>ターミナルで次を実行します（フォルダはどこでもOK）。</p>
-        <pre>git clone https://github.com/matsumatsu04/slidekit.git</pre>
-        <p>gitを使ったことがない場合は、<a href="https://github.com/matsumatsu04/slidekit" target="_blank" rel="noopener">GitHubのページ</a>右上の「Code → Download ZIP」からダウンロードして解凍しても動きます
-        （ただし後述の「更新」にはgitが必要です。Claude Codeに「gitを入れて」と頼めば導入できます）。</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="no">2</div>
-      <div class="body">
-        <h3>そのフォルダでClaude Codeを起動して、話しかける</h3>
-        <pre>cd slidekit
-claude</pre>
-        <pre>スライドを作って</pre>
-        <p>スキルはリポジトリの中（<code>.claude/skills/</code>）に入っているので、コピーや設置は不要です。
-        <code>slidekit</code> フォルダの中でClaude Codeを起動すれば自動で使えます。</p>
-        <p>タイトル・対象・目的・枚数などのヒアリングに答え、構成案を承認すると、
-        <code>index.html</code>（そのまま画面表示できるスライド）と <code>deck.pdf</code> が生成されます。</p>
-      </div>
-    </div>
-
-    <div class="note">
-      以前の手順で <code>~/.claude/skills/</code> にスキルをコピーした方は、二重登録を避けるため削除してください：
-      <code>rm -rf ~/.claude/skills/slidekit-*</code>
-    </div>
-
     <h2>できたスライドの確認・修正・PDF保存</h2>
     <ol>
       <li>生成された <code>index.html</code> を <a href="/deck.html">スライド確認</a> のページにドラッグ＆ドロップ</li>
@@ -192,7 +161,6 @@ claude</pre>
       <li><strong>「スライドを作って」に反応しない</strong> → <code>slidekit</code> フォルダの<strong>中で</strong> <code>claude</code> を起動しているか確認（<code>pwd</code> の末尾が <code>/slidekit</code>）。別のフォルダで起動しているとスキルが読み込まれません</li>
       <li><strong>以前 <code>~/.claude/skills/</code> にコピーしたことがある</strong> → 二重登録を避けるため <code>rm -rf ~/.claude/skills/slidekit-*</code> で削除し、Claude Codeを再起動</li>
       <li><strong>ビルドでNode.jsのエラーが出る</strong>（<code>ERR_REQUIRE_ESM</code> 等） → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）。<code>tools/doctor.sh</code> がPC内の新しいNode.jsを探して場所を教えます</li>
-      <li><strong>更新確認でエラーが出る</strong> → ZIPで取得した場合はgit管理外のため更新確認が働きません。<code>git clone</code> で取得し直すか、そのまま使い続けても問題ありません（スライド生成は止まりません）</li>
       <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P →「PDFに保存」でも同じものが得られます。Chromeが別の場所にある場合は <code>CHROME_BIN="/パス/chrome" bash tools/html-deck/export-pdf.sh &lt;フォルダ&gt;</code> で指定できます</li>
       <li><strong>確認用画像（qa-*.jpg）ができない</strong> → <code>poppler</code> が未導入なだけで、PDFとHTMLは完成しています（<code>brew install poppler</code> で入れれば出ます）</li>
     </ul>
