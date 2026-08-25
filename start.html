@@ -85,7 +85,7 @@ body{padding-top:80px}
     <ul>
       <li><strong>Claude Code</strong>（ターミナルで <code>claude</code> が起動できる状態）</li>
       <li><strong>Node.js</strong>（バージョン18以上。ビルド・一覧の更新・チェックのツールが使います。<code>node -v</code> で確認）</li>
-      <li><strong>git</strong>（macOSは最初から入っていることが多い。無ければ導入までClaude Codeが案内します）</li>
+      <li><strong>git</strong>（macOSは最初から入っていることが多く、WindowsはGit for Windowsで入ります。無ければ導入までClaude Codeが案内します）</li>
       <li><strong>Google Chrome</strong>（PDF書き出しに使用。ブラウザ印刷でも代替できます）</li>
     </ul>
 
@@ -101,7 +101,7 @@ body{padding-top:80px}
 2. 環境チェック
    cd ~/slidekit &amp;&amp; bash tools/doctor.sh
    - ✗ が出たら解消する。Node.js 18以上が必須。すでに新しいNode.jsが別の場所にある場合は doctor が場所を教えるので、表示された export PATH=... を使う。
-     どこにも無い場合はインストール方法を提案し、許可を得てから実行する（Homebrewがあれば brew install node、無ければ https://nodejs.org/ja のLTS版）。
+     どこにも無い場合はインストール方法を提案し、許可を得てから実行する（macOSはHomebrewがあれば brew install node、Windowsやそれ以外は https://nodejs.org/ja のLTS版）。
    - △（Chrome / poppler）は無くてよい。無理に入れない（PDFはブラウザの「PDFに保存」でも作れる）。
    - 解消したら doctor をもう一度実行し「✓ 準備OK」を確認する。
 
@@ -161,7 +161,7 @@ body{padding-top:80px}
       <li><strong>「スライドを作って」に反応しない</strong> → <code>slidekit</code> フォルダの<strong>中で</strong> <code>claude</code> を起動しているか確認（<code>pwd</code> の末尾が <code>/slidekit</code>）。別のフォルダで起動しているとスキルが読み込まれません</li>
       <li><strong>以前 <code>~/.claude/skills/</code> にコピーしたことがある</strong> → 二重登録を避けるため <code>rm -rf ~/.claude/skills/slidekit-*</code> で削除し、Claude Codeを再起動</li>
       <li><strong>ビルドでNode.jsのエラーが出る</strong>（<code>ERR_REQUIRE_ESM</code> 等） → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）。<code>tools/doctor.sh</code> がPC内の新しいNode.jsを探して場所を教えます</li>
-      <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P →「PDFに保存」でも同じものが得られます。Chromeが別の場所にある場合は <code>CHROME_BIN="/パス/chrome" bash tools/html-deck/export-pdf.sh &lt;フォルダ&gt;</code> で指定できます</li>
+      <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P（Windowsは Ctrl+P）→「PDFに保存」でも同じものが得られます。Chromeが別の場所にある場合は <code>CHROME_BIN="/パス/chrome" bash tools/html-deck/export-pdf.sh &lt;フォルダ&gt;</code> で指定できます</li>
       <li><strong>確認用画像（qa-*.jpg）ができない</strong> → <code>poppler</code> が未導入なだけで、PDFとHTMLは完成しています（<code>brew install poppler</code> で入れれば出ます）</li>
     </ul>
 

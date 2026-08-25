@@ -15,8 +15,15 @@ ok()   { printf '  ✓ %s\n' "$1"; }
 warn() { printf '  △ %s\n' "$1"; }
 bad()  { printf '  ✗ %s\n' "$1"; NG=1; }
 
+# OS判定（windows = Git Bash / MSYS / Cygwin）
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) OS=windows ;;
+  Darwin)               OS=mac ;;
+  *)                    OS=linux ;;
+esac
+
 echo "SlideKit 環境チェック"
-echo "  場所: $(pwd)"
+echo "  場所: $(pwd)（OS: $OS）"
 echo
 
 echo "[必須]"
@@ -30,7 +37,11 @@ if command -v git >/dev/null 2>&1; then
     echo "     → 更新を受け取るには git clone https://github.com/matsumatsu04/slidekit.git で取得し直してください"
   fi
 else
-  bad "git が見つかりません → https://git-scm.com/ から導入（macOSなら xcode-select --install でも入ります）"
+  if [ "$OS" = "windows" ]; then
+    bad "git が見つかりません → Git for Windows を導入（https://gitforwindows.org/）"
+  else
+    bad "git が見つかりません → https://git-scm.com/ から導入（macOSなら xcode-select --install でも入ります）"
+  fi
 fi
 
 # --- Node.js ---
@@ -59,6 +70,8 @@ else
     echo "     → 新しい Node がここにあります: $ALT（$("$ALT" -v)）"
     echo "        この1行を実行すると、このターミナルではそちらが使われます:"
     echo "        export PATH=\"$(dirname "$ALT"):\$PATH\""
+  elif [ "$OS" = "windows" ]; then
+    echo "     → 導入: https://nodejs.org/ja のLTS版インストーラー（または winget install OpenJS.NodeJS.LTS）"
   else
     echo "     → 導入: https://nodejs.org/ja（LTS版）／ macOSで Homebrew があれば: brew install node"
   fi
@@ -67,14 +80,23 @@ fi
 echo
 echo "[任意]"
 
-# --- Chrome ---
+# --- Chrome（WindowsではEdgeでも可＝標準搭載） ---
 CHROME=""
+WIN_LOCAL=""
+if command -v cygpath >/dev/null 2>&1 && [ -n "${LOCALAPPDATA:-}" ]; then
+  WIN_LOCAL="$(cygpath "$LOCALAPPDATA" 2>/dev/null || true)"
+fi
 for c in \
   "${CHROME_BIN:-}" \
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   "/Applications/Chromium.app/Contents/MacOS/Chromium" \
   "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" \
-  "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"; do
+  "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
+  "/c/Program Files/Google/Chrome/Application/chrome.exe" \
+  "/c/Program Files (x86)/Google/Chrome/Application/chrome.exe" \
+  "${WIN_LOCAL:+$WIN_LOCAL/Google/Chrome/Application/chrome.exe}" \
+  "/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" \
+  "/c/Program Files/Microsoft/Edge/Application/msedge.exe"; do
   if [ -n "$c" ] && [ -x "$c" ]; then CHROME="$c"; break; fi
 done
 if [ -z "$CHROME" ]; then
@@ -83,16 +105,20 @@ if [ -z "$CHROME" ]; then
   done
 fi
 if [ -n "$CHROME" ]; then
-  ok "Chrome（PDFを自動で書き出せます）: $CHROME"
+  ok "Chrome/Edge（PDFを自動で書き出せます）: $CHROME"
 else
-  warn "Chrome が見つかりません → PDFは index.html をブラウザで開いて ⌘P →「PDFに保存」で作れます"
+  warn "Chrome/Edge が見つかりません → PDFは index.html をブラウザで開いて ⌘P（Windowsは Ctrl+P）→「PDFに保存」で作れます"
 fi
 
 # --- poppler（QA画像） ---
 if command -v pdftoppm >/dev/null 2>&1; then
   ok "poppler（確認用の画像を自動生成できます）"
 else
-  warn "poppler なし → 確認用画像は作られません（PDFとHTMLは作れます。欲しければ brew install poppler）"
+  if [ "$OS" = "mac" ]; then
+    warn "poppler なし → 確認用画像は作られません（PDFとHTMLは作れます。欲しければ brew install poppler）"
+  else
+    warn "poppler なし → 確認用画像は作られません（PDFとHTMLは作れるので、無くて問題ありません）"
+  fi
 fi
 
 # --- ライブラリ本体 ---
