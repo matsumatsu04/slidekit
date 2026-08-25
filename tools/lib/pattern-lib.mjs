@@ -35,11 +35,11 @@ export const GENERATED = {
   manifest: 'patterns/manifest.json',
   index: 'patterns/SLIDE-PATTERN-INDEX.md',
   readme: 'README.md',
-  gallery: 'gallery/index.html',
+  gallery: 'index.html',
 };
 /** README / gallery の件数を書き換える正規表現（当該箇所だけを置換する） */
 export const README_COUNT_RE = /(14カテゴリ・)(\d+)(種)/;
-export const GALLERY_COUNT_RE = /(構図パターン)(\d+)(種)/;
+export const GALLERY_COUNT_RE = /(パターン)(\d+)(種)/;
 
 // ---- ID ---------------------------------------------------------------
 

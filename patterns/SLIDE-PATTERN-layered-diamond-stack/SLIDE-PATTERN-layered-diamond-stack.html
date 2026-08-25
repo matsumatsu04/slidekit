@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-layered-diamond-stack</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; position:relative; min-height:0; }
+  /* 左半分: 薄グレー地のテキストゾーン */
+  .ds-left { position:absolute; left:0; top:0; bottom:0; width:48%; background:var(--sk-soft,#F4F4F4); display:flex; flex-direction:column; justify-content:center; gap:22px; padding:24px 40px 24px 64px; }
+  .ds-block-head { font-size:14px; font-weight:bold; color:#333333; margin-bottom:6px; }
+  .ds-block-body { font-size:12px; color:#333333; line-height:1.7; }
+  .ds-block-body .em { color:var(--sk-accent,#555555); font-weight:bold; }
+  .ds-formula { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+  .ds-pill { background:#E4E4E4; border-radius:999px; padding:5px 14px; font-size:12px; color:#555555; white-space:nowrap; }
+  .ds-pill--accent { background:var(--sk-accent,#555555); color:#FFFFFF; font-weight:bold; }
+  .ds-op { font-size:14px; font-weight:bold; color:#555555; }
+  .ds-numlist { display:flex; flex-direction:column; gap:4px; }
+  .ds-numline { display:flex; gap:6px; font-size:12px; color:#333333; line-height:1.6; }
+  .ds-numline .n { font-weight:bold; color:#555555; flex-shrink:0; }
+  /* 右半分: ダイヤ積層 */
+  .ds-right { position:absolute; left:48%; right:0; top:0; bottom:0; display:flex; flex-direction:column; padding:20px 64px 14px 24px; }
+  .ds-right-title { font-size:16px; font-weight:bold; color:#333333; text-align:center; flex-shrink:0; }
+  .ds-diagram { flex:1; display:flex; align-items:center; justify-content:center; min-height:0; }
+  .ds-figure { display:flex; align-items:stretch; }
+  /* 軸（具体⇔抽象） */
+  .ds-axis { width:48px; display:flex; flex-direction:column; align-items:center; margin-right:16px; }
+  .ds-axis-badge { width:44px; height:44px; border-radius:50%; background:#ECECEC; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; color:#555555; flex-shrink:0; }
+  .ds-axis-line { flex:1; width:1px; background:#BBBBBB; }
+  /* ダイヤの積層 */
+  .ds-stack { display:flex; flex-direction:column; }
+  .ds-row { display:flex; align-items:center; position:relative; }
+  .ds-row + .ds-row { margin-top:-20px; }
+  .ds-row-1 { z-index:5; } .ds-row-2 { z-index:4; } .ds-row-3 { z-index:3; } .ds-row-4 { z-index:2; } .ds-row-5 { z-index:1; }
+  .ds-diamond { width:220px; height:72px; position:relative; flex-shrink:0; }
+  .ds-diamond span { position:absolute; left:36px; top:-38px; width:148px; height:148px; border-radius:6px; transform:scaleY(0.344) rotate(45deg); }
+  .ds-row-1 .ds-diamond span { background:var(--sk-accent,#787878); }
+  .ds-row-2 .ds-diamond span { background:color-mix(in srgb, var(--sk-accent,#787878), #FFFFFF 20%); }
+  .ds-row-3 .ds-diamond span { background:color-mix(in srgb, var(--sk-accent,#787878), #FFFFFF 40%); }
+  .ds-row-4 .ds-diamond span { background:color-mix(in srgb, var(--sk-accent,#787878), #FFFFFF 58%); }
+  .ds-row-5 .ds-diamond span { background:color-mix(in srgb, var(--sk-accent,#787878), #FFFFFF 74%); }
+  .ds-label { margin-left:14px; font-size:13px; color:#555555; white-space:nowrap; }
+  .ds-caption { flex-shrink:0; text-align:right; font-size:10px; color:#999999; margin-top:6px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <!-- 左半分: テキスト3ブロック -->
+    <div class="ds-left">
+      <div class="ds-block">
+        <div class="ds-block-head">小見出しが入ります</div>
+        <div class="ds-block-body">本文テキストが入ります。図解の前提や背景を2〜3行で説明し、<span class="em">要点の一部</span>を強調できます。読みやすい行間で短くまとめます。</div>
+      </div>
+      <div class="ds-block">
+        <div class="ds-block-head">小見出しが入ります</div>
+        <div class="ds-formula">
+          <span class="ds-pill">◯◯向上</span>
+          <span class="ds-op">＋</span>
+          <span class="ds-pill">◯◯向上</span>
+          <span class="ds-op">＝</span>
+          <span class="ds-pill ds-pill--accent">◯◯の向上</span>
+        </div>
+      </div>
+      <div class="ds-block">
+        <div class="ds-block-head">小見出しが入ります</div>
+        <div class="ds-numlist">
+          <div class="ds-numline"><span class="n">1.</span><span>番号リストの1項目目が入ります</span></div>
+          <div class="ds-numline"><span class="n">2.</span><span>番号リストの2項目目が入ります</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 右半分: ダイヤ積層 -->
+    <div class="ds-right">
+      <div class="ds-right-title">図解のタイトルが入ります</div>
+      <div class="ds-diagram">
+        <div class="ds-figure">
+          <div class="ds-axis">
+            <div class="ds-axis-badge">具体</div>
+            <div class="ds-axis-line"></div>
+            <div class="ds-axis-badge">抽象</div>
+          </div>
+          <div class="ds-stack">
+            <div class="ds-row ds-row-1"><div class="ds-diamond"><span></span></div><div class="ds-label">第1層のラベル</div></div>
+            <div class="ds-row ds-row-2"><div class="ds-diamond"><span></span></div><div class="ds-label">第2層のラベル</div></div>
+            <div class="ds-row ds-row-3"><div class="ds-diamond"><span></span></div><div class="ds-label">第3層のラベル</div></div>
+            <div class="ds-row ds-row-4"><div class="ds-diamond"><span></span></div><div class="ds-label">第4層のラベル</div></div>
+            <div class="ds-row ds-row-5"><div class="ds-diamond"><span></span></div><div class="ds-label">第5層のラベル</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ds-caption">出典・参考モデルの注記が入ります</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

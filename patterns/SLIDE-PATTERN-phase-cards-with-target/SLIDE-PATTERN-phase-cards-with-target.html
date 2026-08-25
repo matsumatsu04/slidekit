@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-phase-cards-with-target</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:20px 64px 28px; display:flex; flex-direction:column; min-height:0; }
+  .pc-msg { text-align:center; flex-shrink:0; }
+  .pc-msg-main { font-size:20px; font-weight:bold; color:#333333; line-height:1.4; }
+  .pc-msg-main .em { color:var(--sk-accent,#555555); }
+  .pc-msg-sub { font-size:12px; color:#777777; line-height:1.6; margin-top:6px; }
+  .pc-body { flex:1; display:flex; align-items:stretch; margin-top:16px; min-height:0; }
+  .pc-card { flex:1; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 90%); border-radius:12px; padding:18px 18px 14px; display:flex; flex-direction:column; min-width:0; }
+  .pc-phase { font-size:11px; font-weight:bold; letter-spacing:0.14em; color:var(--sk-accent,#777777); text-align:center; }
+  .pc-title { font-size:16px; font-weight:bold; color:#333333; text-align:center; margin:4px 0 10px; }
+  .pc-desc { font-size:12px; color:#333333; line-height:1.7; }
+  .pc-spacer { flex:1; }
+  .pc-target { background:#FFFFFF; border-radius:8px; padding:9px 12px; margin-top:12px; }
+  .pc-target-label { font-size:10px; font-weight:bold; color:#999999; margin-bottom:3px; }
+  .pc-target-body { font-size:11.5px; color:#333333; line-height:1.6; }
+  .pc-arrow { width:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .pc-arrow i { font-size:18px; color:var(--sk-accent,#888888); }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <!-- 上部: センターメッセージ -->
+    <div class="pc-msg">
+      <div class="pc-msg-main">中央のメッセージ1行が入ります（<span class="em">強調部分</span>を含められます）</div>
+      <div class="pc-msg-sub">補足テキストの1行目が入ります<br>補足テキストの2行目が入ります</div>
+    </div>
+    <!-- 本体: 3フェーズカード -->
+    <div class="pc-body">
+      <div class="pc-card">
+        <div class="pc-phase">PHASE 1</div>
+        <div class="pc-title">フェーズ名が入ります</div>
+        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。ここでは何をどこまでやるかを書きます。</div>
+        <div class="pc-spacer"></div>
+        <div class="pc-target">
+          <div class="pc-target-label">対象◯◯</div>
+          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
+        </div>
+      </div>
+      <div class="pc-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="pc-card">
+        <div class="pc-phase">PHASE 2</div>
+        <div class="pc-title">フェーズ名が入ります</div>
+        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。前のフェーズとのつながりを書きます。</div>
+        <div class="pc-spacer"></div>
+        <div class="pc-target">
+          <div class="pc-target-label">対象◯◯</div>
+          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
+        </div>
+      </div>
+      <div class="pc-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="pc-card">
+        <div class="pc-phase">PHASE 3</div>
+        <div class="pc-title">フェーズ名が入ります</div>
+        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。最終的に到達する状態を書きます。</div>
+        <div class="pc-spacer"></div>
+        <div class="pc-target">
+          <div class="pc-target-label">対象◯◯</div>
+          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

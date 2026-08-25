@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-axis-labeled-shift-comparison</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:24px 64px 32px; min-height:0; }
+  .shift-grid { width:100%; height:100%; display:grid; grid-template-columns:72px 16px 1fr 56px 1fr; grid-template-rows:40px 1fr 1fr 1fr; }
+  .axis-badge { grid-column:1; place-self:center; width:56px; height:56px; border-radius:50%; background:#ECECEC; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:bold; color:#555555; }
+  .axis-1 { grid-row:2; }
+  .axis-2 { grid-row:3; }
+  .axis-3 { grid-row:4; }
+  .panel { grid-row:1 / 5; margin-top:16px; border-radius:12px; }
+  .panel-old { grid-column:3; background:#F2F2F2; }
+  .panel-new { grid-column:5; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 88%); }
+  .pill { grid-row:1; justify-self:center; align-self:start; z-index:2; height:32px; padding:0 24px; border-radius:999px; display:flex; align-items:center; font-size:13px; font-weight:bold; color:#FFFFFF; }
+  .pill-old { grid-column:3; background:#999999; }
+  .pill-new { grid-column:5; background:var(--sk-accent,#666666); }
+  .row-card { background:#FFFFFF; border-radius:8px; margin:10px 24px; z-index:1; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13.5px; color:#333333; line-height:1.6; padding:8px 16px; }
+  .card-old-1, .card-new-1 { grid-row:2; }
+  .card-old-2, .card-new-2 { grid-row:3; }
+  .card-old-3, .card-new-3 { grid-row:4; }
+  .card-old-1, .card-old-2, .card-old-3 { grid-column:3; color:#777777; }
+  .card-new-1, .card-new-2, .card-new-3 { grid-column:5; }
+  .row-card .em { color:var(--sk-accent,#555555); font-weight:bold; }
+  .shift-arrow { grid-column:4; grid-row:1 / 5; place-self:center; margin-top:16px; }
+  .shift-arrow i { font-size:24px; color:var(--sk-accent,#888888); }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="shift-grid">
+      <!-- 大パネル2枚（背景） -->
+      <div class="panel panel-old"></div>
+      <div class="panel panel-new"></div>
+      <!-- ピル型ラベル（パネル上辺に食い込む） -->
+      <div class="pill pill-old">従来の◯◯</div>
+      <div class="pill pill-new">新しい◯◯</div>
+      <!-- 左端の軸ラベル列 -->
+      <div class="axis-badge axis-1">起点</div>
+      <div class="axis-badge axis-2">対象</div>
+      <div class="axis-badge axis-3">要素</div>
+      <!-- 左パネルの白カード3枚 -->
+      <div class="row-card card-old-1">従来の方式の記述が入ります</div>
+      <div class="row-card card-old-2">従来の方式の記述が入ります</div>
+      <div class="row-card card-old-3">従来の方式の記述が入ります</div>
+      <!-- パネル間の矢印 -->
+      <div class="shift-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <!-- 右パネルの白カード3枚 -->
+      <div class="row-card card-new-1">新しい方式の<span class="em">キーワード</span>が入ります</div>
+      <div class="row-card card-new-2">新しい方式の記述が入ります</div>
+      <div class="row-card card-new-3">新しい方式の記述が入ります</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

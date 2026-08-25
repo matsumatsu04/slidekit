@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-gap-to-essence-conclusion</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; padding:20px 64px 24px; display:flex; flex-direction:column; min-height:0; }
+  .gte-main { flex:1; display:flex; align-items:stretch; min-height:0; }
+  /* 左ゾーン: 現状の2カード＋ギャップ矢印 */
+  .gte-left { width:45%; background:#F2F2F2; border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; }
+  .gte-zone-title { font-size:15px; font-weight:bold; color:#333333; text-align:center; flex-shrink:0; }
+  .gte-left-body { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .gte-card { background:#FFFFFF; border-radius:8px; padding:10px 14px; }
+  .gte-card-title { font-size:13px; font-weight:bold; color:#333333; margin-bottom:4px; }
+  .gte-line { display:flex; gap:6px; font-size:11.5px; color:#555555; line-height:1.6; }
+  .gte-line .dot { width:4px; height:4px; border-radius:50%; background:#AAAAAA; margin-top:7px; flex-shrink:0; }
+  .gte-gap { display:flex; flex-direction:column; align-items:center; margin:4px 0; color:var(--sk-accent2,var(--sk-accent,#888888)); }
+  .gte-gap i { font-size:14px; line-height:1; }
+  .gte-card--essence { border:1.5px solid var(--sk-accent,#888888); }
+  /* 中央: 右向き大矢印 */
+  .gte-center { width:56px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .gte-center i { font-size:26px; color:#BBBBBB; }
+  /* 右ゾーン: 本質の番号リスト */
+  .gte-right { flex:1; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 90%); border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; }
+  .gte-right-sub { font-size:11px; color:#666666; text-align:center; line-height:1.6; margin-top:4px; flex-shrink:0; }
+  .gte-right-sub .em { color:var(--sk-accent,#555555); font-weight:bold; }
+  .gte-right-body { flex:1; display:flex; flex-direction:column; justify-content:center; gap:8px; }
+  .gte-item { background:#FFFFFF; border-radius:8px; padding:9px 12px; display:flex; align-items:center; gap:10px; }
+  .gte-num { width:24px; height:24px; border-radius:50%; background:var(--sk-accent,#555555); color:#FFFFFF; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .gte-item-name { font-size:13px; font-weight:bold; color:#333333; }
+  .gte-item-note { margin-left:auto; font-size:10.5px; color:#777777; text-align:right; line-height:1.4; }
+  /* 下部: 結論バンド */
+  .gte-conclusion { flex-shrink:0; margin-top:14px; background:var(--sk-soft,#F0F0F0); border-radius:8px; padding:10px 16px; text-align:center; font-size:18px; font-weight:bold; color:#333333; line-height:1.5; }
+  .gte-conclusion .em { color:var(--sk-accent,#555555); }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+    <div class="gte-main">
+      <!-- 左ゾーン: 現状 -->
+      <div class="gte-left">
+        <div class="gte-zone-title">現状の小見出しが入ります</div>
+        <div class="gte-left-body">
+          <div class="gte-card">
+            <div class="gte-card-title">上段カードのタイトルが入ります</div>
+            <div class="gte-line"><span class="dot"></span><span>箇条書きの1行目が入ります</span></div>
+            <div class="gte-line"><span class="dot"></span><span>箇条書きの2行目が入ります</span></div>
+          </div>
+          <div class="gte-gap"><i class="fa-solid fa-caret-up"></i><i class="fa-solid fa-caret-down"></i></div>
+          <div class="gte-card gte-card--essence">
+            <div class="gte-card-title">下段カードのタイトルが入ります</div>
+            <div class="gte-line"><span class="dot"></span><span>箇条書きの1行目が入ります</span></div>
+            <div class="gte-line"><span class="dot"></span><span>箇条書きの2行目が入ります</span></div>
+            <div class="gte-line"><span class="dot"></span><span>箇条書きの3行目が入ります</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 中央: 大矢印 -->
+      <div class="gte-center"><i class="fa-solid fa-arrow-right"></i></div>
+      <!-- 右ゾーン: 本質 -->
+      <div class="gte-right">
+        <div class="gte-zone-title">本質は「キーワード」が入ります</div>
+        <div class="gte-right-sub">補足テキストの1行目が入ります<br>補足の<span class="em">強調部分</span>を含む2行目が入ります</div>
+        <div class="gte-right-body">
+          <div class="gte-item">
+            <div class="gte-num">1</div>
+            <div class="gte-item-name">項目名が入ります</div>
+            <div class="gte-item-note">補足テキストが<br>入ります</div>
+          </div>
+          <div class="gte-item">
+            <div class="gte-num">2</div>
+            <div class="gte-item-name">項目名が入ります</div>
+            <div class="gte-item-note">補足テキストが<br>入ります</div>
+          </div>
+          <div class="gte-item">
+            <div class="gte-num">3</div>
+            <div class="gte-item-name">項目名が入ります</div>
+            <div class="gte-item-note">補足テキストが<br>入ります</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 下部: 結論バンド -->
+    <div class="gte-conclusion">これはまさに「<span class="em">キーワード</span>」の課題 ＝ <span class="em">結論の言い切り</span>が入ります</div>
+  </div>
+</div>
+</body>
+</html>
