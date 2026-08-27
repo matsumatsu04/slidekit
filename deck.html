@@ -238,12 +238,25 @@ body{padding-top:80px}
         「✎ 編集モード」では、Googleスライドのように<b>文字・配置・色・サイズ・画像・スライドの追加/複製/削除・背景画像のON/OFF</b>まで直接調整できます。<br>
         編集内容とフィードバックは「修正プロンプトを出力」で1つにまとまり、Claude Codeに貼り付けるとデッキ本体に反映されます。
       </p>
-      <div class="drop" id="drop">ここに index.html をドラッグ＆ドロップ（またはクリックしてファイル選択）</div>
+      <div class="drop" id="drop">ここに index.html をドラッグ＆ドロップ（クリックでファイル選択・ファイルパスの貼り付けでも開けます）</div>
       <input type="file" id="file" accept=".html,.htm,text/html" style="display:none">
-      <textarea id="src" placeholder="または、index.html の中身（テキスト全文）をここに貼り付け"></textarea>
+      <textarea id="src" placeholder="または、index.html の中身（テキスト全文）か、ファイルパス（/Users/…/index.html）をここに貼り付け"></textarea>
       <div class="input-actions">
         <button class="btn primary" id="loadBtn">デッキを表示</button>
         <span class="err" id="err"></span>
+      </div>
+    </div>
+
+    <!-- ローカルパスから開く: 初回のフォルダ許可を求めるモーダル（File System Access API・Chrome/Edge） -->
+    <div id="pathModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90;align-items:center;justify-content:center">
+      <div style="background:#fff;border-radius:12px;max-width:500px;margin:16px;padding:22px 24px;font-size:13px;line-height:1.9;box-shadow:0 18px 50px rgba(0,0,0,.3)">
+        <h3 style="font-size:15px;margin-bottom:8px">ファイルパスから開く（初回だけ設定）</h3>
+        <p style="color:#555">ブラウザの決まりで、パスの文字列だけではファイルを読めません。<b>最初に一度だけ</b>、パスに含まれる上位のフォルダ（ホームフォルダや <code>ai_folder</code> など）を選んで許可してください。<br>
+        以後はこのブラウザに記憶され、<b>パスを貼るだけで開けるように</b>なります。</p>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+          <button class="btn gray" id="pathCancel">やめる</button>
+          <button class="btn primary" id="pathPick">フォルダを選ぶ</button>
+        </div>
       </div>
     </div>
 
@@ -803,7 +816,7 @@ function loadDeck(html){
   ['palLab','palettes','palReset','editModeBtn','printBtn','promptBtn','discardAllBtn','clearBtn'].forEach(id=>$(id).style.display='');
   renderDeck();
 }
-$('loadBtn').addEventListener('click',()=>loadDeck($('src').value));
+$('loadBtn').addEventListener('click',()=>{ const v=$('src').value; if(looksLikePath(v)){openFromPath(v);}else{loadDeck(v);} });
 $('drop').addEventListener('click',()=>$('file').click());
 $('file').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
@@ -812,8 +825,87 @@ $('file').addEventListener('change',e=>{
 ['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('on');}));
 ['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('on');}));
 $('drop').addEventListener('drop',e=>{
-  const f=e.dataTransfer.files[0];if(!f)return;
-  f.text().then(t=>{$('src').value=t;loadDeck(t);});
+  const f=e.dataTransfer.files[0];
+  if(f){ f.text().then(t=>{$('src').value=t;loadDeck(t);}); return; }
+  const t=e.dataTransfer.getData('text/plain');
+  if(looksLikePath(t)) openFromPath(t);
+});
+
+/* ===== ローカルのファイルパスから開く（File System Access API・Chrome/Edge） =====
+   Claude Codeが返す「/Users/…/index.html」等のパスを貼るだけで開けるようにする。
+   ブラウザはパス文字列から直接ファイルを読めないため、初回に上位フォルダを1回選んでもらい、
+   そのハンドルをIndexedDBに記憶 → 以後はパスの区切りをハンドル名と突き合わせて辿って読む。 */
+function looksLikePath(t){
+  t=(t||'').trim();
+  if(!t||t.includes('<')||t.includes('\n'))return false;
+  if(/^file:\/\//.test(t))return true;
+  return /^(~\/|\/|[A-Za-z]:[\\/]).+\.html?$/i.test(t.replace(/^["']|["']$/g,''));
+}
+function pathSegments(t){
+  t=(t||'').trim().replace(/^["']|["']$/g,'').replace(/^file:\/\//,'');
+  try{t=decodeURIComponent(t);}catch(_){/* %表記でなければそのまま */}
+  return t.split(/[\\/]+/).filter(s=>s&&s!=='~'&&!/^[A-Za-z]:$/.test(s));
+}
+function pdbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('sk-dirs',1);
+  r.onupgradeneeded=()=>{ r.result.createObjectStore('handles',{keyPath:'id',autoIncrement:true}); };
+  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function pdbAll(){ try{ const db=await pdbOpen(); return await new Promise((res,rej)=>{
+  const q=db.transaction('handles').objectStore('handles').getAll();
+  q.onsuccess=()=>res(q.result||[]); q.onerror=()=>rej(q.error); }); }catch(_){ return []; } }
+async function pdbAdd(handle){ try{ const db=await pdbOpen(); const all=await pdbAll();
+  const tx=db.transaction('handles','readwrite'); const st=tx.objectStore('handles');
+  for(const r of all){ let same=false; try{ same=(r.handle&&r.handle.name===handle.name&&await r.handle.isSameEntry(handle)); }catch(_){ same=(r.handle&&r.handle.name===handle.name); } if(same) st.delete(r.id); }
+  const rest=all.filter(r=>!(r.handle&&r.handle.name===handle.name));
+  for(const r of rest.slice(0,Math.max(0,rest.length-4))) st.delete(r.id); // 記憶は最新5つまで
+  st.add({name:handle.name,handle,t:Date.now()});
+  await new Promise(res=>{tx.oncomplete=res;tx.onerror=res;});
+}catch(_){/* 記憶できなくても今回の読み込みは続行できる */} }
+async function ensurePerm(h){ try{
+  if(await h.queryPermission({mode:'read'})==='granted')return true;
+  return (await h.requestPermission({mode:'read'}))==='granted';
+}catch(_){ return false; } }
+async function resolveInDir(handle,segs){
+  const hits=[]; segs.forEach((s,i)=>{ if(s===handle.name) hits.push(i); });
+  for(const i of hits.reverse()){ // 同名フォルダが複数あればパスの深い側から試す
+    try{
+      let dir=handle;
+      for(let j=i+1;j<segs.length-1;j++) dir=await dir.getDirectoryHandle(segs[j]);
+      const fh=await dir.getFileHandle(segs[segs.length-1]);
+      return await (await fh.getFile()).text();
+    }catch(_){/* この出現位置では辿れない。次へ */}
+  }
+  return null;
+}
+async function openFromPath(path){
+  const err=$('err'); err.style.display='none';
+  if(!window.showDirectoryPicker){
+    err.textContent='このブラウザではパスから開けません（Chrome/Edgeのみ対応）。index.html をドラッグ＆ドロップしてください';
+    err.style.display='inline'; return;
+  }
+  const segs=pathSegments(path);
+  if(segs.length<2){ err.textContent='パスを読み取れませんでした'; err.style.display='inline'; return; }
+  for(const rec of (await pdbAll()).sort((a,b)=>(b.t||0)-(a.t||0))){
+    if(!rec.handle) continue;
+    if(!(await ensurePerm(rec.handle))) continue;
+    const txt=await resolveInDir(rec.handle,segs);
+    if(txt!=null){ $('src').value=txt; loadDeck(txt); flashChip(segs[segs.length-1]+' を開きました'); return; }
+  }
+  $('pathModal').dataset.path=path; $('pathModal').style.display='flex';
+}
+$('pathCancel').addEventListener('click',()=>{ $('pathModal').style.display='none'; });
+$('pathPick').addEventListener('click',async()=>{
+  const path=$('pathModal').dataset.path||''; const err=$('err');
+  let h=null; try{ h=await showDirectoryPicker(); }catch(_){ /* キャンセル */ }
+  $('pathModal').style.display='none';
+  if(!h) return;
+  await pdbAdd(h);
+  const segs=pathSegments(path);
+  const txt=await resolveInDir(h,segs);
+  if(txt!=null){ $('src').value=txt; loadDeck(txt); flashChip(segs[segs.length-1]+' を開きました'); }
+  else{
+    err.textContent='選んだフォルダ「'+h.name+'」からこのパスを辿れませんでした。パスに含まれる名前のフォルダ（例: '+(segs[Math.max(0,segs.length-4)]||'上位フォルダ')+'）を選んでください';
+    err.style.display='inline';
+  }
 });
 $('clearBtn').addEventListener('click',()=>{
   exitEditMode();
