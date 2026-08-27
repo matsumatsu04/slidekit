@@ -7,7 +7,9 @@
 <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
 <link rel="apple-touch-icon" type="image/png" href="/assets/brand/favicon.png">
 <meta name="description" content="SlideKitで生成したスライド（index.html）を貼り付けて確認。Googleスライド風の編集モードで文言・配置・書式・画像・スライド構成を直接調整し、修正プロンプトを一括出力。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Prompt:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--navy:#1d2e54;--yellow:#fed309;--on-yellow:#333;--ink:#333;--muted:#6b7280;--line:#e6e7ea;--bg:#fafafa;--brand:var(--navy);--surf:#f5f5f5;--font-jp:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;--font-en:'Prompt','Zen Kaku Gothic New',sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -78,10 +80,16 @@
 
   /* ===== 編集モード ===== */
   #editMode{display:none;flex-direction:column;background:#E9EAEC}
-  .em-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .em-counter{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;min-width:52px;text-align:center}
+  /* 編集バーは常に見えるようにする（スクロールで隠れていた・2026-08-21 代表指摘） */
+  .em-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);
+    flex-wrap:wrap;position:sticky;top:0;z-index:38;flex-shrink:0}
   .em-sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
-  .em-selchip{font-size:11px;font-family:ui-monospace,monospace;color:var(--muted);max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* 文言が「グループ化」⇄「グループ解除」で変わってもバーの折り返しが動かないよう幅を固定 */
+  #grpBtn{min-width:88px}
+  .em-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,8px);z-index:80;
+    background:#20242C;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;white-space:nowrap;
+    opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.24)}
+  .em-toast.show{opacity:1;transform:translate(-50%,0)}
   .fmt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap}
   #ffSel,#bwSel,#zoomSel{border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-size:12.5px;background:#fff;max-width:150px}
   #ffSel:disabled,#bwSel:disabled{opacity:.35}
@@ -115,6 +123,35 @@
   .em-panel .ph{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
   .em-panel .ph h3{font-size:13px;flex:1}
   #eList{flex:1;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+  /* レイヤーパネル（重ね順・2026-08-21） */
+  .em-layers{width:224px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;flex-shrink:0}
+  .em-layers .ph{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .em-layers .ph h3{font-size:13px;flex:1}
+  .em-layers .hint{font-size:11px;color:var(--muted)}
+  #eLayers{flex:1;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:4px}
+  .ly{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;
+      font-size:12px;cursor:grab;background:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .ly:hover{border-color:#B9CBFF}
+  .ly.cur{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand);font-weight:700}
+  .ly.dragging{opacity:.4}
+  .ly.drop-before{box-shadow:0 -3px 0 0 var(--brand)}
+  .ly.drop-after{box-shadow:0 3px 0 0 var(--brand)}
+  .ly .lyt{flex:1;overflow:hidden;text-overflow:ellipsis}
+  .ly .lyz{font-size:10px;color:var(--muted);flex-shrink:0}
+  .em-layers .empty{padding:12px;font-size:12px;color:var(--muted)}
+  /* ボタンにカーソルを当てたらショートカットをふわっと出す（2026-08-21 代表要望） */
+  .tipwrap{position:relative;display:inline-flex}
+  /* 左端に折り返されたボタンでも見切れないよう、中央ぞろえでなくボタンの左端に合わせる */
+  .tipwrap .tip{position:absolute;top:calc(100% + 8px);left:0;transform:translateY(-4px);
+    background:#20242C;color:#fff;border-radius:7px;padding:6px 10px;font-size:11px;line-height:1.5;
+    white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:60;
+    box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .tipwrap .tip::before{content:"";position:absolute;bottom:100%;left:12px;
+    border:5px solid transparent;border-bottom-color:#20242C}
+  .tipwrap:hover .tip{opacity:1;transform:translateY(0)}
+  .tipwrap .tip b{display:block;font-weight:700;margin-bottom:1px}
+  .tipwrap .tip kbd{display:inline-block;background:rgba(255,255,255,.16);border-radius:4px;padding:1px 5px;
+    font-family:inherit;font-size:11px}
   .e-item{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px}
   .e-item .e-kind{flex-shrink:0;font-weight:700;font-size:11px;background:var(--surf);border-radius:6px;padding:2px 6px;margin-top:1px}
   .e-item .e-desc{flex:1;line-height:1.6;word-break:break-all}
@@ -122,7 +159,8 @@
   .e-empty{font-size:12px;color:var(--muted);line-height:1.9;padding:8px 2px}
   .e-note{font-size:11px;color:var(--muted);line-height:1.7;padding:10px 14px;border-top:1px solid var(--line)}
   .helpwrap{position:relative}
-  .helppop{position:absolute;right:0;top:42px;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.16);padding:14px 16px;width:360px;display:none}
+  /* 位置は開くときにJSで画面内へ収める（左端に折り返されると画面外へ出ていた・2026-08-21 代表指摘） */
+  .helppop{position:fixed;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.16);padding:14px 16px;width:360px;max-width:calc(100vw - 16px);display:none;overflow:auto}
   .helppop.show{display:block}
   .helppop h4{font-size:12.5px;margin-bottom:8px}
   .helppop table{width:100%;border-collapse:collapse;font-size:12px}
@@ -179,7 +217,6 @@ body{padding-top:80px}
 <header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/"><span class="mm-wordmark">SlideKit</span></a><nav class="mm-nav" id="mmNav"><a href="/#patterns">パターン</a><a href="/#designs">デザインテーマ</a><a href="/deck.html">スライド確認</a><a href="/start.html">導入手順</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
 
   <div class="bar" id="mainBar">
-    <a class="back" href="/">← ギャラリーへ</a>
     <span class="ttl" id="deckTitle">スライド確認</span>
     <span class="cnt" id="deckCount"></span>
     <span class="sp"></span>
@@ -224,7 +261,6 @@ body{padding-top:80px}
     <div class="em-toolbar">
       <button class="btn" id="emBack" title="スライド一覧に戻る">← 一覧へ</button>
       <button class="btn mini" id="emPrev" title="前のスライド">‹</button>
-      <span class="em-counter" id="emCounter">- / -</span>
       <button class="btn mini" id="emNext" title="次のスライド">›</button>
       <select id="zoomSel" title="ズーム（⌘＋マウスホイールでも変更可）">
         <option value="fit" selected>合わせる</option>
@@ -270,7 +306,12 @@ body{padding-top:80px}
       <input type="file" id="imgFile" accept="image/*" style="display:none">
       <button class="btn bgtog" id="bgTogBtn" title="このスライドの背景画像（最下層の淡い画像）を ON/OFF。deck-config.json の slides[].bg として修正プロンプトに含まれます">背景画像: -</button>
       <button class="btn" id="grpBtn" disabled title="複数選択（Shift+クリック）した要素をグループ化／解除">グループ化</button>
-      <span class="em-selchip" id="emSelChip"></span>
+      <span class="fmt">
+        <span class="tipwrap"><button class="btn mini" id="zFront" disabled>⤒</button><span class="tip"><b>最前面へ</b><kbd id="kFront"></kbd></span></span>
+        <span class="tipwrap"><button class="btn mini" id="zForward" disabled>↑</button><span class="tip"><b>ひとつ前面へ</b><kbd id="kForward"></kbd></span></span>
+        <span class="tipwrap"><button class="btn mini" id="zBackward" disabled>↓</button><span class="tip"><b>ひとつ背面へ</b><kbd id="kBackward"></kbd></span></span>
+        <span class="tipwrap"><button class="btn mini" id="zBack" disabled>⤓</button><span class="tip"><b>最背面へ</b><kbd id="kBack"></kbd></span></span>
+      </span>
       <span class="sp"></span>
       <button class="btn mini" id="emUndoBtn" title="元に戻す（⌘Z / Ctrl+Z）">↶</button>
       <button class="btn mini" id="emRedoBtn" title="やり直す（⇧⌘Z / Ctrl+Y）">↷</button>
@@ -286,6 +327,10 @@ body{padding-top:80px}
             <tr><td class="k">サムネをドラッグ</td><td>スライドの並べ替え（ページ番号は自動更新）</td></tr>
             <tr><td class="k">背景画像</td><td>ツールバー／一覧カードの「背景画像」で、このスライドの最下層の淡い背景画像を ON/OFF（deck-config.json に反映）</td></tr>
             <tr><td class="k">角の●をドラッグ</td><td>追加画像・複製要素のサイズ変更</td></tr>
+            <tr><td class="k">辺・四隅をドラッグ</td><td><b>枠のサイズ変更</b>：左右＝幅／上下＝高さ／<b>四隅＝縦横まとめて</b>。<br>反対側の辺は動きません。四隅は<b>⇧で縦横比を保持</b></td></tr>
+            <tr><td class="k">⤒ ↑ ↓ ⤓</td><td><b>重ね順</b>：選択した要素を最前面／ひとつ前面／ひとつ背面／最背面へ</td></tr>
+            <tr><td class="k">] / [</td><td>ひとつ前面へ／ひとつ背面へ（<b>⇧を足すと最前面／最背面</b>）</td></tr>
+            <tr><td class="k">右のレイヤー一覧</td><td>クリックで選択。<b>ドラッグで重ね順を変更</b>（上が前面）</td></tr>
             <tr><td class="k">⌘Z / ⇧⌘Z</td><td>元に戻す／やり直す（構成変更も対象）</td></tr>
             <tr><td class="k">⌘C → ⌘V</td><td>要素を複製。<b>未選択ならスライドを複製</b></td></tr>
             <tr><td class="k">⌘V（画像）</td><td>コピーした画像・スクショを貼り付け</td></tr>
@@ -305,6 +350,10 @@ body{padding-top:80px}
       </div>
       <div class="em-stagewrap" id="eStageWrap">
         <div class="e-stage" id="eStage"><iframe id="eFrame" title="編集対象スライド" sandbox="allow-same-origin allow-scripts"></iframe></div>
+      </div>
+      <div class="em-layers" id="emLayers">
+        <div class="ph"><h3>レイヤー</h3><span class="hint">上が前面</span></div>
+        <div id="eLayers"></div>
       </div>
       <div class="em-panel" id="emPanel">
         <div class="ph"><h3>このスライドの編集内容</h3><button class="btn mini gray" id="emReset" title="このスライドの編集をすべて破棄">全破棄</button></div>
@@ -377,7 +426,9 @@ function extractSections(html){
   }
   return out;
 }
-const ASSET_PREFIX=(location.protocol==='file:')?'../':'/';
+// 素材（背景・画像）の解決先。既定はサイト直下。
+// `?deck=` でデッキを読み込んだときは、そのデッキフォルダを指すように差し替える（下の自動読み込み）。
+let ASSET_PREFIX=(location.protocol==='file:')?'../':'/';
 function resolveAssetPaths(sectionHtml){
   return sectionHtml.replace(/(<[^>]*?)\bdata-sk-asset\s*=\s*(["'])([^"']+)\2([^>]*?>)/gi,(full,pre,q,orig,post)=>{
     const replaced=(pre+post).replace(/\bsrc\s*=\s*(["'])[^"']*\1/i,`src=${q}${ASSET_PREFIX}${orig}${q}`);
@@ -1047,6 +1098,16 @@ function injectEditorCss(doc){
     .sk-selected{outline:2px solid #2f6bff !important;outline-offset:-2px;cursor:move}
     .sk-editing{outline:2px solid #12A150 !important;outline-offset:-2px;cursor:text}
     .sk-rz{position:absolute;width:14px;height:14px;background:#2f6bff;border:2.5px solid #fff;border-radius:50%;cursor:nwse-resize;z-index:999;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+    /* テキスト等の通常要素のサイズ変更（Googleスライド・Canva風・2026-08-21 代表要望）
+       辺＝その方向だけ／四隅＝縦横まとめて。⇧を足すと縦横比を保つ */
+    .sk-rzw{position:absolute;background:#2f6bff;border:1.5px solid #fff;border-radius:4px;
+      z-index:999;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+    .sk-rzw:hover{background:#1c4fd8}
+    .sk-rzw.h-w,.sk-rzw.h-e{width:7px;height:30px;cursor:ew-resize}
+    .sk-rzw.h-n,.sk-rzw.h-s{width:30px;height:7px;cursor:ns-resize}
+    .sk-rzw.h-nw,.sk-rzw.h-ne,.sk-rzw.h-sw,.sk-rzw.h-se{width:11px;height:11px;border-radius:50%}
+    .sk-rzw.h-nw,.sk-rzw.h-se{cursor:nwse-resize}
+    .sk-rzw.h-ne,.sk-rzw.h-sw{cursor:nesw-resize}
     .sk-rb{position:absolute;border:1.5px dashed #2f6bff;background:rgba(47,107,255,.08);z-index:998;pointer-events:none}
     .sk-guide{position:absolute;inset:0;pointer-events:none;z-index:997}
     .sk-guide .gv{position:absolute;top:0;bottom:0;width:0;border-left:1px solid #FF2D8D}
@@ -1065,7 +1126,9 @@ function renumberPageno(root,pos,total){
 }
 function layoutEditMode(){
   if(!MODE_EDIT) return;
-  $('editMode').style.height=(window.innerHeight-$('mainBar').offsetHeight)+'px';
+  // ヘッダー・メインバーの実際の下端から測る（固定ヘッダー分がずれて下がはみ出していた）
+  const top=Math.max(0,$('mainBar').getBoundingClientRect().bottom);
+  $('editMode').style.height=(window.innerHeight-top)+'px';
   fitEditor();
   fitRailThumbs();
 }
@@ -1181,14 +1244,26 @@ function refreshRailThumb(iid){
   fr.srcdoc=slideDocFor(inst);
   updateRailDot(iid);
 }
+// 編集モードは履歴に1つだけ積む（スライドを切り替えても増やさない）。
+// これでブラウザの戻る／マウスの戻るボタンで一覧に帰れる。
+let EM_PUSHED=false;
+function pushEditHistory(){
+  if(EM_PUSHED) return;
+  try{ history.pushState({sk:'edit'},'',location.pathname+location.search+'#edit'); EM_PUSHED=true; }catch(e){}
+}
 function enterEditMode(iid){
   if(!DECK) return;
   MODE_EDIT=true;
+  pushEditHistory();
   $('editModeBtn').style.display='none'; // 編集モード中は切替ボタン不要
   $('listWrap').style.display='none';
   $('editMode').style.display='flex';
   buildRail();
   gotoIid(iid||FB.order[0].id,true);
+  // 編集中はページ自体をスクロールさせない（各ペインが個別にスクロールする）。
+  // これをしないと編集バーが上へ流れて隠れる
+  window.scrollTo(0,0);
+  document.documentElement.style.overflow='hidden';
   layoutEditMode();
 }
 function exitEditMode(){
@@ -1198,6 +1273,11 @@ function exitEditMode(){
   if(DECK) $('editModeBtn').style.display='';
   $('editMode').style.display='none';
   $('listWrap').style.display='';
+  document.documentElement.style.overflow='';
+  if(EM_PUSHED&&location.hash==='#edit'){
+    EM_PUSHED=false;
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+  }
   renderDeck();
 }
 function gotoIid(iid,force){
@@ -1207,7 +1287,6 @@ function gotoIid(iid,force){
   if(!force&&ED.iid===iid) return;
   commitTextEdit();
   ED.iid=iid; ED.pos=pos;
-  $('emCounter').textContent=`${pos} / ${FB.order.length}`;
   document.querySelectorAll('.em-thumb.cur').forEach(x=>x.classList.remove('cur'));
   const th=document.getElementById(`emthumb-${iid}`);
   if(th){ th.classList.add('cur'); th.scrollIntoView({block:'nearest'}); }
@@ -1230,6 +1309,7 @@ function rebuildEditorDoc(){
     try{ renumberPageno(doc,ED.pos,FB.order.length); }catch(e){}
     wireEditor(doc);
     renderEditList();
+    renderLayers();
   };
   const inst=FB.order.find(o=>o.id===ED.iid);
   fr.srcdoc=slideDocFor(inst);
@@ -1260,6 +1340,7 @@ function setSelection(els){
   if(SELSET.length===1) placeResizeHandle(SELSET[0]);
   if(SELSET.length){ try{ ED.fr.contentWindow.focus(); }catch(e){} }
   updateFormatControls();
+  renderLayers();
 }
 function selectEl(t,additive){
   if(!t){ setSelection([]); return; }
@@ -1280,8 +1361,8 @@ function selectEl(t,additive){
 function placeResizeHandle(el){
   if(!ED.doc) return;
   const rec=findAddedRec(el);
-  if(!rec) return; // 既存要素はハンドル無し（サイズはツールバーの文字サイズで）
   const slideEl=ED.doc.querySelector('.slide');
+  if(!rec){ placeWidthHandles(el,slideEl); return; }
   const h=ED.doc.createElement('div'); h.className='sk-rz';
   const put=()=>{
     const sr=slideEl.getBoundingClientRect(), er=el.getBoundingClientRect();
@@ -1296,6 +1377,66 @@ function placeResizeHandle(el){
   });
   slideEl.appendChild(h);
 }
+// 通常要素のサイズ変更ハンドル（8方向）。
+// 辺 = その方向だけ変える。四隅 = 縦横まとめて。⇧を足すと縦横比を保つ。
+// 反対側の辺が動かないよう、左/上をつかんだときは margin で相殺する。
+const RZ_SIDES=['nw','n','ne','e','se','s','sw','w'];
+// 親のコンテンツ領域（padding の内側）から、この要素が取れる最大サイズを出す。
+// 自分の margin の分は差し引く。親が無ければスライド全体（960×540）。
+function parentLimit(el,cs,view){
+  const par=el.parentElement;
+  if(!par) return {maxW:960,maxH:540};
+  const p=view.getComputedStyle(par);
+  const pw=par.clientWidth -(parseFloat(p.paddingLeft)||0)-(parseFloat(p.paddingRight)||0);
+  const ph=par.clientHeight-(parseFloat(p.paddingTop)||0)-(parseFloat(p.paddingBottom)||0);
+  const mw=(parseFloat(cs.marginLeft)||0)+(parseFloat(cs.marginRight)||0);
+  const mh=(parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0);
+  return {
+    maxW:Math.max(24, Math.min(960, Math.round(pw-mw))),
+    maxH:Math.max(16, Math.min(540, Math.round(ph-mh)))
+  };
+}
+function placeWidthHandles(el,slideEl){
+  const view=ED.doc.defaultView;
+  const puts=[];
+  RZ_SIDES.forEach(side=>{
+    const h=ED.doc.createElement('div'); h.className='sk-rz sk-rzw h-'+side;
+    const put=()=>{
+      const sr=slideEl.getBoundingClientRect(), er=el.getBoundingClientRect();
+      const x0=er.left-sr.left, y0=er.top-sr.top, w=er.width, h2=er.height;
+      const hw=h.offsetWidth||9, hh=h.offsetHeight||9;
+      let cx = side.includes('w') ? x0 : side.includes('e') ? x0+w : x0+w/2;
+      let cy = side.includes('n') ? y0 : side.includes('s') ? y0+h2 : y0+h2/2;
+      h.style.left=(cx-hw/2)+'px';
+      h.style.top=(cy-hh/2)+'px';
+    };
+    puts.push(put);
+    h.addEventListener('mousedown',e=>{
+      e.preventDefault(); e.stopPropagation();
+      const cs=view.getComputedStyle(el);
+      const r=el.getBoundingClientRect();
+      ED.rz={
+        el, side, startX:e.clientX, startY:e.clientY,
+        startW:r.width, startH:r.height,
+        startML:parseFloat(cs.marginLeft)||0, startMT:parseFloat(cs.marginTop)||0,
+        beforeW:Math.round(parseFloat(cs.width))+'px',
+        beforeH:Math.round(parseFloat(cs.height))+'px',
+        beforeML:cs.marginLeft, beforeMT:cs.marginTop,
+        // 親がflexだと flex-grow/shrink が効いて、指定した幅がそのまま描画されない。
+        // その場合は flex:none を当てて指定を優先させる（2026-08-21 実測で判明）
+        parentFlex:/flex|grid/.test(view.getComputedStyle(el.parentElement||el).display),
+        beforeFlex:cs.flex,
+        // 親の内側を超えて広げない。超えると親の min-content が押し広げられ、
+        // 一つ外の枠まで一緒に広がってしまう（2026-08-21 代表指摘）
+        ...parentLimit(el,cs,view),
+        put:()=>puts.forEach(f=>f())
+      };
+    });
+    slideEl.appendChild(h);
+  });
+  // 幅・高さが確定してから位置を決める（offsetWidth が要るため）
+  puts.forEach(f=>f());
+}
 function updateFormatControls(){
   const one=SELSET.length===1?SELSET[0]:null;
   const isImg=one?(!!findAddedRec(one)&&findAddedRec(one).type==='imgadd'):false;
@@ -1306,6 +1447,7 @@ function updateFormatControls(){
   $('fwBold').disabled=!textOn;
   $('ffSel').disabled=!textOn;
   $('bwSel').disabled=!on;
+  ['zFront','zForward','zBackward','zBack'].forEach(id=>{$(id).disabled=!on;});
   $('grpBtn').disabled=!(SELSET.length>=2||(one&&groupOf(one)));
   $('grpBtn').textContent=(one&&groupOf(one))||SELSET.length>1&&SELSET.every(x=>groupOf(x))?'グループ解除':'グループ化';
   if(on&&one){
@@ -1329,10 +1471,8 @@ function updateFormatControls(){
     $('bwSel').value=bw>0?String(Math.min(bw,4)):'none';
     BC=rgbToHex(cs.borderTopColor)||'#333333';
     setColBtn('bcBtn','bcSw',BC,on);
-    $('emSelChip').textContent=descLabel(one);
   }else if(on){
     $('fsInput').value='';
-    $('emSelChip').textContent=`${SELSET.length}個の要素を選択中`;
     setColBtn('fcBtn','fcSw','#333333',true);
     setColBtn('bgBtn','bgSw',null,true);
     setColBtn('bcBtn','bcSw','#333333',true);
@@ -1344,7 +1484,6 @@ function updateFormatControls(){
     setColBtn('fcBtn','fcSw',null,false);
     setColBtn('bgBtn','bgSw',null,false);
     setColBtn('bcBtn','bcSw',null,false);
-    $('emSelChip').textContent=ED.editingEl?'文字を編集中…（Enterで確定）':'';
   }
 }
 function setColBtn(btnId,swId,hex,enabled){
@@ -1368,7 +1507,7 @@ function mutateEdits(mut){ // 現スライドのedits配列を変更して確定
   afterEditCommit();
 }
 function afterEditCommit(){
-  renderEditList(); refreshCardBadge(ED.iid); updateRailDot(ED.iid); refreshRailThumb(ED.iid);
+  renderEditList(); refreshCardBadge(ED.iid); updateRailDot(ED.iid); refreshRailThumb(ED.iid); renderLayers();
 }
 function upsertMove(arr,el,dx,dy){
   const d=descFor(el);
@@ -1482,6 +1621,148 @@ function changeFontSize(delta,absolute){
     setStyleEditRec(el,'font-size',before,next+'px');
     if(SELSET.length===1) $('fsInput').value=next;
   });
+}
+// ================= 重ね順（z-index） =================
+// 既存の style 編集レコードに乗せる。undo/redo・編集一覧・修正プロンプト出力がそのまま効く。
+// z-index は position:static では効かないので、static の要素には position:relative も併せて記録する。
+function zIndexOf(el){
+  const v=ED.doc.defaultView.getComputedStyle(el).zIndex;
+  const n=parseInt(v,10);
+  return Number.isFinite(n)?n:0;
+}
+// edits配列にstyleレコードを積む共通処理（1回の mutateEdits で複数プロパティを扱うため）
+function putStyleInArr(arr,el,d,prop,before,after){
+  const i=arr.findIndex(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop===prop);
+  if(after===before){ if(i>=0){ arr.splice(i,1); el.style.removeProperty(prop); } return; }
+  const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
+  const rec={type:'style',sel:d.sel,nth:d.nth,count:d.count,label,prop,before,after};
+  if(i>=0){ rec.before=arr[i].before; arr[i]=rec; } else arr.push(rec);
+  el.style.setProperty(prop,after);
+}
+// z-index は position:static では効かない。static のときは position:relative も一緒に積む
+function ensurePositioned(arr,el,d,cs){
+  if(cs.position!=='static') return;
+  const exP=arr.find(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop==='position');
+  putStyleInArr(arr,el,d,'position',exP?exP.before:'static','relative');
+}
+
+// ================= 重ね順のキー割り当て =================
+// ⚠️ ⇧⌘] / ⇧⌘[ は Chrome・Safari の「次/前のタブ」に取られてページまで届かない（2026-08-21 実測）。
+//    ここを差し替えれば、キー処理もツールチップの表示も両方追従する。
+// 修飾キーなし（2026-08-21 代表が候補2を選択）。キャンバスで文字入力状態になるのは
+// ダブルクリックしたときだけなので、素のキーでも誤爆しない。押しやすさ優先。
+const zPlain=e=>!e.metaKey&&!e.ctrlKey&&!e.altKey;
+const zRight=e=>e.code==='BracketRight'||e.key===']'||e.key==='}';
+const zLeft =e=>e.code==='BracketLeft' ||e.key==='['||e.key==='{';
+const ZKEYS=[
+  {mode:'front',   label:'最前面へ',     keyLabel:'⇧]', match:e=>zPlain(e)&&e.shiftKey&&zRight(e)},
+  {mode:'back',    label:'最背面へ',     keyLabel:'⇧[', match:e=>zPlain(e)&&e.shiftKey&&zLeft(e)},
+  {mode:'forward', label:'ひとつ前面へ', keyLabel:']',  match:e=>zPlain(e)&&!e.shiftKey&&zRight(e)},
+  {mode:'backward',label:'ひとつ背面へ', keyLabel:'[',  match:e=>zPlain(e)&&!e.shiftKey&&zLeft(e)}
+];
+function paintZKeyLabels(){
+  const ids={front:'kFront',back:'kBack',forward:'kForward',backward:'kBackward'};
+  ZKEYS.forEach(k=>{ const el=$(ids[k.mode]); if(el) el.textContent=k.keyLabel; });
+}
+
+// ================= レイヤー一覧 =================
+// スライド直下の子要素を「レイヤー」として扱う（Googleスライドと同じ粒度）。
+// 並びは前面→背面。ドラッグで並べ替えると z-index を振り直す。
+function layerEls(){
+  if(!ED.doc) return [];
+  const slide=ED.doc.querySelector('section.slide');
+  if(!slide) return [];
+  return [...slide.children].filter(el=>el.nodeType===1
+    && !el.classList.contains('sk-pageno') && !el.classList.contains('sk-rz'));
+}
+function stackOrder(els){ // 前面が先頭
+  return els.map((el,i)=>({el,z:zIndexOf(el),i}))
+            .sort((a,b)=>(b.z-a.z)||(b.i-a.i))
+            .map(x=>x.el);
+}
+let LY_DRAG=null;
+function renderLayers(){
+  const box=$('eLayers'); if(!box) return;
+  box.innerHTML='';
+  if(!MODE_EDIT||!ED.doc){ return; }
+  const ordered=stackOrder(layerEls());
+  if(!ordered.length){ box.innerHTML='<div class="empty">要素がありません</div>'; return; }
+  ordered.forEach((el,idx)=>{
+    const row=document.createElement('div');
+    row.className='ly'+(SELSET.includes(el)?' cur':'');
+    row.draggable=true;
+    const lab=descLabel(el);
+    row.innerHTML=`<span class="lyt"></span><span class="lyz"></span>`;
+    row.querySelector('.lyt').textContent=lab;
+    const z=zIndexOf(el);
+    row.querySelector('.lyz').textContent=z?String(z):'';
+    row.title=lab;
+    row.addEventListener('click',()=>{ setSelection([el]); });
+    row.addEventListener('dragstart',e=>{ LY_DRAG=idx; row.classList.add('dragging'); try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','');}catch(_){} });
+    row.addEventListener('dragend',()=>{ LY_DRAG=null; box.querySelectorAll('.ly').forEach(x=>x.classList.remove('dragging','drop-before','drop-after')); });
+    row.addEventListener('dragover',e=>{
+      e.preventDefault(); if(LY_DRAG===null||LY_DRAG===idx) return;
+      const r=row.getBoundingClientRect(); const before=(e.clientY-r.top)<r.height/2;
+      box.querySelectorAll('.ly').forEach(x=>x.classList.remove('drop-before','drop-after'));
+      row.classList.add(before?'drop-before':'drop-after');
+    });
+    row.addEventListener('drop',e=>{
+      e.preventDefault(); if(LY_DRAG===null||LY_DRAG===idx) return;
+      const r=row.getBoundingClientRect(); const before=(e.clientY-r.top)<r.height/2;
+      applyLayerOrder(LY_DRAG,idx,before);
+      LY_DRAG=null;
+    });
+    box.appendChild(row);
+  });
+}
+function applyLayerOrder(from,to,before){
+  const ordered=stackOrder(layerEls());
+  const moved=ordered[from]; if(!moved) return;
+  const rest=ordered.filter((_,i)=>i!==from);
+  let at=rest.indexOf(ordered[to]); if(at<0) at=rest.length;
+  rest.splice(before?at:at+1,0,moved);
+  const view=ED.doc.defaultView;
+  mutateEdits(arr=>{
+    const n=rest.length;
+    rest.forEach((el,i)=>{
+      const d=descFor(el); const cs=view.getComputedStyle(el);
+      ensurePositioned(arr,el,d,cs);
+      const exZ=arr.find(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop==='z-index');
+      putStyleInArr(arr,el,d,'z-index',exZ?exZ.before:(cs.zIndex||'auto'),String(n-i));
+    });
+    return arr;
+  });
+  flashChip('重ね順を変更しました（⌘Zで戻せます）');
+}
+
+function changeZOrder(mode){ // 'front' | 'forward' | 'backward' | 'back'
+  if(!SELSET.length||!ED.doc) return;
+  const doc=ED.doc, view=doc.defaultView;
+  const zs=[...doc.querySelectorAll('section.slide *')].map(zIndexOf);
+  const maxZ=zs.length?Math.max(...zs):0;
+  const minZ=zs.length?Math.min(...zs):0;
+  const targets=SELSET.slice();
+  // position と z-index を1つの mutateEdits にまとめる。
+  // setStyleEditRec を2回呼ぶと commit が2回走り、1クリックの取り消しに⌘Zを2回押すことになるため。
+  mutateEdits(arr=>{
+    targets.forEach(el=>{
+      const d=descFor(el);
+      const cs=view.getComputedStyle(el);
+      ensurePositioned(arr,el,d,cs);
+      const cur=zIndexOf(el);
+      let next = mode==='front'   ? maxZ+1
+               : mode==='back'    ? minZ-1
+               : mode==='forward' ? cur+1
+               :                    cur-1;
+      next=Math.max(-999,Math.min(999,next));
+      const exZ=arr.find(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop==='z-index');
+      putStyleInArr(arr,el,d,'z-index',exZ?exZ.before:(cs.zIndex||'auto'),String(next));
+    });
+    return arr;
+  });
+  const label={front:'最前面へ',forward:'ひとつ前面へ',backward:'ひとつ背面へ',back:'最背面へ'}[mode];
+  flashChip(`${label}移動しました（⌘Zで戻せます）`);
+  updateFormatControls();
 }
 function toggleBold(){
   if(!SELSET.length||!ED.doc) return;
@@ -1772,6 +2053,32 @@ function wireEditor(doc){
     }
     if(ED.rz){
       const r=ED.rz;
+      if(r.side){ // 通常要素のサイズ変更（8方向）
+        const dx=e.clientX-r.startX, dy=e.clientY-r.startY;
+        const hasX=r.side.includes('e')||r.side.includes('w');
+        const hasY=r.side.includes('n')||r.side.includes('s');
+        let w=r.startW, h=r.startH;
+        if(r.side.includes('e')) w=r.startW+dx;
+        if(r.side.includes('w')) w=r.startW-dx;
+        if(r.side.includes('s')) h=r.startH+dy;
+        if(r.side.includes('n')) h=r.startH-dy;
+        // 四隅で⇧を押している間は縦横比を保つ
+        if(hasX&&hasY&&e.shiftKey&&r.startW>0){ const k=w/r.startW; h=r.startH*k; }
+        w=Math.max(24,Math.min(r.maxW||960,Math.round(w)));
+        h=Math.max(16,Math.min(r.maxH||540,Math.round(h)));
+        if(r.parentFlex&&(hasX||hasY)){ r.el.style.flex='none'; r.usedFlexNone=true; }
+        if(hasX){
+          r.el.style.width=w+'px';
+          if(r.side.includes('w')) r.el.style.marginLeft=(r.startML+(r.startW-w))+'px';
+        }
+        if(hasY){
+          r.el.style.height=h+'px';
+          if(r.side.includes('n')) r.el.style.marginTop=(r.startMT+(r.startH-h))+'px';
+        }
+        r.curW=hasX?w:null; r.curH=hasY?h:null; r.cur=w;
+        r.put&&r.put();
+        return;
+      }
       const w=Math.max(24,Math.min(960,Math.round(r.startW+(e.clientX-r.startX))));
       r.el.style.width=w+'px';
       r.cur=w; r.put&&r.put();
@@ -1839,6 +2146,32 @@ function wireEditor(doc){
     }
     if(ED.rz){
       const r=ED.rz; ED.rz=null;
+      if(r.side){ // 通常要素のサイズ変更
+        const changedW=r.curW!=null&&Math.round(r.curW)!==Math.round(r.startW);
+        const changedH=r.curH!=null&&Math.round(r.curH)!==Math.round(r.startH);
+        if(changedW||changedH){
+          const el=r.el, d=descFor(el), ml=el.style.marginLeft, mt=el.style.marginTop;
+          const pick=(arr,prop)=>arr.find(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop===prop);
+          mutateEdits(arr=>{
+            if(changedW){
+              putStyleInArr(arr,el,d,'width',(pick(arr,'width')||{}).before||r.beforeW,r.curW+'px');
+              if(r.side.includes('w')) putStyleInArr(arr,el,d,'margin-left',(pick(arr,'margin-left')||{}).before||r.beforeML,ml);
+            }
+            if(changedH){
+              putStyleInArr(arr,el,d,'height',(pick(arr,'height')||{}).before||r.beforeH,r.curH+'px');
+              if(r.side.includes('n')) putStyleInArr(arr,el,d,'margin-top',(pick(arr,'margin-top')||{}).before||r.beforeMT,mt);
+            }
+            if(r.usedFlexNone) putStyleInArr(arr,el,d,'flex',(pick(arr,'flex')||{}).before||r.beforeFlex,'none');
+            return arr;
+          });
+          const parts=[];
+          if(changedW) parts.push(`幅 ${r.curW}px`);
+          if(changedH) parts.push(`高さ ${r.curH}px`);
+          flashChip(`${parts.join(' / ')} にしました（⌘Zで戻せます）`);
+        }
+        if(SELSET.length===1){ clearSelVisual(); setSelection([r.el]); }
+        return;
+      }
       if(r.cur){
         mutateEdits(arr=>{
           const i=arr.findIndex(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===r.rec.id);
@@ -1876,6 +2209,8 @@ function handleEditorKey(e){
   }
   if(meta&&(e.key==='z'||e.key==='Z')){ e.preventDefault(); if(e.shiftKey) redoEdit(); else undoEdit(); return; }
   if(meta&&(e.key==='y'||e.key==='Y')){ e.preventDefault(); redoEdit(); return; }
+  // 重ね順。割り当ては ZKEYS 一箇所で決まる（下の定義を差し替えれば全部追従する）
+  for(const k of ZKEYS){ if(k.match(e)){ e.preventDefault(); changeZOrder(k.mode); return; } }
   if(meta&&(e.key==='c'||e.key==='C')){
     if(SELSET.length===1){
       const el=SELSET[0]; const d=descFor(el);
@@ -1935,9 +2270,15 @@ function handlePaste(e){
     }
   }
 }
+// 通知はツールバーの外に浮かせる。バーの中に置くと文字数でバーが折り返し、
+// 編集画面の高さが動いて気持ち悪い（2026-08-21 代表指摘）
+let TOAST_T=null;
 function flashChip(msg){
-  const c=$('emSelChip'); c.textContent=msg;
-  setTimeout(()=>{ if(c.textContent===msg) updateFormatControls(); },1600);
+  let t=$('emToast');
+  if(!t){ t=document.createElement('div'); t.id='emToast'; t.className='em-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(TOAST_T);
+  TOAST_T=setTimeout(()=>t.classList.remove('show'),1600);
 }
 function handleNavKey(e){
   if(!MODE_EDIT||!DECK) return false;
@@ -1952,6 +2293,7 @@ window.addEventListener('keydown',e=>{
   handleEditorKey(e);
 });
 window.addEventListener('paste',e=>handlePaste(e));
+paintZKeyLabels();
 // --- 編集リスト ---
 function moveText(e){
   const p=[];
@@ -2016,7 +2358,14 @@ function renderEditList(){
   });
 }
 // --- ツールバー配線 ---
-$('emBack').addEventListener('click',exitEditMode);
+$('emBack').addEventListener('click',()=>{
+  // 履歴を積んでいるときは戻るで抜ける（ブラウザの戻ると同じ道を通す）
+  if(EM_PUSHED){ history.back(); return; }
+  exitEditMode();
+});
+window.addEventListener('popstate',()=>{
+  if(MODE_EDIT){ EM_PUSHED=false; exitEditMode(); }
+});
 $('editModeBtn').addEventListener('click',()=>enterEditMode(ED.iid&&posOfIid(ED.iid)?ED.iid:0));
 $('emPrev').addEventListener('click',()=>gotoPos(ED.pos-1));
 $('emNext').addEventListener('click',()=>gotoPos(ED.pos+1));
@@ -2029,6 +2378,10 @@ $('fwBold').addEventListener('click',toggleBold);
 $('ffSel').addEventListener('change',changeFontFamily);
 $('bwSel').addEventListener('change',changeBorder);
 $('grpBtn').addEventListener('click',toggleGroup);
+$('zFront').addEventListener('click',()=>changeZOrder('front'));
+$('zForward').addEventListener('click',()=>changeZOrder('forward'));
+$('zBackward').addEventListener('click',()=>changeZOrder('backward'));
+$('zBack').addEventListener('click',()=>changeZOrder('back'));
 $('imgAddBtn').addEventListener('click',()=>$('imgFile').click());
 $('imgFile').addEventListener('change',e=>{
   const f=e.target.files[0]; e.target.value='';
@@ -2057,10 +2410,27 @@ $('emEditsToggle').addEventListener('click',()=>{
   $('emPanel').classList.toggle('open');
   layoutEditMode();
 });
+function placeHelpPop(){
+  const pop=$('helpPop'), btn=$('emHelp');
+  const r=btn.getBoundingClientRect();
+  const w=Math.min(360,window.innerWidth-16);
+  pop.style.width=w+'px';
+  // 既定はボタンの右端そろえ。はみ出す側があれば画面内へ寄せる
+  let left=r.right-w;
+  left=Math.min(Math.max(8,left),window.innerWidth-w-8);
+  const top=r.bottom+8;
+  pop.style.left=left+'px';
+  pop.style.top=top+'px';
+  pop.style.maxHeight=(window.innerHeight-top-12)+'px';
+}
 $('emHelp').addEventListener('click',e=>{
   e.stopPropagation();
-  $('helpPop').classList.toggle('show');
+  const pop=$('helpPop');
+  const willShow=!pop.classList.contains('show');
+  if(willShow) placeHelpPop();
+  pop.classList.toggle('show');
 });
+window.addEventListener('resize',()=>{ if($('helpPop').classList.contains('show')) placeHelpPop(); });
 document.addEventListener('click',e=>{
   if(!e.target.closest('.helpwrap')) $('helpPop').classList.remove('show');
   if(!e.target.closest('#cPop')&&!e.target.closest('.colbtn')) $('cPop').classList.remove('show');
@@ -2279,6 +2649,69 @@ try{
 window.addEventListener('resize',()=>{
   requestAnimationFrame(()=>{ fitThumbs(); layoutEditMode(); });
 });
+// ツールバーが折り返して高さが変わったときも、編集画面の高さを取り直す
+try{
+  new ResizeObserver(()=>{ if(MODE_EDIT) requestAnimationFrame(layoutEditMode); })
+    .observe(document.querySelector('.em-toolbar'));
+}catch(e){}
+
+// ================= URLからの自動読み込み =================
+// `deck.html?deck=/decks/<slug>/` を開くと、そのデッキを読み込んだ状態で開く。
+// 毎回 index.html をドラッグ＆ドロップする手間をなくすため（2026-08-20 代表要望）。
+//
+//   ?deck=/decks/xxx/            → /decks/xxx/index.html を読む
+//   ?deck=/decks/xxx/index.html  → そのまま読む
+//
+// 素材（背景画像）はデッキフォルダ相対で書かれているので、ASSET_PREFIX をデッキフォルダに向け直す。
+// 同一オリジンのパスだけ受け付ける（外部URLは fetch を投げない）。
+(function autoLoadFromUrl(){
+  const raw=new URLSearchParams(location.search).get('deck');
+  if(!raw) return;
+  let path;
+  try{
+    const u=new URL(raw,location.href);
+    if(u.origin!==location.origin){ showLoadError('外部URLのデッキは読み込めません: '+raw); return; }
+    path=u.pathname;
+  }catch(e){ showLoadError('デッキのURLが不正です: '+raw); return; }
+
+  const dir=path.endsWith('/')?path:path.replace(/[^/]*$/,'');
+  const file=path.endsWith('/')?path+'index.html':path;
+  ASSET_PREFIX=dir;
+
+  fetch(file,{cache:'no-store'})
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+    .then(t=>{ t=rebaseToDeckFolder(t,dir); const s=$('src'); if(s) s.value=t; loadDeck(t); })
+    .catch(e=>showLoadError('デッキを読み込めませんでした（'+file+'）: '+e.message));
+
+  // ビルド済みデッキは「フォルダ単体で完結する」形になっている。
+  // 素材は <デッキ>/assets/<ファイル名> に平たくコピーされ、CSSも img も**デッキフォルダ相対**で書かれている。
+  // 一方 deck.html はサイト直下にあるので、そのまま流し込むとサイト直下を見に行って404になる。
+  // なので CSS の url() と img の src の**両方**をデッキフォルダ基準に直す。
+  //
+  // ⚠️ 2026-08-21 の事故: url() だけ直して src= を直しておらず、
+  //    CSS背景のスライドは出るのに <img> で背景を敷いた表紙だけ壊れた。片方だけ直さないこと。
+  function rebaseToDeckFolder(html,base){
+    // data-sk-asset はリポジトリルート基準の元パス。これが残っていると resolveAssetPaths が
+    // 「ASSET_PREFIX + リポジトリ相対パス」で src を上書きしてしまい、平たくコピーされたデッキ内では404になる。
+    // デッキフォルダは自己完結しているので、ここでは落として src をそのまま使う。
+    html=html.replace(/\s+data-sk-asset\s*=\s*(["'])[^"']*\1/gi,'');
+    // CSS: url("assets/xxx.png") → url("<デッキ>/assets/xxx.png")
+    html=html.replace(/url\((\s*['"]?)(?!https?:|data:|#|\/)([^)'"]+)(['"]?\s*)\)/gi,
+      (m,pre,p,post)=>`url(${pre}${base}${p}${post})`);
+    // img/source: src="assets/xxx.png" → src="<デッキ>/assets/xxx.png"
+    // ⚠️ `\b(src|...)` だと `data-sk-src="01-cover.html"`（スライド名の保持用）にも当たり、
+    //    確認ページのファイル名表示がパス付きに化ける。直前が `-` や英数字でないことまで見る。
+    html=html.replace(/(?<![-\w])(src|srcset|poster)\s*=\s*(["'])(?!https?:|data:|#|\/)([^"']+)\2/gi,
+      (m,attr,q,p)=>`${attr}=${q}${base}${p}${q}`);
+    return html;
+  }
+
+  function showLoadError(msg){
+    const err=$('err');
+    if(err){ err.textContent=msg; err.style.display='inline'; }
+    else { console.error(msg); }
+  }
+})();
 </script>
 <script>
 (function(){

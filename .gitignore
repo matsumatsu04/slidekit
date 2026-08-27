@@ -8,3 +8,6 @@ output/
 tmp/
 # pr-check の実寸スクリーンショット出力先（tools/shot-pattern.sh の既定）
 previews/
+
+# 確認用デッキの一時置き場（scripts/slidekit-deck-publish.sh が送る。リポジトリには入れない）
+decks/

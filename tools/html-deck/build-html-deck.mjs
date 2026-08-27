@@ -707,7 +707,9 @@ html { scroll-snap-type: y mandatory; }
 }
 ${buildHeadingCss(config.headingStyle)}
 .sk-msg { position:absolute; top:82px; left:40px; right:40px; font-size:16px; color:#333; }
-.sk-pageno { position:absolute; right:40px; bottom:16px; font-size:12px; color:var(--sk-muted,#8A8F98); }
+/* ページ番号。内側に寄りすぎてコンテンツと重なるため外へ寄せた。
+   2026-08-21: right:40/bottom:16 → 32/12 → さらに右20px・下4px 動かして 12/8（代表指示） */
+.sk-pageno { position:absolute; right:12px; bottom:8px; font-size:12px; color:var(--sk-muted,#8A8F98); }
 
 @page { size:960px 540px; margin:0; }
 @media print {
