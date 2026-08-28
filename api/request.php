@@ -20,6 +20,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     out(['ok' => false, 'error' => 'POSTのみ受け付けます'], 405);
 }
 
+// post_max_size 超過時はPHPに $_POST/$_FILES が空で渡ってくる。無言で弾かず理由を返す
+if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && empty($_POST) && empty($_FILES)) {
+    out(['ok' => false, 'error' => '送信サイズが大きすぎます。添付を減らす・小さくするなどして再度お試しください'], 413);
+}
+
 // honeypot（人間には見えない欄。埋まっていたらbot）
 if (trim($_POST['website'] ?? '') !== '') {
     out(['ok' => true]); // botには成功したように見せる
@@ -59,13 +64,53 @@ if (!is_dir($dataDir) && !@mkdir($dataDir, 0700, true)) {
     out(['ok' => false, 'error' => 'サーバー設定エラー（保存先）'], 500);
 }
 
+// 添付（画像・PDF）: 最大5ファイル・各10MB。MIMEは中身（finfo）で検証する
+$savedFiles = [];
+$uploadErr  = null;
+if (!empty($_FILES['files']) && is_array($_FILES['files']['name'])) {
+    $okMime = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'image/webp' => 'webp',
+               'image/gif' => 'gif', 'application/pdf' => 'pdf'];
+    $count  = count($_FILES['files']['name']);
+    if ($count > 5) { out(['ok' => false, 'error' => '添付は最大5つまでです'], 400); }
+    $upDir = $dataDir . '/uploads/' . date('Ymd-His') . '-' . substr(md5((string)mt_rand()), 0, 6);
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    for ($i = 0; $i < $count; $i++) {
+        if (($_FILES['files']['error'][$i] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            $uploadErr = '添付のアップロードに失敗しました（サイズ上限の可能性）'; continue;
+        }
+        $tmp  = $_FILES['files']['tmp_name'][$i];
+        $size = (int)($_FILES['files']['size'][$i] ?? 0);
+        if (!is_uploaded_file($tmp)) { continue; }
+        if ($size <= 0 || $size > 10 * 1024 * 1024) { $uploadErr = '10MBを超える添付はスキップしました'; continue; }
+        $mime = $finfo ? finfo_file($finfo, $tmp) : '';
+        if (!isset($okMime[$mime])) { $uploadErr = '画像・PDF以外の添付はスキップしました'; continue; }
+        if (empty($savedFiles) && !is_dir($upDir) && !@mkdir($upDir, 0700, true)) {
+            $uploadErr = '添付の保存に失敗しました'; continue;
+        }
+        $orig = (string)($_FILES['files']['name'][$i] ?? '');
+        $base = preg_replace('/[^0-9A-Za-z._\-ぁ-んァ-ヶ一-龠ー]/u', '_', basename($orig));
+        $base = mb_substr($base !== '' ? $base : 'file', 0, 80);
+        if (!preg_match('/\.' . $okMime[$mime] . '$/i', $base) && !($mime === 'image/jpeg' && preg_match('/\.jpe?g$/i', $base))) {
+            $base .= '.' . $okMime[$mime];
+        }
+        $dest = $upDir . '/' . sprintf('%02d', $i + 1) . '-' . $base;
+        if (@move_uploaded_file($tmp, $dest)) {
+            $savedFiles[] = ['name' => $base, 'size' => $size, 'mime' => $mime, 'path' => $dest];
+        } else {
+            $uploadErr = '添付の保存に失敗しました';
+        }
+    }
+    if ($finfo) { finfo_close($finfo); }
+}
+
 $rec = [
-    'at'   => date('c'),
-    'name' => $name,
-    'type' => $type,
-    'body' => $body,
-    'ip'   => $ip,
-    'ua'   => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200),
+    'at'    => date('c'),
+    'name'  => $name,
+    'type'  => $type,
+    'body'  => $body,
+    'files' => array_map(function ($f) { return ['name' => $f['name'], 'size' => $f['size'], 'mime' => $f['mime'], 'path' => $f['path']]; }, $savedFiles),
+    'ip'    => $ip,
+    'ua'    => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200),
 ];
 $line = json_encode($rec, JSON_UNESCAPED_UNICODE) . "\n";
 if (@file_put_contents($dataDir . '/requests.jsonl', $line, FILE_APPEND | LOCK_EX) === false) {
@@ -80,14 +125,24 @@ if (is_file($configFile)) {
         $msg = "📮 **SlideKitリクエスト**（{$type}）\n"
              . "**{$name}** さんより\n"
              . "```\n" . mb_substr($body, 0, 1500) . "\n```";
-        $payload = json_encode(['content' => $msg], JSON_UNESCAPED_UNICODE);
+        if (!empty($savedFiles)) {
+            $msg .= '📎 添付 ' . count($savedFiles) . '件';
+        }
+        // 添付はDiscordにもそのまま転送する（まつつがDiscord上で直接見られるように）。
+        // Discord側の上限（10MB/ファイル）はアップロード時の上限と同じなので基本すべて送れる。
+        $post  = ['payload_json' => json_encode(['content' => $msg], JSON_UNESCAPED_UNICODE)];
+        $n = 0;
+        foreach ($savedFiles as $f) {
+            if ($n >= 10) { break; }
+            $post['files[' . $n . ']'] = new CURLFile($f['path'], $f['mime'], $f['name']);
+            $n++;
+        }
         $ch = curl_init(SLIDEKIT_WEBHOOK_URL);
         curl_setopt_array($ch, [
             CURLOPT_POST           => true,
-            CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_POSTFIELDS     => $post, // multipart/form-data（添付なしでも可）
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 5,
+            CURLOPT_TIMEOUT        => 15,
         ]);
         @curl_exec($ch);
         @curl_close($ch);

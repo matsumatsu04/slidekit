@@ -33,6 +33,18 @@
     padding:12px 30px;font-size:14.5px;font-weight:700;font-family:var(--font-jp);cursor:pointer}
   .send:hover{opacity:.9}
   .send:disabled{opacity:.5;cursor:default}
+  .dz{border:2px dashed var(--line);border-radius:12px;background:#fff;padding:18px 16px;text-align:center;cursor:pointer;color:var(--muted)}
+  .dz:hover,.dz.on{border-color:var(--navy);color:var(--navy);background:#f5f8ff}
+  .dz .dz-main{font-size:13.5px;font-weight:500}
+  .dz .dz-sub{font-size:12px;margin-top:4px}
+  .filelist{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .fitem{position:relative;width:104px}
+  .fitem .thumb{width:104px;height:74px;border:1px solid var(--line);border-radius:8px;background:var(--surf);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:26px}
+  .fitem .thumb img{width:100%;height:100%;object-fit:cover}
+  .fitem .fname{font-size:10.5px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fitem .rm{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;
+    background:#20242C;color:#fff;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center}
   .err{display:none;color:#C0392B;font-size:13px;margin-top:12px}
   .done{display:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:34px 24px;text-align:center}
   .done .big{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
@@ -98,7 +110,17 @@ body{padding-top:80px}
       <div class="fld">
         <label for="fBody">内容<span class="req">必須</span></label>
         <textarea id="fBody" name="body" maxlength="4000" placeholder="例）目次のパターンに、章ごとの所要時間も書ける型がほしいです。&#10;例）スライド確認ページで◯◯したときに△△になります。"></textarea>
-        <div class="hint">どのページ・どのパターン（P045 など）の話かを書いてもらえると助かります。</div>
+        <div class="hint" id="bodyHint">どのページ・どのパターン（P045 など）の話かを書いてもらえると助かります。</div>
+      </div>
+      <div class="fld">
+        <label>添付（画像・PDF）<span class="hint" style="display:inline;font-weight:400;margin-left:8px" id="attachReq">任意</span></label>
+        <div class="dz" id="dz" tabindex="0">
+          <div class="dz-main"><i>🖼</i> ここにドラッグ＆ドロップ／クリックでファイル選択</div>
+          <div class="dz-sub">スクリーンショットは <b>⌘V（Windowsは Ctrl+V）</b> でそのまま貼り付けできます</div>
+        </div>
+        <input type="file" id="fFiles" multiple accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" style="display:none">
+        <div class="filelist" id="fileList"></div>
+        <div class="hint" id="attachHint">画像（PNG/JPG/WebP/GIF）とPDF。1ファイル10MBまで・最大5つ。</div>
       </div>
       <div class="hp" aria-hidden="true">
         <label>このフィールドは空のままにしてください<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
@@ -130,7 +152,86 @@ body{padding-top:80px}
 
 (function(){
   var form=document.getElementById('reqForm'), btn=document.getElementById('sendBtn'), err=document.getElementById('errMsg');
+  var dz=document.getElementById('dz'), input=document.getElementById('fFiles'), list=document.getElementById('fileList');
+  var MAX_FILES=5, MAX_SIZE=10*1024*1024, OK_TYPES=['image/png','image/jpeg','image/webp','image/gif','application/pdf'];
+  var FILES=[];
+
   function fail(msg){ err.textContent=msg; err.style.display='block'; btn.disabled=false; btn.textContent='送信する'; }
+  function note(msg){ err.textContent=msg; err.style.display='block'; setTimeout(function(){ err.style.display='none'; },4000); }
+
+  /* ---- 種別による出し分け（用途別に送りやすく） ---- */
+  var byType={
+    '欲しい構図パターン':{
+      body:'例）お客様の声を4件並べるスライドがほしいです。&#10;例）添付のスライドみたいな構図を追加してほしいです。',
+      bodyHint:'どんな用途のスライドか・添付のどこが気に入っているかを書いてもらえると、すぐ作れます。',
+      attach:'参考にしたいスライドのスクショやPDFがあれば、ぜひ貼ってください（あると再現が早いです）。'
+    },
+    '不具合・気になる点':{
+      body:'例）スライド確認ページで◯◯したときに△△になります。',
+      bodyHint:'どのページ・どのパターン（P045 など）の話かを書いてもらえると助かります。',
+      attach:'画面のスクリーンショットがあると、原因がすぐ分かります。'
+    },
+    '機能の要望':{
+      body:'例）目次のパターンに、章ごとの所要時間も書ける型がほしいです。',
+      bodyHint:'「いつ・何をしているときに欲しくなったか」があると優先順位を付けやすいです。',
+      attach:'イメージ画像などあれば添付してください（任意）。'
+    },
+    'その他':{
+      body:'気になっていること・感想など、なんでもどうぞ。',
+      bodyHint:'',
+      attach:'必要があればファイルを添付してください（任意）。'
+    }
+  };
+  var typeSel=document.getElementById('fType');
+  function applyType(){
+    var c=byType[typeSel.value]||byType['その他'];
+    document.getElementById('fBody').placeholder=c.body.replace(/&#10;/g,'\n');
+    document.getElementById('bodyHint').textContent=c.bodyHint;
+    document.getElementById('attachHint').textContent=c.attach+' 画像（PNG/JPG/WebP/GIF）とPDF・1ファイル10MBまで・最大5つ。';
+  }
+  typeSel.addEventListener('change',applyType); applyType();
+
+  /* ---- 添付の受け口3経路（選択・D&D・⌘V貼り付け） ---- */
+  function addFiles(fileList){
+    var added=0;
+    for(var i=0;i<fileList.length;i++){
+      var f=fileList[i];
+      if(FILES.length>=MAX_FILES){ note('添付は最大'+MAX_FILES+'つまでです'); break; }
+      if(OK_TYPES.indexOf(f.type)<0){ note('「'+(f.name||'ファイル')+'」は添付できない形式です（画像かPDFのみ）'); continue; }
+      if(f.size>MAX_SIZE){ note('「'+(f.name||'ファイル')+'」は10MBを超えています'); continue; }
+      FILES.push(f); added++;
+    }
+    if(added) render();
+  }
+  function render(){
+    list.innerHTML='';
+    FILES.forEach(function(f,idx){
+      var item=document.createElement('div'); item.className='fitem';
+      var th=document.createElement('div'); th.className='thumb';
+      if(f.type==='application/pdf'){ th.textContent='📄'; }
+      else{ var img=document.createElement('img'); img.src=URL.createObjectURL(f); img.onload=function(){URL.revokeObjectURL(img.src);}; th.appendChild(img); }
+      var nm=document.createElement('div'); nm.className='fname'; nm.textContent=f.name||('貼り付け画像'+(idx+1)+'.png');
+      var rm=document.createElement('button'); rm.type='button'; rm.className='rm'; rm.textContent='✕'; rm.setAttribute('aria-label','この添付を削除');
+      rm.addEventListener('click',function(){ FILES.splice(idx,1); render(); });
+      item.appendChild(th); item.appendChild(nm); item.appendChild(rm); list.appendChild(item);
+    });
+  }
+  dz.addEventListener('click',function(){ input.click(); });
+  dz.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); input.click(); } });
+  input.addEventListener('change',function(){ addFiles(input.files); input.value=''; });
+  ['dragover','dragenter'].forEach(function(ev){ dz.addEventListener(ev,function(e){ e.preventDefault(); dz.classList.add('on'); }); });
+  ['dragleave','drop'].forEach(function(ev){ dz.addEventListener(ev,function(e){ e.preventDefault(); dz.classList.remove('on'); }); });
+  dz.addEventListener('drop',function(e){ if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+  document.addEventListener('paste',function(e){
+    if(!e.clipboardData) return;
+    var fs=[]; var items=e.clipboardData.items||[];
+    for(var i=0;i<items.length;i++){
+      if(items[i].kind==='file'){ var f=items[i].getAsFile(); if(f) fs.push(f); }
+    }
+    if(fs.length){ e.preventDefault(); addFiles(fs); note('スクリーンショットを添付しました'); }
+  });
+
+  /* ---- 送信 ---- */
   form.addEventListener('submit', function(e){
     e.preventDefault(); err.style.display='none';
     var name=document.getElementById('fName').value.trim();
@@ -138,7 +239,9 @@ body{padding-top:80px}
     if(!name){ fail('お名前を入力してください'); document.getElementById('fName').focus(); return; }
     if(!body){ fail('内容を入力してください'); document.getElementById('fBody').focus(); return; }
     btn.disabled=true; btn.textContent='送信中…';
-    fetch('/api/request.php',{method:'POST', body:new FormData(form)})
+    var fd=new FormData(form);
+    FILES.forEach(function(f,i){ fd.append('files[]', f, f.name||('pasted-'+(i+1)+'.png')); });
+    fetch('/api/request.php',{method:'POST', body:fd})
       .then(function(r){ return r.json().catch(function(){ throw new Error('bad'); }); })
       .then(function(d){
         if(d && d.ok){ form.style.display='none'; document.getElementById('doneBox').style.display='block';
