@@ -50,6 +50,12 @@ Google Slidesへの編集可能ファイルとしての納品が必要な場合�
 ```
 
 - `font` 省略時は `"Noto Sans JP"`、`pageNumbers` 省略時は `true`、`noPageNoOn` 省略時は `[]`。
+- `inlineAssets` 省略時は `true`。表紙写真・背景画像などを `data:` URI で `index.html` に焼き込む。
+  `assets/` フォルダが隣に無くても画像が出るので、**index.html を1枚だけ人に渡しても崩れない**し、
+  スライド確認ページ（deck.html）にパス貼り付け・ドラッグ＆ドロップしても背景・表紙が表示される。
+  `assets/` へのコピー自体は従来どおり行うので、既存の参照は壊れない。
+  画像のぶんだけ `index.html` が重くなる（例: 表紙写真＋背景で +250KB〜1MB程度）。
+  軽くしたい場合だけ `"inlineAssets": false` にすると従来どおりの相対参照になる。
 - `background` / `slides` は省略可（省略時は従来と完全に同じ出力）。淡い背景画像を各スライドの最下層に敷き、
   ページごとに ON/OFF する仕組み。詳細は下記「背景画像レイヤー」節。
 - `headingStyle` 省略時は `"a"`。共通見出し（`.sk-h`）のデザインを `"a"`〜`"d"` の4種から選ぶ
@@ -265,8 +271,10 @@ node tools/html-deck/build-html-deck.mjs <デッキフォルダ>
 - 既定素材は `assets/backgrounds/soft-diagonal.svg`（軽量な代替）。**同じフォルダに `soft-diagonal.jpg` を置くと
   jpg が優先される**（解決順 jpg → jpeg → png → webp → svg）。名前を変えたい場合は `background.image` を変える。
 - 推奨: 16:9・幅1920px・JPEG品質80前後・淡色（白〜#E9EBEF程度・コントラスト極小）。濃い素材は文字の可読性を落とす。
-- 非公開素材は `../slidekit-private/assets/backgrounds/` からも同じ規則で解決される
-  （その場合 `data-sk-bg-asset` は付かず、公開ギャラリーのスライド確認ページでは背景が表示されない。デッキ単体では正常）。
+- 非公開素材は `../slidekit-private/assets/backgrounds/` からも同じ規則で解決される。
+  既定（`inlineAssets: true`）では `index.html` に焼き込まれるため、公開ギャラリーのスライド確認ページでも背景が表示される。
+  `"inlineAssets": false` にした場合だけ、非公開素材には `data-sk-bg-asset` が付かず、確認ページでは背景が出ない
+  （デッキ単体の `index.html` と `deck.pdf` は正常）。
 
 ### スライド確認・修正依頼ページ（deck.html）での切替
 

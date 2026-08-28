@@ -57,6 +57,34 @@ const ICON_STYLES_PRO = ['light', 'thin', 'duotone', 'sharp'];
 const BG_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
 const BG_DEFAULTS = ['auto', true, false];
 
+// 画像の埋め込み（deck-config.json の "inlineAssets"。既定 true）。
+// index.html に data: URI で焼き込むと、assets/ フォルダが隣に無くても画像が出る。
+//   - スライド確認ページ（deck.html）にパス貼り付け／ドラッグ＆ドロップしたとき
+//   - index.html だけをクライアント・受講生に渡したとき
+// いずれも表紙写真・背景が欠けなくなる。assets/ へのコピー自体は従来どおり続ける。
+const ASSET_MIME = {
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.svg': 'image/svg+xml',
+  '.gif': 'image/gif',
+  '.avif': 'image/avif',
+};
+
+// 埋め込んだ素材の重複を数えないための集合（同じ画像を複数スライドで使っても1回だけ数える）
+const inlinedAssets = new Map(); // 絶対パス -> data URI
+
+function toDataUri(absPath) {
+  const ext = path.extname(absPath).toLowerCase();
+  const mime = ASSET_MIME[ext];
+  if (!mime) return null; // 未知の拡張子は埋め込まず従来どおり相対参照のままにする
+  if (inlinedAssets.has(absPath)) return inlinedAssets.get(absPath);
+  const uri = `data:${mime};base64,${fs.readFileSync(absPath).toString('base64')}`;
+  inlinedAssets.set(absPath, uri);
+  return uri;
+}
+
 function fail(message) {
   console.error(`[build-html-deck] エラー: ${message}`);
   process.exit(1);
@@ -101,6 +129,8 @@ function main() {
     noPageNoOn: Array.isArray(rawConfig.noPageNoOn) ? rawConfig.noPageNoOn : [],
     headingStyle: HEADING_STYLES.includes(rawConfig.headingStyle) ? rawConfig.headingStyle : 'a',
     iconStyle: ICON_STYLES.includes(rawConfig.iconStyle) ? rawConfig.iconStyle : 'solid',
+    // 画像を index.html に埋め込むか（既定 true）。false にすると従来どおり assets/ への相対参照になる
+    inlineAssets: rawConfig.inlineAssets !== false,
     // 背景画像レイヤー（未指定なら null ＝ 従来と完全に同じ出力）
     background: normalizeBackgroundConfig(rawConfig.background),
     // スライド単位の設定（bg の上書き・kind/pattern のヒント）。省略可
@@ -173,7 +203,12 @@ function main() {
     }
 
     // 3. アセットの自己完結化（src="...assets/..." を検出してコピー＋パス書き換え）
-    const { html: sectionWithAssets, copied } = resolveAssets(section, deckDir, assetsOutDir);
+    const { html: sectionWithAssets, copied } = resolveAssets(
+      section,
+      deckDir,
+      assetsOutDir,
+      config.inlineAssets
+    );
     copied.forEach((basename) => {
       if (!copiedBasenames.has(basename)) {
         copiedBasenames.add(basename);
@@ -201,7 +236,7 @@ function main() {
         css: styleBlocks.join('\n'),
       });
       console.log(`[build-html-deck] 背景: ${n} ${filename} → ${decision.on ? 'ON' : 'OFF'}（${decision.reason}）`);
-      finalSection = injectBgAttrs(finalSection, decision.on, bgAsset);
+      finalSection = injectBgAttrs(finalSection, decision.on, bgAsset, config.inlineAssets);
     }
 
     processedSections.push(finalSection);
@@ -219,7 +254,7 @@ function main() {
       copiedBasenames.add(basename);
       assetsCopiedCount += 1;
     }
-    bgCssUrl = `assets/${basename}`;
+    bgCssUrl = config.inlineAssets ? toDataUri(bgAsset.abs) || `assets/${basename}` : `assets/${basename}`;
   }
 
   const html = buildDocument(config, allStyles, processedSections, bgCssUrl);
@@ -229,6 +264,13 @@ function main() {
 
   console.log(`[build-html-deck] 処理したスライド枚数: ${N}`);
   console.log(`[build-html-deck] コピーしたアセット枚数: ${assetsCopiedCount}`);
+  if (config.inlineAssets && inlinedAssets.size) {
+    const bytes = [...inlinedAssets.values()].reduce((a, u) => a + u.length, 0);
+    console.log(
+      `[build-html-deck] index.html に埋め込んだ画像: ${inlinedAssets.size}枚（約${Math.round(bytes / 1024)}KB）` +
+        ' — assets/ が無くても表示されます（無効化: deck-config.json に "inlineAssets": false）'
+    );
+  }
   if (config.background && bgAsset) {
     console.log(`[build-html-deck] 背景画像: ${bgAsset.rel}（default=${String(config.background.default)}）`);
   }
@@ -301,7 +343,7 @@ function extractSlideSection(html) {
   return html.slice(tokens[startTokenIdx].start, tokens[endTokenIdx].end);
 }
 
-function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
+function resolveAssets(sectionHtml, deckDir, assetsOutDir, inlineAssets) {
   const copied = [];
   const srcRe = /src\s*=\s*(["'])([^"']*assets\/[^"']*)\1/gi;
 
@@ -332,6 +374,15 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir) {
       fs.copyFileSync(srcAbsPath, destPath);
     }
     copied.push(basename);
+
+    // 既定（inlineAssets）では data: URI で index.html に焼き込む。
+    // assets/ フォルダが隣に無くても出るので、data-sk-asset での復元は不要になる
+    // （付けるとビューア側が相対パスへ書き戻してしまうため、埋め込み時は付けない）。
+    if (inlineAssets) {
+      const uri = toDataUri(srcAbsPath);
+      if (uri) return `src=${quote}${uri}${quote}`;
+      // 未知の拡張子はここに来る。従来の相対参照にフォールバックする
+    }
 
     // data-sk-asset にはリポジトリルートからの元パスを残す。
     // デッキ単体ではローカルコピー（assets/{basename}）を参照し、
@@ -634,9 +685,11 @@ function escapeRegExp(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function injectBgAttrs(sectionHtml, on, bgAsset) {
-  // 非公開（slidekit-private）由来の素材は公開ギャラリーに存在しないため data-sk-bg-asset を付与しない
-  const assetAttr = bgAsset && !bgAsset.isPrivate ? ` data-sk-bg-asset="${bgAsset.rel.replace(/["<>]/g, '')}"` : '';
+function injectBgAttrs(sectionHtml, on, bgAsset, inlineAssets) {
+  // 非公開（slidekit-private）由来の素材は公開ギャラリーに存在しないため data-sk-bg-asset を付与しない。
+  // 埋め込み（inlineAssets）時も、ビューア側が相対パスへ書き戻さないよう付けない。
+  const useAttr = bgAsset && !bgAsset.isPrivate && !inlineAssets;
+  const assetAttr = useAttr ? ` data-sk-bg-asset="${bgAsset.rel.replace(/["<>]/g, '')}"` : '';
   return sectionHtml.replace(/<section\b/i, `<section data-sk-bg="${on ? 'on' : 'off'}"${assetAttr}`);
 }
 
