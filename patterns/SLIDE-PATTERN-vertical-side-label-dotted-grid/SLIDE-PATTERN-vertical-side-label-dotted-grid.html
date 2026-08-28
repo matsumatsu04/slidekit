@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-vertical-side-label-dotted-grid</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; position:relative; display:flex; align-items:center; padding:24px 56px 24px 144px; }
+
+  /* 左端の濃色帯（縦組み英字ラベル） */
+  .side-band { position:absolute; left:0; top:24px; bottom:24px; width:104px; background:var(--sk-accent,#555555); border-radius:0 28px 28px 0; display:flex; align-items:center; justify-content:center; }
+  .side-band span { writing-mode:vertical-rl; color:#FFFFFF; font-size:17px; font-weight:bold; letter-spacing:.4em; }
+
+  /* 点線ボーダーの角丸ボックス 3列×2行 */
+  .dg-grid { flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .dg-box { border:1.5px dashed var(--sk-soft,#BBBBBB); border-radius:12px; padding:16px 18px; min-height:136px; }
+  .dg-title { font-size:12.5px; font-weight:bold; color:#333333; margin-bottom:8px; }
+  .dg-items { font-size:10px; color:#888888; line-height:1.9; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <div class="side-band"><span>SUPPORT</span></div>
+
+    <div class="dg-grid">
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E ／ 提供項目F</div>
+      </div>
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
+      </div>
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E ／ 提供項目F</div>
+      </div>
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D</div>
+      </div>
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
+      </div>
+      <div class="dg-box">
+        <div class="dg-title">項目カテゴリ名が入ります</div>
+        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

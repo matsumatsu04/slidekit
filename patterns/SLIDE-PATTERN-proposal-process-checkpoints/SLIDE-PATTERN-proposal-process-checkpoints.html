@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-proposal-process-checkpoints</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; flex-direction:column; justify-content:center; padding:24px 64px; }
+
+  /* タイムライン（点線はバッジ中心で始端・終端） */
+  .pc-timeline { position:relative; height:112px; flex-shrink:0; }
+  .pc-line { position:absolute; top:63px; left:12.5%; right:12.5%; border-top:2px dotted var(--sk-soft,#BBBBBB); }
+  .pc-badge { position:absolute; top:64px; width:52px; height:52px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent,#555555); border-radius:6px; z-index:2; }
+  .pc-badge > span { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-45deg); color:#FFFFFF; line-height:1.2; }
+  .pc-badge .b-en { font-size:7px; letter-spacing:.1em; }
+  .pc-badge .b-num { font-size:15px; font-weight:bold; }
+  .pc-mini { position:absolute; top:64px; width:12px; height:12px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent2,var(--sk-accent,#888888)); border-radius:2px; z-index:1; }
+  .pc-note { position:absolute; top:24px; transform:translateX(-50%); font-size:9px; color:#888888; white-space:nowrap; }
+
+  /* 4等分カラム */
+  .pc-cols { display:flex; margin-top:8px; }
+  .pc-col { flex:1; padding:0 16px; }
+  .pc-col + .pc-col { border-left:1px solid var(--sk-soft,#EEEEEE); }
+  .pc-en { font-size:9px; font-weight:bold; letter-spacing:.12em; color:var(--sk-accent,#888888); }
+  .pc-name { font-size:13px; font-weight:bold; color:#333333; margin-top:2px; }
+  .pc-desc { font-size:10px; color:#666666; line-height:1.8; margin-top:8px; }
+  .pc-chips { margin-top:12px; display:flex; flex-direction:column; gap:4px; }
+  .pc-chip-row { display:flex; align-items:center; gap:4px; }
+  .pc-chip { font-size:8.5px; color:#666666; border:1px solid var(--sk-soft,#CCCCCC); border-radius:8px; padding:2px 8px; white-space:nowrap; }
+  .pc-arw { font-size:7px; color:#BBBBBB; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <div class="pc-timeline">
+      <div class="pc-line"></div>
+      <div class="pc-note" style="left:25%;">お客様確認 1</div>
+      <div class="pc-note" style="left:50%;">お客様確認 2</div>
+      <div class="pc-note" style="left:75%;">お客様確認 3</div>
+      <div class="pc-mini" style="left:25%;"></div>
+      <div class="pc-mini" style="left:50%;"></div>
+      <div class="pc-mini" style="left:75%;"></div>
+      <div class="pc-badge" style="left:12.5%;"><span><span class="b-en">PHASE</span><span class="b-num">01</span></span></div>
+      <div class="pc-badge" style="left:37.5%;"><span><span class="b-en">PHASE</span><span class="b-num">02</span></span></div>
+      <div class="pc-badge" style="left:62.5%;"><span><span class="b-en">PHASE</span><span class="b-num">03</span></span></div>
+      <div class="pc-badge" style="left:87.5%;"><span><span class="b-en">PHASE</span><span class="b-num">04</span></span></div>
+    </div>
+
+    <div class="pc-cols">
+      <div class="pc-col">
+        <div class="pc-en">PLANNING</div>
+        <div class="pc-name">工程名が入ります</div>
+        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。お客様にお願いする準備事項もここに書きます。</div>
+        <div class="pc-chips">
+          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
+          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
+        </div>
+      </div>
+      <div class="pc-col">
+        <div class="pc-en">DESIGN</div>
+        <div class="pc-name">工程名が入ります</div>
+        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。前工程の確認結果を受けて進めます。</div>
+        <div class="pc-chips">
+          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
+          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
+        </div>
+      </div>
+      <div class="pc-col">
+        <div class="pc-en">BUILD</div>
+        <div class="pc-name">工程名が入ります</div>
+        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。中間確認の位置づけもここで示します。</div>
+        <div class="pc-chips">
+          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
+          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
+        </div>
+      </div>
+      <div class="pc-col">
+        <div class="pc-en">LAUNCH</div>
+        <div class="pc-name">工程名が入ります</div>
+        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。納品後の流れにも1行触れられます。</div>
+        <div class="pc-chips">
+          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
+          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

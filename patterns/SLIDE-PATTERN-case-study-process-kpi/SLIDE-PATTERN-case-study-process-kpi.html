@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-case-study-process-kpi</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; overflow:hidden; }
+
+  /* 左1/3: 案件情報 */
+  .cs-left { width:33%; padding:36px 24px 32px 48px; display:flex; flex-direction:column; border-right:1px solid var(--sk-soft,#EEEEEE); }
+  .cs-client { font-size:10px; color:#888888; letter-spacing:.08em; margin-bottom:8px; }
+  .cs-title { font-size:21px; font-weight:bold; color:#333333; line-height:1.5; margin-bottom:16px; }
+  .cs-lead { font-size:11px; color:#666666; line-height:1.9; margin-bottom:12px; }
+  .cs-link { font-size:10px; color:var(--sk-accent,#888888); }
+  .cs-link i { font-size:9px; margin-right:4px; }
+  .cs-badges { margin-top:auto; display:flex; gap:8px; }
+  .cs-badge { width:28px; height:28px; border:1px solid var(--sk-soft,#DDDDDD); border-radius:6px; display:flex; align-items:center; justify-content:center; color:#888888; font-size:12px; }
+
+  /* 右2/3: 画像＋下端バンド */
+  .cs-right { flex:1; display:flex; flex-direction:column; }
+  .cs-photo { flex:1; background:var(--sk-soft,#EFEFEF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#AAAAAA; font-size:11px; }
+  .cs-photo i { font-size:26px; }
+  .cs-band { height:104px; background:#FFFFFF; border-top:1px solid var(--sk-soft,#EEEEEE); display:flex; align-items:center; padding:0 24px; gap:16px; flex-shrink:0; }
+  .cs-band-h { font-size:9px; font-weight:bold; letter-spacing:.14em; color:#888888; flex-shrink:0; }
+
+  /* 縮小プロセス（菱形ミニバッジ＋点線。点線はバッジ中心で始端・終端） */
+  .cs-proc { flex:1; position:relative; height:72px; }
+  .cs-proc-line { position:absolute; top:25px; left:12.5%; right:12.5%; border-top:2px dotted var(--sk-soft,#BBBBBB); }
+  .cs-mini { position:absolute; top:26px; width:20px; height:20px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent,#555555); border-radius:3px; z-index:1; }
+  .cs-mini span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; transform:rotate(-45deg); color:#FFFFFF; font-size:8px; font-weight:bold; }
+  .cs-proc-label { position:absolute; top:44px; transform:translateX(-50%); font-size:8.5px; color:#666666; white-space:nowrap; }
+
+  /* 濃色反転の成果ボックス */
+  .cs-kpi { flex-shrink:0; background:var(--sk-accent,#555555); color:#FFFFFF; border-radius:8px; padding:12px 20px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .cs-kpi-numrow { display:flex; align-items:baseline; gap:2px; }
+  .cs-kpi-num { font-size:30px; font-weight:bold; line-height:1; }
+  .cs-kpi-unit { font-size:12px; font-weight:bold; }
+  .cs-kpi-label { font-size:9px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <div class="cs-left">
+      <div class="cs-client">発注元ラベルが入ります</div>
+      <div class="cs-title">導入事例のタイトルが2行で入ります</div>
+      <div class="cs-lead">事例のリード文が入ります。ご相談の背景、提案した内容、進め方の要点を4行ほどで記述します。成果につながった工夫もここで触れます。</div>
+      <div class="cs-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>参照リンクのテキストが入ります</div>
+      <div class="cs-badges">
+        <div class="cs-badge"><i class="fa-solid fa-globe"></i></div>
+        <div class="cs-badge"><i class="fa-solid fa-mobile-screen"></i></div>
+        <div class="cs-badge"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="cs-badge"><i class="fa-solid fa-chart-line"></i></div>
+      </div>
+    </div>
+
+    <div class="cs-right">
+      <div class="cs-photo"><i class="fa-solid fa-image"></i>実績の画像が入ります</div>
+      <div class="cs-band">
+        <div class="cs-band-h">PROCESS</div>
+        <div class="cs-proc">
+          <div class="cs-proc-line"></div>
+          <div class="cs-mini" style="left:12.5%;"><span>01</span></div>
+          <div class="cs-mini" style="left:37.5%;"><span>02</span></div>
+          <div class="cs-mini" style="left:62.5%;"><span>03</span></div>
+          <div class="cs-mini" style="left:87.5%;"><span>04</span></div>
+          <div class="cs-proc-label" style="left:12.5%;">工程名</div>
+          <div class="cs-proc-label" style="left:37.5%;">工程名</div>
+          <div class="cs-proc-label" style="left:62.5%;">工程名</div>
+          <div class="cs-proc-label" style="left:87.5%;">工程名</div>
+        </div>
+        <div class="cs-kpi">
+          <div class="cs-kpi-numrow"><span class="cs-kpi-num">150</span><span class="cs-kpi-unit">%</span></div>
+          <div class="cs-kpi-label">成果指標が入ります</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

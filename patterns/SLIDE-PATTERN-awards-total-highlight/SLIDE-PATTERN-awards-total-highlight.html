@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-awards-total-highlight</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; gap:24px; padding:32px 64px; align-items:stretch; }
+
+  /* 左40%: 主要実績リスト */
+  .aw-left { width:40%; display:flex; flex-direction:column; justify-content:center; padding-right:16px; border-right:1px solid var(--sk-soft,#EEEEEE); }
+  .aw-row { display:flex; gap:12px; align-items:center; padding:12px 0; }
+  .aw-row + .aw-row { border-top:1px solid var(--sk-soft,#F0F0F0); }
+  .aw-icon { width:36px; height:36px; border:1px solid var(--sk-soft,#DDDDDD); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--sk-accent,#888888); font-size:14px; flex-shrink:0; }
+  .aw-name { font-size:12.5px; font-weight:bold; color:#333333; }
+  .aw-meta { font-size:9.5px; color:#888888; display:flex; gap:12px; margin-top:2px; }
+
+  /* 中央30%: 文字バッジのクラスタ */
+  .aw-center { width:28%; display:flex; flex-direction:column; justify-content:center; gap:12px; }
+  .aw-center-h { font-size:10.5px; font-weight:bold; letter-spacing:.06em; color:#888888; }
+  .badge-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .tb { border:1px solid var(--sk-soft,#DDDDDD); border-radius:10px; padding:6px 4px; text-align:center; font-size:8.5px; color:#666666; letter-spacing:.04em; white-space:nowrap; overflow:hidden; }
+
+  /* 右30%: TOTALカード */
+  .aw-right { flex:1; background:var(--sk-soft,#F2F2F2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px; }
+  .aw-right i { font-size:30px; color:var(--sk-accent,#888888); }
+  .aw-total-label { font-size:10px; font-weight:bold; letter-spacing:.18em; color:#888888; }
+  .aw-total-num { font-size:48px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
+  .aw-total-cap { font-size:9.5px; color:#999999; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <div class="aw-left">
+      <div class="aw-row">
+        <div class="aw-icon"><i class="fa-solid fa-trophy"></i></div>
+        <div><div class="aw-name">主要な実績名が入ります</div><div class="aw-meta"><span>2024年</span><span>対象・部門が入ります</span></div></div>
+      </div>
+      <div class="aw-row">
+        <div class="aw-icon"><i class="fa-solid fa-award"></i></div>
+        <div><div class="aw-name">主要な実績名が入ります</div><div class="aw-meta"><span>2023年</span><span>対象・部門が入ります</span></div></div>
+      </div>
+      <div class="aw-row">
+        <div class="aw-icon"><i class="fa-solid fa-certificate"></i></div>
+        <div><div class="aw-name">主要な実績名が入ります</div><div class="aw-meta"><span>2022年</span><span>対象・部門が入ります</span></div></div>
+      </div>
+      <div class="aw-row">
+        <div class="aw-icon"><i class="fa-solid fa-newspaper"></i></div>
+        <div><div class="aw-name">主要な実績名が入ります</div><div class="aw-meta"><span>2021年</span><span>対象・部門が入ります</span></div></div>
+      </div>
+    </div>
+
+    <div class="aw-center">
+      <div class="aw-center-h">そのほかの実績が入ります</div>
+      <div class="badge-grid">
+        <div class="tb">BADGE 01</div>
+        <div class="tb">BADGE 02</div>
+        <div class="tb">BADGE 03</div>
+        <div class="tb">BADGE 04</div>
+        <div class="tb">BADGE 05</div>
+        <div class="tb">BADGE 06</div>
+        <div class="tb">BADGE 07</div>
+        <div class="tb">BADGE 08</div>
+        <div class="tb">BADGE 09</div>
+      </div>
+    </div>
+
+    <div class="aw-right">
+      <i class="fa-solid fa-medal"></i>
+      <div class="aw-total-label">TOTAL</div>
+      <div class="aw-total-num">45+</div>
+      <div class="aw-total-cap">実績の合計件数が入ります</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

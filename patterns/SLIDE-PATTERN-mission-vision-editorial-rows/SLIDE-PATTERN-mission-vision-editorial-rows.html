@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-mission-vision-editorial-rows</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; flex-direction:column; justify-content:center; gap:48px; padding:32px 96px; }
+
+  .ed-row { display:flex; align-items:stretch; }
+  .ed-label { width:22%; display:flex; align-items:center; font-size:15px; font-weight:bold; letter-spacing:.28em; color:var(--sk-accent,#888888); flex-shrink:0; }
+  .ed-rule { width:1px; background:var(--sk-soft,#DDDDDD); flex-shrink:0; }
+  .ed-body { flex:1; padding-left:40px; }
+  .ed-heading { font-size:19px; font-weight:bold; color:#333333; line-height:1.6; }
+  .ed-cap { font-size:9px; letter-spacing:.16em; color:#AAAAAA; margin-top:4px; }
+  .ed-text { font-size:11px; color:#666666; line-height:1.9; margin-top:12px; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <div class="ed-row">
+      <div class="ed-label">MISSION</div>
+      <div class="ed-rule"></div>
+      <div class="ed-body">
+        <div class="ed-heading">和文太字の大見出しが1〜2行で入ります</div>
+        <div class="ed-cap">ENGLISH CAPTION TEXT IS HERE</div>
+        <div class="ed-text">本文が入ります。理念に込めた思いと、その背景にある課題認識を3〜5行で記述します。読み物として成立する文章量を置けるのがこのパターンの持ち味です。飾らない言葉で書きます。</div>
+      </div>
+    </div>
+
+    <div class="ed-row">
+      <div class="ed-label">VISION</div>
+      <div class="ed-rule"></div>
+      <div class="ed-body">
+        <div class="ed-heading">和文太字の大見出しが1〜2行で入ります</div>
+        <div class="ed-cap">ENGLISH CAPTION TEXT IS HERE</div>
+        <div class="ed-text">本文が入ります。目指す状態と、そこへ向かう道筋を3〜5行で記述します。上の段と同じ構造をくり返すことで、編集誌のような静かなリズムが生まれます。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
