@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-estimate-total-side-panel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
+  .content-area { flex:1; display:flex; align-items:stretch; }
+
+  /* 左33%: 濃色縦パネル（合計と取引条件） */
+  .panel { width:33%; background:var(--sk-accent,#555555); display:flex; flex-direction:column; justify-content:center; padding:40px 32px; }
+  .p-label { font-size:11px; font-weight:bold; color:#FFFFFF; }
+  .p-en { font-size:9px; font-weight:bold; color:rgba(255,255,255,.7); letter-spacing:.3em; margin-top:4px; }
+  .p-amount { font-size:40px; font-weight:bold; color:#FFFFFF; line-height:1; margin-top:20px; }
+  .p-amount .yen { font-size:18px; font-weight:bold; margin-left:4px; }
+  .p-terms { margin-top:28px; border-top:1px solid rgba(255,255,255,.35); }
+  .p-term { display:flex; align-items:baseline; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.35); }
+  .p-term-label { font-size:9.5px; color:rgba(255,255,255,.7); }
+  .p-term-value { font-size:11px; font-weight:bold; color:#FFFFFF; }
+
+  /* 右67%: 内訳カード（2列） */
+  .breakdown { flex:1; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:40px 48px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .card { background:var(--sk-soft,#F4F4F4); border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; }
+  .c-top { display:flex; align-items:center; gap:8px; }
+  .c-num { width:20px; height:20px; flex-shrink:0; border-radius:4px; background:var(--sk-accent,#555555); color:#FFFFFF; font-size:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; }
+  .c-name { font-size:12px; font-weight:bold; color:#333333; }
+  .c-amt { margin-left:auto; font-size:12.5px; font-weight:bold; color:#333333; }
+  .c-desc { font-size:9px; color:#888888; margin-left:28px; }
+  .r-note { font-size:9px; color:#999999; text-align:right; }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <div class="content-area">
+
+    <!-- 左: 濃色縦パネル -->
+    <div class="panel">
+      <div class="p-label">お見積り</div>
+      <div class="p-en">ESTIMATE</div>
+      <div class="p-amount">000,000<span class="yen">円</span></div>
+      <div class="p-terms">
+        <div class="p-term"><span class="p-term-label">税区分</span><span class="p-term-value">記載が入ります</span></div>
+        <div class="p-term"><span class="p-term-label">有効期限</span><span class="p-term-value">記載が入ります</span></div>
+        <div class="p-term"><span class="p-term-label">支払条件</span><span class="p-term-value">記載が入ります</span></div>
+      </div>
+    </div>
+
+    <!-- 右: 内訳カード -->
+    <div class="breakdown">
+      <div class="cards">
+        <div class="card">
+          <div class="c-top"><div class="c-num">1</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+        <div class="card">
+          <div class="c-top"><div class="c-num">2</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+        <div class="card">
+          <div class="c-top"><div class="c-num">3</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+        <div class="card">
+          <div class="c-top"><div class="c-num">4</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+        <div class="card">
+          <div class="c-top"><div class="c-num">5</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+        <div class="card">
+          <div class="c-top"><div class="c-num">6</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
+          <div class="c-desc">作業内容の説明が入ります</div>
+        </div>
+      </div>
+      <div class="r-note">※ 注記が入ります（別途費用・前提条件など）</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
