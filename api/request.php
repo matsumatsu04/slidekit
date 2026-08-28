@@ -45,12 +45,16 @@ if (is_file($gate) && (time() - filemtime($gate)) < 20) {
 }
 @touch($gate);
 
-// 保存先: public_html の外（例 /home/xxx/macminol.com/slidekit-data/）
+// 保存先: 公開領域（public_html）の外（例 <ドメインDIR>/slidekit-data/）。
+// サブドメインでは DOCUMENT_ROOT が public_html のさらに下（.../public_html/slide）になるため、
+// パス中の public_html を探してその親を基準にする（2026-08-28 実測）。
 $docroot = rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/');
-$dataDir = $docroot !== '' ? dirname($docroot) . '/slidekit-data' : null;
-if ($dataDir === null) {
+if ($docroot === '') {
     out(['ok' => false, 'error' => 'サーバー設定エラー'], 500);
 }
+$pos = strpos($docroot, '/public_html');
+$base = $pos !== false ? substr($docroot, 0, $pos) : dirname($docroot);
+$dataDir = $base . '/slidekit-data';
 if (!is_dir($dataDir) && !@mkdir($dataDir, 0700, true)) {
     out(['ok' => false, 'error' => 'サーバー設定エラー（保存先）'], 500);
 }
