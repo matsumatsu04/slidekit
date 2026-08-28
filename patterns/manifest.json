@@ -1,14 +1,7 @@
 {
-  "count": 122,
+  "count": 118,
   "next_id": 154,
   "patterns": [
-    {
-      "name": "cover-minimal-disclaimer",
-      "category": "表紙",
-      "summary": "ロゴと企業名をヘッダーに配置し、中央にタイトル・発表者を、フッターに免責事項を記載するカバーページ。金融・投資向け。",
-      "tier": "high",
-      "id": "P004"
-    },
     {
       "name": "section-divider",
       "category": "セクション",
@@ -507,13 +500,6 @@
       "id": "P099"
     },
     {
-      "name": "cover-photo-overlay-center",
-      "category": "表紙",
-      "summary": "実写写真＋暗色オーバーレイの上に白文字タイトルを中央配置する表紙。背景は画像アセット（差し替え可・色ティント対象外）",
-      "tier": "high",
-      "id": "P100"
-    },
-    {
       "name": "cover-geo-texture-left",
       "category": "表紙",
       "summary": "紙質感の幾何学装飾背景の左中央にタイトル・会社名・日付を縦積みする上品な表紙。背景は画像アセット（色ティント対象外）",
@@ -710,13 +696,6 @@
       "id": "P132"
     },
     {
-      "name": "cover-split-two-tone",
-      "category": "表紙",
-      "summary": "左42%アクセント色ベタ（白抜きタイトル）×右58%白（余白＋右下メタ）の2トーン分割表紙。画像素材なしで使える表紙。",
-      "tier": "high",
-      "id": "P133"
-    },
-    {
       "name": "value-three-pillars",
       "category": "本文",
       "summary": "MISSION/VISION/VALUEのチップ＋大きな文言を3段で縦に積む理念提示。会社紹介・採用資料の定番。",
@@ -785,13 +764,6 @@
       "summary": "余白極大の中央に章番号・短い線・章タイトルだけを置く最小構成の中扉。ミニマル系デッキの章区切りに。",
       "tier": "high",
       "id": "P143"
-    },
-    {
-      "name": "cover-big-typography",
-      "category": "表紙",
-      "summary": "58px極太タイトル（1フレーズだけアクセント色）で語るタイポグラフィ表紙。画像不要・言葉が主役の資料に。",
-      "tier": "high",
-      "id": "P144"
     },
     {
       "name": "body-callout-box",

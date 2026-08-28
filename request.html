@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlideKit｜リクエスト</title>
+<link rel="icon" type="image/png" href="/assets/brand/favicon.png">
+<link rel="apple-touch-icon" type="image/png" href="/assets/brand/favicon.png">
+<meta name="description" content="SlideKitへのリクエスト。気になる点・不具合・追加してほしい機能や構図パターンの要望を送れます。">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Prompt:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1d2e54;--yellow:#fed309;--on-yellow:#333;--ink:#333;--muted:#6b7280;--line:#e6e7ea;--bg:#fafafa;--brand:var(--navy);--surf:#f5f5f5;--font-jp:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;--font-en:'Prompt','Zen Kaku Gothic New',sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-jp);background:var(--bg);color:var(--ink);line-height:1.9}
+  a{color:var(--brand)}
+  .bar{position:sticky;top:80px;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line)}
+  .bar a.back{color:var(--brand);text-decoration:none;font-size:14px}
+  .bar .ttl{font-weight:700;font-size:14px}
+  .wrap{max-width:680px;margin:0 auto;padding:36px 24px 100px}
+  h1{font-size:26px;font-weight:700;margin-bottom:10px;color:var(--navy)}
+  .lead{font-size:14px;color:#444;margin-bottom:26px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 24px}
+  .fld{margin-bottom:18px}
+  .fld label{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px}
+  .fld .req{color:#C0392B;font-size:11px;font-weight:700;margin-left:6px;vertical-align:1px}
+  .fld input[type=text],.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:10px;
+    padding:11px 12px;font-size:14px;font-family:var(--font-jp);background:#fff;color:var(--ink)}
+  .fld textarea{min-height:170px;resize:vertical;line-height:1.8}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--navy);outline-offset:1px;border-color:var(--navy)}
+  .fld .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .hp{position:absolute;left:-9999px;top:-9999px;height:1px;width:1px;overflow:hidden}
+  .send{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:none;border-radius:999px;
+    padding:12px 30px;font-size:14.5px;font-weight:700;font-family:var(--font-jp);cursor:pointer}
+  .send:hover{opacity:.9}
+  .send:disabled{opacity:.5;cursor:default}
+  .err{display:none;color:#C0392B;font-size:13px;margin-top:12px}
+  .done{display:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:34px 24px;text-align:center}
+  .done .big{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+  .done p{font-size:13.5px;color:#444}
+  .note{background:#fff;border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;font-size:13px;color:#444;margin:18px 0 0}
+
+/* ===================================================== 共通ヘッダー（macminol.com 準拠） */
+.mm-header{position:fixed;top:0;left:0;right:0;height:80px;background:#1d2e54;z-index:100}
+.mm-header-inner{max-width:1230px;height:100%;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px}
+.mm-logo{display:flex;align-items:center;flex:0 0 auto;text-decoration:none}
+.mm-wordmark{color:#fff;font-family:'Prompt','Zen Kaku Gothic New',system-ui,sans-serif;
+  font-size:22px;font-weight:600;letter-spacing:.02em;line-height:1;white-space:nowrap;margin:0}
+.mm-nav{display:flex;align-items:center;gap:36px}
+.mm-nav a{color:#fff;font-size:16px;font-weight:400;text-decoration:none;white-space:nowrap;
+  padding:6px 0;border-bottom:2px solid transparent}
+.mm-nav a:hover{border-bottom-color:#fed309}
+.mm-burger{display:none;width:44px;height:44px;background:none;border:none;cursor:pointer;
+  flex-direction:column;justify-content:center;gap:7px;padding:0 8px}
+.mm-burger span{display:block;height:2px;background:#fff;border-radius:2px}
+body{padding-top:80px}
+
+@media (max-width:900px){
+  .mm-header-inner{padding:0 16px}
+  .mm-wordmark{font-size:19px}
+  .mm-burger{display:flex}
+  .mm-nav{position:fixed;top:80px;left:0;right:0;background:#1d2e54;flex-direction:column;
+    align-items:stretch;gap:0;padding:8px 16px 20px;display:none}
+  .mm-nav[data-open="1"]{display:flex}
+  .mm-nav a{padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.16)}
+  .mm-nav a:hover{border-bottom-color:rgba(255,255,255,.16)}
+}
+</style>
+</head>
+<body>
+<header class="mm-header"><div class="mm-header-inner"><a class="mm-logo" href="/"><span class="mm-wordmark">SlideKit</span></a><nav class="mm-nav" id="mmNav"><a href="/#patterns">パターン</a><a href="/#designs">デザインテーマ</a><a href="/deck.html">スライド確認</a><a href="/start.html">導入手順</a><a href="/request.html">リクエスト</a></nav><button class="mm-burger" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="mmNav" data-role="mm-burger"><span></span><span></span><span></span></button></div></header>
+
+  <div class="bar">
+    <a class="back" href="/">← ギャラリーへ</a>
+    <span class="ttl">リクエスト</span>
+  </div>
+  <div class="wrap">
+    <h1>リクエスト</h1>
+    <p class="lead">
+      SlideKitを使っていて気になった点・不具合・追加してほしい機能や構図パターンがあれば、こちらから送ってください。
+      いただいた内容は今後の改善に活かします。
+    </p>
+
+    <form class="card" id="reqForm" novalidate>
+      <div class="fld">
+        <label for="fName">お名前<span class="req">必須</span></label>
+        <input type="text" id="fName" name="name" maxlength="100" autocomplete="name" placeholder="例）山田 太郎">
+      </div>
+      <div class="fld">
+        <label for="fType">種別<span class="req">必須</span></label>
+        <select id="fType" name="type">
+          <option value="機能の要望">機能の要望</option>
+          <option value="不具合・気になる点">不具合・気になる点</option>
+          <option value="欲しい構図パターン">欲しい構図パターン</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label for="fBody">内容<span class="req">必須</span></label>
+        <textarea id="fBody" name="body" maxlength="4000" placeholder="例）目次のパターンに、章ごとの所要時間も書ける型がほしいです。&#10;例）スライド確認ページで◯◯したときに△△になります。"></textarea>
+        <div class="hint">どのページ・どのパターン（P045 など）の話かを書いてもらえると助かります。</div>
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label>このフィールドは空のままにしてください<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <button class="send" type="submit" id="sendBtn">送信する</button>
+      <div class="err" id="errMsg"></div>
+    </form>
+
+    <div class="done" id="doneBox">
+      <div class="big">送信しました。ありがとうございます！</div>
+      <p>いただいたリクエストは確認のうえ、今後の更新に反映していきます。<br>
+      続けて送りたい場合は<a href="/request.html">もう一度開いて</a>ください。</p>
+    </div>
+
+    <div class="note">
+      返信が必要なご質問は、いつものチャット（Discord）でも大丈夫です。
+    </div>
+  </div>
+
+<script>
+(function(){
+  var b=document.querySelector('[data-role="mm-burger"]'), n=document.getElementById('mmNav');
+  if(!b||!n) return;
+  function set(open){ n.setAttribute('data-open',open?'1':'0'); b.setAttribute('aria-expanded',open?'true':'false'); }
+  b.addEventListener('click',function(){ set(n.getAttribute('data-open')!=='1'); });
+  n.addEventListener('click',function(e){ if(e.target.tagName==='A') set(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); });
+})();
+
+(function(){
+  var form=document.getElementById('reqForm'), btn=document.getElementById('sendBtn'), err=document.getElementById('errMsg');
+  function fail(msg){ err.textContent=msg; err.style.display='block'; btn.disabled=false; btn.textContent='送信する'; }
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); err.style.display='none';
+    var name=document.getElementById('fName').value.trim();
+    var body=document.getElementById('fBody').value.trim();
+    if(!name){ fail('お名前を入力してください'); document.getElementById('fName').focus(); return; }
+    if(!body){ fail('内容を入力してください'); document.getElementById('fBody').focus(); return; }
+    btn.disabled=true; btn.textContent='送信中…';
+    fetch('/api/request.php',{method:'POST', body:new FormData(form)})
+      .then(function(r){ return r.json().catch(function(){ throw new Error('bad'); }); })
+      .then(function(d){
+        if(d && d.ok){ form.style.display='none'; document.getElementById('doneBox').style.display='block';
+          window.scrollTo({top:0,behavior:'smooth'}); }
+        else{ fail(d && d.error ? d.error : '送信に失敗しました。時間をおいてもう一度お試しください'); }
+      })
+      .catch(function(){ fail('送信に失敗しました。通信環境を確認して、もう一度お試しください'); });
+  });
+})();
+</script>
+</body>
+</html>

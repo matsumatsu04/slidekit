@@ -229,7 +229,7 @@ node tools/html-deck/build-html-deck.mjs <デッキフォルダ>
 ```
 
 - 各要素は `{ "file": "<フラグメント名>", "bg": true|false }`。`kind`（例 `"表紙"`）や `pattern`
-  （例 `"cover-split-two-tone"`）を添えると `auto` 判定のヒントになる。ファイル名だけの文字列も混ぜてよい。
+  （例 `"cover-curve-shape-left"`）を添えると `auto` 判定のヒントになる。ファイル名だけの文字列も混ぜてよい。
 - `file` を省略した要素は配列の位置（0始まり）で対応付ける。`file` に一致するフラグメントが無いときは警告が出る（タイプミス検出）。
 - **`slides[].bg` の個別指定は `default` より常に優先**する。
 

@@ -128,7 +128,7 @@ patterns/
 
 ```yaml
 ---
-name: cover-split-two-tone        # フォルダ名 SLIDE-PATTERN-{name} の {name} と完全一致
+name: cover-curve-shape-left      # フォルダ名 SLIDE-PATTERN-{name} の {name} と完全一致
 category: 表紙                     # 14 カテゴリのいずれか（表記どおり）
 summary: 左42%をアクセント色ベタ…   # 1〜2 文。manifest の summary ＝ INDEX の「概要」列
 scenes: 提案書・報告書の表紙…       # INDEX の「適したシーン」列
@@ -217,7 +217,7 @@ DESIGN 側の Frame で定義する旨を記す）
 ## Slide Plan
 | # | 種類 | 構図パターン | 内容（1行） |
 |---|---|---|---|
-| 1 | 表紙 | cover-split-two-tone | タイトル・対象・日付 |
+| 1 | 表紙 | cover-curve-shape-left | タイトル・対象・日付 |
 | 2 | 目次 | agenda-toc | 本日の流れ |
 | … | … | … | … |
 
@@ -235,7 +235,7 @@ DESIGN 側の Frame で定義する旨を記す）
 
 例：
 ```markdown
-### Slide 1 — 表紙（cover-split-two-tone）
+### Slide 1 — 表紙（cover-curve-shape-left）
 **Structure:** 左42%アクセント色パネル（種別ラベル＋白抜きタイトル＋サブ） ／ 右58%白地・右下にメタ情報
 **Content:**
 - main-title: 資料作成を、もっと速く・きれいに

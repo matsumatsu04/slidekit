@@ -96,7 +96,7 @@ N. [締め]      まとめと次の一歩
 
 | カテゴリ | 代表パターン例 |
 |---|---|
-| 表紙 | cover-split-two-tone（画像不要の2トーン） / cover-big-typography（特大タイポ・画像不要） / cover-photo-overlay-center / cover-blob-side-left / cover-curve-shape-left ほか（画像背景表紙は assets/covers/ の素材を使用・色ティント対象外） |
+| 表紙 | cover-curve-shape-left（曲面シェイプ） / cover-blob-side-left（ブロブ） / cover-geo-texture-left（幾何学×紙質感） / cover-soft-3d-left / cover-art-brush-left（いずれも画像背景表紙。assets/covers/ の素材を使用・色ティント対象外） |
 | セクション | section-divider / section-minimal-center（ミニマル中央） / section-tag-progress（現在地タグナビ） / section-photo-overlay-left / section-geo-texture-left / section-soft-3d-number-row（画像背景中扉は assets/covers/ の素材を使用・色ティント対象外） |
 | 目次 | agenda-toc / toc-two-column（5項目以上の2カラム） / toc-section-cards（カード型・4章） / toc-current-highlight（章再掲・現在地） |
 | 本文 | key-message-single / key-message-inverted（反転配色の山場） / two-col-text-body（左右2カラム） / quote-single-large（1名大型引用） / value-three-pillars（MVV3段） / body-callout-box（本文＋POINT囲み） / concept-keyword-three（大キーワード3つ） / two-section-stacked-text |
@@ -116,7 +116,7 @@ N. [締め]      まとめと次の一歩
 
 | # | 種類 | ID | 構図パターン（SLIDE-PATTERN名） | 見出し | 背景 | 内容（1行） |
 |---|---|---|---|---|---|---|
-| 1 | 表紙 | P133 | cover-split-two-tone | なし | OFF | タイトル・対象・日付 |
+| 1 | 表紙 | P105 | cover-curve-shape-left | なし | OFF | タイトル・対象・日付 |
 | 2 | 目次 | P006 | agenda-toc | なし | ON | 本日の流れ |
 | 4 | 本文 | P015 | key-message-single | あり | ON | 現状の課題 |
 | … | … | … | … | … | … | … |
