@@ -34,7 +34,7 @@
   .pal-chip .d{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);margin-left:-4px}
   .pal-chip .d:first-child{margin-left:0}
   .pal-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);color:var(--ink);font-weight:700}
-  /* ===== 発表モード（全画面スライドショー・2026-08-28 代表要望） ===== */
+  /* ===== 発表モード（スライドショー・2026-08-28 代表要望。ブラウザ全画面化はしない） ===== */
   #present{display:none;position:fixed;inset:0;background:#000;z-index:300;cursor:pointer}
   #present.on{display:block}
   #present .pv-stage{position:absolute;left:50%;top:50%;width:960px;height:540px;transform-origin:center center;background:#fff}
@@ -235,7 +235,7 @@ body{padding-top:80px}
     <span class="lab" id="palLab" style="display:none">カラーパレット</span>
     <div class="palettes" id="palettes" style="display:none"></div>
     <button class="btn gray" id="palReset" style="display:none">デッキの配色に戻す</button>
-    <button class="btn" id="presentBtn" style="display:none" title="スライドを全画面で1枚ずつ表示（→/クリックで送り・Escで終了）。画面編集・構成変更を反映した状態で表示します">▶ 発表</button>
+    <button class="btn" id="presentBtn" style="display:none" title="スライドをウィンドウいっぱいに1枚ずつ表示（→/クリックで送り・Escで終了）。タブ・URLバーは残るので発表中もタブを切り替えられます">▶ 発表</button>
     <button class="btn" id="editModeBtn" style="display:none">✎ 編集モード</button>
     <button class="btn" id="printBtn" style="display:none" title="表示中の内容（画面編集・スライド構成の変更を含む）をブラウザの印刷ダイアログからPDF保存">PDFとして保存</button>
     <button class="btn primary" id="promptBtn" style="display:none">修正プロンプトを出力</button>
@@ -983,8 +983,10 @@ function openInTab(){ // 印刷が開けない環境向けのフォールバッ�
   window.open(url,'_blank');
 }
 
-// ================= 発表モード（全画面スライドショー） =================
-// 画面編集・構成変更・背景ON/OFF を反映した状態（renderDeck と同じ適用順）で1枚ずつ全画面表示する。
+// ================= 発表モード（スライドショー） =================
+// 画面編集・構成変更・背景ON/OFF を反映した状態（renderDeck と同じ適用順）で1枚ずつ大写しにする。
+// ブラウザの全画面化（Fullscreen API）は使わない。発表中もタブ・URLバーを見せたまま
+// タブを切り替えて話せるようにするため（2026-08-31 代表指示）。
 const PV={on:false,idx:0,frames:[],quietT:null};
 function pvFit(){
   const st=$('pvStage');
@@ -1017,23 +1019,16 @@ function openPresent(){
   PV.on=true;$('present').classList.add('on');$('present').classList.remove('quiet');
   pvFit();pvShow(0);
   clearTimeout(PV.quietT);PV.quietT=setTimeout(()=>$('present').classList.add('quiet'),3000);
-  const el=$('present');
-  if(el.requestFullscreen){ el.requestFullscreen().catch(()=>{}); }
-  else if(el.webkitRequestFullscreen){ try{ el.webkitRequestFullscreen(); }catch(e){} }
 }
 function closePresent(){
   if(!PV.on) return;
   PV.on=false;$('present').classList.remove('on');
   $('pvStage').innerHTML='';PV.frames=[];
   clearTimeout(PV.quietT);
-  const fsEl=document.fullscreenElement||document.webkitFullscreenElement;
-  if(fsEl){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
 }
 $('presentBtn').addEventListener('click',openPresent);
 $('present').addEventListener('click',e=>{ pvShow(PV.idx+1); });
 window.addEventListener('resize',()=>{ if(PV.on) pvFit(); });
-document.addEventListener('fullscreenchange',()=>{ if(PV.on&&!document.fullscreenElement) closePresent(); });
-document.addEventListener('webkitfullscreenchange',()=>{ if(PV.on&&!document.webkitFullscreenElement) closePresent(); });
 window.addEventListener('keydown',e=>{
   if(!PV.on) return;
   const next=['ArrowRight','ArrowDown','PageDown',' ','Enter'];
