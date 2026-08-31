@@ -38,7 +38,9 @@
   #present{display:none;position:fixed;inset:0;background:#000;z-index:300;cursor:pointer}
   #present.on{display:block}
   #present .pv-stage{position:absolute;left:50%;top:50%;width:960px;height:540px;transform-origin:center center;background:#fff}
-  #present .pv-stage iframe{position:absolute;inset:0;width:960px;height:540px;border:0;display:none;background:#fff}
+  /* pointer-events:none — スライド上のクリックを親（#present）で受けて「送り」にする。
+     iframeがクリックでフォーカスを奪うと、以後のキー入力が親に届かず矢印送りが死ぬ（2026-08-31 実バグ） */
+  #present .pv-stage iframe{position:absolute;inset:0;width:960px;height:540px;border:0;display:none;background:#fff;pointer-events:none}
   #present .pv-stage iframe.cur{display:block}
   #present .pv-page{position:fixed;right:18px;bottom:14px;color:rgba(255,255,255,.85);font-size:13px;
     font-family:var(--font-en);letter-spacing:.06em;user-select:none;
@@ -1018,6 +1020,9 @@ function openPresent(){
   });
   PV.on=true;$('present').classList.add('on');$('present').classList.remove('quiet');
   pvFit();pvShow(0);
+  // キー入力を必ず親ウィンドウで受ける。一覧表示のiframe等にフォーカスが残っているとキー送りが効かない
+  try{ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); }catch(e){}
+  window.focus();
   clearTimeout(PV.quietT);PV.quietT=setTimeout(()=>$('present').classList.add('quiet'),3000);
 }
 function closePresent(){
@@ -1029,6 +1034,12 @@ function closePresent(){
 $('presentBtn').addEventListener('click',openPresent);
 $('present').addEventListener('click',e=>{ pvShow(PV.idx+1); });
 window.addEventListener('resize',()=>{ if(PV.on) pvFit(); });
+// タブ切替から戻ったとき、フォーカスがiframeに居座っているとキー送りが効かないので親へ戻す
+window.addEventListener('focus',()=>{
+  if(PV.on&&document.activeElement&&document.activeElement.tagName==='IFRAME'){
+    try{ document.activeElement.blur(); }catch(e){}
+  }
+});
 window.addEventListener('keydown',e=>{
   if(!PV.on) return;
   const next=['ArrowRight','ArrowDown','PageDown',' ','Enter'];
