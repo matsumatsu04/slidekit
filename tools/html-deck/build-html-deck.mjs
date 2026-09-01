@@ -19,6 +19,7 @@
 // Node標準モジュールのみを使用（npm追加なし）。
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,6 +30,50 @@ const REPO_ROOT = path.join(__dirname, '..', '..');
 // リポジトリ内で見つからないアセット（assets/...）をここからも解決する。
 // 例: slidekit-private/assets/brand/... （ブランドロゴ等、公開リポジトリに含めない素材）
 const PRIVATE_ROOT = path.join(REPO_ROOT, '..', 'slidekit-private');
+
+// 自分用のアセット置き場（任意）。ロゴ・写真など、自分だけが使う素材を置くフォルダ。
+// 置き場所は自由（ローカルでもクラウド同期フォルダでもよい）。次の順で探す:
+//   1. 環境変数 SLIDEKIT_ASSETS_DIR
+//   2. ~/.slidekit/config.json の "assetsDir"
+//   3. ~/slidekit-assets（既定）
+// フォルダ内は assets/ を作っても、直接ファイルを置いてもよい（どちらでも解決する）。
+function expandHome(p) {
+  return p.startsWith('~') ? path.join(os.homedir(), p.slice(1)) : p;
+}
+function personalAssetRoots() {
+  const roots = [];
+  const add = (p) => {
+    if (!p) return;
+    const abs = path.resolve(expandHome(p));
+    if (!roots.includes(abs) && fs.existsSync(abs)) roots.push(abs);
+  };
+  add(process.env.SLIDEKIT_ASSETS_DIR);
+  try {
+    const cfgPath = path.join(os.homedir(), '.slidekit', 'config.json');
+    if (fs.existsSync(cfgPath)) add(JSON.parse(fs.readFileSync(cfgPath, 'utf8')).assetsDir);
+  } catch (e) {
+    console.error(`[build-html-deck] 警告: ~/.slidekit/config.json を読めません（無視します）: ${e.message}`);
+  }
+  add(path.join(os.homedir(), 'slidekit-assets'));
+  return roots;
+}
+const ASSET_ROOTS = [REPO_ROOT, ...personalAssetRoots(), PRIVATE_ROOT];
+
+// "assets/..." 形式の相対パスを、公開リポジトリ → 自分用フォルダ → slidekit-private の順で探す。
+// 自分用フォルダでは assets/ を省いた形（フォルダ直下）も許す。
+// 戻り値の isPrivate は「公開リポジトリの外にある」＝ギャラリーから復元できない、の意味。
+function findAssetFile(relFromRoot) {
+  const bare = relFromRoot.replace(/^assets\//, '');
+  for (const root of ASSET_ROOTS) {
+    const inRoot = path.join(root, relFromRoot);
+    if (fs.existsSync(inRoot)) return { abs: inRoot, isPrivate: root !== REPO_ROOT };
+    if (root !== REPO_ROOT) {
+      const flat = path.join(root, bare);
+      if (fs.existsSync(flat)) return { abs: flat, isPrivate: true };
+    }
+  }
+  return null;
+}
 
 const DEFAULT_THEME = {
   accent: '#1E2E53',
@@ -350,20 +395,14 @@ function resolveAssets(sectionHtml, deckDir, assetsOutDir, inlineAssets) {
   const html = sectionHtml.replace(srcRe, (fullMatch, quote, value) => {
     const idx = value.indexOf('assets/');
     const relFromRoot = value.slice(idx); // 例: "assets/covers/cover-bg-organic-blobs.jpg"
-    let srcAbsPath = path.join(REPO_ROOT, relFromRoot);
-    let isPrivate = false;
-
-    if (!fs.existsSync(srcAbsPath)) {
-      const privatePath = path.join(PRIVATE_ROOT, relFromRoot);
-      if (fs.existsSync(privatePath)) {
-        srcAbsPath = privatePath;
-        isPrivate = true;
-      }
-    }
-    if (!fs.existsSync(srcAbsPath)) {
-      console.error(`[build-html-deck] 警告: アセットが見つかりません（スキップ）: ${srcAbsPath}`);
+    const found = findAssetFile(relFromRoot);
+    if (!found) {
+      console.error(`[build-html-deck] 警告: アセットが見つかりません（スキップ）: ${relFromRoot}`);
+      console.error(`[build-html-deck]   探した場所: ${ASSET_ROOTS.join(' / ')}`);
       return fullMatch;
     }
+    const srcAbsPath = found.abs;
+    const isPrivate = found.isPrivate;
 
     const basename = path.basename(relFromRoot);
     if (!fs.existsSync(assetsOutDir)) {
@@ -498,7 +537,7 @@ function slideEntryFor(entries, filename, index) {
   return null;
 }
 
-// 素材の解決順: assets/backgrounds/{name}.{jpg,jpeg,png,webp,svg}（リポジトリ → ../slidekit-private の順）。
+// 素材の解決順: assets/backgrounds/{name}.{jpg,jpeg,png,webp,svg}（リポジトリ → 自分用フォルダ → ../slidekit-private の順）。
 // 拡張子付きで書いた場合はそのファイル名（"assets/" を含むパスならリポジトリルート基準）。
 function resolveBackgroundAsset(image) {
   const candidates = [];
@@ -509,12 +548,8 @@ function resolveBackgroundAsset(image) {
     BG_EXTS.forEach((ext) => candidates.push(`assets/backgrounds/${image}.${ext}`));
   }
   for (const rel of candidates) {
-    const abs = path.join(REPO_ROOT, rel);
-    if (fs.existsSync(abs)) return { abs, rel, isPrivate: false };
-  }
-  for (const rel of candidates) {
-    const abs = path.join(PRIVATE_ROOT, rel);
-    if (fs.existsSync(abs)) return { abs, rel, isPrivate: true };
+    const found = findAssetFile(rel);
+    if (found) return { abs: found.abs, rel, isPrivate: found.isPrivate };
   }
   return null;
 }
@@ -729,7 +764,7 @@ function buildHeadingCss(style) {
   switch (style) {
     case 'b': // 縦バー（タイトル文字高に合わせた短い縦バー・左40px＋タイトルはその右16px）
       return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 20px; font-size:24px; font-weight:700; color:#333; }
-.sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; border-radius:2px; background:var(--sk-accent); }`;
+.sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; background:var(--sk-accent); }`;
     case 'c': // 塗り帯（全幅アクセント帯・白文字）
       return `.sk-h { position:absolute; top:0; left:0; right:0; height:76px; box-sizing:border-box; display:flex; align-items:center; padding:0 40px; background:var(--sk-accent); font-size:24px; font-weight:700; color:#FFFFFF; }`;
     case 'd': // ドット＋英字ラベル型（`.sk-h` に data-label 属性でラベル文言を渡す）
