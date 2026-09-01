@@ -18,7 +18,9 @@ description: >-
 テーマ色はCSS変数注入で確定する（画像生成なし・ピクセルズレなし・デザインのブレなし）。
 設計書 `SLIDEKIT-DECK.md`（人間レビュー用サマリー）も併せて出力する。
 
-成果物（出力先は案件フォルダ or `output/`）。
+成果物の**出力先は「いま開いている作業フォルダ」**。案件フォルダで作業しているならその中、
+指定が無ければ作業フォルダ直下の `slides/<デッキ名>/`。**SlideKitリポジトリの中には作らない**
+（リポジトリを汚すと `git pull` で更新を受け取れなくなる。入口スキルに置き場所の指定があればそれに従う）。
 - `{デッキフォルダ}/slides/*.html`（フラグメント）＋ `deck-config.json`
 - `{デッキフォルダ}/index.html`（ビルド結果・画面表示用）＋ `deck.pdf`（納品用）
 - `SLIDEKIT-DECK.md`（構成サマリー）
@@ -282,7 +284,7 @@ bash tools/html-deck/export-pdf.sh <デッキフォルダ>
 | Google Drive 連携（MCP等・Google Slides納品時のみ） | pptx→Google Slides変換で納品（docs/pptx-generation.md） | **.pptx をそのまま納品**し「Google Driveにアップ→開くとGoogle Slidesとして編集可」と一言案内 |
 | スライド確認・修正依頼ページ（フィードバックループ） | 本番 `https://slide.macminol.com/deck.html`（またはローカル `/deck.html`）を納品時に案内 | index.html をブラウザで開いて確認し、修正指示はチャットで受ける |
 
-- パスは正本リポジトリからの相対（`tools/html-deck/` `tools/pptx/` `docs/` `patterns/` `assets/`）で解決する。リポジトリの場所が違う環境では入口スキルの記載に従う。
+- パスは正本リポジトリからの相対（`tools/html-deck/` `tools/pptx/` `docs/` `patterns/` `assets/`）で解決する。**リポジトリの場所と、コマンドを絶対パスで叩くかどうかは入口スキルの記載に従う**（`tools/install-skills.sh` を使っている環境では、どの作業フォルダからでも絶対パスで実行する）。
 - 承認ゲート・自己検証・成果物提示の表形式など**このSKILLの手順自体は環境によらず同一**。
 
 ## 完了基準（Definition of Done）

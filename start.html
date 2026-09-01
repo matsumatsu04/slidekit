@@ -99,8 +99,8 @@ body{padding-top:80px}
     <h2>導入（Claude Codeに貼るだけ）</h2>
     <p>下のボタンでプロンプトをコピーし、<strong>Claude Codeのデスクトップアプリに貼り付けてEnter</strong>を押してください。
     取得・環境チェック・動作確認までをClaude Codeがやってくれます。所要3〜5分。</p>
-    <p style="color:#6b7280;font-size:13px">このときの作業フォルダはどこでもかまいません（アプリの「Select folder」で選んでいるフォルダ）。
-    導入先は自動で <code>~/slidekit</code> になります。</p>
+    <p style="color:#6b7280;font-size:13px">作業フォルダはどこでもかまいません。本体は <code>~/slidekit</code> に入り、
+    導入後は<strong>普段使っているどのフォルダでも</strong>「スライドを作って」が使えるようになります。</p>
     <div class="copybar">
       <button type="button" class="copybtn" id="copyPrompt" data-target="setupPrompt">
         <span aria-hidden="true">📋</span><span class="copylabel">プロンプトをコピー</span>
@@ -120,11 +120,12 @@ body{padding-top:80px}
    - △（Chrome / poppler）は無くてよい。無理に入れない（PDFはブラウザの「PDFに保存」でも作れる）。
    - 解消したら doctor をもう一度実行し「✓ 準備OK」を確認する。
 
-3. 古いコピーの後片付け（該当する人だけ）
-   ls ~/.claude/skills 2&gt;/dev/null | grep &#x27;^slidekit-&#x27;
-   表示された場合のみ rm -rf ~/.claude/skills/slidekit-* を実行する。
-   （スキルは ~/slidekit/.claude/skills/ に入っているのでコピーは不要。
-     ~/.claude/skills/ 側は全フォルダ共通で、同名なら常にそちらが優先されるため、古いコピーが残っていると更新が反映されない）
+3. どの作業フォルダでも使えるようにする
+   bash ~/slidekit/tools/install-skills.sh
+   - ~/.claude/skills/ に「本体は ~/slidekit にある」とだけ書いた薄い入口が置かれる。
+     ~/.claude/skills/ は全フォルダ共通なので、これで普段使っているどのフォルダでもスキルが効くようになる。
+   - 以前に手でコピーした古いスキルが ~/.claude/skills/slidekit-* にあっても、このコマンドで上書きされる。
+   - 手順・構図パターン・仕様は毎回 ~/slidekit から読まれるので、git pull した更新はそのまま反映される。
 
 4. 自分用の素材フォルダを決める（ロゴなどをスライドに使えるようにする）
    まず利用者に日本語でこう聞く（勝手に決めない）:
@@ -139,24 +140,25 @@ body{padding-top:80px}
      サブフォルダを作った場合は assets/&lt;サブフォルダ&gt;/&lt;ファイル名&gt; で呼び出せる。
 
 5. 動作確認（サンプルを1本ビルドする）
-   cd ~/slidekit &amp;&amp; rm -rf output/setup-check &amp;&amp; mkdir -p output &amp;&amp; cp -R examples/html-deck-demo output/setup-check &amp;&amp; node tools/html-deck/build-html-deck.mjs output/setup-check &amp;&amp; bash tools/html-deck/export-pdf.sh output/setup-check
+   リポジトリの中には作らず、一時フォルダで試す。作業フォルダがどこでも同じコマンドで動く:
+   rm -rf /tmp/slidekit-setup-check &amp;&amp; cp -R ~/slidekit/examples/html-deck-demo /tmp/slidekit-setup-check &amp;&amp; node ~/slidekit/tools/html-deck/build-html-deck.mjs /tmp/slidekit-setup-check &amp;&amp; bash ~/slidekit/tools/html-deck/export-pdf.sh /tmp/slidekit-setup-check
    - index.html と deck.pdf ができれば成功。QA画像（qa-*.jpg）は無くてもよい。
    - node が古いと言われたら、手順2で案内された新しいNode.jsのパスで同じコマンドを実行する。
-   - 確認できたら rm -rf ~/slidekit/output/setup-check で片付ける。
+   - 確認できたら rm -rf /tmp/slidekit-setup-check で片付ける。
 
 6. 報告する（日本語で、次を必ず含める）
    1) 導入先のパス／使えるようになった構図パターンの数／Node.jsのバージョン／素材フォルダの場所
-   2) 次にやること（デスクトップアプリの操作として書く）:
-      「画面下の『Select folder』から ~/slidekit フォルダを選び直して、『スライドを作って』と話しかける」
-      ※スライド生成のスキルは ~/slidekit を作業フォルダに選んでいるときだけ使えます。
-        別のフォルダを選んでいると反応しません（新しいセッションを開いて選び直せば切り替わります）
+   2) 次にやること:
+      「いま使っているフォルダのままで『スライドを作って』と話しかける」
+      ※フォルダを選び直す必要はありません。どの作業フォルダでも使えます
+        （反応しないときは、いちど新しいセッションを開くと読み込まれます）
    3) できること3つとURL:
-      - スライドを作る … 作業フォルダを ~/slidekit にして「スライドを作って」。出来上がりは ~/slidekit/output/ に入る
+      - スライドを作る … 作業フォルダはそのままで「スライドを作って」。出来上がりはそのフォルダの slides/ に入る
       - 直す・PDFにする … https://slide.macminol.com/deck.html
       - 構図を探す … https://slide.macminol.com/
    4) 覚えておくとよいこと:
       - 新しい構図パターンや機能は自動で追加される。「スライドを作って」と言うと最初に更新確認が入るので、聞かれたら「はい」と答える
-      - ~/slidekit の中のファイルは編集しない（更新を受け取れなくなる）。作ったスライドは output/ に入る
+      - ~/slidekit の中のファイルは編集しない（更新を受け取れなくなる）。作ったスライドは作業フォルダの slides/ に入る
       - 自分の素材フォルダに置いた画像は assets/&lt;ファイル名&gt; で呼び出せる（「表紙にうちのロゴを入れて」と頼めばよい）
       - スライドに淡い背景画像を敷ける。表紙など不要なページは1枚単位でオフにできる
 
@@ -204,8 +206,8 @@ body{padding-top:80px}
     <p>まず環境チェックを流すと、原因と直し方がそのまま表示されます。</p>
     <pre>cd ~/slidekit &amp;&amp; bash tools/doctor.sh</pre>
     <ul>
-      <li><strong>「スライドを作って」に反応しない</strong> → 作業フォルダが <code>~/slidekit</code> になっているか確認（アプリ下部の「Select folder」で選び直すか、新しいセッションを開いて選択）。別のフォルダを選んでいるとスキルが読み込まれません</li>
-      <li><strong>以前 <code>~/.claude/skills/</code> にコピーしたことがある</strong> → <code>~/.claude/skills/</code> は全フォルダ共通で、同名なら常にそちらが優先されます。古いコピーが動いてしまうので <code>rm -rf ~/.claude/skills/slidekit-*</code> で削除してください</li>
+      <li><strong>「スライドを作って」に反応しない</strong> → <code>ls ~/.claude/skills | grep slidekit</code> で入口があるか確認。無ければ <code>bash ~/slidekit/tools/install-skills.sh</code> を実行。あるのに反応しないときは、新しいセッションを開き直してください</li>
+      <li><strong>古い手順でスキルをコピーしたことがある</strong> → <code>bash ~/slidekit/tools/install-skills.sh</code> を実行すれば、薄い入口で上書きされます（以後は <code>git pull</code> の更新がそのまま反映されます）</li>
       <li><strong>自分のロゴ・画像がスライドに出ない</strong> → 素材フォルダの場所が登録されているか確認（<code>cat ~/.slidekit/config.json</code>）。既定は <code>~/slidekit-assets</code> です。フォルダに置いた <code>logo.png</code> は <code>assets/logo.png</code> で呼び出します</li>
       <li><strong>ビルドでNode.jsのエラーが出る</strong>（<code>ERR_REQUIRE_ESM</code> 等） → <code>node -v</code> が18以上か確認。古い場合は最新のLTS版を導入（Claude Codeに「Nodeを更新して」と頼んでもOK）。<code>tools/doctor.sh</code> がPC内の新しいNode.jsを探して場所を教えます</li>
       <li><strong>PDFがうまく書き出せない</strong> → <code>index.html</code> をChromeで開いて ⌘P（Windowsは Ctrl+P）→「PDFに保存」でも同じものが得られます。Chromeが別の場所にある場合は <code>CHROME_BIN="/パス/chrome" bash tools/html-deck/export-pdf.sh &lt;フォルダ&gt;</code> で指定できます</li>
