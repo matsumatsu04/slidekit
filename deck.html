@@ -748,7 +748,7 @@ function applyEditsToDoc(doc,edits,iid){
     }
     const list=[...slideEl.querySelectorAll(e.sel)];
     const el=list[e.nth]; if(!el) return;
-    if(e.type==='text') el.innerHTML=escapeHtml(e.after).replace(/\n/g,'<br>');
+    if(e.type==='text') el.innerHTML=(e.afterHtml!=null)?e.afterHtml:escapeHtml(e.after).replace(/\n/g,'<br>');
     else if(e.type==='move') el.style.translate=`${e.dx}px ${e.dy}px`;
     else if(e.type==='style') el.style.setProperty(e.prop,e.after);
     else if(e.type==='remove') el.style.display='none';
@@ -1363,9 +1363,43 @@ function drawGuides(sess,s,fx,fy){
 function pickTextTarget(t,doc){
   let el=t&&t.nodeType===1?t:(t?t.parentElement:null);
   while(el&&el!==doc.body&&!(el.classList&&el.classList.contains('slide'))){
-    const ok=(el.innerText||'').trim()!==''&&![...el.children].some(c=>!/^(BR|SPAN|B|STRONG|I|EM|A|U|SMALL)$/i.test(c.tagName));
-    if(ok) return el;
+    if(isEditableTextLeaf(el)) return el;
     el=el.parentElement;
+  }
+  return null;
+}
+// 「1つの文章」として編集してよい要素か。
+// 旧判定は「子が SPAN/B/… だけなら可」だったため、<div class="row"><span class="mk">×</span><span>本文</span></div> の
+// 行全体が編集対象になり、確定時に「×⏎本文」というテキストに潰れて描き直しで × が独立行になった（2026-09-02 代表報告）。
+// 文字を持つ子が2つ以上ある要素（マーカー＋本文など）は「文章」ではなく「行」なので対象にしない。
+const TEXT_FMT_TAGS=/^(BR|B|STRONG|I|EM|U|SMALL|SUP|SUB|MARK|CODE|A|SPAN)$/i;
+function isEditableTextLeaf(el){
+  if(!el||el.nodeType!==1) return false;
+  if((el.innerText||'').trim()==='') return false;
+  const kids=[...el.children];
+  if(kids.some(c=>!TEXT_FMT_TAGS.test(c.tagName))) return false;
+  const textKids=kids.filter(c=>c.tagName!=='BR'&&(c.innerText||'').trim()!=='');
+  if(textKids.length>=2) return false;                       // マーカー＋本文のような「行」
+  if(textKids.length===1&&cleanClasses(textKids[0]).length) return false; // クラス付きの子は独立した部品
+  return true;
+}
+// ダブルクリック位置から編集対象を決める。行に当たったときは、その中の「本文」（いちばん文字の多い子）を選ぶ
+function pickTextTargetAt(x,y,doc){
+  let el=null;
+  try{ el=doc.elementFromPoint(x,y); }catch(e){}
+  const direct=pickTextTarget(el,doc);
+  if(direct) return direct;
+  // 直下に文章が無い＝行や箱に当たった。中の文章候補から、ポインタ位置に重なるもの→無ければ文字数最大を選ぶ
+  let box=el;
+  while(box&&box!==doc.body&&!(box.classList&&box.classList.contains('slide'))){
+    const cands=[...box.querySelectorAll('*')].filter(isEditableTextLeaf)
+      .filter(c=>![...c.querySelectorAll('*')].some(isEditableTextLeaf)); // 最深のものだけ
+    if(cands.length){
+      const under=cands.find(c=>{ const r=c.getBoundingClientRect(); return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom; });
+      if(under) return under;
+      return cands.reduce((a,b)=>((b.innerText||'').trim().length>(a.innerText||'').trim().length?b:a));
+    }
+    box=box.parentElement;
   }
   return null;
 }
@@ -1814,12 +1848,13 @@ function commitMove(el,dx,dy){
   }
   mutateEdits(arr=>upsertMove(arr,el,dx,dy));
 }
-function setTextEditRec(el,before,after){
+function setTextEditRec(el,before,after,afterHtml){
   mutateEdits(arr=>{
     const d=descFor(el);
     const i=arr.findIndex(x=>x.type==='text'&&x.sel===d.sel&&x.nth===d.nth);
     if(after===before){ if(i>=0) arr.splice(i,1); return arr; }
     const rec={type:'text',sel:d.sel,nth:d.nth,count:d.count,before,after};
+    if(afterHtml!=null) rec.afterHtml=afterHtml; // 見た目どおりに描き直すため（無い旧レコードは after から復元）
     if(i>=0){ rec.before=arr[i].before; arr[i]=rec; } else arr.push(rec);
     return arr;
   });
@@ -1852,10 +1887,23 @@ function startTextEdit(el){
 function commitTextEdit(){
   const el=ED.editingEl; if(!el) return;
   el.classList.remove('sk-editing');
+  if(!el.classList.length) el.removeAttribute('class'); // class="" を残さない
   el.removeAttribute('contenteditable');
   ED.editingEl=null;
-  setTextEditRec(el,ED.editOriginal,el.innerText);
+  setTextEditRec(el,ED.editOriginal,el.innerText,cleanEditedHtml(el));
   updateFormatControls();
+}
+// 編集後の中身を、描き直しにそのまま使える形で取り出す（編集用の属性・クラス・スクリプトを除く）
+function cleanEditedHtml(el){
+  const c=el.cloneNode(true);
+  c.querySelectorAll('script,style').forEach(n=>n.remove());
+  c.querySelectorAll('*').forEach(n=>{
+    n.removeAttribute('contenteditable');
+    [...n.attributes].forEach(a=>{ if(/^on/i.test(a.name)) n.removeAttribute(a.name); });
+    ['sk-hovered','sk-selected','sk-editing'].forEach(k=>n.classList.remove(k));
+    if(n.classList&&!n.classList.length) n.removeAttribute('class');
+  });
+  return c.innerHTML;
 }
 function cancelTextEdit(){
   const el=ED.editingEl; if(!el) return;
@@ -2474,7 +2522,7 @@ function wireEditor(doc){
   });
   doc.addEventListener('dblclick',e=>{
     if(ED.editingEl) return;
-    const t=pickTextTarget(e.target,doc);
+    const t=pickTextTargetAt(e.clientX,e.clientY,doc);
     if(t) startTextEdit(t);
   });
   doc.addEventListener('keydown',e=>handleEditorKey(e));
