@@ -1188,8 +1188,23 @@ function pickTargetAt(x,y,doc){
     let c=el;
     while(c&&c!==doc.body&&!(c.classList&&c.classList.contains('slide'))&&!cleanClasses(c).length) c=c.parentElement;
     if(!c||c===doc.body||(c.classList&&c.classList.contains('slide'))) continue;
-    if(isFullBleed(c,doc)) continue; // 全面の背景要素はクリックでは選ばない（レイヤー一覧からは選べる）
+    if(isFullBleed(c,doc)){
+      // 全面の要素そのものは選ばない（背景扱い）。ただしその中のクラス無しの中身（表の td など）に当たっているなら、
+      // ポインタ直下の要素を選ぶ（2026-09-02 全パターン検査で、表のセルが選べなくなる穴が見つかった）
+      if(el!==c&&!(el.classList&&el.classList.contains('slide'))&&hitsInk(c,x,y,doc)) return el;
+      continue;
+    }
     if(hitsInk(c,x,y,doc)) return c;
+  }
+  // クラス付きの要素に当たらなかった場合の保険: クラスを持たないHTML（旧実装のパターンや手書きのフラグメント）でも
+  // 文字・画像・枠のある箱そのものなら選べるようにする（2026-09-02 全パターン検査で four-step-card-flow が全滅していた）
+  for(const el of stack){
+    if(!el||el===doc.body||el===doc.documentElement) break;
+    if(el.classList&&el.classList.contains('slide')) break;
+    if(el.classList&&/sk-(rz|rb|guide)/.test(el.className)) continue;
+    if(isFullBleed(el,doc)) continue;
+    const win=doc.defaultView;
+    if((INK_TAGS.test(el.tagName)||elHasChrome(el,win)||isTextLeaf(el))&&rectHas(el.getBoundingClientRect(),x,y)) return el;
   }
   return null;
 }
@@ -1383,12 +1398,24 @@ function isEditableTextLeaf(el){
   if(textKids.length===1&&cleanClasses(textKids[0]).length) return false; // クラス付きの子は独立した部品
   return true;
 }
+// 要素が直接持つテキストノード（子要素の中は見ない）のグリフ上に点があるか
+function pointOnOwnText(el,x,y,doc){
+  for(const n of el.childNodes){
+    if(n.nodeType!==3||!n.textContent||!n.textContent.trim()) continue;
+    const rg=doc.createRange(); rg.selectNodeContents(n);
+    for(const r of rg.getClientRects()){ if(r.width>0&&r.height>0&&rectHas(r,x,y)) return true; }
+  }
+  return false;
+}
 // ダブルクリック位置から編集対象を決める。行に当たったときは、その中の「本文」（いちばん文字の多い子）を選ぶ
 function pickTextTargetAt(x,y,doc){
   let el=null;
   try{ el=doc.elementFromPoint(x,y); }catch(e){}
   const direct=pickTextTarget(el,doc);
   if(direct) return direct;
+  // 「120<span class="unit">%</span>」のように、要素が自分の直接の文字と部品を両方持つ場合:
+  // ポインタがその直接の文字の上なら、その要素ごと編集する（確定時に見た目どおりのHTMLを記録するので部品は壊れない）
+  if(el&&el.nodeType===1&&!(el.classList&&el.classList.contains('slide'))&&pointOnOwnText(el,x,y,doc)) return el;
   // 直下に文章が無い＝行や箱に当たった。中の文章候補から、ポインタ位置に重なるもの→無ければ文字数最大を選ぶ
   let box=el;
   while(box&&box!==doc.body&&!(box.classList&&box.classList.contains('slide'))){
