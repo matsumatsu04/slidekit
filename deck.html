@@ -59,7 +59,7 @@
   .input-actions{display:flex;gap:10px;margin-top:12px;align-items:center}
   .err{color:#C0392B;font-size:13px;font-weight:700;display:none}
 
-  .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px;margin-top:18px}
+  .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(430px,100%),1fr));gap:18px;margin-top:18px}
   .s-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
   .s-card.has-fb{border-color:#E2A93B;box-shadow:0 0 0 1px #E2A93B}
   .s-thumb{position:relative;width:100%;aspect-ratio:16/9;background:#E8E8E8;overflow:hidden;cursor:pointer}
@@ -859,7 +859,9 @@ function loadDeck(html){
 $('loadBtn').addEventListener('click',()=>{ const v=$('src').value; if(looksLikePath(v)){openFromPath(v);}else{loadDeck(v);} });
 $('drop').addEventListener('click',()=>$('file').click());
 $('file').addEventListener('change',e=>{
-  const f=e.target.files[0];if(!f)return;
+  const f=e.target.files[0];
+  e.target.value=''; // 同じファイルを選び直しても change が発火するように（再ビルド後に開き直す流れ）
+  if(!f)return;
   f.text().then(t=>{$('src').value=t;loadDeck(t);});
 });
 ['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('on');}));
@@ -2894,7 +2896,7 @@ function buildPrompt(){
 }
 $('promptBtn').addEventListener('click',async()=>{
   const p=buildPrompt();
-  if(!p){ alert('フィードバックがまだ入力されていません。編集モードで直接編集するか、フィードバック欄に記入 or パレット変更をしてから出力してください。'); return; }
+  if(!p){ alert('フィードバックがまだ入力されていません。編集モードで直接編集するか、フィードバック欄に記入してから出力してください。'); return; }
   const r=await saveAddedImages();
   let note='';
   if(r.mode==='fs') note=`\n\n（※追加画像 ${r.n}件 をフォルダ「${r.folder}」へ自動保存しました。保存ダイアログは出ません）`;
@@ -2979,8 +2981,9 @@ try{
     // img/source: src="assets/xxx.png" → src="<デッキ>/assets/xxx.png"
     // ⚠️ `\b(src|...)` だと `data-sk-src="01-cover.html"`（スライド名の保持用）にも当たり、
     //    確認ページのファイル名表示がパス付きに化ける。直前が `-` や英数字でないことまで見る。
-    html=html.replace(/(?<![-\w])(src|srcset|poster)\s*=\s*(["'])(?!https?:|data:|#|\/)([^"']+)\2/gi,
-      (m,attr,q,p)=>`${attr}=${q}${base}${p}${q}`);
+    // 後読み (?<!…) は Safari 16.3 以前でパース時 SyntaxError → script 全体が無効になるため、直前1文字を捕捉して戻す
+    html=html.replace(/(^|[^-\w])(src|srcset|poster)\s*=\s*(["'])(?!https?:|data:|#|\/)([^"']+)\3/gi,
+      (m,pre,attr,q,p)=>`${pre}${attr}=${q}${base}${p}${q}`);
     return html;
   }
 
