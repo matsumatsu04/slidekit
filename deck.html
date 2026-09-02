@@ -1186,9 +1186,20 @@ function pickTargetAt(x,y,doc){
     let c=el;
     while(c&&c!==doc.body&&!(c.classList&&c.classList.contains('slide'))&&!cleanClasses(c).length) c=c.parentElement;
     if(!c||c===doc.body||(c.classList&&c.classList.contains('slide'))) continue;
+    if(isFullBleed(c,doc)) continue; // 全面の背景要素はクリックでは選ばない（レイヤー一覧からは選べる）
     if(hitsInk(c,x,y,doc)) return c;
   }
   return null;
+}
+// スライドの96%以上を覆う要素＝背景扱い（Googleスライドの「背景」と同じで、クリックの対象にしない。
+// 表紙の全面グラデ・全面写真など。余白クリックで選択解除できなくなるのを防ぐ）
+function isFullBleed(el,doc){
+  const slideEl=doc.querySelector('.slide'); if(!slideEl) return false;
+  const sr=slideEl.getBoundingClientRect(), r=el.getBoundingClientRect();
+  if(sr.width<=0||sr.height<=0) return false;
+  const ix=Math.max(0,Math.min(sr.right,r.right)-Math.max(sr.left,r.left));
+  const iy=Math.max(0,Math.min(sr.bottom,r.bottom)-Math.max(sr.top,r.top));
+  return (ix*iy)/(sr.width*sr.height)>=0.96;
 }
 // 範囲選択（Canva/Figma式）:
 // ・矩形に「完全に含まれる」要素は、その単位で選択（中の子には降りない）
