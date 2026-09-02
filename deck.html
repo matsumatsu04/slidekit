@@ -636,23 +636,39 @@ function restore(json){
 function undoEdit(){
   if(!HIST.undo.length) return;
   if(ED.editingEl) cancelTextEdit();
-  HIST.redo.push(snapshot());
+  const prev=snapshot();
+  HIST.redo.push(prev);
   restore(HIST.undo.pop());
-  afterStructureChange();
+  afterStructureChange(prev);
 }
 function redoEdit(){
   if(!HIST.redo.length) return;
-  HIST.undo.push(snapshot());
+  const prev=snapshot();
+  HIST.undo.push(prev);
   restore(HIST.redo.pop());
-  afterStructureChange();
+  afterStructureChange(prev);
 }
-function afterStructureChange(){
-  // 位置がずれている可能性があるため現在位置を補正して全面更新
-  if(MODE_EDIT){
+// 取り消し／やり直しの後の描き直し。
+// 旧: レール全枚＋一覧全枚＋編集キャンバスを毎回作り直していた（12枚のデッキで iframe 26個・復帰まで1秒超）。
+// 新: 直前の状態と比べて「変わったスライドだけ」描き直す。一覧（非表示中）は編集モードを抜けるときにまとめて描く。
+function afterStructureChange(prevJson){
+  if(!MODE_EDIT){ renderDeck(); return; }
+  let prev=null; try{ prev=prevJson?JSON.parse(prevJson):null; }catch(e){}
+  const orderChanged=!prev||JSON.stringify(prev.order)!==JSON.stringify(FB.order);
+  const ids=new Set([...Object.keys((prev&&prev.slides)||{}),...Object.keys(FB.slides)].map(Number));
+  const changed=[...ids].filter(iid=>JSON.stringify((prev&&prev.slides&&prev.slides[iid])||null)!==JSON.stringify(FB.slides[iid]||null));
+  DECK_DIRTY=true;
+  if(orderChanged){
     if(posOfIid(ED.iid)===0){ ED.iid=(instAt(Math.min(ED.pos,FB.order.length))||FB.order[0]).id; }
     buildRail(); gotoIid(ED.iid,true);
+    return;
   }
-  renderDeck();
+  changed.forEach(iid=>{ refreshRailThumb(iid); refreshCardBadge(iid); refreshCardBgBtn(iid); });
+  // 別のスライドの変更を戻したときは、そのスライドへ移動して見せる（Googleスライドと同じ）
+  const target=changed.includes(ED.iid)?ED.iid:(changed.length===1?changed[0]:null);
+  if(target!==null&&target!==ED.iid&&posOfIid(target)>0){ gotoIid(target,true); return; }
+  if(changed.includes(ED.iid)){ updateBgToolbarBtn(); rebuildEditorDoc(); }
+  else{ renderEditList(); renderLayers(); }
 }
 
 // ================= 表示（共通） =================
@@ -759,8 +775,11 @@ function instLabel(inst){
   }
   return '新規スライド';
 }
+let DECK_DIRTY=false; // 編集モード中に一覧（非表示）が古くなったら true。抜けるときに描き直す
 function renderDeck(){
   if(!DECK) return;
+  if(MODE_EDIT){ DECK_DIRTY=true; return; } // 隠れている一覧を毎回作り直さない（⌘Z・構成変更の体感速度）
+  DECK_DIRTY=false;
   $('deckTitle').textContent=DECK.title;
   $('deckCount').textContent=`全 ${FB.order.length} 枚`;
   const grid=$('deckGrid');grid.innerHTML='';
@@ -1099,6 +1118,75 @@ function pickTarget(t,doc){
     if(el.classList&&el.classList.contains('slide')) return null;
     if(cleanClasses(el).length) return el;
     el=el.parentElement;
+  }
+  return null;
+}
+// ===== ヒット判定（Canva／Googleスライド式・2026-09-01 代表指摘で全面見直し） =====
+// 旧: マウス直下の要素から、クラスの付いた最初の祖先を「選択対象」にしていた。
+//     → 全面に敷いたレイアウト用ラッパー（.s2-area 等）や、要素間の隙間をクリックしても
+//       ラッパーが選ばれてしまい、「余白をクリックしても選択が外れない」「意図と違う箱が選ばれる」。
+// 新: ポインタ直下に重なる要素を上から順に見て、**見えているもの**に当たった要素だけを選ぶ。
+//     見えているもの＝ 文字のグリフ／画像・アイコン／背景色や枠線のある箱。
+//     塗りも枠も無いラッパーは、自分自身では当たりにならない（中の文字や画像に当たったときだけ）。
+//     文字だけの要素（テキスト葉）は箱全体が当たり（Googleスライドのテキストボックスと同じ）。
+function elHasChrome(el,win){
+  const cs=win.getComputedStyle(el);
+  if(parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderBottomWidth)>0||
+     parseFloat(cs.borderLeftWidth)>0||parseFloat(cs.borderRightWidth)>0) return true;
+  const bg=(cs.backgroundColor||'').replace(/\s/g,'');
+  if(bg&&bg!=='transparent'&&!/^rgba\(\d+,\d+,\d+,0\)$/.test(bg)) return true;
+  if(cs.backgroundImage&&cs.backgroundImage!=='none') return true;
+  if(cs.boxShadow&&cs.boxShadow!=='none') return true;
+  return false;
+}
+const INK_TAGS=/^(IMG|SVG|VIDEO|CANVAS|I|PICTURE)$/i;
+const INLINE_TAGS=/^(BR|SPAN|B|STRONG|I|EM|A|U|SMALL|SUP|SUB|CODE|MARK)$/i;
+function isTextLeaf(el){
+  if(!(el.innerText||'').trim()) return false;
+  return ![...el.children].some(c=>!INLINE_TAGS.test(c.tagName));
+}
+function rectHas(r,x,y){ return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom; }
+// c（クラス付き候補）が点(x,y)で「見えているもの」に当たっているか
+function hitsInk(c,x,y,doc){
+  const win=doc.defaultView;
+  if(INK_TAGS.test(c.tagName)||elHasChrome(c,win)) return rectHas(c.getBoundingClientRect(),x,y);
+  if(isTextLeaf(c)) return rectHas(c.getBoundingClientRect(),x,y);
+  // 塗りも枠も無いラッパー: 自分に直接ぶら下がる（クラス無しの）中身に当たったときだけ
+  let hit=false;
+  (function walk(n){
+    if(hit) return;
+    if(n.nodeType===3){
+      if(!n.textContent||!n.textContent.trim()) return;
+      const rg=doc.createRange(); rg.selectNodeContents(n);
+      for(const r of rg.getClientRects()){ if(r.width>0&&r.height>0&&rectHas(r,x,y)){ hit=true; return; } }
+      return;
+    }
+    if(n.nodeType!==1) return;
+    if(n!==c&&cleanClasses(n).length) return; // クラス付きの子は、それ自身が候補になるので見ない
+    if(n.classList&&/sk-(rz|rb|guide)/.test(n.className)) return;
+    const cs=win.getComputedStyle(n);
+    if(cs.display==='none'||cs.visibility==='hidden') return;
+    if(n!==c&&(INK_TAGS.test(n.tagName)||elHasChrome(n,win))){
+      if(rectHas(n.getBoundingClientRect(),x,y)) hit=true;
+      return;
+    }
+    [...n.childNodes].forEach(walk);
+  })(c);
+  return hit;
+}
+function pickTargetAt(x,y,doc){
+  let stack=[];
+  try{ stack=doc.elementsFromPoint(x,y); }catch(e){ return pickTarget(doc.elementFromPoint(x,y),doc); }
+  for(const el of stack){
+    if(!el||el===doc.body||el===doc.documentElement) break;
+    if(el.classList&&el.classList.contains('slide')) break;
+    if(el.classList&&el.classList.contains('sk-rz')) return null;      // ハンドルの上
+    if(el.classList&&/sk-(rb|guide)/.test(el.className)) continue;    // 選択矩形・ガイド線は素通し
+    // 候補＝その要素自身か、最も近いクラス付きの祖先
+    let c=el;
+    while(c&&c!==doc.body&&!(c.classList&&c.classList.contains('slide'))&&!cleanClasses(c).length) c=c.parentElement;
+    if(!c||c===doc.body||(c.classList&&c.classList.contains('slide'))) continue;
+    if(hitsInk(c,x,y,doc)) return c;
   }
   return null;
 }
@@ -2277,7 +2365,7 @@ function wireEditor(doc){
       return;
     }
     if(ED.editingEl) return;
-    const t=pickTarget(e.target,doc);
+    const t=pickTargetAt(e.clientX,e.clientY,doc);
     doc.querySelectorAll('.sk-hovered').forEach(x=>x.classList.remove('sk-hovered'));
     if(t&&!SELSET.includes(t)) t.classList.add('sk-hovered');
   });
@@ -2287,7 +2375,7 @@ function wireEditor(doc){
       return;
     }
     if(e.target.classList&&e.target.classList.contains('sk-rz')) return; // ハンドル側で処理
-    const t=pickTarget(e.target,doc);
+    const t=pickTargetAt(e.clientX,e.clientY,doc);
     if(e.shiftKey){ e.preventDefault(); selectEl(t,true); return; }
     if(!t){
       // 余白からのドラッグ＝範囲選択（Canva風）。クリックだけなら選択解除
