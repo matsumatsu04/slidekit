@@ -3,41 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-estimate-base-plus-options</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; align-items:center; padding:32px 64px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。基本＋オプションの行と合計行を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 左62%: 本体見積ボックス */
-  .base { width:62%; background:#FFFFFF; border:1px solid #DDDDDD; border-radius:12px; overflow:hidden; }
-  .b-head { background:var(--sk-accent,#555555); padding:10px 20px; display:flex; align-items:center; }
-  .b-head-label { font-size:13px; font-weight:bold; color:#FFFFFF; }
-  .b-head-en { margin-left:auto; font-size:9.5px; font-weight:bold; color:rgba(255,255,255,.75); letter-spacing:.25em; }
-  .b-row { display:flex; align-items:baseline; gap:12px; padding:11px 20px; }
-  .b-row + .b-row { border-top:1px solid var(--sk-soft,#EEEEEE); }
-  .b-name { font-size:12px; font-weight:bold; color:#333333; }
-  .b-desc { flex:1; font-size:9px; color:#999999; }
-  .b-amt { font-size:12.5px; font-weight:bold; color:#333333; }
-  .b-total { background:color-mix(in srgb, var(--sk-accent,#888888), #FFFFFF 88%); padding:12px 20px; display:flex; align-items:baseline; }
-  .b-total-label { font-size:12.5px; font-weight:bold; color:#333333; }
-  .b-total-amt { margin-left:auto; font-size:18px; font-weight:bold; color:#333333; line-height:1; }
-  .b-total-amt .yen { font-size:12px; font-weight:bold; margin-left:2px; }
+  /* ── 上段：左＝基本プランのカード（淡い地）／中央＝＋／右＝オプション3枚（罫線枠）。等高 ── */
+  .bo-row { display: flex; align-items: stretch; height: 280px; }
+  .bo-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#666666); white-space: nowrap; }
 
-  /* 中間: 円形の＋演算子 */
-  .op-zone { flex:1; display:flex; align-items:center; justify-content:center; }
-  .op { width:36px; height:36px; border-radius:50%; background:var(--sk-accent,#555555); color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; }
+  /* 左：基本プラン（--sk-soft 地・角丸11px・上ぞろえ）。型: KICKER → プラン名18px → 内容3行 → 細罫線 → 金額20px */
+  .bo-base { flex: none; width: 400px; display: flex; flex-direction: column; padding: 24px 28px; border-radius: 11px; background: var(--sk-soft,#F0F0F0); }
+  .bo-name { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .bo-lines { margin-top: 8px; font-size: 16px; line-height: 1.8; }
+  .bo-rule { margin-top: auto; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .bo-amount-row { margin-top: 12px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .bo-amount-label { font-size: 11.5px; line-height: 1; color: var(--sk-muted,#888888); }
+  .bo-amount { font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  /* 右30%: オプションレール */
-  .opts { width:30%; }
-  .o-head { font-size:11.5px; font-weight:bold; color:#333333; padding-bottom:8px; }
-  .o-row { display:flex; align-items:center; gap:8px; padding:9px 2px; }
-  .o-row + .o-row { border-top:1px solid var(--sk-soft,#EEEEEE); }
-  .o-row i { font-size:9px; color:var(--sk-accent,#777777); }
-  .o-name { font-size:10.5px; color:#333333; }
-  .o-price { margin-left:auto; font-size:10px; color:#555555; }
-  .o-foot { margin-top:10px; font-size:9px; color:#999999; }
+  /* 中央：＋（24px・muted。図形ではなく文字1つ） */
+  .bo-op { flex: none; width: 64px; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; color: var(--sk-muted,#888888); }
+
+  /* 右：オプション3枚を縦積み（1.5px の罫線枠・角丸8px・等高）。型: KICKER → 名前16px、右に金額 */
+  .bo-opts { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+  .bo-opt { flex: 1; min-height: 0; display: flex; align-items: center; gap: 16px; padding: 0 24px; border: 1.5px solid var(--sk-line,#e2e2e2); border-radius: 8px; }
+  .bo-opt-body { flex: 1; min-width: 0; }
+  .bo-opt-name { margin-top: 6px; font-size: 16px; font-weight: 700; line-height: 1.4; }
+  .bo-opt-price { flex: none; font-size: 16px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── 下段：合計行（アクセント塗り・白文字・角丸8px）。1枚で塗るのはここだけ ── */
+  .bo-total { margin-top: 16px; height: 56px; display: flex; align-items: center; padding: 0 28px; border-radius: 8px; background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .bo-total .bo-kicker { color: #FFFFFF; }
+  .bo-total-tax { margin-left: auto; font-size: 11.5px; line-height: 1; color: #FFFFFF; opacity: .85; }
+  .bo-total-sum { margin-left: 16px; font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* 注記：11.5px・muted */
+  .bo-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -57,35 +65,49 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝基本プラン（淡い地）＋ 右＝オプション3枚（罫線枠）→ 下に合計行（唯一の塗り） -->
   <div class="content-area">
+    <div class="bo-row">
 
-    <!-- 左: 本体見積ボックス -->
-    <div class="base">
-      <div class="b-head"><span class="b-head-label">基本一式</span><span class="b-head-en">BASE</span></div>
-      <div class="b-row"><span class="b-name">内訳項目が入ります</span><span class="b-desc">一言説明が入ります</span><span class="b-amt">000,000円</span></div>
-      <div class="b-row"><span class="b-name">内訳項目が入ります</span><span class="b-desc">一言説明が入ります</span><span class="b-amt">000,000円</span></div>
-      <div class="b-row"><span class="b-name">内訳項目が入ります</span><span class="b-desc">一言説明が入ります</span><span class="b-amt">000,000円</span></div>
-      <div class="b-row"><span class="b-name">内訳項目が入ります</span><span class="b-desc">一言説明が入ります</span><span class="b-amt">000,000円</span></div>
-      <div class="b-row"><span class="b-name">内訳項目が入ります</span><span class="b-desc">一言説明が入ります</span><span class="b-amt">000,000円</span></div>
-      <div class="b-total"><span class="b-total-label">合計</span><span class="b-total-amt">000,000<span class="yen">円</span></span></div>
+      <!-- 左：基本プランのカード -->
+      <div class="bo-base">
+        <div class="bo-kicker">BASE ／ 基本</div>
+        <div class="bo-name">コーポレートサイト制作（5ページ）</div>
+        <div class="bo-lines">TOP＋下層4ページのデザイン<br>スマホ対応・お問い合わせフォーム<br>公開までの進行管理</div>
+        <div class="bo-rule"></div>
+        <div class="bo-amount-row"><span class="bo-amount-label">基本料金（税別）</span><span class="bo-amount">¥640,000</span></div>
+      </div>
+
+      <!-- 中央：＋ -->
+      <div class="bo-op">＋</div>
+
+      <!-- 右：オプション3枚（縦積み・等高） -->
+      <div class="bo-opts">
+        <div class="bo-opt">
+          <div class="bo-opt-body"><div class="bo-kicker">OPTION 1 ／ 任意</div><div class="bo-opt-name">下層ページの追加（1ページ）</div></div>
+          <div class="bo-opt-price">+¥40,000</div>
+        </div>
+        <div class="bo-opt">
+          <div class="bo-opt-body"><div class="bo-kicker">OPTION 2 ／ 任意</div><div class="bo-opt-name">写真撮影（半日・20カット）</div></div>
+          <div class="bo-opt-price">+¥80,000</div>
+        </div>
+        <div class="bo-opt">
+          <div class="bo-opt-body"><div class="bo-kicker">OPTION 3 ／ 任意</div><div class="bo-opt-name">英語ページの制作</div></div>
+          <div class="bo-opt-price">+¥60,000</div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- 中間: ＋演算子 -->
-    <div class="op-zone"><div class="op">+</div></div>
-
-    <!-- 右: オプションレール -->
-    <div class="opts">
-      <div class="o-head">オプション</div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-row"><i class="fa-solid fa-plus"></i><span class="o-name">オプション名が入ります</span><span class="o-price">+00,000円</span></div>
-      <div class="o-foot">必要な分だけ追加できます</div>
+    <!-- 下段：合計行（アクセント塗り・白文字） -->
+    <div class="bo-total">
+      <div class="bo-kicker">TOTAL ／ 基本＋オプション3件</div>
+      <div class="bo-total-tax">税別</div>
+      <div class="bo-total-sum">¥820,000</div>
     </div>
-
+    <div class="bo-note">例：オプションは必要な分だけ選べる。選ばない場合の合計は基本料金と同じ</div>
   </div>
 </div>
 </body>

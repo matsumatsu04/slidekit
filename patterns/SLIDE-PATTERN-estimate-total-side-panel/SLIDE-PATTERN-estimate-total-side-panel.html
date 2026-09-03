@@ -6,30 +6,44 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; align-items:stretch; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。明細表＋合計パネルの行は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 左33%: 濃色縦パネル（合計と取引条件） */
-  .panel { width:33%; background:var(--sk-accent,#555555); display:flex; flex-direction:column; justify-content:center; padding:40px 32px; }
-  .p-label { font-size:11px; font-weight:bold; color:#FFFFFF; }
-  .p-en { font-size:9px; font-weight:bold; color:rgba(255,255,255,.7); letter-spacing:.3em; margin-top:4px; }
-  .p-amount { font-size:40px; font-weight:bold; color:#FFFFFF; line-height:1; margin-top:20px; }
-  .p-amount .yen { font-size:18px; font-weight:bold; margin-left:4px; }
-  .p-terms { margin-top:28px; border-top:1px solid rgba(255,255,255,.35); }
-  .p-term { display:flex; align-items:baseline; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.35); }
-  .p-term-label { font-size:9.5px; color:rgba(255,255,255,.7); }
-  .p-term-value { font-size:11px; font-weight:bold; color:#FFFFFF; }
+  /* ── 左：明細表（罫線だけ）／ 右：合計パネル（唯一の塗り）。等高 ── */
+  .ts-row { display: flex; gap: 16px; align-items: stretch; height: 312px; }
+  .ts-left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .ts-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  /* 列見出しは KICKER 型（10px・アクセント色）。塗らない・下罫線だけ */
+  .ts-table th {
+    font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1;
+    color: var(--sk-accent,#666666); text-align: left; vertical-align: middle; height: 32px; padding: 0 12px;
+    border-bottom: 1px solid var(--sk-line,#e2e2e2); white-space: nowrap;
+  }
+  /* 行：高さ48px・本文16px・区切りは横罫線だけ */
+  .ts-table td { font-size: 16px; line-height: 1.8; text-align: left; vertical-align: middle; height: 48px; padding: 8px 12px; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ts-table td.ts-item { font-weight: 700; }
+  .ts-table th.ts-price, .ts-table td.ts-price { text-align: right; }
+  .ts-table td.ts-price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* 注記：表の下端に寄せる（11.5px・muted） */
+  .ts-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
-  /* 右67%: 内訳カード（2列） */
-  .breakdown { flex:1; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:40px 48px; }
-  .cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .card { background:var(--sk-soft,#F4F4F4); border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; }
-  .c-top { display:flex; align-items:center; gap:8px; }
-  .c-num { width:20px; height:20px; flex-shrink:0; border-radius:4px; background:var(--sk-accent,#555555); color:#FFFFFF; font-size:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; }
-  .c-name { font-size:12px; font-weight:bold; color:#333333; }
-  .c-amt { margin-left:auto; font-size:12.5px; font-weight:bold; color:#333333; }
-  .c-desc { font-size:9px; color:#888888; margin-left:28px; }
-  .r-note { font-size:9px; color:#999999; text-align:right; }
+  /* 右：合計パネル（幅280px・アクセント塗り・白文字・角丸11px）。型: KICKER → 金額28px＋単位 → 白35%の罫線 → 内訳3行 → 注記 */
+  .ts-panel { flex: none; width: 280px; display: flex; flex-direction: column; padding: 24px 28px; border-radius: 11px; background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .ts-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: #FFFFFF; white-space: nowrap; }
+  .ts-num-row { margin-top: 16px; display: flex; align-items: baseline; gap: 8px; }
+  .ts-num { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ts-unit { font-size: 14px; font-weight: 400; line-height: 1; }
+  .ts-rule { margin-top: 16px; height: 1px; background: rgba(255,255,255,.35); }
+  .ts-lines { margin-top: 12px; font-size: 16px; line-height: 1.8; color: rgba(255,255,255,.8); }
+  .ts-line { display: flex; justify-content: space-between; gap: 12px; white-space: nowrap; }
+  .ts-panel .ts-note { color: #FFFFFF; opacity: .85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -49,52 +63,47 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝明細表（罫線だけ・5行）／右＝合計パネル（唯一の塗り） -->
   <div class="content-area">
+    <div class="ts-row">
 
-    <!-- 左: 濃色縦パネル -->
-    <div class="panel">
-      <div class="p-label">お見積り</div>
-      <div class="p-en">ESTIMATE</div>
-      <div class="p-amount">000,000<span class="yen">円</span></div>
-      <div class="p-terms">
-        <div class="p-term"><span class="p-term-label">税区分</span><span class="p-term-value">記載が入ります</span></div>
-        <div class="p-term"><span class="p-term-label">有効期限</span><span class="p-term-value">記載が入ります</span></div>
-        <div class="p-term"><span class="p-term-label">支払条件</span><span class="p-term-value">記載が入ります</span></div>
+      <!-- 左：明細表（合計行は持たない。合計は右パネルに） -->
+      <div class="ts-left">
+        <table class="ts-table">
+          <thead>
+            <tr>
+              <th style="width:152px;">Item ／ 項目</th>
+              <th>Scope ／ 内容</th>
+              <th class="ts-price" style="width:136px;">Price ／ 金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="ts-item">サイト設計</td><td>ページ構成・ワイヤーフレーム</td><td class="ts-price">¥120,000</td></tr>
+            <tr><td class="ts-item">デザイン</td><td>TOP＋下層4ページ</td><td class="ts-price">¥280,000</td></tr>
+            <tr><td class="ts-item">実装</td><td>ノーコード構築・フォーム設置</td><td class="ts-price">¥200,000</td></tr>
+            <tr><td class="ts-item">写真撮影</td><td>半日・20カット納品</td><td class="ts-price">¥60,000</td></tr>
+            <tr><td class="ts-item">ディレクション</td><td>進行管理・公開前の確認</td><td class="ts-price">¥40,000</td></tr>
+          </tbody>
+        </table>
+        <div class="ts-note">例：ページの追加は1枚あたり ¥40,000 で見積もる</div>
       </div>
-    </div>
 
-    <!-- 右: 内訳カード -->
-    <div class="breakdown">
-      <div class="cards">
-        <div class="card">
-          <div class="c-top"><div class="c-num">1</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
+      <!-- 右：合計パネル（アクセント塗り・白文字） -->
+      <div class="ts-panel">
+        <div class="ts-kicker">TOTAL ／ 合計</div>
+        <div class="ts-num-row"><span class="ts-num">¥700,000</span><span class="ts-unit">税別</span></div>
+        <div class="ts-rule"></div>
+        <div class="ts-lines">
+          <div class="ts-line"><span>税区分</span><span>税別</span></div>
+          <div class="ts-line"><span>有効期限</span><span>発行から1ヶ月</span></div>
+          <div class="ts-line"><span>支払</span><span>着手50%・納品50%</span></div>
         </div>
-        <div class="card">
-          <div class="c-top"><div class="c-num">2</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
-        </div>
-        <div class="card">
-          <div class="c-top"><div class="c-num">3</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
-        </div>
-        <div class="card">
-          <div class="c-top"><div class="c-num">4</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
-        </div>
-        <div class="card">
-          <div class="c-top"><div class="c-num">5</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
-        </div>
-        <div class="card">
-          <div class="c-top"><div class="c-num">6</div><div class="c-name">内訳項目が入ります</div><div class="c-amt">000,000円</div></div>
-          <div class="c-desc">作業内容の説明が入ります</div>
-        </div>
+        <div class="ts-note">例：初回のお支払いは ¥350,000</div>
       </div>
-      <div class="r-note">※ 注記が入ります（別途費用・前提条件など）</div>
-    </div>
 
+    </div>
   </div>
 </div>
 </body>

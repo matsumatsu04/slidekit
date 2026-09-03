@@ -4,27 +4,44 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-line-item-table</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; position: relative; padding: 36px 50px 30px; box-sizing: border-box; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。表＋集計ブロックは上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 章見出しエリア（章番号＋タイトル＋全幅ライン）※実テキストはSLIDE.mdのFrameが入れる */
-  .titlebar { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
-  .titlebar .no { font-size: 16px; font-weight: bold; color: #333333; }
-  .titlebar .ttl { font-size: 27px; font-weight: bold; color: #333333; }
-  .title-rule { height: 2px; background: var(--sk-accent,#333333); margin-top: 9px; }
+  /* ── 明細表（項目／説明の2段 ＋ 金額）。罫線は横1px（--sk-line）だけ。塗りなし ── */
+  .li-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  /* 列見出しは KICKER 型（10px・アクセント色）。塗らない・下罫線だけ */
+  .li-table th {
+    font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1;
+    color: var(--sk-accent,#666666); text-align: left; vertical-align: middle; height: 32px; padding: 0 12px;
+    border-bottom: 1px solid var(--sk-line,#e2e2e2); white-space: nowrap;
+  }
+  .li-table td { padding: 6px 12px; vertical-align: middle; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  /* 左：項目名16px/700 の下に説明14px/muted の2段 */
+  .li-item { font-size: 16px; font-weight: 700; line-height: 1.4; }
+  .li-desc { margin-top: 2px; font-size: 14px; line-height: 1.4; color: var(--sk-muted,#888888); }
+  /* 右：金額は右ぞろえ・等幅数字 */
+  .li-table th.li-price, .li-table td.li-price { text-align: right; }
+  .li-table td.li-price { font-size: 16px; line-height: 1.8; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  /* 内訳見出し：テキストの「下」に短い太バー */
-  .subhead { margin-top: 30px; }
-  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; padding-left: 28px; }
-  .subhead .bar { width: 150px; height: 4px; background: var(--sk-accent,#333333); margin-top: 7px; }
-
-  /* 明細テーブル（合計行なし・行間広め） */
-  table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
-  thead th { background: var(--sk-accent,#2B2B2B); color: #FFFFFF; font-weight: bold; padding: 11px 12px; }
-  th.item, td.item { text-align: left; }
-  th.num, td.num { text-align: center; width: 88px; }
-  tbody td { padding: 22px 12px; border-bottom: 1px solid var(--sk-accent,#DDDDDD); color: #333333; }
-  tbody td.item { font-weight: bold; color: #333333; }
+  /* ── 表の下：左に注記、右に「小計 → 消費税 → 合計」の集計ブロック（幅320px） ── */
+  .li-foot { margin-top: 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  .li-note { font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); padding-bottom: 12px; }
+  .li-sum { flex: none; width: 320px; }
+  .li-sum-row { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 12px; font-size: 16px; line-height: 1; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .li-sum-val { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* 合計行だけ淡い地（角丸6px）。金額は20px・700・アクセント色 */
+  .li-sum-total { margin-top: 8px; height: 48px; border-bottom: none; border-radius: 6px; background: var(--sk-soft,#F0F0F0); }
+  .li-sum-total .li-sum-key { font-weight: 700; }
+  .li-sum-total .li-sum-val { font-size: 20px; font-weight: 700; letter-spacing: .02em; color: var(--sk-accent,#555555); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -44,33 +61,45 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- 章見出しエリア（SLIDE.mdのFrameで表示。ここはプレースホルダ） -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- 内訳見出し（バーはテキストの下） -->
-  <div class="subhead">
-    <div class="txt">内訳</div>
-    <div class="bar"></div>
+  <!-- コンテンツエリア：明細表（項目＋説明の2段／金額）→ 下に注記と「小計→消費税→合計」の集計ブロック -->
+  <div class="content-area">
+    <table class="li-table">
+      <thead>
+        <tr>
+          <th>Item ／ 項目</th>
+          <th class="li-price" style="width:184px;">Amount ／ 金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="li-item">サイト設計</div><div class="li-desc">ページ構成の整理・ワイヤーフレームの作成</div></td>
+          <td class="li-price">¥120,000</td>
+        </tr>
+        <tr>
+          <td><div class="li-item">デザイン</div><div class="li-desc">TOP＋下層4ページ・スマホ対応</div></td>
+          <td class="li-price">¥320,000</td>
+        </tr>
+        <tr>
+          <td><div class="li-item">実装</div><div class="li-desc">ノーコードでの構築・お問い合わせフォームの設置</div></td>
+          <td class="li-price">¥240,000</td>
+        </tr>
+        <tr>
+          <td><div class="li-item">公開作業</div><div class="li-desc">ドメイン設定・公開前の確認</div></td>
+          <td class="li-price">¥40,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="li-foot">
+      <div class="li-note">例：有効期限は発行から1ヶ月。素材はご支給の場合の金額</div>
+      <div class="li-sum">
+        <div class="li-sum-row"><span class="li-sum-key">小計</span><span class="li-sum-val">¥720,000</span></div>
+        <div class="li-sum-row"><span class="li-sum-key">消費税（10%）</span><span class="li-sum-val">¥72,000</span></div>
+        <div class="li-sum-row li-sum-total"><span class="li-sum-key">合計</span><span class="li-sum-val">¥792,000</span></div>
+      </div>
+    </div>
   </div>
-
-  <!-- 明細テーブル（合計行なし） -->
-  <table>
-    <thead>
-      <tr>
-        <th class="item">項目</th>
-        <th class="num">単価</th>
-        <th class="num">数量</th>
-        <th class="num">単位</th>
-        <th class="num">金額</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">ページ</td><td class="num">0,000</td></tr>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">ページ</td><td class="num">0,000</td></tr>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
-      <tr><td class="item">明細項目テキスト（補足説明）</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
-    </tbody>
-  </table>
 </div>
 </body>
 </html>

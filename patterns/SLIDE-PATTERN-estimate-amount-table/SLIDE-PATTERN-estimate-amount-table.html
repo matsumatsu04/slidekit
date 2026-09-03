@@ -4,33 +4,39 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-estimate-amount-table</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; position: relative; padding: 36px 50px 30px; box-sizing: border-box; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。表＋合計行＋注記は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 章見出しエリア（章番号＋タイトル＋全幅ライン）※実テキストはSLIDE.mdのFrameが入れる */
-  .titlebar { display: flex; align-items: baseline; gap: 14px; margin-top: 2px; }
-  .titlebar .no { font-size: 16px; font-weight: bold; color: #333333; }
-  .titlebar .ttl { font-size: 27px; font-weight: bold; color: #333333; }
-  .title-rule { height: 2px; background: var(--sk-accent,#333333); margin-top: 9px; }
+  /* ── 見積の金額表。罫線は横1px（--sk-line）だけ。縦罫線・ヘッダーの塗りなし ── */
+  .ea-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  /* ヘッダー：KICKER英字（10px・アクセント色）＋日本語（14px・700）の2段。塗らない・下罫線だけ */
+  .ea-table th { text-align: left; vertical-align: bottom; padding: 0 12px 10px; font-weight: 400; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ea-k { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#666666); white-space: nowrap; }
+  .ea-th { margin-top: 6px; font-size: 14px; font-weight: 700; line-height: 1.4; }
+  /* 行：高さ48px・本文16px・区切りは横罫線だけ */
+  .ea-table td { height: 48px; padding: 8px 12px; font-size: 16px; line-height: 1.8; vertical-align: middle; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ea-table td.ea-item { font-weight: 700; }
+  /* 数字の列（数量・単価・金額）は右ぞろえ・等幅数字 */
+  .ea-table th.ea-num, .ea-table td.ea-num { text-align: right; }
+  .ea-table td.ea-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  /* 金額：バッジ＋大型金額 */
-  .amount-row { display: flex; align-items: center; gap: 28px; margin-top: 30px; }
-  .amount-badge { background: var(--sk-accent,#2B2B2B); color: #FFFFFF; font-weight: bold; font-size: 20px; padding: 11px 34px; }
-  .amount-figure { font-size: 44px; font-weight: 800; color: var(--sk-accent,#333333); }
+  /* 合計行：表の下に8px空けて、淡い地（--sk-soft・角丸6px）の1行だけ。合計金額は20px・700・アクセント色 */
+  .ea-total { margin-top: 8px; height: 56px; display: flex; align-items: center; padding: 0 12px; border-radius: 6px; background: var(--sk-soft,#F0F0F0); }
+  .ea-total-label { width: 188px; font-size: 16px; font-weight: 700; line-height: 1; }
+  .ea-total-tax { font-size: 11.5px; line-height: 1; color: var(--sk-muted,#888888); }
+  .ea-total-sum { margin-left: auto; font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: var(--sk-accent,#555555); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  /* 内訳見出し：テキストの「下」に短い太バー */
-  .subhead { margin-top: 26px; }
-  .subhead .txt { font-size: 22px; font-weight: bold; color: #333333; padding-left: 28px; }
-  .subhead .bar { width: 150px; height: 4px; background: var(--sk-accent,#333333); margin-top: 7px; }
-
-  /* 明細テーブル */
-  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
-  thead th { background: var(--sk-accent,#2B2B2B); color: #FFFFFF; font-weight: bold; padding: 9px 12px; }
-  th.item, td.item { text-align: left; }
-  th.num, td.num { text-align: center; width: 88px; }
-  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--sk-accent,#DDDDDD); color: #333333; }
-  tbody td.item { font-weight: bold; color: #333333; }
-  tr.total td { background: var(--sk-accent,#2B2B2B); color: #FFFFFF; font-weight: bold; border: none; }
+  /* 注記：11.5px・muted（.slide p{margin:0} に負けないよう div で書く） */
+  .ea-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -50,40 +56,59 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- 章見出しエリア（SLIDE.mdのFrameで表示。ここはプレースホルダ） -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- 金額：バッジ＋大型金額 -->
-  <div class="amount-row">
-    <span class="amount-badge">金額</span>
-    <span class="amount-figure">00,000円</span>
+  <!-- コンテンツエリア：見積の金額表（KICKERヘッダー → 明細4行 → 合計行（淡い地）→ 注記） -->
+  <div class="content-area">
+    <table class="ea-table">
+      <thead>
+        <tr>
+          <th style="width:200px;"><div class="ea-k">Item</div><div class="ea-th">項目</div></th>
+          <th><div class="ea-k">Scope</div><div class="ea-th">内容</div></th>
+          <th class="ea-num" style="width:96px;"><div class="ea-k">Qty</div><div class="ea-th">数量</div></th>
+          <th class="ea-num" style="width:136px;"><div class="ea-k">Unit Price</div><div class="ea-th">単価</div></th>
+          <th class="ea-num" style="width:152px;"><div class="ea-k">Amount</div><div class="ea-th">金額</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ea-item">Webデザイン</td>
+          <td>TOP＋下層4ページ</td>
+          <td class="ea-num">5ページ</td>
+          <td class="ea-num">¥64,000</td>
+          <td class="ea-num">¥320,000</td>
+        </tr>
+        <tr>
+          <td class="ea-item">実装</td>
+          <td>スマホ対応・フォーム設置</td>
+          <td class="ea-num">1式</td>
+          <td class="ea-num">¥240,000</td>
+          <td class="ea-num">¥240,000</td>
+        </tr>
+        <tr>
+          <td class="ea-item">写真撮影</td>
+          <td>半日・20カット納品</td>
+          <td class="ea-num">1式</td>
+          <td class="ea-num">¥60,000</td>
+          <td class="ea-num">¥60,000</td>
+        </tr>
+        <tr>
+          <td class="ea-item">ディレクション</td>
+          <td>進行管理・公開前の確認</td>
+          <td class="ea-num">1式</td>
+          <td class="ea-num">¥80,000</td>
+          <td class="ea-num">¥80,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 合計行（唯一の地色。塗りではなく淡い地） -->
+    <div class="ea-total">
+      <div class="ea-total-label">合計</div>
+      <div class="ea-total-tax">税別・素材はご支給の場合</div>
+      <div class="ea-total-sum">¥700,000</div>
+    </div>
+    <div class="ea-note">例：有効期限は発行から1ヶ月。ページの追加は1枚あたり ¥40,000 で見積もる</div>
   </div>
-
-  <!-- 内訳見出し（バーはテキストの下） -->
-  <div class="subhead">
-    <div class="txt">内訳</div>
-    <div class="bar"></div>
-  </div>
-
-  <!-- 明細テーブル -->
-  <table>
-    <thead>
-      <tr>
-        <th class="item">項目</th>
-        <th class="num">単価</th>
-        <th class="num">数量</th>
-        <th class="num">単位</th>
-        <th class="num">金額</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="item">明細項目テキスト（基本構成など）</td><td class="num">00,000</td><td class="num">1</td><td class="num">式</td><td class="num">00,000</td></tr>
-      <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">4</td><td class="num">点</td><td class="num">00,000</td></tr>
-      <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
-      <tr><td class="item">明細項目テキスト</td><td class="num">0,000</td><td class="num">1</td><td class="num">式</td><td class="num">0,000</td></tr>
-      <tr class="total"><td class="item">合計</td><td class="num"></td><td class="num"></td><td class="num"></td><td class="num">00,000</td></tr>
-    </tbody>
-  </table>
 </div>
 </body>
 </html>
