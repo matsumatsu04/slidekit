@@ -63,7 +63,6 @@ const GRANDFATHER = {
   'icon-left-text-list-detailed': { 5: '旧実装（body 直下を 960×540 にしている・.slide ルートなし）' },
   'three-col-icon-card-header-band': { 5: '旧実装（body 直下を 960×540 にしている・.slide ルートなし）' },
   // 6. 色（グレー階調・var(--sk-*) 以外）
-  'business-model-three-party': { 6: 'var(--sk-soft) のフォールバック #F5F7FA（ごく薄い青みグレー）' },
   'status-progress-table': { 6: '遅延ステータスの淡地 #FFF8F0（ごく薄い暖色グレー）' },
 };
 
