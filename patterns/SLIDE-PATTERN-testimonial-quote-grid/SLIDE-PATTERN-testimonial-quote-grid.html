@@ -5,13 +5,31 @@
 <title>SLIDE-PATTERN-testimonial-quote-grid</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 40px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px; }
-  .quote-card { border: 1px solid var(--sk-accent,#CCCCCC); padding: 20px 20px 16px; display: flex; flex-direction: column; overflow: hidden; }
-  .quote-mark { font-size: 36px; font-weight: bold; color: #CCCCCC; line-height: 1; margin: 0 0 8px; font-family: Georgia, "Times New Roman", serif; }
-  .quote-body { flex: 1; font-size: 12px; color: #333333; line-height: 1.6; margin: 0; }
-  .quote-divider { border: none; border-top: 1px solid var(--sk-accent,#E0E0E0); margin: 12px 0 8px; }
-  .quote-attribution { font-size: 11px; color: #888888; margin: 0; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2行×2列の声カード：等高・soft地・gap16・角丸11。2枚目だけ塗り（1枚に塗りは1つ）。写真は置かない */
+  .tq-grid { width:100%; height:432px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:16px; }
+  .tq-card { box-sizing:border-box; min-width:0; border-radius:11px; padding:20px 24px 16px; background:var(--sk-soft,#F0F0F0);
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .tq-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 引用符：装飾（--sk-line色・serif・44px）。高さ24pxの上段に置き、本文に重ねない */
+  .tq-mark { height:24px; font-size:44px; font-weight:400; line-height:1; letter-spacing:0; font-family:Georgia,"Times New Roman",serif; color:var(--sk-line,#e2e2e2); }
+  .tq-fill .tq-mark { color:rgba(255,255,255,.35); }
+  /* 引用文：16px・400・行間1.8・2〜3行。上ぞろえで、余りは罫線の上に吸収する（出典は下端にそろう） */
+  .tq-text { flex:1; margin-top:4px; font-size:16px; font-weight:400; line-height:1.8; }
+  /* 細罫線 → 出典（KICKER → 名前16px/700） */
+  .tq-rule { width:100%; height:1px; margin:12px 0 8px; background:var(--sk-line,#e2e2e2); }
+  .tq-fill .tq-rule { background:rgba(255,255,255,.35); }
+  .tq-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .tq-fill .tq-kicker { color:#FFFFFF; }
+  .tq-name { margin-top:4px; font-size:16px; font-weight:700; line-height:1.4; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -33,43 +51,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア：3列×2行の引用カードグリッド -->
+  <!-- コンテンツエリア：2行×2列の声カード。各カードは 引用符（装飾）→ 引用文 → 細罫線 → KICKER → 名前。2枚目＝主役の塗り -->
   <div class="content-area">
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名A ／ 役職A</p>
-    </div>
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名B ／ 役職B</p>
-    </div>
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名C ／ 役職C</p>
-    </div>
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名D ／ 役職D</p>
-    </div>
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名E ／ 役職E</p>
-    </div>
-    <div class="quote-card">
-      <p class="quote-mark">&#8220;</p>
-      <p class="quote-body">お客様の声のプレースホルダーテキストが入ります。導入後の変化や感想を2〜3行で記載します。</p>
-      <hr class="quote-divider">
-      <p class="quote-attribution">会社名F ／ 役職F</p>
+    <div class="tq-grid">
+      <div class="tq-card">
+        <div class="tq-mark" aria-hidden="true">“</div>
+        <div class="tq-text">最初の1ページを任せたら、直す量が思ったより少なかった。順番を決めていたのが効いた。</div>
+        <div class="tq-rule"></div>
+        <div class="tq-kicker">Voice ／ 受講生</div>
+        <div class="tq-name">受講生Aさん（Web制作フリーランス）</div>
+      </div>
+      <div class="tq-card tq-fill">
+        <div class="tq-mark" aria-hidden="true">“</div>
+        <div class="tq-text">毎週の相談で、つまずいた場所をその場で解けた。ひとりで抱えていた時間が減り、案件の進み方が安定した。</div>
+        <div class="tq-rule"></div>
+        <div class="tq-kicker">Voice ／ 受講生</div>
+        <div class="tq-name">受講生Bさん（会社員から転向）</div>
+      </div>
+      <div class="tq-card">
+        <div class="tq-mark" aria-hidden="true">“</div>
+        <div class="tq-text">納品前の確認項目を1枚にまとめてから、公開後の手戻りがほとんどなくなった。</div>
+        <div class="tq-rule"></div>
+        <div class="tq-kicker">Voice ／ お客様</div>
+        <div class="tq-name">C社ご担当者（飲食店を経営）</div>
+      </div>
+      <div class="tq-card">
+        <div class="tq-mark" aria-hidden="true">“</div>
+        <div class="tq-text">提案の順番を変えただけで、お客様の反応が変わった。話す前に構成を決める癖がついた。</div>
+        <div class="tq-rule"></div>
+        <div class="tq-kicker">Voice ／ 受講生</div>
+        <div class="tq-name">受講生Dさん（副業で受注中）</div>
+      </div>
     </div>
   </div>
 </div>

@@ -5,17 +5,37 @@
 <title>SLIDE-PATTERN-skill-matrix-dot-table</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px; display: flex; flex-direction: column; justify-content: center; }
-  table { width: 100%; height: 100%; border-collapse: collapse; }
-  th, td { border: 1px solid var(--sk-soft,#DDDDDD); }
-  th { background: var(--sk-soft,#EEEEEE); font-size: 14px; font-weight: bold; color: #333333; padding: 12px 8px; text-align: center; }
-  th.label-col { text-align: left; padding-left: 16px; }
-  td.item-name { font-weight: bold; font-size: 14px; color: #333333; text-align: left; padding: 12px 16px; }
-  td.dot-cell { font-size: 20px; text-align: center; padding: 8px; }
-  .dot-filled { color: var(--sk-accent,#333333); }
-  .dot-partial { color: #888888; }
-  .dot-none { color: #CCCCCC; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* ドット表：罫線は横1px（--sk-line）だけ。縦罫線・面の塗りなし。表＋凡例を上下中央に */
+  .sm-block { width:100%; }
+  .sm-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+  .sm-table th, .sm-table td { border-bottom:1px solid var(--sk-line,#e2e2e2); vertical-align:middle; padding:0 16px; }
+  /* ヘッダー行：KICKER英字（10px）＋日本語（16px・700）。1列目は左ぞろえ、担当列は中央ぞろえ */
+  .sm-table th { text-align:center; padding-bottom:12px; font-weight:400; }
+  .sm-table th.sm-skill { text-align:left; }
+  .sm-k { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .sm-th { margin-top:6px; font-size:16px; font-weight:700; line-height:1.4; }
+  /* 行：行見出し16px/700・高さ52px。ドットは中央 */
+  .sm-table td { height:52px; }
+  .sm-table td.sm-row { font-size:16px; font-weight:700; line-height:1.4; }
+  .sm-table td.sm-cell { text-align:center; }
+  /* ドット3段階（CSSのみ）：● アクセント塗り／◐ 左半分だけ塗り／○ 1.5pxの罫線色の枠。ドットは面の塗りに数えない */
+  .sm-dot { display:inline-block; width:16px; height:16px; box-sizing:border-box; border-radius:50%; vertical-align:middle; position:relative; overflow:hidden; }
+  .sm-full { background:var(--sk-accent,#555555); }
+  .sm-half { border:1.5px solid var(--sk-accent,#555555); }
+  .sm-half::before { content:""; position:absolute; left:0; top:0; bottom:0; width:50%; background:var(--sk-accent,#555555); }
+  .sm-none { border:1.5px solid var(--sk-line,#e2e2e2); }
+  /* 凡例：11.5px・muted。ドットは12px */
+  .sm-legend { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); display:flex; align-items:center; gap:20px; }
+  .sm-legend .sm-dot { width:12px; height:12px; margin-right:6px; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -37,54 +57,63 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：スキル（行）×担当（列）のドット表。ヘッダーはKICKER英字＋日本語、セルは3段階のドット、下に凡例 -->
   <div class="content-area">
-    <table>
-      <thead>
-        <tr>
-          <th class="label-col" style="width:22%;"></th>
-          <th>カテゴリ1</th>
-          <th>カテゴリ2</th>
-          <th>カテゴリ3</th>
-          <th>カテゴリ4</th>
-          <th>カテゴリ5</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="item-name">項目Aが入ります</td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-partial">○</span></td>
-          <td class="dot-cell"><span class="dot-none">－</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-        </tr>
-        <tr>
-          <td class="item-name">項目Bが入ります</td>
-          <td class="dot-cell"><span class="dot-partial">○</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-none">－</span></td>
-        </tr>
-        <tr>
-          <td class="item-name">項目Cが入ります</td>
-          <td class="dot-cell"><span class="dot-none">－</span></td>
-          <td class="dot-cell"><span class="dot-partial">○</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-partial">○</span></td>
-        </tr>
-        <tr>
-          <td class="item-name">項目Dが入ります</td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-none">－</span></td>
-          <td class="dot-cell"><span class="dot-partial">○</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-          <td class="dot-cell"><span class="dot-filled">●</span></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="sm-block">
+      <table class="sm-table">
+        <thead>
+          <tr>
+            <th class="sm-skill" style="width:240px;"><div class="sm-k">Skill</div><div class="sm-th">スキル</div></th>
+            <th><div class="sm-k">Director</div><div class="sm-th">Aさん</div></th>
+            <th><div class="sm-k">Designer</div><div class="sm-th">Bさん</div></th>
+            <th><div class="sm-k">Builder</div><div class="sm-th">Cさん</div></th>
+            <th><div class="sm-k">Operator</div><div class="sm-th">Dさん</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sm-row">要件の整理</td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-none"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+          </tr>
+          <tr>
+            <td class="sm-row">ワイヤーフレーム</td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-none"></span></td>
+          </tr>
+          <tr>
+            <td class="sm-row">デザイン</td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-none"></span></td>
+          </tr>
+          <tr>
+            <td class="sm-row">ノーコード実装</td>
+            <td class="sm-cell"><span class="sm-dot sm-none"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+          </tr>
+          <tr>
+            <td class="sm-row">公開後の運用</td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-none"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-half"></span></td>
+            <td class="sm-cell"><span class="sm-dot sm-full"></span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="sm-legend">
+        <span><span class="sm-dot sm-full"></span>ひとりで担当できる</span>
+        <span><span class="sm-dot sm-half"></span>補助があればできる</span>
+        <span><span class="sm-dot sm-none"></span>これから習得する</span>
+      </div>
+    </div>
   </div>
 </div>
 </body>

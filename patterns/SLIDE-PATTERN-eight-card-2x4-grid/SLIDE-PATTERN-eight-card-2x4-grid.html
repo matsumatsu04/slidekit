@@ -1,86 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-eight-card-2x4-grid</title>
-  <style>
-    /* ページ背景・中央寄せ */
-    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-eight-card-2x4-grid</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-    /* スライドラベル */
+  /* 2行×4列の小カード：等高・soft地・gap12・角丸8・padding16。02だけ塗り（1枚に塗りは1つ）。
+     08は最終＝結果の扱いで、塗らずに1.5pxのアクセント枠。枠の有無で幅が変わらないよう全カードに透明の1.5px枠を持たせる */
+  .eg-grid { width:100%; height:376px; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:1fr 1fr; gap:12px; }
+  .eg-card { box-sizing:border-box; min-width:0; border-radius:8px; padding:16px; background:var(--sk-soft,#F0F0F0); border:1.5px solid transparent;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .eg-fill { background:var(--sk-accent,#555555); border-color:var(--sk-accent,#555555); color:#FFFFFF; }
+  .eg-frame { background:#FFFFFF; border-color:var(--sk-accent,#555555); }
+  /* カードの型：KICKER番号 → 見出し16px → 1行説明（14px・muted） */
+  .eg-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .eg-fill .eg-kicker { color:#FFFFFF; }
+  .eg-h { margin-top:8px; font-size:16px; font-weight:700; line-height:1.4; }
+  .eg-body { margin-top:6px; font-size:14px; line-height:1.8; color:var(--sk-muted,#888888); }
+  .eg-fill .eg-body { color:#FFFFFF; opacity:.8; }
 
-    /* スライド本体 960×540px */
-    .slide {
-      width: 960px;
-      height: 540px;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* コンテンツエリア */
-    .content {
-      display: flex;
-      flex-direction: column;
-      padding: 12px 32px;
-      gap: 8px;
-      flex: 1;
-    }
-
-
-    /* ── 8カードグリッド ── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 10px;
-      flex: 1;
-    }
-
-    /* 各カード */
-    .card {
-      border: 1px solid var(--sk-accent,#E0E0E0);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    /* 番号バッジ */
-    .card-badge {
-      width: 24px;
-      height: 24px;
-      background: var(--sk-soft,#F0F0F0);
-      border-radius: 50%;
-      font-size: 11px;
-      font-weight: bold;
-      color: #333333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    /* カード見出し */
-    .card h4 {
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      margin: 0;
-      line-height: 1.3;
-    }
-
-    /* カード説明テキスト */
-    .card p {
-      font-size: 11px;
-      color: #333333;
-      margin: 0;
-      line-height: 1.5;
-    }
-  
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -98,80 +45,54 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-
-
-  <div class="slide">
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-    <!-- コンテンツエリア -->
-    <div class="content">
-
-      
-
-      <!-- 8カードグリッド -->
-      <div class="card-grid">
-
-        <!-- カード1 -->
-        <div class="card">
-          <div class="card-badge">1</div>
-          <h4>顧客体験の向上</h4>
-          <p>タッチポイントを見直しNPS向上を目指す。年間スコア15pt改善を目標とする。</p>
-        </div>
-
-        <!-- カード2 -->
-        <div class="card">
-          <div class="card-badge">2</div>
-          <h4>業務プロセス自動化</h4>
-          <p>RPAとAIを活用して定型業務を自動化し、工数を30%以上削減する。</p>
-        </div>
-
-        <!-- カード3 -->
-        <div class="card">
-          <div class="card-badge">3</div>
-          <h4>デジタル人材育成</h4>
-          <p>全社員を対象にDXリテラシー研修を実施し、デジタル活用率を高める。</p>
-        </div>
-
-        <!-- カード4 -->
-        <div class="card">
-          <div class="card-badge">4</div>
-          <h4>新規市場開拓</h4>
-          <p>海外3カ国での事業展開を開始し、グローバル売上比率20%を目指す。</p>
-        </div>
-
-        <!-- カード5 -->
-        <div class="card">
-          <div class="card-badge">5</div>
-          <h4>サプライチェーン強化</h4>
-          <p>調達先の多様化とリードタイム短縮で安定供給体制を確立する。</p>
-        </div>
-
-        <!-- カード6 -->
-        <div class="card">
-          <div class="card-badge">6</div>
-          <h4>サステナビリティ推進</h4>
-          <p>CO2排出量を2023年比40%削減し、環境目標の達成に向けた取り組みを加速する。</p>
-        </div>
-
-        <!-- カード7 -->
-        <div class="card">
-          <div class="card-badge">7</div>
-          <h4>パートナー連携強化</h4>
-          <p>戦略パートナー10社との協業を深化させ、共同プロジェクトを推進する。</p>
-        </div>
-
-        <!-- カード8 -->
-        <div class="card">
-          <div class="card-badge">8</div>
-          <h4>データ活用基盤整備</h4>
-          <p>データレイクを構築してリアルタイム分析を可能にし、意思決定を迅速化する。</p>
-        </div>
-
-      </div><!-- /card-grid -->
-
-    </div><!-- /content -->
-
-  </div><!-- /slide -->
-
+  <!-- コンテンツエリア：2行×4列の小カード（KICKER番号 → 見出し → 1行説明）。02＝主役の塗り・08＝結果のアクセント枠 -->
+  <div class="content-area">
+    <div class="eg-grid">
+      <div class="eg-card">
+        <div class="eg-kicker">01</div>
+        <div class="eg-h">ヒアリング</div>
+        <div class="eg-body">目的と期限を先に聞く</div>
+      </div>
+      <div class="eg-card eg-fill">
+        <div class="eg-kicker">02</div>
+        <div class="eg-h">構成設計</div>
+        <div class="eg-body">導線を1枚にまとめる</div>
+      </div>
+      <div class="eg-card">
+        <div class="eg-kicker">03</div>
+        <div class="eg-h">原稿と写真</div>
+        <div class="eg-body">文章と写真を先に集める</div>
+      </div>
+      <div class="eg-card">
+        <div class="eg-kicker">04</div>
+        <div class="eg-h">デザイン</div>
+        <div class="eg-body">参考を3つ見せて決める</div>
+      </div>
+      <div class="eg-card">
+        <div class="eg-kicker">05</div>
+        <div class="eg-h">実装</div>
+        <div class="eg-body">設計どおりに組む</div>
+      </div>
+      <div class="eg-card">
+        <div class="eg-kicker">06</div>
+        <div class="eg-h">表示確認</div>
+        <div class="eg-body">端末ごとに見て直す</div>
+      </div>
+      <div class="eg-card">
+        <div class="eg-kicker">07</div>
+        <div class="eg-h">公開</div>
+        <div class="eg-body">ドメインと計測を整える</div>
+      </div>
+      <div class="eg-card eg-frame">
+        <div class="eg-kicker">08</div>
+        <div class="eg-h">運用</div>
+        <div class="eg-body">月1回の更新枠を持つ</div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

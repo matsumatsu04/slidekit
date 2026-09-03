@@ -4,16 +4,33 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-card-photo-caption-three</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:28px 72px 32px; display:flex; gap:24px; align-items:stretch; }
-  .pc-card { flex:1; border:1px solid var(--sk-soft,#E0E0E0); display:flex; flex-direction:column; overflow:hidden; }
-  .pc-photo { height:150px; background:var(--sk-soft,#EFEFEF); display:flex; align-items:center; justify-content:center; font-size:11px; color:#AAAAAA; flex-shrink:0; }
-  .pc-body { flex:1; padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
-  .pc-tag { font-size:10px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.06em; }
-  .pc-title { font-size:14px; font-weight:bold; color:#333333; line-height:1.4; }
-  .pc-desc { font-size:11.5px; color:#666666; line-height:1.7; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 3カード：等幅・等高・gap16・角丸11・1pxの罫線枠。写真枠（soft地・16:9）＋キャプション。
+     2枚目のキャプション部だけ塗り（1枚に塗りは1つ。写真枠の淡い地は塗りに数えない） */
+  .pc-cards { width:100%; height:352px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .pc-card { box-sizing:border-box; min-width:0; background:#FFFFFF; border:1px solid var(--sk-line,#e2e2e2); border-radius:11px; overflow:hidden;
+             display:flex; flex-direction:column; }
+  /* 写真枠：外部画像を使わず soft 地の16:9プレースホルダ。実装時は <img> を object-fit:cover で差し替える */
+  .pc-photo { aspect-ratio:16/9; flex-shrink:0; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; }
+  .pc-photo-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+  /* キャプションの型：KICKER → 見出し18px → 本文2行。上ぞろえ */
+  .pc-cap { flex:1; box-sizing:border-box; padding:20px 24px 24px; display:flex; flex-direction:column; align-items:flex-start; }
+  .pc-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .pc-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .pc-body { margin-top:8px; font-size:16px; line-height:1.8; }
+  /* 主役：キャプション部だけアクセント塗り・白文字。枠線も同色にする */
+  .pc-fill { border-color:var(--sk-accent,#555555); }
+  .pc-fill .pc-cap { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .pc-fill .pc-kicker { color:#FFFFFF; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -33,11 +50,36 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：写真枠（16:9）＋キャプションのカード3枚。2枚目のキャプション部だけ塗り＝主役 -->
   <div class="content-area">
-    <div class="pc-card"><div class="pc-photo">写真・画像が入ります（150px）</div><div class="pc-body"><div class="pc-tag">CASE 01</div><div class="pc-title">事例タイトルが入ります</div><div class="pc-desc">事例の説明テキストが入ります。成果や特徴を2〜3行で記述します。</div></div></div>
-    <div class="pc-card"><div class="pc-photo">写真・画像が入ります（150px）</div><div class="pc-body"><div class="pc-tag">CASE 02</div><div class="pc-title">事例タイトルが入ります</div><div class="pc-desc">事例の説明テキストが入ります。成果や特徴を2〜3行で記述します。</div></div></div>
-    <div class="pc-card"><div class="pc-photo">写真・画像が入ります（150px）</div><div class="pc-body"><div class="pc-tag">CASE 03</div><div class="pc-title">事例タイトルが入ります</div><div class="pc-desc">事例の説明テキストが入ります。成果や特徴を2〜3行で記述します。</div></div></div>
+    <div class="pc-cards">
+      <div class="pc-card">
+        <div class="pc-photo"><span class="pc-photo-label">Image ／ 16:9</span></div>
+        <div class="pc-cap">
+          <div class="pc-kicker">Case 01 ／ 飲食店</div>
+          <div class="pc-h">予約の入口を1つに</div>
+          <div class="pc-body">電話と問い合わせを予約ページに集約した。</div>
+        </div>
+      </div>
+      <div class="pc-card pc-fill">
+        <div class="pc-photo"><span class="pc-photo-label">Image ／ 16:9</span></div>
+        <div class="pc-cap">
+          <div class="pc-kicker">Case 02 ／ 士業</div>
+          <div class="pc-h">相談内容から探せる</div>
+          <div class="pc-body">よくある相談を入口に置き、問い合わせを増やした。</div>
+        </div>
+      </div>
+      <div class="pc-card">
+        <div class="pc-photo"><span class="pc-photo-label">Image ／ 16:9</span></div>
+        <div class="pc-cap">
+          <div class="pc-kicker">Case 03 ／ 教室</div>
+          <div class="pc-h">体験申込を2段階に</div>
+          <div class="pc-body">入力項目を減らし、体験の申込を最後まで進めやすくした。</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </body>
