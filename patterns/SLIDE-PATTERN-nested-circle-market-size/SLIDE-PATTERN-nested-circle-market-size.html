@@ -4,25 +4,48 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-nested-circle-market-size</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 48px; display: flex; align-items: center; gap: 24px; }
-  .nest-wrap { position: relative; width: 374px; height: 320px; flex-shrink: 0; }
-  .circle { position: absolute; left: 50%; border-radius: 50%; box-sizing: border-box; }
-  .circle-large { width: 320px; height: 320px; top: 0; margin-left: -160px; background: var(--sk-soft,#E4E4E4); border: 1px solid var(--sk-accent,#BBBBBB); }
-  .circle-medium { width: 220px; height: 220px; top: 100px; margin-left: -110px; background: var(--sk-soft,#CFCFCF); border: 1px solid var(--sk-accent,#AAAAAA); }
-  .circle-small { width: 130px; height: 130px; top: 190px; margin-left: -65px; background: var(--sk-accent,#999999); border: 1px solid var(--sk-accent,#888888); }
-  .lead-line { position: absolute; left: 0; height: 2px; background: var(--sk-accent,#BBBBBB); }
-  .line-large { top: 48px; left: 300px; width: 74px; }
-  .line-medium { top: 147px; left: 277px; width: 97px; }
-  .line-small { top: 214px; left: 237px; width: 137px; }
-  .labels-col { flex: 1; position: relative; height: 320px; }
-  .market-label { position: absolute; left: 0; transform: translateY(-50%); }
-  .label-large { top: 48px; }
-  .label-medium { top: 147px; }
-  .label-small { top: 214px; }
-  .label-title { font-size: 14px; font-weight: bold; color: #333333; }
-  .label-amount { font-size: 12px; color: #888888; margin-top: 4px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。ステージ＋注記を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── ステージ 864×320：左に同心円3つ（下端ぞろえ）、右に引き出し3組。引き出し線は1枚のSVG ── */
+  .nc-stage { position: relative; width: 864px; height: 320px; }
+
+  /* 円：中心 x=160 で下端 y=320 をそろえる。最外＝白地に1.5px枠／中間＝--sk-soft 地／最内＝アクセント塗り（塗りは1枚に1つ） */
+  .nc-circle { position: absolute; border-radius: 50%; }
+  .nc-tam { left: 0;     top: 0;     width: 320px; height: 320px; background: #FFFFFF; border: 1.5px solid var(--sk-line,#e2e2e2); }
+  .nc-sam { left: 56px;  top: 112px; width: 208px; height: 208px; background: var(--sk-soft,#F0F0F0); }
+  .nc-som { left: 104px; top: 208px; width: 112px; height: 112px; background: var(--sk-accent,#555555); }
+
+  /* 円の中の英字ラベル（各円の帯の中心に置く。SOM は白） */
+  .nc-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .nc-ring-kicker { position: absolute; left: 0; width: 320px; text-align: center; }
+  .nc-ring-tam { top: 51px; }
+  .nc-ring-sam { top: 155px; }
+  .nc-ring-som { top: 259px; color: #FFFFFF; }
+
+  /* 引き出し線：1px 罫線色・水平。始点は各円の円周上（ラベルの高さで円と交わる点）、終点はラベルの 16px 手前 */
+  .nc-lines { position: absolute; left: 0; top: 0; width: 864px; height: 320px; display: block; }
+  .nc-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+
+  /* 引き出しラベル：高さ80pxのブロックを線の高さ（40 / 160 / 280）に垂直センター。型: KICKER → 数値24px → 説明16px */
+  .nc-label { position: absolute; left: 440px; width: 424px; height: 80px; display: flex; flex-direction: column; justify-content: center; }
+  .nc-label-tam { top: 0; }
+  .nc-label-sam { top: 120px; }
+  .nc-label-som { top: 240px; }
+  .nc-num { margin-top: 6px; font-size: 24px; font-weight: 700; line-height: 1.2; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .nc-desc { margin-top: 2px; font-size: 16px; line-height: 1.8; white-space: nowrap; }
+
+  /* 注記：11.5px・muted。ラベル列にそろえる */
+  .nc-note { margin-top: 12px; padding-left: 440px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -44,32 +67,44 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝同心円3つ（TAM/SAM/SOM・下端ぞろえ・塗りは SOM だけ）／右＝引き出し3組 -->
   <div class="content-area">
-    <!-- 大中小の同心円（下端揃え） -->
-    <div class="nest-wrap">
-      <div class="circle circle-large"></div>
-      <div class="circle circle-medium"></div>
-      <div class="circle circle-small"></div>
-      <div class="lead-line line-large"></div>
-      <div class="lead-line line-medium"></div>
-      <div class="lead-line line-small"></div>
+    <div class="nc-stage">
+
+      <!-- 円3つ（大→小の順に重ねる）。中心 TAM(160,160) r160 / SAM(160,216) r104 / SOM(160,264) r56 -->
+      <div class="nc-circle nc-tam"></div>
+      <div class="nc-circle nc-sam"></div>
+      <div class="nc-circle nc-som"></div>
+      <div class="nc-kicker nc-ring-kicker nc-ring-tam">TAM</div>
+      <div class="nc-kicker nc-ring-kicker nc-ring-sam">SAM</div>
+      <div class="nc-kicker nc-ring-kicker nc-ring-som">SOM</div>
+
+      <!-- 引き出し線（円周上の点 → x=424）。y=40: TAM と交わる x=265.8 / y=160: SAM x=247.6 / y=280: SOM x=213.7 -->
+      <svg class="nc-lines" viewBox="0 0 864 320" aria-hidden="true">
+        <path d="M265.8 40H424"/>
+        <path d="M247.6 160H424"/>
+        <path d="M213.7 280H424"/>
+      </svg>
+
+      <!-- 引き出しラベル -->
+      <div class="nc-label nc-label-tam">
+        <div class="nc-kicker">TAM ／ 市場全体</div>
+        <div class="nc-num">約1,200億円</div>
+        <div class="nc-desc">国内の中小企業が使うWeb制作費の年額</div>
+      </div>
+      <div class="nc-label nc-label-sam">
+        <div class="nc-kicker">SAM ／ 獲得可能な市場</div>
+        <div class="nc-num">約300億円</div>
+        <div class="nc-desc">ノーコード制作が向く小規模サイトの分</div>
+      </div>
+      <div class="nc-label nc-label-som">
+        <div class="nc-kicker">SOM ／ 自社の獲得目標</div>
+        <div class="nc-num">約12億円</div>
+        <div class="nc-desc">3年で取りにいく紹介経由の案件の分</div>
+      </div>
+
     </div>
-    <!-- 引き出しラベル（円名＋金額） -->
-    <div class="labels-col">
-      <div class="market-label label-large">
-        <div class="label-title">市場全体が入ります</div>
-        <div class="label-amount">想定金額が入ります</div>
-      </div>
-      <div class="market-label label-medium">
-        <div class="label-title">獲得可能な市場が入ります</div>
-        <div class="label-amount">想定金額が入ります</div>
-      </div>
-      <div class="market-label label-small">
-        <div class="label-title">自社の獲得シェアが入ります</div>
-        <div class="label-amount">想定金額が入ります</div>
-      </div>
-    </div>
+    <div class="nc-note">例：数値は概算。円の大きさは目安で、面積比は正確ではない</div>
   </div>
 </div>
 </body>

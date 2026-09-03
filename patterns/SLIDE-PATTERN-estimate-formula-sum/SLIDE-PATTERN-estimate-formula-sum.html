@@ -6,36 +6,42 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; flex-direction:column; justify-content:center; gap:20px; padding:32px 64px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。式の行＋規模別シミュレーションを上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 上段: 足し算の式（項目カード＋演算子＋合計カード） */
-  .formula { display:flex; align-items:center; gap:10px; }
-  .fs-card { flex:1; height:176px; background:#FFFFFF; border:1px solid var(--sk-soft,#DDDDDD); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:12px; }
-  .fs-label { font-size:11px; font-weight:bold; color:#333333; padding-bottom:6px; border-bottom:2px solid var(--sk-accent,#888888); }
-  .fs-unit { font-size:9px; color:#888888; }
-  .fs-amount { font-size:20px; font-weight:bold; color:#333333; line-height:1; }
-  .fs-amount .yen { font-size:11px; font-weight:bold; margin-left:2px; }
-  .fs-inc { font-size:8.5px; color:#888888; }
-  .fs-op { flex-shrink:0; width:32px; height:32px; border-radius:50%; background:var(--sk-accent,#555555); color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:bold; }
-  .fs-total { flex:1.25; height:176px; background:var(--sk-accent,#555555); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:12px; }
-  .fs-total-label { font-size:11px; font-weight:bold; color:#FFFFFF; letter-spacing:.12em; }
-  .fs-total-amount { font-size:28px; font-weight:bold; color:#FFFFFF; line-height:1; }
-  .fs-total-amount .yen { font-size:14px; font-weight:bold; margin-left:2px; }
-  .fs-total-note { font-size:8.5px; color:rgba(255,255,255,.8); }
+  .ef-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
 
-  /* 中段: 注記 */
-  .notes { display:flex; flex-direction:column; gap:4px; }
-  .note-line { font-size:9.5px; color:#888888; }
+  /* ── 上段：内訳カード3枚 ＋ ＋ ＋ ＝ 合計カード。等高（168px）・上ぞろえ。幅 168×3 + 40×3 + 240 = 864 ── */
+  .ef-row { display: flex; align-items: stretch; height: 168px; }
+  /* 内訳カード：1.5px の罫線枠・角丸10px。型: KICKER → 項目名16px/700 → （細罫線）→ 金額20px/700 → 例： */
+  .ef-card { flex: none; width: 168px; display: flex; flex-direction: column; padding: 20px; border: 1.5px solid var(--sk-line,#e2e2e2); border-radius: 10px; }
+  .ef-name { margin-top: 8px; font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+  .ef-rule { margin-top: auto; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .ef-amount { margin-top: 12px; font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ef-note { margin-top: 6px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); white-space: nowrap; }
+  /* 演算子：＋／＝（24px・muted のテキスト。図形にしない） */
+  .ef-op { flex: none; width: 40px; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; color: var(--sk-muted,#888888); }
+  /* 合計カード：アクセント塗り・白文字・金額28px。1枚で塗るのはここだけ */
+  .ef-total { flex: none; width: 240px; display: flex; flex-direction: column; padding: 20px 24px; border-radius: 10px; background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .ef-total .ef-kicker { color: #FFFFFF; }
+  .ef-total .ef-rule { background: rgba(255,255,255,.35); }
+  .ef-total .ef-amount { font-size: 28px; }
+  .ef-total .ef-note { color: #FFFFFF; opacity: .85; }
 
-  /* 下段: ご利用イメージ帯（規模別シミュレーション） */
-  .sim-band { background:var(--sk-soft,#F2F2F2); border-radius:12px; padding:14px 24px; display:flex; flex-direction:column; gap:10px; }
-  .sim-head { font-size:10px; font-weight:bold; color:#666666; letter-spacing:.08em; }
-  .sim-row { display:flex; }
-  .sim-cell { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .sim-cell + .sim-cell { border-left:1px solid #DDDDDD; }
-  .sim-cond { font-size:9.5px; color:#888888; }
-  .sim-total { font-size:15px; font-weight:bold; color:var(--sk-accent,#333333); }
+  /* ── 下段：規模別シミュレーション（3列・横罫線のみ・縦線なし）── */
+  .ef-sim { margin-top: 24px; }
+  .ef-sim-row { margin-top: 8px; display: flex; border-top: 1px solid var(--sk-line,#e2e2e2); border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ef-sim-col { flex: 1; min-width: 0; padding: 12px 16px 12px 0; }
+  .ef-sim-ttl { font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+  .ef-sim-amount { margin-top: 2px; font-size: 16px; line-height: 1.8; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ef-sim-note { font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); white-space: nowrap; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -55,60 +61,64 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：上段＝内訳カード3枚 ＋ ＝ 合計カード（唯一の塗り）／下段＝規模別シミュレーション（横罫線のみ） -->
   <div class="content-area">
 
-    <!-- 上段: 足し算の式 -->
-    <div class="formula">
-      <div class="fs-card">
-        <div class="fs-label">項目名が入ります</div>
-        <div class="fs-unit">一式</div>
-        <div class="fs-amount">000,000<span class="yen">円</span></div>
-        <div class="fs-inc">含まれる内容が入ります</div>
+    <!-- 上段：足し算の式 -->
+    <div class="ef-row">
+      <div class="ef-card">
+        <div class="ef-kicker">DESIGN ／ 一式</div>
+        <div class="ef-name">デザイン</div>
+        <div class="ef-rule"></div>
+        <div class="ef-amount">¥300,000</div>
+        <div class="ef-note">例：TOP＋下層4ページ</div>
       </div>
-      <div class="fs-op">+</div>
-      <div class="fs-card">
-        <div class="fs-label">項目名が入ります</div>
-        <div class="fs-unit">一式</div>
-        <div class="fs-amount">000,000<span class="yen">円</span></div>
-        <div class="fs-inc">含まれる内容が入ります</div>
+      <div class="ef-op">＋</div>
+      <div class="ef-card">
+        <div class="ef-kicker">BUILD ／ 一式</div>
+        <div class="ef-name">実装</div>
+        <div class="ef-rule"></div>
+        <div class="ef-amount">¥360,000</div>
+        <div class="ef-note">例：スマホ対応・フォーム</div>
       </div>
-      <div class="fs-op">+</div>
-      <div class="fs-card">
-        <div class="fs-label">項目名が入ります</div>
-        <div class="fs-unit">月額</div>
-        <div class="fs-amount">000,000<span class="yen">円</span></div>
-        <div class="fs-inc">含まれる内容が入ります</div>
+      <div class="ef-op">＋</div>
+      <div class="ef-card">
+        <div class="ef-kicker">DIRECTION ／ 一式</div>
+        <div class="ef-name">進行管理</div>
+        <div class="ef-rule"></div>
+        <div class="ef-amount">¥80,000</div>
+        <div class="ef-note">例：公開前の確認まで</div>
       </div>
-      <div class="fs-op">=</div>
-      <div class="fs-total">
-        <div class="fs-total-label">合計</div>
-        <div class="fs-total-amount">000,000<span class="yen">円</span></div>
-        <div class="fs-total-note">税注記が入ります</div>
+      <div class="ef-op">＝</div>
+      <div class="ef-total">
+        <div class="ef-kicker">TOTAL ／ 合計</div>
+        <div class="ef-name">初期費用（税別）</div>
+        <div class="ef-rule"></div>
+        <div class="ef-amount">¥740,000</div>
+        <div class="ef-note">例：着手時50%・納品時50%</div>
       </div>
     </div>
 
-    <!-- 中段: 注記 -->
-    <div class="notes">
-      <div class="note-line">※ 注記が入ります（お支払い条件・有効期限など）</div>
-      <div class="note-line">※ 注記が入ります（別途費用・前提条件など）</div>
-    </div>
-
-    <!-- 下段: ご利用イメージ帯 -->
-    <div class="sim-band">
-      <div class="sim-head">ご利用イメージ</div>
-      <div class="sim-row">
-        <div class="sim-cell">
-          <div class="sim-cond">条件Aの場合が入ります</div>
-          <div class="sim-total">000,000円</div>
+    <!-- 下段：規模別シミュレーション -->
+    <div class="ef-sim">
+      <div class="ef-kicker">SIMULATION ／ 規模別の目安</div>
+      <div class="ef-sim-row">
+        <div class="ef-sim-col">
+          <div class="ef-sim-ttl">5ページ・撮影なし</div>
+          <div class="ef-sim-amount">¥740,000</div>
+          <div class="ef-sim-note">例：会社案内サイト</div>
         </div>
-        <div class="sim-cell">
-          <div class="sim-cond">条件Bの場合が入ります</div>
-          <div class="sim-total">000,000円</div>
+        <div class="ef-sim-col">
+          <div class="ef-sim-ttl">10ページ・撮影あり</div>
+          <div class="ef-sim-amount">¥1,020,000</div>
+          <div class="ef-sim-note">例：採用ページ付きのサイト</div>
         </div>
-        <div class="sim-cell">
-          <div class="sim-cond">条件Cの場合が入ります</div>
-          <div class="sim-total">000,000円</div>
+        <div class="ef-sim-col">
+          <div class="ef-sim-ttl">15ページ・英語版あり</div>
+          <div class="ef-sim-amount">¥1,400,000</div>
+          <div class="ef-sim-note">例：海外取引先向けの2言語サイト</div>
         </div>
       </div>
     </div>
