@@ -5,14 +5,31 @@
 <title>SLIDE-PATTERN-client-logo-grid-wall</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 24px 40px 32px; display: flex; flex-direction: column; }
-  .wall-heading { flex-shrink: 0; margin-bottom: 16px; display: flex; align-items: baseline; justify-content: space-between; }
-  .wall-heading h3 { font-size: 16px; font-weight: bold; color: #333333; margin: 0; }
-  .wall-heading .wall-count { font-size: 12px; color: #888888; }
-  .logo-grid { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; }
-  .logo-cell { border: 1px solid var(--sk-accent,#CCCCCC); display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; }
-  .logo-cell span { font-size: 12px; color: #333333; line-height: 1.3; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 上段：KICKER＋見出し（左）と件数（右）。下段：5列×4行の表組みグリッド。
+     塗りは置かない（件数の数字だけアクセント色の文字＝強調1箇所） */
+  .lw-wrap { width:100%; height:424px; display:flex; flex-direction:column; }
+  .lw-head { flex-shrink:0; height:56px; display:flex; align-items:flex-end; justify-content:space-between; }
+  .lw-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .lw-h { margin-top:8px; font-size:20px; font-weight:700; line-height:1.4; }
+  .lw-count { display:flex; align-items:baseline; gap:4px; line-height:1; padding-bottom:4px; }
+  .lw-count-label { font-size:16px; font-weight:400; }
+  .lw-count-num { font-size:24px; font-weight:700; letter-spacing:.02em; color:var(--sk-accent,#555555); }
+  .lw-count-note { margin-left:12px; font-size:11.5px; color:var(--sk-muted,#888888); }
+  /* 表組み：gap1pxの地に罫線色を敷き、セルを白にして1pxの格子にする（カードの枠を20個並べない）。外周も同じ罫線で閉じる */
+  .lw-grid { flex:1; margin-top:16px; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(4,1fr); gap:1px;
+             background:var(--sk-line,#e2e2e2); border:1px solid var(--sk-line,#e2e2e2); }
+  .lw-cell { min-width:0; box-sizing:border-box; padding:0 8px; background:#FFFFFF; display:flex; align-items:center; justify-content:center; text-align:center; }
+  /* 社名：ロゴ画像の代わりに16px/700のテキスト。実装時は <img> に差し替えてよい（高さはセルの60%まで） */
+  .lw-name { font-size:16px; font-weight:700; line-height:1.4; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,33 +51,43 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア：見出し行＋5列×4行の導入企業ロゴウォール -->
+  <!-- コンテンツエリア：上段＝KICKER＋見出し＋件数、下段＝5列×4行の表組みグリッド（社名テキスト。塗り無し） -->
   <div class="content-area">
-    <div class="wall-heading">
-      <h3>導入企業一覧</h3>
-      <span class="wall-count">全20社（順不同）</span>
-    </div>
-    <div class="logo-grid">
-      <div class="logo-cell"><span>企業名A</span></div>
-      <div class="logo-cell"><span>企業名B</span></div>
-      <div class="logo-cell"><span>企業名C</span></div>
-      <div class="logo-cell"><span>企業名D</span></div>
-      <div class="logo-cell"><span>企業名E</span></div>
-      <div class="logo-cell"><span>企業名F</span></div>
-      <div class="logo-cell"><span>企業名G</span></div>
-      <div class="logo-cell"><span>企業名H</span></div>
-      <div class="logo-cell"><span>企業名I</span></div>
-      <div class="logo-cell"><span>企業名J</span></div>
-      <div class="logo-cell"><span>企業名K</span></div>
-      <div class="logo-cell"><span>企業名L</span></div>
-      <div class="logo-cell"><span>企業名M</span></div>
-      <div class="logo-cell"><span>企業名N</span></div>
-      <div class="logo-cell"><span>企業名O</span></div>
-      <div class="logo-cell"><span>企業名P</span></div>
-      <div class="logo-cell"><span>企業名Q</span></div>
-      <div class="logo-cell"><span>企業名R</span></div>
-      <div class="logo-cell"><span>企業名S</span></div>
-      <div class="logo-cell"><span>企業名T</span></div>
+    <div class="lw-wrap">
+      <div class="lw-head">
+        <div>
+          <div class="lw-kicker">Clients ／ 導入企業</div>
+          <div class="lw-h">導入いただいた企業の一部</div>
+        </div>
+        <div class="lw-count">
+          <span class="lw-count-label">導入</span>
+          <span class="lw-count-num">120</span>
+          <span class="lw-count-label">社</span>
+          <span class="lw-count-note">2026年8月時点・順不同</span>
+        </div>
+      </div>
+      <div class="lw-grid">
+        <div class="lw-cell"><span class="lw-name">〇〇製作所</span></div>
+        <div class="lw-cell"><span class="lw-name">△△商事</span></div>
+        <div class="lw-cell"><span class="lw-name">□□食品</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇不動産</span></div>
+        <div class="lw-cell"><span class="lw-name">△△建設</span></div>
+        <div class="lw-cell"><span class="lw-name">□□運輸</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇薬局</span></div>
+        <div class="lw-cell"><span class="lw-name">△△学園</span></div>
+        <div class="lw-cell"><span class="lw-name">□□印刷</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇歯科医院</span></div>
+        <div class="lw-cell"><span class="lw-name">△△水産</span></div>
+        <div class="lw-cell"><span class="lw-name">□□設計事務所</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇会計事務所</span></div>
+        <div class="lw-cell"><span class="lw-name">△△農園</span></div>
+        <div class="lw-cell"><span class="lw-name">□□保育園</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇電機</span></div>
+        <div class="lw-cell"><span class="lw-name">△△旅館</span></div>
+        <div class="lw-cell"><span class="lw-name">□□工業</span></div>
+        <div class="lw-cell"><span class="lw-name">〇〇法律事務所</span></div>
+        <div class="lw-cell"><span class="lw-name">△△整体院</span></div>
+      </div>
     </div>
   </div>
 </div>

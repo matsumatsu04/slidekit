@@ -3,18 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-profile-two-speakers</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 80px; display:flex; gap:40px; align-items:stretch; }
-  .sp-card { flex:1; border:1px solid var(--sk-soft,#E0E0E0); padding:28px 28px 24px; display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .sp-photo { width:96px; height:96px; border-radius:50%; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--sk-accent,#AAAAAA); }
-  .sp-name { font-size:18px; font-weight:bold; color:#333333; }
-  .sp-role { font-size:12px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.04em; }
-  .sp-rule { width:32px; height:2px; background:var(--sk-soft,#DDDDDD); margin:4px 0; }
-  .sp-bio { font-size:12px; color:#333333; line-height:1.8; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2枚の等幅・等高カード（1.5px罫線枠・角丸12・padding24）。中身は左ぞろえ・上ぞろえ。
+     塗りは1枚目の KICKER 横の小さなドット1つだけ */
+  .ts-wrap { width:100%; height:376px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .ts-card { box-sizing:border-box; min-width:0; background:#FFFFFF; border:1.5px solid var(--sk-line,#e2e2e2); border-radius:12px; padding:24px;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .ts-kicker-row { display:flex; align-items:center; gap:8px; }
+  .ts-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; background:var(--sk-accent,#555555); }
+  .ts-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  /* 円形写真枠：soft 地のプレースホルダ96px。実装時は <img> を円形クリップ（object-fit:cover）で差し替える */
+  .ts-photo { margin-top:16px; width:96px; height:96px; border-radius:50%; flex-shrink:0; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; }
+  .ts-photo-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+  .ts-name { margin-top:12px; font-size:20px; font-weight:700; line-height:1.2; }
+  .ts-role { margin-top:4px; font-size:16px; line-height:1.8; color:var(--sk-muted,#888888); }
+  .ts-rule { width:100%; height:1px; margin:16px 0; flex-shrink:0; background:var(--sk-line,#e2e2e2); }
+  /* 経歴：16px×3行。先頭に4pxの角ドット（差し色 accent2。塗りに数えない） */
+  .ts-bio { list-style:none; margin:0; padding:0; width:100%; }
+  .ts-bio li { position:relative; padding-left:16px; font-size:16px; line-height:1.8; }
+  .ts-bio li::before { content:""; position:absolute; left:0; top:12px; width:4px; height:4px; background:var(--sk-accent2,#999999); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,21 +51,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：登壇者カード2枚（KICKER → 円形写真枠 → 氏名 → 肩書 → 罫線 → 経歴3行）。1枚目の KICKER 横のドット＝塗り1つ -->
   <div class="content-area">
-    <div class="sp-card">
-      <div class="sp-photo"><i class="fa-solid fa-user"></i></div>
-      <div class="sp-name">氏名が入ります</div>
-      <div class="sp-role">肩書・役職が入ります</div>
-      <div class="sp-rule"></div>
-      <div class="sp-bio">経歴・実績のテキストが入ります。これまでの経験や専門領域を3〜4行程度で記述します。登壇テーマとの関わりを書くと効果的です。</div>
-    </div>
-    <div class="sp-card">
-      <div class="sp-photo"><i class="fa-solid fa-user"></i></div>
-      <div class="sp-name">氏名が入ります</div>
-      <div class="sp-role">肩書・役職が入ります</div>
-      <div class="sp-rule"></div>
-      <div class="sp-bio">経歴・実績のテキストが入ります。これまでの経験や専門領域を3〜4行程度で記述します。登壇テーマとの関わりを書くと効果的です。</div>
+    <div class="ts-wrap">
+      <div class="ts-card">
+        <div class="ts-kicker-row"><span class="ts-dot"></span><span class="ts-kicker">Speaker 01 ／ 登壇者</span></div>
+        <div class="ts-photo"><span class="ts-photo-label">Photo</span></div>
+        <div class="ts-name">山田 太郎</div>
+        <div class="ts-role">株式会社〇〇 代表取締役</div>
+        <div class="ts-rule"></div>
+        <ul class="ts-bio">
+          <li>制作会社で10年、設計と進行を担当</li>
+          <li>2016年に独立。年20件のサイトを制作</li>
+          <li>2020年から講座でサイト設計を教える</li>
+        </ul>
+      </div>
+      <div class="ts-card">
+        <div class="ts-kicker-row"><span class="ts-kicker">Speaker 02 ／ 登壇者</span></div>
+        <div class="ts-photo"><span class="ts-photo-label">Photo</span></div>
+        <div class="ts-name">佐藤 花子</div>
+        <div class="ts-role">配信設計コンサルタント</div>
+        <div class="ts-rule"></div>
+        <ul class="ts-bio">
+          <li>広告代理店で配信運用を5年担当</li>
+          <li>2018年に独立。飲食店の集客を支援</li>
+          <li>配信の設計と計測の仕組みづくりが専門</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

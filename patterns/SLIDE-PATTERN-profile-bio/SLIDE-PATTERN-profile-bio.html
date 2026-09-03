@@ -5,20 +5,31 @@
 <title>SLIDE-PATTERN-profile-bio</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; display: flex; overflow: hidden; }
-  .left-panel { width: 32%; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--sk-accent,#EEEEEE); }
-  .photo-placeholder { width: 160px; height: 190px; background: var(--sk-soft,#F0F0F0); border: 1px dashed var(--sk-accent,#CCCCCC); display: flex; align-items: center; justify-content: center; color: #AAAAAA; font-size: 12px; text-align: center; margin-bottom: 10px; }
-  .photo-caption { font-size: 12px; color: #333333; text-align: center; }
-  .right-panel { flex: 1; padding: 24px 32px; display: flex; flex-direction: column; justify-content: center; }
-  .profile-name { font-size: 32px; font-weight: bold; color: #333333; margin-bottom: 4px; }
-  .profile-position { font-size: 13px; color: #333333; margin-bottom: 16px; }
-  .profile-table { width: 100%; border-collapse: collapse; }
-  .profile-table tr { border-bottom: 1px solid var(--sk-accent,#EEEEEE); }
-  .profile-table td { padding: 7px 8px; font-size: 13px; vertical-align: top; }
-  .profile-table .label { color: #888; width: 80px; font-size: 12px; background: #FFFFFF; }
-  .profile-table .value { color: #333333; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 左：写真プレースホルダ（240×300・soft地）＋氏名キャプション。右：氏名24px→肩書→経歴テーブル。両列とも上ぞろえ。塗りは置かない */
+  .pb-wrap { width:100%; height:360px; display:flex; gap:40px; align-items:flex-start; }
+  .pb-left { width:240px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; }
+  /* 写真枠：外部画像を使わず soft 地のプレースホルダ。実装時は <img> を object-fit:cover で差し替える（縦長 4:5） */
+  .pb-photo { width:240px; height:300px; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; }
+  .pb-photo-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+  .pb-cap { margin-top:8px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); text-align:center; }
+  .pb-right { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .pb-name { font-size:24px; font-weight:700; line-height:1.2; }
+  .pb-role { margin-top:8px; font-size:16px; line-height:1.8; color:var(--sk-muted,#888888); }
+  /* 経歴テーブル：横罫線のみ（上端と各行の下）。ラベル列は KICKER（英字＋日本語）、値は16px */
+  .pb-table { width:100%; margin-top:16px; border-collapse:collapse; border-top:1px solid var(--sk-line,#e2e2e2); }
+  .pb-table td { padding:12px 0; border-bottom:1px solid var(--sk-line,#e2e2e2); vertical-align:top; }
+  .pb-table td.pb-label { width:120px; padding-right:16px; }
+  .pb-kicker { display:block; padding-top:8px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; white-space:nowrap; color:var(--sk-accent,#666666); }
+  .pb-val { font-size:16px; line-height:1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -40,29 +51,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝写真プレースホルダ＋キャプション、右＝氏名・肩書・経歴テーブル（横罫線のみ） -->
   <div class="content-area">
-    <div class="left-panel">
-      <div class="photo-placeholder">[PHOTO]<br>顔写真</div>
-      <div class="photo-caption">氏名（よみがな）</div>
-    </div>
-    <div class="right-panel">
-      <div class="profile-name">氏名　太郎</div>
-      <div class="profile-position">株式会社○○　代表取締役社長</div>
-      <table class="profile-table">
-        <tr>
-          <td class="label">出身地</td>
-          <td class="value">○○県○○市</td>
-        </tr>
-        <tr>
-          <td class="label">学歴</td>
-          <td class="value">○○大学　○○学部　卒業</td>
-        </tr>
-        <tr>
-          <td class="label">経歴</td>
-          <td class="value">2012年：大手企業にて○○業務を経験<br>2016年：コンサルティングファームにて○○に従事<br>2020年：株式会社○○を設立</td>
-        </tr>
-      </table>
+    <div class="pb-wrap">
+      <div class="pb-left">
+        <div class="pb-photo"><span class="pb-photo-label">Photo ／ 4:5</span></div>
+        <div class="pb-cap">山田 太郎（やまだ たろう）</div>
+      </div>
+      <div class="pb-right">
+        <div class="pb-name">山田 太郎</div>
+        <div class="pb-role">株式会社〇〇 代表取締役 ／ Web制作講座 講師</div>
+        <table class="pb-table">
+          <tr>
+            <td class="pb-label"><span class="pb-kicker">Origin ／ 出身</span></td>
+            <td><div class="pb-val">北海道札幌市。2010年に上京</div></td>
+          </tr>
+          <tr>
+            <td class="pb-label"><span class="pb-kicker">Career ／ 経歴</span></td>
+            <td><div class="pb-val">2012年 制作会社にデザイナーとして入社<br>2016年 独立。中小企業のサイトを年20件制作<br>2020年 制作会社を設立し、講座を開講</div></td>
+          </tr>
+          <tr>
+            <td class="pb-label"><span class="pb-kicker">Field ／ 専門</span></td>
+            <td><div class="pb-val">ノーコードでのサイト設計と、公開後の運用設計</div></td>
+          </tr>
+          <tr>
+            <td class="pb-label"><span class="pb-kicker">Now ／ 現在</span></td>
+            <td><div class="pb-val">年間30件の制作と、受講生60名の講座を運営</div></td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </div>

@@ -3,17 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-team-members-grid</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:24px 56px 28px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px; align-content:center; }
-  .member { border:1px solid var(--sk-soft,#E0E0E0); background:#FFFFFF; padding:16px 12px 14px; display:flex; flex-direction:column; align-items:center; gap:6px; }
-  .m-photo { width:64px; height:64px; border-radius:50%; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--sk-accent,#AAAAAA); }
-  .m-name { font-size:13px; font-weight:bold; color:#333333; }
-  .m-role { font-size:10px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.04em; }
-  .m-note { font-size:9.5px; color:#666666; text-align:center; line-height:1.5; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 4列×2行の等幅・等高グリッド。セルは枠なし。行の間に全幅の横罫線1本。塗りは置かない */
+  .tm-wrap { width:100%; height:416px; display:flex; flex-direction:column; }
+  .tm-row { flex:1; box-sizing:border-box; display:grid; grid-template-columns:repeat(4,1fr); column-gap:16px; align-items:start; }
+  .tm-row:first-child { padding-bottom:20px; }
+  .tm-row + .tm-row { padding-top:20px; border-top:1px solid var(--sk-line,#e2e2e2); }
+  .tm-cell { min-width:0; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  /* 円形写真枠：soft 地のプレースホルダ72px。実装時は <img> を円形クリップ（object-fit:cover）で差し替える */
+  .tm-photo { width:72px; height:72px; border-radius:50%; flex-shrink:0; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; }
+  .tm-photo-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+  /* セルの型：氏名16px/700 → 役職 KICKER → 一言16px muted 2行 */
+  .tm-name { margin-top:12px; font-size:16px; font-weight:700; line-height:1.4; }
+  .tm-role { margin-top:4px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  /* 一言は「同じ長さの2文（各9字以内・句点で終える）」で書き、text-wrap:balance で句点の位置で2行に折る（1文字だけの行を作らない） */
+  .tm-note { margin-top:8px; font-size:16px; line-height:1.8; color:var(--sk-muted,#888888); text-wrap:balance; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -33,16 +47,64 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：4列×2行のメンバー（円形写真枠 → 氏名 → 役職KICKER → 一言2行）。行の間に横罫線 -->
   <div class="content-area">
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">代表取締役</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">取締役CTO</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">デザイン責任者</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">マーケティング</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">開発リード</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">カスタマーサクセス</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">セールス</div><div class="m-note">経歴・担当の一言が入ります</div></div>
-    <div class="member"><div class="m-photo"><i class="fa-solid fa-user"></i></div><div class="m-name">氏名が入ります</div><div class="m-role">コーポレート</div><div class="m-note">経歴・担当の一言が入ります</div></div>
+    <div class="tm-wrap">
+      <div class="tm-row">
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">山田 太郎</div>
+          <div class="tm-role">CEO ／ 代表</div>
+          <div class="tm-note">設計と進行を担当。制作会社で十年目。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">佐藤 花子</div>
+          <div class="tm-role">Design ／ デザイン</div>
+          <div class="tm-note">参考を三案出す。方向性を決める。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">鈴木 一郎</div>
+          <div class="tm-role">Build ／ 実装</div>
+          <div class="tm-note">ノーコードで組む。端末で表示を確認。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">高橋 美咲</div>
+          <div class="tm-role">Content ／ 原稿</div>
+          <div class="tm-note">原稿と写真を集める。不足を早く洗い出す。</div>
+        </div>
+      </div>
+      <div class="tm-row">
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">田中 健太</div>
+          <div class="tm-role">Marketing ／ 集客</div>
+          <div class="tm-note">検索対策を担当。計測も設定する。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">伊藤 さくら</div>
+          <div class="tm-role">Support ／ 相談窓口</div>
+          <div class="tm-note">質問を一か所に集約。翌営業日までに返す。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">渡辺 大輔</div>
+          <div class="tm-role">Sales ／ 営業</div>
+          <div class="tm-note">初回相談から担当。見積まで受け持つ。</div>
+        </div>
+        <div class="tm-cell">
+          <div class="tm-photo"><span class="tm-photo-label">Photo</span></div>
+          <div class="tm-name">中村 結衣</div>
+          <div class="tm-role">Admin ／ 管理</div>
+          <div class="tm-note">契約と請求を担当。社内の進行も管理。</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </body>
