@@ -7,14 +7,33 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:28px 72px 32px; display:flex; flex-direction:column; justify-content:center; gap:16px; }
-  .ta-lead { text-align:center; font-size:15px; font-weight:bold; color:#333333; }
-  .ta-grid { display:flex; gap:24px; }
-  .ta-card { flex:1; border:1px solid var(--sk-soft,#E0E0E0); border-top:3px solid var(--sk-accent,#888888); padding:20px 18px; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
-  .ta-icon { width:52px; height:52px; border-radius:50%; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; font-size:21px; color:var(--sk-accent,#999999); }
-  .ta-title { font-size:14px; font-weight:bold; color:#333333; line-height:1.5; }
-  .ta-desc { font-size:11.5px; color:#666666; line-height:1.7; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* ターゲット3種：等高カード（soft 地・角丸12・gap16）。中央だけ塗り（1枚に塗りは1つ）。中身は上ぞろえ */
+  .ta-cards { width:100%; height:336px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .ta-card  { box-sizing:border-box; border-radius:12px; padding:28px 24px; background:var(--sk-soft,#F0F0F0);
+              display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start; }
+  .ta-fill  { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* アイコン：20px・丸地は白（塗りカード内は白の半透明） */
+  .ta-icon  { width:40px; height:40px; border-radius:50%; background:#FFFFFF; display:flex; align-items:center; justify-content:center;
+              font-size:20px; line-height:1; color:var(--sk-accent,#666666); margin-bottom:20px; }
+  .ta-fill .ta-icon { background:rgba(255,255,255,.2); color:#FFFFFF; }
+  /* カードの型：KICKER → 見出し → 細罫線 → 本文2行 → 例： */
+  .ta-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .ta-fill .ta-kicker { color:#FFFFFF; }
+  .ta-h     { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .ta-line  { width:100%; height:1px; background:var(--sk-line,#E2E2E2); margin:12px 0; }
+  .ta-fill .ta-line { background:rgba(255,255,255,.35); }
+  .ta-body  { font-size:16px; line-height:1.8; }
+  .ta-note  { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
+  .ta-fill .ta-note { color:#FFFFFF; opacity:.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,13 +53,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：ターゲット3カード（中央が主役＝塗り） -->
   <div class="content-area">
-    <div class="ta-lead">こんな方におすすめです</div>
-    <div class="ta-grid">
-      <div class="ta-card"><div class="ta-icon"><i class="fa-solid fa-user-clock"></i></div><div class="ta-title">対象者の特徴が入ります</div><div class="ta-desc">具体的な悩み・状況の説明が入ります。2〜3行で記述します。</div></div>
-      <div class="ta-card"><div class="ta-icon"><i class="fa-solid fa-briefcase"></i></div><div class="ta-title">対象者の特徴が入ります</div><div class="ta-desc">具体的な悩み・状況の説明が入ります。2〜3行で記述します。</div></div>
-      <div class="ta-card"><div class="ta-icon"><i class="fa-solid fa-rocket"></i></div><div class="ta-title">対象者の特徴が入ります</div><div class="ta-desc">具体的な悩み・状況の説明が入ります。2〜3行で記述します。</div></div>
+    <div class="ta-cards">
+      <div class="ta-card">
+        <div class="ta-icon"><i class="fa-solid fa-user-clock"></i></div>
+        <div class="ta-kicker">Target 1 ／ 個人</div>
+        <div class="ta-h">手が足りない個人事業主</div>
+        <div class="ta-line"></div>
+        <p class="ta-body">受注はあるが、制作の手数が追いつかない。</p>
+        <div class="ta-note">例：複数の案件を1人で回している</div>
+      </div>
+      <div class="ta-card ta-fill">
+        <div class="ta-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="ta-kicker">Target 2 ／ チーム</div>
+        <div class="ta-h">型で回したい制作チーム</div>
+        <div class="ta-line"></div>
+        <p class="ta-body">担当者ごとに品質がぶれ、確認と直しに時間がかかる。</p>
+        <div class="ta-note">例：制作の手順が人によって違う</div>
+      </div>
+      <div class="ta-card">
+        <div class="ta-icon"><i class="fa-solid fa-rocket"></i></div>
+        <div class="ta-kicker">Target 3 ／ 新規</div>
+        <div class="ta-h">これから制作を始める方</div>
+        <div class="ta-line"></div>
+        <p class="ta-body">何から手を付けるかが決まらず、最初の一歩が重い。</p>
+        <div class="ta-note">例：学び終えて最初の案件を探している</div>
+      </div>
     </div>
   </div>
 </div>

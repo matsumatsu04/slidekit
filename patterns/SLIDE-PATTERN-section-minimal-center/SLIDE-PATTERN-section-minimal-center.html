@@ -6,11 +6,16 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; }
-  .smc-no { font-size:15px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.3em; }
-  .smc-rule { width:32px; height:2px; background:var(--sk-accent,#999999); }
-  .smc-title { font-size:30px; font-weight:bold; color:#333333; text-align:center; line-height:1.5; }
-  .smc-sub { font-size:13px; color:#999999; }
+  /* 全面アクセント塗り＋白文字。グレー版のフォールバック地は白文字が読める濃さ（#555555） */
+  .slide { width:960px; height:540px; background:var(--sk-accent,#555555); border:1px solid #CCCCCC; overflow:hidden; position:relative;
+           font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-02）: 中央に KICKER → 章タイトル → 白線1本 → 説明1行。塗りは全面の1つだけ・装飾は 48×1px の白線だけ。
+     共通部品は使えないので、同じ数値を smc- 接頭辞で持つ。文字色は .smc-wrap で白にする（末尾の v2 文字の組みブロックが .slide にインク色を当てるため） */
+  .smc-wrap   { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#FFFFFF; }
+  .smc-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:rgba(255,255,255,.7); }
+  .smc-title  { margin-top:24px; max-width:760px; font-size:30px; font-weight:700; letter-spacing:.08em; line-height:1.5; color:#FFFFFF; }
+  .smc-rule   { width:48px; height:1px; background:rgba(255,255,255,.7); margin:28px 0; }
+  .smc-sub    { max-width:760px; font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:rgba(255,255,255,.85); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -30,10 +35,12 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <div class="smc-no">0 3</div>
-  <div class="smc-rule"></div>
-  <div class="smc-title">セクションタイトルが<br>ここに入ります</div>
-  <div class="smc-sub">サブタイトルが入ります（省略可）</div>
+  <div class="smc-wrap">
+    <div class="smc-kicker">Section 01</div>
+    <div class="smc-title">制作の現場で起きている詰まり</div>
+    <div class="smc-rule"></div>
+    <div class="smc-sub">工程ごとに、どこで手が止まるかを先に見る</div>
+  </div>
 </div>
 </body>
 </html>

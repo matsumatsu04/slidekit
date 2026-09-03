@@ -6,14 +6,19 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; position:relative; }
-  .tag-row { position:absolute; top:48px; left:72px; right:72px; display:flex; gap:10px; }
-  .tag { flex:1; text-align:center; font-size:11px; font-weight:bold; color:#AAAAAA; background:var(--sk-soft,#F2F2F2); padding:7px 4px; border-radius:14px; white-space:nowrap; overflow:hidden; }
-  .tag.current { background:var(--sk-accent,#555555); color:#FFFFFF; }
-  .sec-block { position:absolute; left:72px; top:50%; transform:translateY(-46%); }
-  .sec-no { font-size:64px; font-weight:bold; color:var(--sk-soft,#DDDDDD); line-height:1; margin-bottom:12px; }
-  .sec-title { font-size:34px; font-weight:bold; color:#333333; line-height:1.4; }
-  .sec-sub { font-size:14px; color:#888888; margin-top:12px; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; position:relative;
+           color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-02）: 上に章タグ（soft 地の小さなピル・KICKER 型・現在章だけアクセント塗り＋白文字）、
+     左の上下中央に 章番号（40px・400・アクセント色）→ 章タイトル（28px・700）→ 説明1行。塗りは現在地タグの1つだけ。
+     共通部品は使えないので、同じ数値を stp- 接頭辞で持つ */
+  .stp-tags  { position:absolute; left:48px; right:48px; top:48px; display:flex; gap:8px; }
+  .stp-tag   { height:26px; padding:0 12px 0 14px; border-radius:13px; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center;
+               font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; white-space:nowrap; color:var(--sk-muted,#888888); }
+  .stp-cur   { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .stp-block { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; }
+  .stp-no    { font-size:40px; font-weight:400; letter-spacing:.04em; line-height:1; color:var(--sk-accent,#666666); }
+  .stp-title { margin-top:16px; max-width:760px; font-size:28px; font-weight:700; letter-spacing:.06em; line-height:1.5; }
+  .stp-sub   { margin-top:12px; max-width:760px; font-size:16px; font-weight:400; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -33,17 +38,17 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <div class="tag-row">
-    <div class="tag">01 章名が入ります</div>
-    <div class="tag">02 章名が入ります</div>
-    <div class="tag current">03 章名が入ります</div>
-    <div class="tag">04 章名が入ります</div>
-    <div class="tag">05 章名が入ります</div>
+  <div class="stp-tags">
+    <div class="stp-tag">01 現状</div>
+    <div class="stp-tag">02 課題</div>
+    <div class="stp-tag stp-cur">03 方針</div>
+    <div class="stp-tag">04 手順</div>
+    <div class="stp-tag">05 体制</div>
   </div>
-  <div class="sec-block">
-    <div class="sec-no">03</div>
-    <div class="sec-title">セクションタイトルが<br>ここに入ります</div>
-    <div class="sec-sub">このセクションの内容を補足するサブタイトルが入ります</div>
+  <div class="stp-block">
+    <div class="stp-no">03</div>
+    <div class="stp-title">AIに任せる工程と、人が決める工程</div>
+    <div class="stp-sub">判断の主体を工程ごとに決めてから、道具を選ぶ</div>
   </div>
 </div>
 </body>
