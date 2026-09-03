@@ -6,18 +6,33 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 120px; display:flex; flex-direction:column; justify-content:center; }
-  /* 幹線は最初の行の中心から最後の行の中心まで（端点ルール: 行高固定・top/bottom=行高の半分） */
-  .hy-list { position:relative; display:flex; flex-direction:column; }
-  .hy-list::before { content:""; position:absolute; left:99px; top:27px; bottom:27px; width:2px; background:var(--sk-soft,#DDDDDD); }
-  .hy-row { display:flex; align-items:center; gap:0; height:54px; position:relative; }
-  .hy-year { width:80px; font-size:16px; font-weight:bold; color:var(--sk-accent,#555555); flex-shrink:0; }
-  .hy-dot { width:12px; height:12px; border-radius:50%; background:var(--sk-accent,#888888); border:2px solid #FFFFFF; flex-shrink:0; margin:0 14px; position:relative; z-index:1; }
-  .hy-row.major .hy-dot { width:16px; height:16px; margin:0 12px; background:var(--sk-accent2, var(--sk-accent,#555555)); }
-  .hy-event { font-size:13.5px; color:#333333; }
-  .hy-row.major .hy-event { font-weight:bold; }
-  .hy-note { font-size:11px; color:#999999; margin-left:8px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。年表は幅720pxで上下中央） */
+  .content-area { flex: 1; padding: 24px 120px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 年表リスト：行の高さは固定（幹線の端点をノードの中心で止めるため） ── */
+  .hy-list { position: relative; }
+  /* 幹線（1px・罫線色）：最初のノードの中心（top 14px）から最後のノードの中心（bottom 72-14px）まで。左=年列120px＋ノード列の中心20px */
+  .hy-list::before { content: ""; position: absolute; left: 140px; margin-left: -0.5px; top: 14px; bottom: 58px; width: 1px; background: var(--sk-line,#e2e2e2); }
+  .hy-row { position: relative; display: flex; align-items: flex-start; height: 72px; }
+  /* 左：年（KICKER風だが 20px・400・アクセント色）。見出し行（28px）と垂直中心を合わせる */
+  .hy-year { flex: none; width: 120px; font-size: 20px; font-weight: 400; letter-spacing: .12em; line-height: 28px; color: var(--sk-accent,#555555); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  /* 中央：小さな丸ノード（白・1.5px 罫線色の枠）。幹線の上に載る */
+  .hy-axis { flex: none; width: 40px; display: flex; justify-content: center; padding-top: 8px; }
+  .hy-node { position: relative; z-index: 1; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--sk-line,#e2e2e2); background: #FFFFFF; }
+  /* 最新の1件だけノードを塗り、見出しをアクセント色に（塗りは1枚に1つ） */
+  .hy-row-now .hy-node { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); }
+  .hy-row-now .hy-ttl { color: var(--sk-accent,#555555); }
+  /* 右：見出し16px太字 → 本文16px（1行） */
+  .hy-text { flex: 1; min-width: 0; padding-left: 16px; }
+  .hy-ttl { font-size: 16px; font-weight: 700; line-height: 28px; }
+  .hy-body { margin-top: 2px; font-size: 16px; line-height: 1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -37,14 +52,57 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左に年・中央に幹線＋丸ノード・右に見出しと本文（最新の1件だけ塗り） -->
   <div class="content-area">
     <div class="hy-list">
-      <div class="hy-row"><div class="hy-year">2019</div><div class="hy-dot"></div><div class="hy-event">出来事のテキストが入ります（創業など）</div></div>
-      <div class="hy-row"><div class="hy-year">2021</div><div class="hy-dot"></div><div class="hy-event">出来事のテキストが入ります</div></div>
-      <div class="hy-row"><div class="hy-year">2023</div><div class="hy-dot"></div><div class="hy-event">出来事のテキストが入ります</div></div>
-      <div class="hy-row major"><div class="hy-year">2025</div><div class="hy-dot"></div><div class="hy-event">重要な出来事のテキストが入ります</div><div class="hy-note">←ハイライト（差し色）</div></div>
-      <div class="hy-row"><div class="hy-year">2026</div><div class="hy-dot"></div><div class="hy-event">出来事のテキストが入ります（現在）</div></div>
+
+      <div class="hy-row">
+        <div class="hy-year">2019</div>
+        <div class="hy-axis"><div class="hy-node"></div></div>
+        <div class="hy-text">
+          <div class="hy-ttl">創業</div>
+          <div class="hy-body">Web制作の受託を1人で始める。</div>
+        </div>
+      </div>
+
+      <div class="hy-row">
+        <div class="hy-year">2021</div>
+        <div class="hy-axis"><div class="hy-node"></div></div>
+        <div class="hy-text">
+          <div class="hy-ttl">運用の支援を追加</div>
+          <div class="hy-body">公開後の更新と改善を月額で請け負う。</div>
+        </div>
+      </div>
+
+      <div class="hy-row">
+        <div class="hy-year">2023</div>
+        <div class="hy-axis"><div class="hy-node"></div></div>
+        <div class="hy-text">
+          <div class="hy-ttl">講座を開講</div>
+          <div class="hy-body">制作の手順を教える講座を始め、受講生が増える。</div>
+        </div>
+      </div>
+
+      <div class="hy-row">
+        <div class="hy-year">2025</div>
+        <div class="hy-axis"><div class="hy-node"></div></div>
+        <div class="hy-text">
+          <div class="hy-ttl">AI活用の支援を開始</div>
+          <div class="hy-body">制作と運用にAIを組み込み、手順書に直す。</div>
+        </div>
+      </div>
+
+      <div class="hy-row hy-row-now">
+        <div class="hy-year">2026</div>
+        <div class="hy-axis"><div class="hy-node"></div></div>
+        <div class="hy-text">
+          <div class="hy-ttl">3事業の体制へ（現在）</div>
+          <div class="hy-body">制作・運用・AI支援の3本で回す。</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

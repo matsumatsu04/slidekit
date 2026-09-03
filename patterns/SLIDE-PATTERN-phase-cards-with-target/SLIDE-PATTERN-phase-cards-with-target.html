@@ -3,27 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-phase-cards-with-target</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:20px 64px 28px; display:flex; flex-direction:column; min-height:0; }
-  .pc-msg { text-align:center; flex-shrink:0; }
-  .pc-msg-main { font-size:20px; font-weight:bold; color:#333333; line-height:1.4; }
-  .pc-msg-main .em { color:var(--sk-accent,#555555); }
-  .pc-msg-sub { font-size:12px; color:#777777; line-height:1.6; margin-top:6px; }
-  .pc-body { flex:1; display:flex; align-items:stretch; margin-top:16px; min-height:0; }
-  .pc-card { flex:1; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 90%); border-radius:12px; padding:18px 18px 14px; display:flex; flex-direction:column; min-width:0; }
-  .pc-phase { font-size:11px; font-weight:bold; letter-spacing:0.14em; color:var(--sk-accent,#777777); text-align:center; }
-  .pc-title { font-size:16px; font-weight:bold; color:#333333; text-align:center; margin:4px 0 10px; }
-  .pc-desc { font-size:12px; color:#333333; line-height:1.7; }
-  .pc-spacer { flex:1; }
-  .pc-target { background:#FFFFFF; border-radius:8px; padding:9px 12px; margin-top:12px; }
-  .pc-target-label { font-size:10px; font-weight:bold; color:#999999; margin-bottom:3px; }
-  .pc-target-body { font-size:11.5px; color:#333333; line-height:1.6; }
-  .pc-arrow { width:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .pc-arrow i { font-size:18px; color:var(--sk-accent,#888888); }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。カード列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── フェーズカード3枚（等幅・等高）＋カード間の三角矢印 ── */
+  .ph-row { display: flex; align-items: stretch; gap: 8px; height: 256px; }
+  /* カード（淡い地・上ぞろえ）。型: KICKER → 見出し18px → 細罫線 → 本文16px×2行 → 目標行（下端） */
+  .ph-card {
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
+    padding: 20px 20px; border-radius: 12px;
+    background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 中央の1枚だけアクセント塗り（塗りは1枚に1つ） */
+  .ph-card-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  .ph-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ph-card-fill .ph-kicker { color: #FFFFFF; }
+  .ph-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ph-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .ph-card-fill .ph-rule { background: rgba(255,255,255,.35); }
+  .ph-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  /* 目標行：カード下端に寄せ、細罫線の下に KICKER「TARGET」＋数値16px太字を横並び */
+  .ph-target { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--sk-line,#e2e2e2); display: flex; align-items: baseline; gap: 12px; }
+  .ph-card-fill .ph-target { border-top-color: rgba(255,255,255,.35); }
+  .ph-target-val { font-size: 16px; font-weight: 700; line-height: 1.4; }
+  /* 三角矢印（SVG・幅12px） */
+  .ph-arw { flex: none; align-self: center; display: block; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -43,47 +57,40 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：フェーズカード3枚（中央だけ塗り）を三角矢印でつなぎ、各カード下端に目標行 -->
   <div class="content-area">
-    <!-- 上部: センターメッセージ -->
-    <div class="pc-msg">
-      <div class="pc-msg-main">中央のメッセージ1行が入ります（<span class="em">強調部分</span>を含められます）</div>
-      <div class="pc-msg-sub">補足テキストの1行目が入ります<br>補足テキストの2行目が入ります</div>
-    </div>
-    <!-- 本体: 3フェーズカード -->
-    <div class="pc-body">
-      <div class="pc-card">
-        <div class="pc-phase">PHASE 1</div>
-        <div class="pc-title">フェーズ名が入ります</div>
-        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。ここでは何をどこまでやるかを書きます。</div>
-        <div class="pc-spacer"></div>
-        <div class="pc-target">
-          <div class="pc-target-label">対象◯◯</div>
-          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
-        </div>
+    <div class="ph-row">
+
+      <div class="ph-card">
+        <div class="ph-kicker">PHASE 1 ／ 1〜2ヶ月目</div>
+        <div class="ph-ttl">1業務を組む</div>
+        <div class="ph-rule"></div>
+        <div class="ph-body">手直しの量を測り、<br>通った手順だけ残す。</div>
+        <div class="ph-target"><span class="ph-kicker">TARGET</span><span class="ph-target-val">手直し1回以内</span></div>
       </div>
-      <div class="pc-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-      <div class="pc-card">
-        <div class="pc-phase">PHASE 2</div>
-        <div class="pc-title">フェーズ名が入ります</div>
-        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。前のフェーズとのつながりを書きます。</div>
-        <div class="pc-spacer"></div>
-        <div class="pc-target">
-          <div class="pc-target-label">対象◯◯</div>
-          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
-        </div>
+
+      <svg class="ph-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+
+      <div class="ph-card ph-card-fill">
+        <div class="ph-kicker">PHASE 2 ／ 3〜4ヶ月目</div>
+        <div class="ph-ttl">対象を広げる</div>
+        <div class="ph-rule"></div>
+        <div class="ph-body">同じ型で3業務に広げ、<br>担当者に手順を渡す。</div>
+        <div class="ph-target"><span class="ph-kicker">TARGET</span><span class="ph-target-val">3業務を自走</span></div>
       </div>
-      <div class="pc-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-      <div class="pc-card">
-        <div class="pc-phase">PHASE 3</div>
-        <div class="pc-title">フェーズ名が入ります</div>
-        <div class="pc-desc">フェーズの説明テキストが入ります。取り組む内容や進め方を3〜4行で記述します。最終的に到達する状態を書きます。</div>
-        <div class="pc-spacer"></div>
-        <div class="pc-target">
-          <div class="pc-target-label">対象◯◯</div>
-          <div class="pc-target-body">このフェーズの対象・範囲の説明が2〜3行で入ります。</div>
-        </div>
+
+      <svg class="ph-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+
+      <div class="ph-card">
+        <div class="ph-kicker">PHASE 3 ／ 5〜6ヶ月目</div>
+        <div class="ph-ttl">見直しを回す</div>
+        <div class="ph-rule"></div>
+        <div class="ph-body">月1回の見直しで<br>対象と基準を更新する。</div>
+        <div class="ph-target"><span class="ph-kicker">TARGET</span><span class="ph-target-val">月次30分で運用</span></div>
       </div>
+
     </div>
   </div>
 </div>

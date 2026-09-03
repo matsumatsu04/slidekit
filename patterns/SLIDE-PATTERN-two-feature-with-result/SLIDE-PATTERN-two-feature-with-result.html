@@ -4,27 +4,48 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-feature-with-result</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  /* タイトルエリア */
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  /* コンテンツエリア */
-  .content-area { flex: 1; display: flex; flex-direction: column; padding: 12px 48px; gap: 12px; }
-  /* 上部説明テキスト */
-  .upper-desc { font-size: 12px; color: #333333; line-height: 1.7; }
-  /* 中段カード群 */
-  .cards-row { display: flex; gap: 16px; }
-  /* 機能カード */
-  .feature-card { flex: 1; border: 1px solid var(--sk-accent,#CCCCCC); background: #FFFFFF; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-  .card-label { font-size: 11px; color: #999; letter-spacing: 0.05em; }
-  .card-heading { font-size: 14px; font-weight: bold; color: #333333; line-height: 1.4; }
-  .card-desc { font-size: 12px; color: #333333; line-height: 1.7; }
-  /* 矢印エリア */
-  .arrow-area { text-align: center; font-size: 20px; color: var(--sk-accent2,#CCCCCC); line-height: 1; }
-  /* 結果ボックス */
-  .result-box { border: 1px solid var(--sk-accent2, var(--sk-accent,#CCCCCC)); background: var(--sk-soft,#F0F0F0); padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
-  .result-label { font-size: 11px; color: #999; white-space: nowrap; }
-  .result-text { font-size: 14px; font-weight: bold; color: #333333; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。行は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左：特徴カード2枚（縦積み・等高）／中央：三角矢印／右：結果パネル（塗り） ── */
+  .fr-row { display: flex; align-items: stretch; height: 336px; }
+  .fr-features { flex: none; width: 464px; display: flex; flex-direction: column; gap: 16px; }
+  /* 特徴カード（淡い地・上ぞろえ）。型: KICKER → 見出し18px → 本文16px×2行 */
+  .fr-card {
+    flex: 1; min-height: 0; display: flex; flex-direction: column;
+    padding: 20px 24px; border-radius: 12px;
+    background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2);
+  }
+  .fr-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .fr-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .fr-body { margin-top: 8px; font-size: 16px; line-height: 1.8; }
+
+  /* 中央コネクタ：SVG三角矢印（幅12px）を幅48pxの列の中央に置く */
+  .fr-conn { flex: none; width: 48px; display: flex; align-items: center; justify-content: center; }
+  .fr-arw { display: block; }
+
+  /* 右：結果パネル（アクセント塗り・白文字。塗りは1枚に1つ）。型: KICKER → 数字28px＋単位 → 細罫線 → 説明 → 注記 */
+  .fr-result {
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
+    padding: 24px 28px; border-radius: 12px;
+    background: var(--sk-accent,#555555); color: #FFFFFF;
+  }
+  .fr-result .fr-kicker { color: #FFFFFF; }
+  .fr-num-row { margin-top: 16px; display: flex; align-items: baseline; gap: 4px; }
+  .fr-num { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; }
+  .fr-unit { font-size: 16px; font-weight: 400; line-height: 1; }
+  .fr-rule { margin-top: 16px; height: 1px; background: rgba(255,255,255,.35); }
+  .fr-desc { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .fr-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: #FFFFFF; opacity: .85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -44,39 +65,40 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- タイトルエリア -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝特徴カード2枚（淡い地）→ 三角矢印 → 右＝結果パネル（塗り） -->
   <div class="content-area">
-    <!-- 上部説明テキスト -->
-    <div class="upper-desc">
-      上部の説明テキストが1〜2行で入ります。2つの機能カードの背景や前提となる文章を簡潔に記述してください。
-    </div>
-    <!-- 中段：機能カード2枚横並び -->
-    <div class="cards-row">
-      <div class="feature-card">
-        <div class="card-label">機能 01</div>
-        <div class="card-heading">機能・施策1の見出しテキスト</div>
-        <div class="card-desc">
-          機能1の説明テキストが入ります。2行程度で詳細や特徴を記述します。<br>
-          要点を簡潔にまとめてください。
+    <div class="fr-row">
+
+      <!-- 左：特徴カード2枚（縦積み・等高） -->
+      <div class="fr-features">
+        <div class="fr-card">
+          <div class="fr-kicker">FEATURE 1 ／ 型で作る</div>
+          <div class="fr-ttl">ページの型を先に決める</div>
+          <div class="fr-body">見出し・本文・ボタンの型を1枚にまとめ、<br>全ページを同じ型で組む。</div>
+        </div>
+        <div class="fr-card">
+          <div class="fr-kicker">FEATURE 2 ／ 人が見る</div>
+          <div class="fr-ttl">公開前に全ページを目視する</div>
+          <div class="fr-body">チェック表で全ページを確認し、<br>直した箇所を記録に残す。</div>
         </div>
       </div>
-      <div class="feature-card">
-        <div class="card-label">機能 02</div>
-        <div class="card-heading">機能・施策2の見出しテキスト</div>
-        <div class="card-desc">
-          機能2の説明テキストが入ります。2行程度で詳細や特徴を記述します。<br>
-          要点を簡潔にまとめてください。
-        </div>
+
+      <!-- 中央：三角矢印（SVG・幅12px） -->
+      <div class="fr-conn">
+        <svg class="fr-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
       </div>
-    </div>
-    <!-- 矢印 -->
-    <div class="arrow-area">▼</div>
-    <!-- 結果ボックス -->
-    <div class="result-box">
-      <div class="result-label">実績・効果</div>
-      <div class="result-text">2つの機能・施策がもたらす成果や実績のテキストが入ります</div>
+
+      <!-- 右：結果パネル（アクセント塗り・白文字） -->
+      <div class="fr-result">
+        <div class="fr-kicker">RESULT ／ 導入後3ヶ月</div>
+        <div class="fr-num-row"><span class="fr-num">60</span><span class="fr-unit">%</span></div>
+        <div class="fr-rule"></div>
+        <div class="fr-desc">手直しにかかる時間の削減率</div>
+        <div class="fr-note">例：月8時間 → 月3時間</div>
+      </div>
+
     </div>
   </div>
 </div>
