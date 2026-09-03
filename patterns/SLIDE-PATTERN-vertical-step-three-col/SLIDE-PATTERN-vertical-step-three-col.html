@@ -4,21 +4,43 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-vertical-step-three-col</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; display: flex; flex-direction: column; padding: 14px 52px 14px; }
-  .lead { font-size: 13px; color: #333333; margin-bottom: 12px; }
-  .step-table { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-  .step-row { display: flex; align-items: center; gap: 0; position: relative; }
-  .badge-col { width: 110px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; position: relative; }
-  .step-badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #FFFFFF; background: #888; text-align: center; white-space: nowrap; }
-  .step-dot-line { width: 2px; height: 24px; border-left: 2px dotted #CCCCCC; margin: 0 auto; }
-  .name-col { width: 200px; padding: 0 16px; flex-shrink: 0; }
-  .step-name { font-size: 16px; font-weight: bold; color: #333333; }
-  .detail-col { flex: 1; padding: 0 0 0 16px; border-left: 1px solid var(--sk-accent,#EEEEEE); }
-  .detail-item { font-size: 12px; color: #333333; line-height: 1.6; }
-  .detail-item::before { content: "・"; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。カード列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 3列（等幅・等高）。列の中に縦のステップ行 ── */
+  .vt-row { display: flex; align-items: stretch; gap: 16px; height: 320px; }
+  /* 列カード。既定は淡い地 */
+  .vt-card {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    padding: 24px 20px 20px; border-radius: 12px;
+    background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 中央の列だけアクセント塗り（塗りは1枚に1つ） */
+  .vt-card-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* カードの型: KICKER → 見出し18px → 細罫線 → ステップ行 → 例： */
+  .vt-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .vt-card-fill .vt-kicker { color: #FFFFFF; }
+  .vt-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .vt-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .vt-card-fill .vt-rule { background: rgba(255,255,255,.35); }
+  /* ステップ行：番号（24px・400・アクセント色）＋テキスト16px を縦に積む */
+  .vt-steps { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .vt-step { display: flex; align-items: flex-start; gap: 12px; }
+  .vt-no { flex: none; width: 32px; font-size: 24px; font-weight: 400; line-height: 28px; letter-spacing: .04em; color: var(--sk-accent,#555555); }
+  .vt-card-fill .vt-no { color: #FFFFFF; }
+  .vt-txt { flex: 1; min-width: 0; font-size: 16px; line-height: 28px; }
+  .vt-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+  .vt-card-fill .vt-note { color: #FFFFFF; opacity: .85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -38,61 +60,48 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：3列の等高カードに、番号付きステップ行を縦に積む（中央の列だけ塗り） -->
   <div class="content-area">
-    <div class="lead">フロー全体の説明が入ります。このプロセスについて1〜2行で概説します。</div>
-    <div class="step-table">
-      <div class="step-row">
-        <div class="badge-col">
-          <div class="step-badge">STEP 1</div>
+    <div class="vt-row">
+
+      <div class="vt-card">
+        <div class="vt-kicker">PHASE 1 ／ 準備</div>
+        <div class="vt-ttl">着手前に決める</div>
+        <div class="vt-rule"></div>
+        <div class="vt-steps">
+          <div class="vt-step"><div class="vt-no">01</div><div class="vt-txt">対象の業務を1つ選ぶ</div></div>
+          <div class="vt-step"><div class="vt-no">02</div><div class="vt-txt">いまの手順を書き出す</div></div>
+          <div class="vt-step"><div class="vt-no">03</div><div class="vt-txt">判断の基準を3つ決める</div></div>
         </div>
-        <div class="name-col"><div class="step-name">ステップ名1</div></div>
-        <div class="detail-col">
-          <div class="detail-item">詳細説明テキストが入ります。具体的な内容を記述します。</div>
-        </div>
+        <div class="vt-note">例：所要1週間</div>
       </div>
-      <div class="step-row">
-        <div class="badge-col">
-          <div class="step-dot-line"></div>
-          <div class="step-badge" style="background:var(--sk-accent,#777);">STEP 2</div>
+
+      <div class="vt-card vt-card-fill">
+        <div class="vt-kicker">PHASE 2 ／ 今ここ</div>
+        <div class="vt-ttl">小さく組んで試す</div>
+        <div class="vt-rule"></div>
+        <div class="vt-steps">
+          <div class="vt-step"><div class="vt-no">01</div><div class="vt-txt">1業務だけ組む</div></div>
+          <div class="vt-step"><div class="vt-no">02</div><div class="vt-txt">手直しの量を測る</div></div>
+          <div class="vt-step"><div class="vt-no">03</div><div class="vt-txt">手順書に直す</div></div>
         </div>
-        <div class="name-col"><div class="step-name">ステップ名2</div></div>
-        <div class="detail-col">
-          <div class="detail-item">詳細説明テキストその1が入ります。</div>
-          <div class="detail-item">詳細説明テキストその2が入ります。複数項目も可能です。</div>
-        </div>
+        <div class="vt-note">例：2週間で1業務</div>
       </div>
-      <div class="step-row">
-        <div class="badge-col">
-          <div class="step-dot-line"></div>
-          <div class="step-badge" style="background:var(--sk-accent,#666);">STEP 3</div>
+
+      <div class="vt-card">
+        <div class="vt-kicker">PHASE 3 ／ 運用</div>
+        <div class="vt-ttl">手順を渡して回す</div>
+        <div class="vt-rule"></div>
+        <div class="vt-steps">
+          <div class="vt-step"><div class="vt-no">01</div><div class="vt-txt">使う人に手順を渡す</div></div>
+          <div class="vt-step"><div class="vt-no">02</div><div class="vt-txt">月1回で見直す</div></div>
+          <div class="vt-step"><div class="vt-no">03</div><div class="vt-txt">対象の業務を増やす</div></div>
         </div>
-        <div class="name-col"><div class="step-name">ステップ名3</div></div>
-        <div class="detail-col">
-          <div class="detail-item">詳細説明テキストその1が入ります。</div>
-          <div class="detail-item">詳細説明テキストその2が入ります。</div>
-        </div>
+        <div class="vt-note">例：月次レビュー30分</div>
       </div>
-      <div class="step-row">
-        <div class="badge-col">
-          <div class="step-dot-line"></div>
-          <div class="step-badge" style="background:var(--sk-accent,#555);">STEP 4</div>
-        </div>
-        <div class="name-col"><div class="step-name">ステップ名4</div></div>
-        <div class="detail-col">
-          <div class="detail-item">詳細説明テキストが入ります。</div>
-        </div>
-      </div>
-      <div class="step-row">
-        <div class="badge-col">
-          <div class="step-dot-line"></div>
-          <div class="step-badge" style="background:var(--sk-accent,#444);">STEP 5</div>
-        </div>
-        <div class="name-col"><div class="step-name">ステップ名5</div></div>
-        <div class="detail-col">
-          <div class="detail-item">最終ステップの詳細説明テキストが入ります。</div>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>

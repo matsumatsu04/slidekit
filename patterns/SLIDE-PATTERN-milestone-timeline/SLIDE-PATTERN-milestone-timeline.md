@@ -1,7 +1,7 @@
 ---
 name: milestone-timeline
 category: ステップ
-summary: 横軸に時間軸を引き、マイルストーンをマーカーで表示するタイムラインスライド。完了済みと予定のマーカーを視覚的に区別する。
+summary: 上に四半期の区切り（KICKER型・1pxの罫線）、その下に1pxの幹線と白丸のマイルストーンノード6つを横に並べ、各ノードの下に日付（KICKER風・muted）・見出し16px太字・説明16pxを置く横タイムライン。完了のノードだけアクセント塗り、凡例はKICKER型。
 scenes: プロジェクト計画・ロードマップの説明、進捗報告、スケジュール概要の共有
 tier: mid
 id: P027
@@ -12,120 +12,73 @@ id: P027
 
 ## Overview
 **パターン名：** milestone-timeline
-**概要：** 横軸に時間軸を引き、マイルストーンをマーカーで表示するタイムラインスライド。完了済みと予定のマーカーを視覚的に区別する。
+**概要：** 上に四半期の区切り（KICKER型・1pxの罫線）、その下に1pxの幹線と白丸のマイルストーンノード6つを横に並べ、各ノードの下に日付（KICKER風・muted）・見出し16px太字・説明16pxを置く横タイムライン。完了のノードだけアクセント塗り、凡例はKICKER型。
 **適したシーン：** プロジェクト計画・ロードマップの説明、進捗報告、スケジュール概要の共有
 
 ## Structure（構造）
 
-```yaml
-layout: milestone-timeline
-title_area: true
-content_area:
-  direction: column
-  padding: "24px 48px"
-  justify: center
-  elements:
-    - type: phase_label_row
+コンテンツエリアの上下中央に「四半期の区切り → マイルストーン列 → 凡例」を縦に積む。四半期の区切りは等幅のセル4つ（KICKER型・muted・中央ぞろえ）を1pxの縦罫線で区切り、下に1pxの罫線を引く。マイルストーン列は等幅の列6つで、各列は上から「白丸ノード（14px・1.5px 罫線色の枠）→ 日付 → 見出し → 説明」を中央ぞろえで積む。幹線（1px・罫線色）はノードの中心の高さに引き、端点は最初と最後のノードの中心で止める（列ごとに左半分・右半分に分けて引く実装）。完了の列だけノードをアクセント塗りにし、右下の凡例（KICKER型）で「完了＝塗り／予定＝白丸」を示す。
+
+    structure:
+      layout: milestone-timeline
+      content_area:
+        padding: "24px 48px"
+        vertical_align: center      # 見出しON時は上76px以降の上下中央
       phases:
-        - label: "Q1（1〜3月）"
-        - label: "Q2（4〜6月）"
-        - label: "Q3（7〜9月）"
-        - label: "Q4（10〜12月）"
-      item_style:
-        flex: 1
-        border_right: "1px solid #E0E0E0"
-        padding: "4px 8px"
-        font_size: 11px
-        color: "#999999"
-    - type: timeline_container
-      position: relative
-      elements:
-        - type: timeline_line
-          height: 2px
-          background: "#CCCCCC"
-        - type: milestone_markers
-          items:
-            - date: "1/10"
-              label: "キックオフ"
-              description: "プロジェクト開始"
-              status: completed
-            - date: "3/31"
-              label: "要件確定"
-              description: "要件定義完了"
-              status: completed
-            - date: "6/30"
-              label: "設計完了"
-              description: "基本設計レビュー"
-              status: completed
-            - date: "9/15"
-              label: "開発完了"
-              description: "内部テスト開始"
-              status: planned
-            - date: "11/1"
-              label: "UAT完了"
-              description: "ユーザー受入テスト"
-              status: planned
-            - date: "12/15"
-              label: "本番リリース"
-              description: "サービス開始"
-              status: planned
-          marker_style:
-            width: 14px
-            height: 14px
-            border: "2px solid #888"
-            border_radius: 50%
-          completed_bg: "#CCCCCC"
-          planned_bg: "#FFFFFF"
-    - type: legend
-      items:
-        - symbol: "●"
-          color: "#888888"
-          label: "完了"
-        - symbol: "○"
-          color: "#888888"
-          label: "予定"
-      font_size: 11px
-      color: "#888888"
-```
+        count: 4
+        cell: "Q1 ／ 1–3月"          # KICKER型: 10px / 700 / .18em / muted・中央ぞろえ
+        divider: 1px vertical line  # セルの間（var(--sk-line)）
+        rule: 1px bottom line       # 行の下（var(--sk-line)）
+      milestones:
+        count: 6                    # 標準。5〜7で同じCSSが使える
+        gap_above: 32px             # 四半期の罫線からノードまで
+        column:
+          elements:
+            - node: circle          # 14px の白丸・1.5px 罫線色の枠（幹線の上に載る）
+            - date: "1/10"          # KICKER風: 10px / 700 / .18em / muted
+            - heading               # 16px / 700（6文字以内）
+            - body: 1 line          # 16px / 400（7文字以内）
+        surfaces:
+          planned: outline-line     # 白丸のまま
+          done: accent_fill         # 完了のノードだけ塗り
+      trunk:
+        type: horizontal-line
+        width: 1px
+        color: line                 # var(--sk-line)。矢印なし
+        from: first node center
+        to: last node center
+      legend:
+        align: right
+        style: kicker               # 10px / 700 / .18em / muted
+        items: ["● 完了", "○ 予定"]  # 10px の丸（塗り／白丸）＋ラベル
 
 ## Elements（各要素の役割）
 
-| 要素 | 役割 | 推奨テキスト量 |
-|------|------|--------------|
-| フェーズラベル行 | 期間の区分（Q1〜Q4等）を示す | 4〜5区間、各10文字以内 |
-| タイムライン横線 | 時間の流れを示す基準線 | 装飾（固定高さ2px） |
-| マイルストーンマーカー | 各マイルストーンの位置を示す丸印 | 完了=塗りつぶし、予定=空洞 |
-| 日付テキスト（上） | マーカーの日付 | 「M/D」形式、5文字以内 |
-| マイルストーン名（下） | マイルストーンの名称 | 5〜10文字 |
-| 説明テキスト（下） | マイルストーンの内容補足 | 8〜15文字 |
-| 凡例 | 完了・予定の区別を説明 | 「● 完了 ○ 予定」 |
+| 要素 | 配置 | 役割 |
+|---|---|---|
+| 四半期の区切り | 最上段・等幅4セル | 期間の区分（`Q1 ／ 1–3月` 等）。KICKER型・muted。セル間は1pxの縦罫線 |
+| 幹線 | ノードの中心を通る水平線 | 時間の流れを示す1pxの線。端点は最初と最後のノードの中心で止める |
+| ノード | 各列の上端・中央 | マイルストーンの位置。予定は白丸、完了はアクセント塗り |
+| 日付 | ノードの下 | 「M/D」形式（5文字以内）。KICKER風・muted |
+| 見出し | 日付の下 | マイルストーン名（6文字以内） |
+| 説明 | 見出しの下 | 内容の補足を1行（7文字以内） |
+| 凡例 | 右下 | 「● 完了　○ 予定」をKICKER型で示す |
 
 ## Usage Guide（AIへの使い方）
 
-### プロンプト例
+このパターンをAIに指示する際のプロンプト例：
 
-```
-SLIDE.md と SLIDE-PATTERN-milestone-timeline.md を参照して、
-以下のマイルストーンを含むタイムラインスライドを作成してください。
+> 「SLIDE-PATTERN-milestone-timelineのレイアウトで、年間の開発スケジュール（Q1〜Q4）を6つのマイルストーンで示してください。1/10・3/31・6/30 は完了として塗り、残りは予定の白丸にしてください。各列は日付・見出し（6文字以内）・説明1行（7文字以内）の順で書いてください。デザインはSLIDE.mdに従ってください。」
 
-【フェーズ区分】
-Phase1（4〜6月） / Phase2（7〜9月） / Phase3（10〜12月） / Phase4（翌1〜3月）
+**注意点：**
+- 塗るのは「完了」のノードだけ。塗りカードや帯は使わない（このパターンの塗りは14pxのノードに限る）
+- マイルストーンは5〜7個。8個以上は文字が入らないので枚数を分ける
+- 四半期の区切りは等幅なので、ノードの位置は時間の比率と厳密には一致しない。一致させたいときは列の幅を変えず、置く順番だけ守る
+- 見出しは6文字・説明は7文字以内。入らなければ文言を短くする（文字を小さくしない）
+- 年をまたぐ場合は区切りのラベルを `'26 Q1` のように短く書く
+- 旧版の「罫線で囲ったフェーズ行・2pxの幹線・灰色塗りのマーカー・囲み枠の凡例」は廃止
 
-【マイルストーン】
-- 4/1  : プロジェクト発足（完了）
-- 5/31 : 要件定義完了（完了）
-- 7/15 : プロトタイプ完成（予定）
-- 9/30 : 開発フリーズ（予定）
-- 11/15: テスト完了（予定）
-- 3/1  : 正式リリース（予定）
-
-【スライドタイトル】
-開発スケジュール概要
-```
-
-### 注意点
-- マイルストーンは5〜7個が視認性の観点で適切
-- 「完了」マーカーは塗りつぶし、「予定」マーカーは白抜きで区別する
-- フェーズラベルは等幅に分割されるため、時間軸の比率に注意
-- 現在日付を赤線などで示すとより進捗が伝わりやすい（SLIDE.mdのアクセントカラーを活用）
-- 年をまたぐ場合は年号を「'25 Q1」のように省略表記するとよい
+## v2 での描き直し（2026-09-02）
+- フェーズ行とタイムラインを囲っていた枠線を外し、四半期の区切りを KICKER型のセル4つ＋1pxの縦罫線・下罫線に変えた
+- 幹線を2pxの灰色から1pxの罫線色に変え、端点を最初と最後のノードの中心で止めた（列ごとに左右半分ずつ引く実装）。ノードは白丸1.5px枠にし、完了だけアクセント塗りにした
+- ノードの下を「日付（KICKER風・muted）／見出し16px太字／説明16px」の型に揃え、凡例を右下の KICKER型にした
