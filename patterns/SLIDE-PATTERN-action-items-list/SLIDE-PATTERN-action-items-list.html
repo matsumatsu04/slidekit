@@ -15,92 +15,37 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
       font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
+      font-weight: 400;
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
     }
-    /* コンテンツエリア */
-    .content-area {
-      display: flex;
-      flex-direction: column;
-      padding: 16px 48px;
-      gap: 0;
-      flex: 1;
-    }
-    .action-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-    /* グリッドレイアウト共通 */
-    .grid-row {
-      display: grid;
-      grid-template-columns: 32px 1fr 120px 90px;
-      gap: 16px;
-      align-items: center;
-    }
-    /* ヘッダー行 */
-    .header-row {
-      padding: 8px 0;
-      border-bottom: 2px solid var(--sk-accent,#CCCCCC);
-      font-size: 11px;
-      color: #999;
-      letter-spacing: 0.04em;
-    }
-    /* アクション行 */
-    .action-row {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--sk-accent,#F0F0F0);
-    }
-    /* 番号バッジ */
-    .number-badge {
-      width: 28px;
-      height: 28px;
-      background: var(--sk-soft,#F0F0F0);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      justify-self: center;
-    }
-    /* アクション内容 */
-    .action-text {
-      font-size: 14px;
-      color: #333333;
-      line-height: 1.4;
-    }
-    /* 担当者 */
-    .assignee {
-      font-size: 12px;
-      color: #333333;
-      background: #FFFFFF;
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    /* 期限 */
-    .deadline {
-      font-size: 13px;
-      color: #333333;
-    }
-  
+    /* コンテンツエリア（見出しON時は上76px以降。本文ブロックは上下中央） */
+    .content-area { flex:1; padding:24px 48px; display:flex; flex-direction:column; justify-content:center; }
+    /* 上段: KICKER（左）＋ 凡例の注記（右）。下に細罫線 */
+    .ai-top { display:flex; align-items:baseline; justify-content:space-between; padding:0 16px 12px; border-bottom:1px solid var(--sk-line,#e2e2e2); }
+    .ai-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); white-space:nowrap; }
+    .ai-legend { font-size:11.5px; line-height:1; color:var(--sk-muted,#888888); white-space:nowrap; }
+    /* 行: チェック記号 ／ やること（16px・700）／ OWNER ／ DUE。行は細罫線で区切る */
+    .ai-list { display:flex; flex-direction:column; }
+    .ai-row { display:grid; grid-template-columns:16px 1fr 168px 104px; gap:16px; align-items:center; padding:16px 16px; border-top:1px solid var(--sk-line,#e2e2e2); }
+    .ai-row:first-child { border-top:none; }
+    /* 「今週」の1行だけ淡い地（塗りは使わない）。上下の罫線は箱の縁に任せる */
+    .ai-now { background:var(--sk-soft,#F0F0F0); border-radius:8px; border-top-color:transparent; }
+    .ai-now + .ai-row { border-top-color:transparent; }
+    /* チェック記号: アクセント色 1.5px 枠の小さな四角 */
+    .ai-check { width:14px; height:14px; border:1.5px solid var(--sk-accent,#555555); border-radius:2px; }
+    .ai-task { font-size:16px; font-weight:700; line-height:1.5; min-width:0; }
+    /* 担当・期限は KICKER 風の小さなラベル（muted） */
+    .ai-tag { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    /* 注記（例：〜） */
+    .ai-note { margin-top:12px; padding:0 16px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -123,56 +68,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
     <!-- コンテンツエリア -->
     <div class="content-area">
-      <div class="action-label">Action Items</div>
-
-      <!-- ヘッダー行 -->
-      <div class="grid-row header-row">
-        <div>No</div>
-        <div>アクション</div>
-        <div>担当</div>
-        <div>期限</div>
+      <div class="ai-top">
+        <div class="ai-kicker">ACTION ITEMS ／ 次回までに</div>
+        <div class="ai-legend">淡い地の行＝今週やること</div>
       </div>
 
-      <!-- アクション行 1 -->
-      <div class="grid-row action-row">
-        <div class="number-badge">1</div>
-        <div class="action-text">要件定義書の最終レビューと承認</div>
-        <div><span class="assignee">田中（PM）</span></div>
-        <div class="deadline">6/10</div>
+      <div class="ai-list">
+        <!-- 今週の行（淡い地） -->
+        <div class="ai-row ai-now">
+          <div class="ai-check"></div>
+          <div class="ai-task">要件の最終確認と承認をもらう</div>
+          <div class="ai-tag">OWNER ／ 営業担当</div>
+          <div class="ai-tag">DUE ／ 6/10</div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-check"></div>
+          <div class="ai-task">画面の下書きを3枚つくる</div>
+          <div class="ai-tag">OWNER ／ 制作担当</div>
+          <div class="ai-tag">DUE ／ 6/12</div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-check"></div>
+          <div class="ai-task">接続仕様書の下書きを書く</div>
+          <div class="ai-tag">OWNER ／ 開発担当</div>
+          <div class="ai-tag">DUE ／ 6/12</div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-check"></div>
+          <div class="ai-task">関係者へ進捗を共有する</div>
+          <div class="ai-tag">OWNER ／ 営業担当</div>
+          <div class="ai-tag">DUE ／ 6/14</div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-check"></div>
+          <div class="ai-task">検証環境の準備を確認する</div>
+          <div class="ai-tag">OWNER ／ 開発チーム</div>
+          <div class="ai-tag">DUE ／ 6/15</div>
+        </div>
       </div>
 
-      <!-- アクション行 2 -->
-      <div class="grid-row action-row">
-        <div class="number-badge">2</div>
-        <div class="action-text">デザインモックアップの作成（3画面分）</div>
-        <div><span class="assignee">山田（デザイン）</span></div>
-        <div class="deadline">6/12</div>
-      </div>
-
-      <!-- アクション行 3 -->
-      <div class="grid-row action-row">
-        <div class="number-badge">3</div>
-        <div class="action-text">APIエンドポイント仕様書の作成</div>
-        <div><span class="assignee">鈴木（開発）</span></div>
-        <div class="deadline">6/12</div>
-      </div>
-
-      <!-- アクション行 4 -->
-      <div class="grid-row action-row">
-        <div class="number-badge">4</div>
-        <div class="action-text">ステークホルダーへの進捗報告メール送付</div>
-        <div><span class="assignee">田中（PM）</span></div>
-        <div class="deadline">6/14</div>
-      </div>
-
-      <!-- アクション行 5 -->
-      <div class="grid-row action-row">
-        <div class="number-badge">5</div>
-        <div class="action-text">テスト環境のセットアップ確認</div>
-        <div><span class="assignee">開発チーム全員</span></div>
-        <div class="deadline">6/15</div>
-      </div>
-
+      <div class="ai-note">例：終わった行は □ を ✓ に変え、翌週は淡い地を次の行へ移す</div>
     </div>
   </div>
 </body>

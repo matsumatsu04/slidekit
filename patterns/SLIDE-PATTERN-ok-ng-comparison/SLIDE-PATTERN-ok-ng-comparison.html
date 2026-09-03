@@ -2,28 +2,50 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLIDE-PATTERN-ok-ng-comparison</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:54px 64px 32px; display:flex; gap:32px; align-items:stretch; }
-  .cmp-card { flex:1; border:2px solid #CCCCCC; display:flex; flex-direction:column; background:#FFFFFF; }
-  .cmp-card.ok { border-color:var(--sk-accent,#666666); }
-  .cmp-head { background:#FFFFFF; display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--sk-soft,#EEEEEE); }
-  .cmp-mark { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; flex-shrink:0; }
-  .ng .cmp-mark { background:#DDDDDD; color:#777777; }
-  .ok .cmp-mark { background:var(--sk-accent,#666666); color:#FFFFFF; }
-  .cmp-title { font-size:15px; font-weight:bold; }
-  .ng .cmp-title { color:#777777; }
-  .ok .cmp-title { color:#333333; }
-  .cmp-body { background:#FFFFFF; flex:1; padding:10px 20px 18px; display:flex; flex-direction:column; justify-content:space-around; }
-  .cmp-row { display:flex; gap:10px; font-size:12.5px; line-height:1.7; align-items:flex-start; }
-  .ng .cmp-row { color:#888888; }
-  .ok .cmp-row { color:#333333; }
-  .mk { font-weight:bold; flex-shrink:0; }
-  .ng .mk { color:#AAAAAA; }
-  .ok .mk { color:var(--sk-accent,#666666); }
+  .slide {
+    width: 960px;
+    height: 540px;
+    background: #FFFFFF;
+    border: 1px solid var(--sk-accent,#CCCCCC);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52);
+    font-size: 16px;
+    font-weight: 400;
+    font-feature-settings: "palt" 1;
+    line-break: strict;
+    letter-spacing: .06em;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降）。左右のパネルは等高で本文エリアを埋め、中身は上ぞろえ */
+  .content-area { flex:1; padding:24px 48px; display:flex; flex-direction:column; }
+  .cmp-row { flex:1; display:flex; gap:16px; align-items:stretch; }
+  /* パネル: 左＝淡い地（NG）、右＝アクセント塗り（OK・白文字）。塗りは1枚に1つ */
+  .cmp-panel { flex:1; min-width:0; border-radius:12px; padding:24px; display:flex; flex-direction:column; }
+  .cmp-ng { background:var(--sk-soft,#F0F0F0); border:1px solid var(--sk-line,#e2e2e2); }
+  .cmp-ok { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* カードの型: KICKER → 見出し18px → 細罫線 → 項目 → 注記 */
+  .cmp-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); white-space:nowrap; }
+  .cmp-ok .cmp-kicker { color:#FFFFFF; }
+  .cmp-head { margin-top:8px; font-size:18px; font-weight:700; line-height:1.5; }
+  .cmp-rule { height:1px; background:var(--sk-line,#e2e2e2); margin:12px 0; }
+  .cmp-ok .cmp-rule { background:rgba(255,255,255,.35); }
+  .cmp-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .cmp-item { display:flex; gap:12px; align-items:flex-start; font-size:16px; line-height:1.8; }
+  .cmp-mk { flex:none; width:16px; text-align:center; font-weight:700; }
+  .cmp-ng .cmp-item { color:var(--sk-muted,#888888); }
+  .cmp-ok .cmp-item { color:#FFFFFF; }
+  /* 注記（例：〜）はパネル最下に寄せる */
+  .cmp-note { margin-top:auto; padding-top:16px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+  .cmp-ok .cmp-note { color:#FFFFFF; opacity:.85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -44,22 +66,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <body>
 <div class="slide">
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+
+  <!-- コンテンツエリア -->
   <div class="content-area">
-    <div class="cmp-card ng">
-      <div class="cmp-head"><div class="cmp-mark">×</div><div class="cmp-title">よくあるやり方（NG）</div></div>
-      <div class="cmp-body">
-        <div class="cmp-row"><span class="mk">×</span><span>NG例のテキストが入ります。何が問題かを1〜2行で記述します。</span></div>
-        <div class="cmp-row"><span class="mk">×</span><span>NG例のテキストが入ります。何が問題かを1〜2行で記述します。</span></div>
-        <div class="cmp-row"><span class="mk">×</span><span>NG例のテキストが入ります。何が問題かを1〜2行で記述します。</span></div>
+    <div class="cmp-row">
+
+      <!-- NG パネル（淡い地・muted寄り） -->
+      <div class="cmp-panel cmp-ng">
+        <div class="cmp-kicker">NG ／ よくあるやり方</div>
+        <div class="cmp-head">できてから、まとめて見せる</div>
+        <div class="cmp-rule"></div>
+        <ul class="cmp-list">
+          <li class="cmp-item"><span class="cmp-mk">×</span><span>確認が納品の直前に集中する</span></li>
+          <li class="cmp-item"><span class="cmp-mk">×</span><span>修正のたびに組み直しになる</span></li>
+          <li class="cmp-item"><span class="cmp-mk">×</span><span>判断の根拠が担当者の頭にだけ残る</span></li>
+        </ul>
+        <div class="cmp-note">例：最終日に指摘が10件まとめて届く</div>
       </div>
-    </div>
-    <div class="cmp-card ok">
-      <div class="cmp-head"><div class="cmp-mark">✓</div><div class="cmp-title">推奨するやり方（OK）</div></div>
-      <div class="cmp-body">
-        <div class="cmp-row"><span class="mk">✓</span><span>OK例のテキストが入ります。どう良くなるかを1〜2行で記述します。</span></div>
-        <div class="cmp-row"><span class="mk">✓</span><span>OK例のテキストが入ります。どう良くなるかを1〜2行で記述します。</span></div>
-        <div class="cmp-row"><span class="mk">✓</span><span>OK例のテキストが入ります。どう良くなるかを1〜2行で記述します。</span></div>
+
+      <!-- OK パネル（アクセント塗り・白文字） -->
+      <div class="cmp-panel cmp-ok">
+        <div class="cmp-kicker">OK ／ 推奨</div>
+        <div class="cmp-head">工程ごとに、小さく見せる</div>
+        <div class="cmp-rule"></div>
+        <ul class="cmp-list">
+          <li class="cmp-item"><span class="cmp-mk">✓</span><span>確認が工程の中に入る</span></li>
+          <li class="cmp-item"><span class="cmp-mk">✓</span><span>修正は差分の再生成で済む</span></li>
+          <li class="cmp-item"><span class="cmp-mk">✓</span><span>判断の根拠が記録として残る</span></li>
+        </ul>
+        <div class="cmp-note">例：工程ごとに10分の確認で通る</div>
       </div>
+
     </div>
   </div>
 </div>

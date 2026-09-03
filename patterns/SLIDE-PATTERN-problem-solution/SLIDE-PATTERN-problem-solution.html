@@ -15,90 +15,40 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
       font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
+      font-weight: 400;
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
     }
-    /* コンテンツエリア */
-    .content-area {
-      display: flex;
-      padding: 20px 32px;
-      gap: 0;
-      align-items: stretch;
-      flex: 1;
-    }
-    /* 左右カラム共通 */
-    .col-left,
-    .col-right {
-      flex: 0 0 45%;
-      display: flex;
-      flex-direction: column;
-    }
-    .col-header {
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      letter-spacing: 0.04em;
-    }
-    .col-left .col-header {
-      background: var(--sk-soft,#F0F0F0);
-    }
-    .col-right .col-header {
-      background: var(--sk-soft,#E8E8E8);
-    }
-    .col-body {
-      flex: 1;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#E0E0E0);
-      border-top: none;
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .numbered-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 13px;
-      line-height: 1.55;
-      color: #333333;
-    }
-    .number-badge {
-      width: 22px;
-      height: 22px;
-      background: var(--sk-soft,#EEEEEE);
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: bold;
-      color: #333333;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    /* 中央矢印 */
-    .center-arrow {
-      flex: 0 0 10%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #CCCCCC;
-    }
-  
+    /* コンテンツエリア（見出しON時は上76px以降）。左右のパネルは等高で本文エリアを埋め、中身は上ぞろえ */
+    .content-area { flex:1; padding:24px 48px; display:flex; flex-direction:column; }
+    .ps-row { flex:1; display:flex; gap:12px; align-items:stretch; }
+    /* パネル: 左＝淡い地（課題）、右＝アクセント塗り（解決策・白文字）。塗りは1枚に1つ */
+    .ps-panel { flex:1; min-width:0; border-radius:12px; padding:24px; display:flex; flex-direction:column; }
+    .ps-problem  { background:var(--sk-soft,#F0F0F0); border:1px solid var(--sk-line,#e2e2e2); }
+    .ps-solution { background:var(--sk-accent,#555555); color:#FFFFFF; }
+    /* カードの型: KICKER → 見出し18px → 罫線で区切った「番号＋本文」の行 → 注記 */
+    .ps-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); white-space:nowrap; }
+    .ps-solution .ps-kicker { color:#FFFFFF; }
+    .ps-head { margin-top:8px; font-size:18px; font-weight:700; line-height:1.5; margin-bottom:12px; }
+    .ps-list { display:flex; flex-direction:column; }
+    .ps-item { display:grid; grid-template-columns:32px 1fr; gap:12px; align-items:start; padding:12px 0; border-top:1px solid var(--sk-line,#e2e2e2); }
+    .ps-solution .ps-item { border-top-color:rgba(255,255,255,.35); }
+    .ps-num  { font-size:16px; font-weight:700; line-height:1.8; color:var(--sk-accent,#555555); }
+    .ps-solution .ps-num { color:#FFFFFF; }
+    .ps-text { font-size:16px; line-height:1.8; }
+    /* 注記（例：〜）はパネル最下に寄せる */
+    .ps-note { margin-top:auto; padding-top:16px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+    .ps-solution .ps-note { color:#FFFFFF; opacity:.85; }
+    /* 中央の矢印（SVG の三角・幅12px のみ） */
+    .ps-arrow { flex:none; width:24px; display:flex; align-items:center; justify-content:center; }
+    .ps-arrow svg { display:block; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -121,48 +71,38 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
     <!-- コンテンツエリア -->
     <div class="content-area">
+      <div class="ps-row">
 
-      <!-- 課題カラム -->
-      <div class="col-left">
-        <div class="col-header">課題</div>
-        <div class="col-body">
-          <div class="numbered-item">
-            <div class="number-badge">1</div>
-            <span>顧客データが複数システムに分散しており、統合的な分析ができない</span>
+        <!-- 課題パネル（淡い地） -->
+        <div class="ps-panel ps-problem">
+          <div class="ps-kicker">PROBLEM ／ いま起きていること</div>
+          <div class="ps-head">課題</div>
+          <div class="ps-list">
+            <div class="ps-item"><span class="ps-num">01</span><span class="ps-text">顧客の情報が複数の台帳に分かれ、横断して見られない</span></div>
+            <div class="ps-item"><span class="ps-num">02</span><span class="ps-text">営業と制作で優先順位がずれ、手戻りが出る</span></div>
+            <div class="ps-item"><span class="ps-num">03</span><span class="ps-text">月次の報告づくりに数日かかり、判断が遅れる</span></div>
           </div>
-          <div class="numbered-item">
-            <div class="number-badge">2</div>
-            <span>営業チームと開発チームの情報連携が不足しており、優先順位にズレが生じている</span>
-          </div>
-          <div class="numbered-item">
-            <div class="number-badge">3</div>
-            <span>月次レポートの作成に毎回3日以上かかっており、意思決定が遅れている</span>
-          </div>
+          <div class="ps-note">例：同じ問い合わせが営業と制作で別々に記録されている</div>
         </div>
-      </div>
 
-      <!-- 中央矢印 -->
-      <div class="center-arrow">▶</div>
-
-      <!-- 解決策カラム -->
-      <div class="col-right">
-        <div class="col-header">解決策</div>
-        <div class="col-body">
-          <div class="numbered-item">
-            <div class="number-badge">1</div>
-            <span>データ統合プラットフォームの導入により、全データを一元管理する</span>
-          </div>
-          <div class="numbered-item">
-            <div class="number-badge">2</div>
-            <span>週次合同ミーティングと共有ダッシュボードで情報連携を強化する</span>
-          </div>
-          <div class="numbered-item">
-            <div class="number-badge">3</div>
-            <span>自動レポート生成ツールにより、作成時間を1時間以内に短縮する</span>
-          </div>
+        <!-- 中央矢印（SVG 三角） -->
+        <div class="ps-arrow">
+          <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
         </div>
-      </div>
 
+        <!-- 解決策パネル（アクセント塗り・白文字） -->
+        <div class="ps-panel ps-solution">
+          <div class="ps-kicker">SOLUTION ／ こう変える</div>
+          <div class="ps-head">解決策</div>
+          <div class="ps-list">
+            <div class="ps-item"><span class="ps-num">01</span><span class="ps-text">台帳を1つに統合し、全員が同じ画面を見る</span></div>
+            <div class="ps-item"><span class="ps-num">02</span><span class="ps-text">週1回の合同確認と共有ボードで順位を合わせる</span></div>
+            <div class="ps-item"><span class="ps-num">03</span><span class="ps-text">報告を自動生成に切り替え、当日中に判断する</span></div>
+          </div>
+          <div class="ps-note">例：記録は1か所に寄せ、更新は担当者がその日のうちに行う</div>
+        </div>
+
+      </div>
     </div>
   </div>
 </body>

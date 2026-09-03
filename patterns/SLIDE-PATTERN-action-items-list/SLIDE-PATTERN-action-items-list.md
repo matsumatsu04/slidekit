@@ -1,7 +1,7 @@
 ---
 name: action-items-list
 category: まとめ
-summary: アクションアイテム（次のステップ・タスク一覧）を番号付きリストで示すスライド。担当者・期限カラムを持ち、会議の締めや計画発表に使いやすい。
+summary: アクション一覧を1列で並べる。各行＝チェック記号（アクセント色1.5px枠の小さな四角）＋やること16px太字＋担当・期限のKICKER風ラベル（OWNER ／ 名前・DUE ／ 日付）。行は細罫線で区切り、「今週」の1行だけ淡い地で示す（塗りなし）。
 scenes: 会議のまとめ・プロジェクトキックオフ・次のステップの共有・タスク割り当て
 tier: high
 id: P066
@@ -12,7 +12,7 @@ id: P066
 
 ## Overview
 **パターン名：** action-items-list
-**概要：** アクションアイテム（次のステップ・タスク一覧）を番号付きリストで示すスライド。担当者・期限カラムを持ち、会議の締めや計画発表に使いやすい。
+**概要：** アクションアイテム（次のステップ・タスク一覧）を1列の行で示すスライド。各行はチェック記号・やること（太字）・担当・期限で構成し、細罫線で区切る。直近（今週）の1行だけ淡い地にして目を止める。アクセント色の塗りは使わない。
 **適したシーン：** 会議のまとめ・プロジェクトキックオフ・次のステップの共有・タスク割り当て
 
 ## Structure（構造）
@@ -20,75 +20,45 @@ id: P066
 ```yaml
 layout: action-items-list
 content_area:
+  padding: "24px 48px"          # 見出しON時は上76px以降。本文ブロックは上下中央
   display: flex
   flex-direction: column
-  padding: "16px 48px"
-  gap: 0
 
-action_label:
-  text: "ACTION ITEMS"
-  style: "area-label（font-size: 11px、color: #999、letter-spacing: 0.08em）"
-  margin_bottom: 8px
+top_line:                        # 一覧の見出し行。下に細罫線
+  left:  kicker "ACTION ITEMS ／ 次回までに"   # 10px / 700 / .18em / 大文字 / アクセント色
+  right: legend "淡い地の行＝今週やること"      # 11.5px / muted
 
-header_row:
-  display: grid
-  grid_template_columns: "32px 1fr 100px 100px"
-  gap: 16px
-  padding: "8px 0"
-  border_bottom: "2px solid #CCCCCC"
-  font_size: 11px
-  color: "#999"
-  columns:
-    - "No"
-    - "アクション"
-    - "担当"
-    - "期限"
-
-action_rows:
+rows:
   count: 4〜5
-  each:
-    display: grid
-    grid_template_columns: "32px 1fr 100px 100px"
-    gap: 16px
-    padding: "10px 0"
-    border_bottom: "1px solid #F0F0F0"
-    cells:
-      number:
-        width: 32px
-        height: 32px
-        background: "#F0F0F0"
-        border_radius: 50%
-        font_size: 12px
-        font_weight: bold
-        color: "#555"
-        display: flex
-        align_items: center
-        justify_content: center
-      action_text:
-        font_size: 14px
-        color: "#333"
-      assignee:
-        font_size: 13px
-        color: "#555"
-        background: "#F5F5F5"
-        padding: "2px 8px"
-        border_radius: 4px
-        display: inline-block
-      deadline:
-        font_size: 13px
-        color: "#666"
+  columns: "16px 1fr 168px 104px"   # チェック / やること / OWNER / DUE
+  gap: 16px
+  padding: "16px 16px"
+  rule: 1px                          # 行の上に var(--sk-line)
+  cells:
+    check: 14px の四角・1.5px アクセント色枠・角丸2px（塗らない）
+    task:  やること                   # 16px / 700 / 行間1.5
+    owner: "OWNER ／ 名前"            # 10px / 700 / .18em / muted（KICKER風）
+    due:   "DUE ／ 日付"              # 同上
+
+now_row:                          # 「今週」の1行
+  surface: soft                   # var(--sk-soft) の地・角丸8px。上下の罫線は箱の縁に任せる
+  count: 1
+
+note: "例：〜"                     # 11.5px / muted。一覧の下
 ```
 
 ## Elements（各要素の役割）
 
 | 要素 | 役割 | 推奨文字数・値 |
 |------|------|--------------|
-| ACTION ITEMSラベル | アクションアイテム一覧であることを明示 | 固定（"ACTION ITEMS"） |
-| ヘッダー行 | 各カラムの列ラベル | 固定（No / アクション / 担当 / 期限） |
-| 番号バッジ | タスクの順番・優先順位を示す番号 | 1桁〜2桁の数字 |
-| アクション内容 | 実施すべき具体的なタスク・アクション | 25〜50文字 |
-| 担当者 | そのタスクの責任者・担当チーム名 | 4〜10文字 |
-| 期限 | タスクの完了期日 | 「MM/DD」または「〇月〇日」形式 |
+| KICKER | 一覧の見出し。`ACTION ITEMS ／ 次回までに` のように英字＋補足 | 10〜16文字 |
+| 凡例 | 淡い地の行の意味（今週・最優先など）を1語で示す | 8〜12文字 |
+| チェック記号 | 未完了を示す空の四角（アクセント色1.5px枠）。完了は ✓ に差し替える | 固定 |
+| やること | 実施するタスクを動詞で言い切る（16px・太字） | 10〜18文字（1行） |
+| OWNER | 担当者・担当チーム。`OWNER ／ 名前` のKICKER風ラベル | 名前 2〜6文字 |
+| DUE | 期限。`DUE ／ M/D` の短い形式 | 固定形式 |
+| 今週の行 | 1行だけ淡い地にして直近の1件を目立たせる | 1行 |
+| 注記 | 運用の一言（「例：〜」） | 20〜30文字 |
 
 ## Usage Guide（AIへの使い方）
 
@@ -98,32 +68,29 @@ action_rows:
 SLIDE.mdのデザインシステムと、以下のSLIDE-PATTERN-action-items-listパターンを使って
 スライドを1枚生成してください。
 
-【スライドタイトル】次回ミーティングまでのアクションアイテム
+【スライドタイトル】次回までのアクション
 
-【アクションアイテム一覧】
-1. アクション: 要件定義書の最終レビューと承認
-   担当: 田中（PM）
-   期限: 6/10
+【KICKER】ACTION ITEMS ／ 次回までに
+【今週の行】1行目
 
-2. アクション: デザインモックアップの作成（3画面分）
-   担当: 山田（デザイン）
-   期限: 6/12
+【アクション一覧】
+1. 要件の最終確認と承認をもらう ／ OWNER ／ 営業担当 ／ DUE ／ 6/10
+2. 画面の下書きを3枚つくる ／ OWNER ／ 制作担当 ／ DUE ／ 6/12
+3. 接続仕様書の下書きを書く ／ OWNER ／ 開発担当 ／ DUE ／ 6/12
+4. 関係者へ進捗を共有する ／ OWNER ／ 営業担当 ／ DUE ／ 6/14
+5. 検証環境の準備を確認する ／ OWNER ／ 開発チーム ／ DUE ／ 6/15
 
-3. アクション: APIエンドポイント仕様書の作成
-   担当: 鈴木（開発）
-   期限: 6/12
-
-4. アクション: ステークホルダーへの進捗報告メール送付
-   担当: 田中（PM）
-   期限: 6/14
-
-5. アクション: テスト環境のセットアップ確認
-   担当: 開発チーム全員
-   期限: 6/15
+【注記】例：終わった行は □ を ✓ に変え、翌週は淡い地を次の行へ移す
 ```
 
 ### 注意点
-- アクション内容は「〜すること」「〜を行う」など動詞で終わる形式に統一する
-- 担当者は個人名またはチーム名で記載し、複数担当の場合は「チーム名 全員」などと表記する
-- 期限は短い形式（月/日）を使用してカラム幅を節約する
-- 4〜5件が最適。6件以上になる場合は次回以降のアイテムと分けるか、別ページに分割する
+- やることは動詞で言い切り、1行（18字以内）に収める。長いなら分割する
+- 淡い地にする行は1つだけ（今週・最優先の1件）。複数行を淡くしない。アクセント色の塗りは使わない
+- 担当・期限は必ず `OWNER ／ 名前`・`DUE ／ 日付` の形にする（列の見出し行を作らない）
+- 4〜5件が最適。6件以上になる場合は別ページに分割する（文字を小さくして詰めない）
+- チェック記号は空の四角。番号バッジ・絵文字にしない
+
+## v2 での描き直し（2026-09-02）
+- 列見出し行＋番号の丸バッジ＋担当チップの表組みを、チェック記号（アクセント色1.5px枠の小さな四角）＋やること16px太字＋KICKER風の担当・期限ラベルの行に変えた
+- 行を `--sk-line` の細罫線で区切り、「今週」の1行だけ `--sk-soft` 地（角丸8px）で示す構成にした（塗りは使わない）
+- 上に KICKER と凡例、下に注記を置き、文字を v2 の表に揃えた（インク色・palt・禁則・太さ400/700のみ・左右余白48px）
