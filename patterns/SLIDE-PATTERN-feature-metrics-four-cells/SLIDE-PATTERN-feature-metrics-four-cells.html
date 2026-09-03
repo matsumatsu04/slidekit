@@ -1,139 +1,38 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-feature-metrics-four-cells</title>
-  <style>
-    /* スライド全体のリセットと基本設定 */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
-    /* スライド本体：960×540px固定 */
-    .slide {
-      width: 960px;
-      height: 540px;
-      background: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 16px 32px 16px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    /* リード文エリア */
-    .lead-area {
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .lead-text {
-      font-size: 12px;
-      color: #333333;
-      line-height: 1.6;
-    }
-    /* 4カード横並び */
-    .cards-row {
-      display: flex;
-      gap: 12px;
-      flex: 1;
-      overflow: hidden;
-    }
-    /* 各カード */
-    .card {
-      flex: 1;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      padding: 12px 10px 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    /* カードヘッダー */
-    .card-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 8px;
-      flex-shrink: 0;
-    }
-    /* 番号バッジ */
-    .number-badge {
-      background: var(--sk-accent,#555555);
-      color: #FFFFFF;
-      font-size: 10px;
-      font-weight: bold;
-      padding: 2px 6px;
-      border-radius: 2px;
-      align-self: flex-start;
-      margin-bottom: 6px;
-    }
-    /* アイコンエリア（正方形のプレースホルダー） */
-    .icon-placeholder {
-      width: 44px;
-      height: 44px;
-      background: #DCDCDC;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 6px;
-    }
-    /* カード見出し */
-    .card-heading {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      text-align: center;
-      line-height: 1.3;
-    }
-    /* カード説明文 */
-    .card-description {
-      font-size: 10px;
-      color: #333333;
-      line-height: 1.5;
-      margin-bottom: 8px;
-      flex-shrink: 0;
-    }
-    /* 指標リスト */
-    .metrics-list {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      border-top: 1px solid var(--sk-accent,#CCCCCC);
-      padding-top: 8px;
-      flex: 1;
-    }
-    .metric-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 1px solid var(--sk-accent,#E0E0E0);
-      padding-bottom: 3px;
-    }
-    .metric-label {
-      font-size: 9px;
-      color: #333333;
-    }
-    .metric-value {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-feature-metrics-four-cells</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2×2セル：等高・soft地・角丸11・gap16。02だけ塗り、04（右下＝最終）だけ1.5px枠線 */
+  .fm-grid { width:100%; height:408px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:16px; }
+  .fm-cell { box-sizing:border-box; border-radius:11px; padding:16px 24px; background:var(--sk-soft,#F0F0F0); min-width:0;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .fm-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .fm-outline { background:#FFFFFF; border:1.5px solid var(--sk-accent,#666666); }
+  /* セルの型：KICKER → 数字（32px・太字・アクセント色）＋単位（14px） → 細罫線 → 説明 → 例： */
+  .fm-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .fm-fill .fm-kicker { color:#FFFFFF; }
+  .fm-num-row { margin-top:8px; display:flex; align-items:baseline; gap:4px; }
+  .fm-num { font-size:32px; font-weight:700; line-height:1; letter-spacing:.02em; color:var(--sk-accent,#666666); }
+  .fm-unit { font-size:14px; font-weight:400; line-height:1; }
+  .fm-fill .fm-num, .fm-fill .fm-unit { color:#FFFFFF; }
+  .fm-line { width:100%; height:1px; background:var(--sk-line,#e2e2e2); margin:10px 0 8px; }
+  .fm-fill .fm-line { background:rgba(255,255,255,.35); }
+  .fm-desc { font-size:16px; line-height:1.8; }
+  .fm-note { margin-top:4px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+  .fm-fill .fm-note { color:#FFFFFF; opacity:.8; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -151,128 +50,42 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-  <div class="slide">
-    <!-- タイトルエリア（SLIDE.mdで定義） -->
-    <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-    <!-- コンテンツエリア -->
-    <div class="content-area">
-
-      <!-- リード文エリア -->
-      <div class="lead-area">
-        <div class="lead-text">
-          リード文が入ります。スライドの主張や背景を1〜2文で補足します。各機能の特長と導入効果の数値を、下のカードでご確認ください。
-        </div>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：2×2セル（02＝主役の塗り、04＝最終項目の枠線） -->
+  <div class="content-area">
+    <div class="fm-grid">
+      <div class="fm-cell">
+        <div class="fm-kicker">Pages ／ 初期ページ数</div>
+        <div class="fm-num-row"><span class="fm-num">5</span><span class="fm-unit">ページ</span></div>
+        <div class="fm-line"></div>
+        <p class="fm-desc">初期制作に含むページ数。TOPと下層4枚を型で組み立てる。</p>
+        <div class="fm-note">例：TOP・サービス・実績・会社概要・問い合わせ</div>
       </div>
-
-      <!-- 4カード横並び -->
-      <div class="cards-row">
-
-        <!-- カード1 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="number-badge">01</div>
-            <div class="icon-placeholder">
-            </div>
-            <div class="card-heading">機能名A</div>
-          </div>
-          <div class="card-description">機能Aの説明文が入ります。ユーザーへの価値を2〜3行で記述します。</div>
-          <div class="metrics-list">
-            <div class="metric-item">
-              <span class="metric-label">作業時間削減</span>
-              <span class="metric-value">72%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">処理速度</span>
-              <span class="metric-value">2.8倍</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">平均操作時間</span>
-              <span class="metric-value">54秒</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- カード2 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="number-badge">02</div>
-            <div class="icon-placeholder">
-            </div>
-            <div class="card-heading">機能名B</div>
-          </div>
-          <div class="card-description">機能Bの説明文が入ります。導入までの期間や手軽さを2〜3行で記述します。</div>
-          <div class="metrics-list">
-            <div class="metric-item">
-              <span class="metric-label">導入日数</span>
-              <span class="metric-value">7日</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">初期定着率</span>
-              <span class="metric-value">89%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">サポート対応</span>
-              <span class="metric-value">4.7点</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- カード3 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="number-badge">03</div>
-            <div class="icon-placeholder">
-            </div>
-            <div class="card-heading">機能名C</div>
-          </div>
-          <div class="card-description">機能Cの説明文が入ります。継続率や活用状況を2〜3行で記述します。</div>
-          <div class="metrics-list">
-            <div class="metric-item">
-              <span class="metric-label">継続定着率</span>
-              <span class="metric-value">94%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">月次アクティブ</span>
-              <span class="metric-value">88%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">社内展開率</span>
-              <span class="metric-value">76%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- カード4 -->
-        <div class="card">
-          <div class="card-header">
-            <div class="number-badge">04</div>
-            <div class="icon-placeholder">
-            </div>
-            <div class="card-heading">機能名D</div>
-          </div>
-          <div class="card-description">機能Dの説明文が入ります。他ツールとの連携性を2〜3行で記述します。</div>
-          <div class="metrics-list">
-            <div class="metric-item">
-              <span class="metric-label">互換性スコア</span>
-              <span class="metric-value">96%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">活用満足度</span>
-              <span class="metric-value">93%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">テンプレート数</span>
-              <span class="metric-value">2,400+</span>
-            </div>
-          </div>
-        </div>
-
+      <div class="fm-cell fm-fill">
+        <div class="fm-kicker">Delivery ／ 納期</div>
+        <div class="fm-num-row"><span class="fm-num">14</span><span class="fm-unit">日</span></div>
+        <div class="fm-line"></div>
+        <p class="fm-desc">素材がそろってから公開までの日数。確認は画面で済ませる。</p>
+        <div class="fm-note">例：素材待ちの日数は含まない</div>
       </div>
-      <!-- /.cards-row -->
+      <div class="fm-cell">
+        <div class="fm-kicker">Revisions ／ 修正回数</div>
+        <div class="fm-num-row"><span class="fm-num">2</span><span class="fm-unit">回</span></div>
+        <div class="fm-line"></div>
+        <p class="fm-desc">初期制作に含む修正の回数。超えた分は別料金にする。</p>
+        <div class="fm-note">例：文言の差し替えは回数に数えない</div>
+      </div>
+      <div class="fm-cell fm-outline">
+        <div class="fm-kicker">Update ／ 月次更新</div>
+        <div class="fm-num-row"><span class="fm-num">30</span><span class="fm-unit">分</span></div>
+        <div class="fm-line"></div>
+        <p class="fm-desc">公開後の更新に毎月使える時間。小さな直しを溜めない。</p>
+        <div class="fm-note">例：月初の定例で片づける</div>
+      </div>
     </div>
-    <!-- /.content-area -->
   </div>
-  <!-- /.slide -->
+</div>
 </body>
 </html>

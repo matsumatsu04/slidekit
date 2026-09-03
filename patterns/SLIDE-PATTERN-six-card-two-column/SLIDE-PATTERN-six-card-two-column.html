@@ -5,14 +5,26 @@
 <title>SLIDE-PATTERN-six-card-two-column</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 12px 32px 16px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; }
-  .card { border: 1px solid var(--sk-accent,#E8E8E8); padding: 10px 16px; display: flex; flex-direction: column; }
-  .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .card-num { font-size: 20px; font-weight: bold; color: #CCCCCC; }
-  .card-heading { font-size: 13px; font-weight: bold; color: #333333; }
-  .card-body { font-size: 11px; color: #333333; line-height: 1.6; flex: 1; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2列×3行の横長カード：等高・soft地・角丸11・gap12。DOM順に左列→右列へ流す（01〜03が左、04〜06が右） */
+  .sc-grid { width:100%; height:408px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(3,1fr); grid-auto-flow:column; gap:12px; }
+  .sc-card { box-sizing:border-box; border-radius:11px; padding:16px 20px; background:var(--sk-soft,#F0F0F0); min-width:0;
+             display:flex; align-items:baseline; gap:16px; }
+  .sc-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 行カードの型：番号（24px・細め・アクセント色）｜見出し → 本文2行 */
+  .sc-no { flex-shrink:0; width:36px; font-size:24px; font-weight:400; line-height:24px; letter-spacing:.04em; color:var(--sk-accent,#666666); }
+  .sc-fill .sc-no { color:#FFFFFF; }
+  .sc-text { flex:1; min-width:0; }
+  .sc-h { font-size:16px; font-weight:700; line-height:24px; }
+  .sc-body { margin-top:4px; font-size:16px; line-height:1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,31 +46,51 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア：2列×3行 -->
+  <!-- コンテンツエリア：2列×3行の行カード（01＝主役の塗り。左列01〜03・右列04〜06） -->
   <div class="content-area">
-    <div class="card">
-      <div class="card-top"><div class="card-num">1</div><div class="card-heading">見出し1が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="card-num">4</div><div class="card-heading">見出し4が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="card-num">2</div><div class="card-heading">見出し2が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="card-num">5</div><div class="card-heading">見出し5が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="card-num">3</div><div class="card-heading">見出し3が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-top"><div class="card-num">6</div><div class="card-heading">見出し6が入ります</div></div>
-      <div class="card-body">本文テキストが入ります。詳細説明を2〜3行で記述します。</div>
+    <div class="sc-grid">
+      <div class="sc-card sc-fill">
+        <div class="sc-no">01</div>
+        <div class="sc-text">
+          <div class="sc-h">見積もりは1枚で出す</div>
+          <p class="sc-body">範囲と金額と期限を1枚に書き、口頭の約束を残さない。</p>
+        </div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-no">02</div>
+        <div class="sc-text">
+          <div class="sc-h">修正は回数で区切る</div>
+          <p class="sc-body">修正は2回までと決める。超えた分は別料金にする。</p>
+        </div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-no">03</div>
+        <div class="sc-text">
+          <div class="sc-h">素材は先にそろえる</div>
+          <p class="sc-body">文章と写真が届いてから着手し、待ち時間をなくす。</p>
+        </div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-no">04</div>
+        <div class="sc-text">
+          <div class="sc-h">確認は画面で行う</div>
+          <p class="sc-body">完成品はURLで見てもらい、画像の貼り付けで判断しない。</p>
+        </div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-no">05</div>
+        <div class="sc-text">
+          <div class="sc-h">公開日は先に決める</div>
+          <p class="sc-body">公開日から逆算して締切を決める。相手と共有する。</p>
+        </div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-no">06</div>
+        <div class="sc-text">
+          <div class="sc-h">記録を次に使う</div>
+          <p class="sc-body">指示と修正の差分を残して、次の案件で同じ型を使う。</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
