@@ -1,120 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-three-col-icon-card-body-text</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 960px;
-      height: 540px;
-      overflow: hidden;
-      font-family: sans-serif;
-      background: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-area .title-dummy {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 16px 48px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* リード文エリア */
-    .lead-area {
-      border: 1px dashed var(--sk-accent,#CCCCCC);
-      background: var(--sk-soft,#F0F0F0);
-      padding: 8px 16px;
-      margin-bottom: 16px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-    .lead-text {
-      font-size: 11px;
-      color: #333333;
-      line-height: 1.7;
-    }
-    /* カードグループ */
-    .cards-wrapper {
-      flex: 1;
-      display: flex;
-      gap: 20px;
-    }
-    /* 各カード */
-    .card {
-      flex: 1;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 6px;
-      background: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 14px 14px;
-    }
-    /* イラスト/アイコンエリア（大きめ） */
-    .card-illustration {
-      flex: 1;
-      width: 100%;
-      background: var(--sk-soft,#F0F0F0);
-      border: 1px dashed var(--sk-accent,#CCCCCC);
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-      min-height: 120px;
-      overflow: hidden;
-    }
-    .illustration-placeholder {
-      font-size: 28px;
-      color: #CCCCCC;
-    }
-    /* 見出し（2行） */
-    .card-heading {
-      text-align: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .heading-text {
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      line-height: 1.5;
-    }
-    /* カテゴリラベルボタン */
-    .card-label-btn {
-      flex-shrink: 0;
-      width: 100%;
-    }
-    .label-button {
-      display: block;
-      background: #CCCCCC;
-      color: #333333;
-      text-align: center;
-      padding: 7px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-three-col-icon-card-body-text</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 3カード（本文多め）：等高・soft地・gap16・角丸11。中央だけ塗り（1枚に塗りは1つ） */
+  .cb-cards { width:100%; height:352px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .cb-card { box-sizing:border-box; border-radius:11px; padding:28px 24px; background:var(--sk-soft,#F0F0F0); min-width:0;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .cb-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* アイコン：20px・白の丸地（塗りカード内は白の半透明） */
+  .cb-icon { width:40px; height:40px; border-radius:50%; background:#FFFFFF; display:flex; align-items:center; justify-content:center;
+             font-size:20px; line-height:1; color:var(--sk-accent,#666666); margin-bottom:20px; flex-shrink:0; }
+  .cb-fill .cb-icon { background:rgba(255,255,255,.2); color:#FFFFFF; }
+  /* カードの型：KICKER → 見出し18px → 細罫線 → 本文16px（3〜4行） → 例： */
+  .cb-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .cb-fill .cb-kicker { color:#FFFFFF; }
+  .cb-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .cb-line { width:100%; height:1px; background:var(--sk-line,#E2E2E2); margin:12px 0; flex-shrink:0; }
+  .cb-fill .cb-line { background:rgba(255,255,255,.35); }
+  .cb-body { font-size:16px; line-height:1.8; }
+  .cb-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+  .cb-fill .cb-note { color:#FFFFFF; opacity:.8; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
-html[data-heading="on"] body{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
@@ -129,59 +51,38 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：3カード（本文3〜4行・中央が主役＝塗り） -->
   <div class="content-area">
-
-    <!-- リード文 -->
-    <div class="lead-area">
-      <div class="lead-text">スライドの補足説明・状況を示すリード文が入ります。<br>2行以内でスライドの前提や文脈を説明します。</div>
+    <div class="cb-cards">
+      <div class="cb-card">
+        <div class="cb-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <div class="cb-kicker">Before ／ 着手前</div>
+        <div class="cb-h">要件が固まらない</div>
+        <div class="cb-line"></div>
+        <p class="cb-body">何を作るかが決まらないまま制作に入り、途中で何度も戻る。先に目的と対象を1枚に書いてから始める。</p>
+        <div class="cb-note">例：目的・対象・期限の3行を先に書く</div>
+      </div>
+      <div class="cb-card cb-fill">
+        <div class="cb-icon"><i class="fa-solid fa-list-check"></i></div>
+        <div class="cb-kicker">During ／ 制作中</div>
+        <div class="cb-h">確認に時間がかかる</div>
+        <div class="cb-line"></div>
+        <p class="cb-body">直すたびに全ページを見直すので、確認だけで日が過ぎる。見る順番と項目を決め、毎回同じ手順で通す。</p>
+        <div class="cb-note">例：確認表を1枚にまとめる</div>
+      </div>
+      <div class="cb-card">
+        <div class="cb-icon"><i class="fa-solid fa-rotate"></i></div>
+        <div class="cb-kicker">After ／ 公開後</div>
+        <div class="cb-h">小さな直しが溜まる</div>
+        <div class="cb-line"></div>
+        <p class="cb-body">公開後の修正を後回しにして、気づけば山になる。毎月の枠を先に取って片づける。</p>
+        <div class="cb-note">例：月初に30分の定例</div>
+      </div>
     </div>
-
-    <!-- 3カード -->
-    <div class="cards-wrapper">
-
-      <!-- カード1 -->
-      <div class="card">
-        <div class="card-illustration">
-          <img src="../../assets/stock/stock-teamwork.png" style="width:100%;height:100%;object-fit:cover;">
-        </div>
-        <div class="card-heading">
-          <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
-        </div>
-        <div class="card-label-btn">
-          <div class="label-button">カテゴリラベル</div>
-        </div>
-      </div>
-
-      <!-- カード2 -->
-      <div class="card">
-        <div class="card-illustration">
-          <img src="../../assets/stock/stock-pcwork.png" style="width:100%;height:100%;object-fit:cover;">
-        </div>
-        <div class="card-heading">
-          <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
-        </div>
-        <div class="card-label-btn">
-          <div class="label-button">カテゴリラベル</div>
-        </div>
-      </div>
-
-      <!-- カード3 -->
-      <div class="card">
-        <div class="card-illustration">
-          <img src="../../assets/stock/stock-support.png" style="width:100%;height:100%;object-fit:cover;">
-        </div>
-        <div class="card-heading">
-          <div class="heading-text">見出しテキスト1行目<br>見出しテキスト2行目</div>
-        </div>
-        <div class="card-label-btn">
-          <div class="label-button">カテゴリラベル</div>
-        </div>
-      </div>
-
-    </div><!-- /cards-wrapper -->
-  </div><!-- /content-area -->
+  </div>
+</div>
 </body>
 </html>

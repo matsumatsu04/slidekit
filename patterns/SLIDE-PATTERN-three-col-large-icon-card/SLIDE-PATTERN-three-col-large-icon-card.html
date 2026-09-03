@@ -2,183 +2,33 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLIDE-PATTERN-three-col-large-icon-card</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  /* スライド全体のリセットと基本設定 */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-  /* スライド本体：960×540px固定 */
-  .slide {
-    width: 960px;
-    height: 540px;
-    background: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* エリアラベル共通スタイル */
-
-  /* サブタイトル行（任意：リード文） */
-  .subtitle-area {
-    padding: 8px 40px 6px;
-    border-bottom: 1px dashed var(--sk-accent,#EEEEEE);
-    flex-shrink: 0;
-    background: #FFFFFF;
-  }
-
-  .subtitle-label {
-    font-size: 9px;
-    color: #BBBBBB;
-    text-transform: uppercase;
-    margin-bottom: 1px;
-  }
-
-  .subtitle-text {
-    font-size: 11px;
-    color: #CCCCCC;
-    line-height: 1.4;
-  }
-
-  /* コンテンツエリア */
-  .content-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-
-  /* 3列グリッド */
-  .card-grid {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    padding: 6px 20px 16px;
-    overflow: hidden;
-  }
-
-  /* カード */
-  .card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: #FFFFFF;
-    border: 1px solid var(--sk-accent,#DDDDDD);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  /* カードヘッダー */
-  .card-header {
-    background: var(--sk-soft,#E8E8E8);
-    border-bottom: 1px solid var(--sk-accent,#CCCCCC);
-    padding: 10px 14px 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 10px;
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .card-header-label {
-    position: absolute;
-    top: 4px;
-    right: 8px;
-    font-size: 9px;
-    color: #BBBBBB;
-    text-transform: uppercase;
-  }
-
-  /* アイコン（ドッグイヤー風のプレースホルダー） */
-  .icon-box {
-    width: 40px;
-    height: 40px;
-    background: var(--sk-accent,#CCCCCC);
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .icon-box-label {
-    font-size: 8px;
-    color: #FFFFFF;
-    text-transform: uppercase;
-    text-align: center;
-    line-height: 1.2;
-  }
-
-  /* カード見出し */
-  .card-heading {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 4px;
-  }
-
-  .card-heading-sublabel {
-    font-size: 9px;
-    color: #AAAAAA;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .card-heading-text {
-    font-size: 13px;
-    font-weight: bold;
-    color: #333333;
-    line-height: 1.3;
-  }
-
-  /* カードボディ */
-  .card-body {
-    flex: 1;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .card-body-label {
-    font-size: 9px;
-    color: #BBBBBB;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  /* 箇条書きリスト */
-  .bullet-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .bullet-list li {
-    font-size: 10px;
-    color: #333333;
-    line-height: 1.5;
-    padding-left: 10px;
-    position: relative;
-  }
-
-  .bullet-list li::before {
-    content: "●";
-    font-size: 7px;
-    color: #AAAAAA;
-    position: absolute;
-    left: 0;
-    top: 2px;
-  }
+  /* 3カード（大きなアイコンが主役）：等高・soft地・gap16・角丸11。中央だけ塗り（1枚に塗りは1つ） */
+  .cl-cards { width:100%; height:320px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .cl-card { box-sizing:border-box; border-radius:11px; padding:28px 24px; background:var(--sk-soft,#F0F0F0); min-width:0;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .cl-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 大アイコン：40px・白の丸地72px（塗りカード内は白の半透明） */
+  .cl-icon { width:72px; height:72px; border-radius:50%; background:#FFFFFF; display:flex; align-items:center; justify-content:center;
+             font-size:40px; line-height:1; color:var(--sk-accent,#666666); margin-bottom:20px; flex-shrink:0; }
+  .cl-fill .cl-icon { background:rgba(255,255,255,.2); color:#FFFFFF; }
+  /* カードの型：KICKER → 見出し18px → 本文16px（2行） */
+  .cl-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .cl-fill .cl-kicker { color:#FFFFFF; }
+  .cl-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .cl-body { margin-top:12px; font-size:16px; line-height:1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -198,88 +48,29 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-
-  <!-- タイトルエリア（SLIDE.mdで定義） -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- サブタイトル行（任意：リード文） -->
-  <div class="subtitle-area">
-    <div class="subtitle-label">subtitle / lead text (optional)</div>
-    <div class="subtitle-text">リード文・補足説明が1〜2行で入ります。各カードの内容を補足するテキスト。</div>
-  </div>
-
-  <!-- コンテンツエリア：three-col-large-icon-card pattern -->
+  <!-- コンテンツエリア：大アイコンの3カード（中央が主役＝塗り） -->
   <div class="content-area">
-
-    <!-- 3列カードグリッド -->
-    <div class="card-grid">
-
-      <!-- カード 1 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-header-label">card header</span>
-          <div class="icon-box">
-            <span class="icon-box-label">icon</span>
-          </div>
-          <div class="card-heading">
-            <span class="card-heading-sublabel">heading</span>
-            <span class="card-heading-text">カード見出し 01<br>サブテキスト</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <span class="card-body-label">bullet list</span>
-          <ul class="bullet-list">
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-          </ul>
-        </div>
+    <div class="cl-cards">
+      <div class="cl-card">
+        <div class="cl-icon"><i class="fa-solid fa-comments"></i></div>
+        <div class="cl-kicker">Chat ／ 質問</div>
+        <div class="cl-h">いつでも質問できる</div>
+        <p class="cl-body">詰まった箇所を送れば、翌営業日までに回答が届く。</p>
       </div>
-
-      <!-- カード 2 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-header-label">card header</span>
-          <div class="icon-box">
-            <span class="icon-box-label">icon</span>
-          </div>
-          <div class="card-heading">
-            <span class="card-heading-sublabel">heading</span>
-            <span class="card-heading-text">カード見出し 02<br>サブテキスト</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <span class="card-body-label">bullet list</span>
-          <ul class="bullet-list">
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-          </ul>
-        </div>
+      <div class="cl-card cl-fill">
+        <div class="cl-icon"><i class="fa-solid fa-video"></i></div>
+        <div class="cl-kicker">Live ／ 相談会</div>
+        <div class="cl-h">月2回の相談会</div>
+        <p class="cl-body">画面を見ながら、その場で直し方を一緒に決める。</p>
       </div>
-
-      <!-- カード 3 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-header-label">card header</span>
-          <div class="icon-box">
-            <span class="icon-box-label">icon</span>
-          </div>
-          <div class="card-heading">
-            <span class="card-heading-sublabel">heading</span>
-            <span class="card-heading-text">カード見出し 03<br>サブテキスト</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <span class="card-body-label">bullet list</span>
-          <ul class="bullet-list">
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-            <li>箇条書き項目の説明テキストが入ります</li>
-          </ul>
-        </div>
+      <div class="cl-card">
+        <div class="cl-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="cl-kicker">Library ／ 教材</div>
+        <div class="cl-h">型と手順をいつでも</div>
+        <p class="cl-body">よく使う手順と確認表を、必要なときに見返せる。</p>
       </div>
-
     </div>
   </div>
 </div>
