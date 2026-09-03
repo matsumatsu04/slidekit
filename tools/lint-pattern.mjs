@@ -125,6 +125,10 @@ function normalizeName(a) {
 
 // ---- ヘルパ -------------------------------------------------------------
 
+// デザインの規律 v2（2026-09-02）: 本文のインク色 #3f4a52 は「ほぼ無彩色の暖色グレー」として、
+// var(--sk-ink, #3f4a52) のフォールバックに限り許可する（SPEC「デザインの規律 v2」）
+const V2_ALLOWED_HEX = new Set(['3f4a52']);
+
 function isGray(hex) {
   let h = hex.replace('#', '');
   if (h.length === 3 || h.length === 4) h = h.slice(0, 3).split('').map((c) => c + c).join('');
@@ -139,6 +143,7 @@ function colorViolationsInDeclarations(css, out, where) {
   text = text.replace(/url\([^)]*\)/gi, 'url()');
   // hex
   for (const m of text.matchAll(/(?<![&\w])#([0-9a-fA-F]{3,8})\b/g)) {
+    if (V2_ALLOWED_HEX.has(m[1].toLowerCase())) continue; // v2 のインク色（var(--sk-ink) のフォールバック）は許可
     const g = isGray(m[1]);
     if (g === false) out.push(`${where}: 有彩色 #${m[1]} が使われています（グレー階調 r=g=b か var(--sk-*) にしてください）`);
   }
