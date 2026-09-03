@@ -4,13 +4,23 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-key-message-inverted</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:var(--sk-accent,#4A4A4A); overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:0 100px; }
-  .km-label { font-size:12px; font-weight:bold; color:rgba(255,255,255,0.75); letter-spacing:0.22em; }
-  .km-line { width:48px; height:2px; background:rgba(255,255,255,0.6); }
-  .km-text { font-size:32px; font-weight:bold; color:#FFFFFF; text-align:center; line-height:1.6; }
-  .km-supp { font-size:13px; color:rgba(255,255,255,0.8); text-align:center; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・太さは400/700のみ）。
+     全面アクセント塗り＋白文字。グレー版のフォールバック地は白文字が読める濃さ（#555555） */
+  .slide { width:960px; height:540px; background:var(--sk-accent,#555555); overflow:hidden; position:relative; box-sizing:border-box;
+           color:#FFFFFF; font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 反転の1メッセージ：KICKER（白60%）→ 主張（28px・700・字間.1em・白）→ 細い白罫線1本（白35%・48px）→ 補足（16px・白80%）。塗りは背景1つだけ・装飾を足さない */
+  .ki-block  { width:100%; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .ki-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:rgba(255,255,255,.6); }
+  .ki-msg    { margin-top:24px; max-width:760px; font-size:28px; font-weight:700; letter-spacing:.1em; line-height:1.6; color:#FFFFFF; }
+  .ki-rule   { width:48px; height:1px; background:rgba(255,255,255,.35); margin:28px 0; }
+  .ki-sub    { max-width:760px; font-size:16px; font-weight:400; line-height:1.8; color:rgba(255,255,255,.8); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -26,15 +36,29 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
+
+/* === 反転面の上書き（このパターンだけ）：本文は白。見出しONのときは見出し・縦バー・下線も白抜きにする（SPEC「接続線・罫線の端点」＝塗り面の文字は白）=== */
+.slide{color:#FFFFFF;}
+html[data-heading="on"] .slide .sk-head{border-bottom-color:rgba(255,255,255,.35);}
+html[data-heading="on"] .slide .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="b"] .slide .sk-head::before{background:#FFFFFF;}
+html[data-heading="on"][data-hstyle="c"] .slide .sk-head{border-bottom:1px solid rgba(255,255,255,.35);}
+html[data-heading="on"][data-hstyle="d"] .slide .sk-head::before{color:rgba(255,255,255,.6);}
 </style>
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義。反転面では見出しOFFが既定） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <div class="km-label">KEY MESSAGE</div>
-  <div class="km-line"></div>
-  <div class="km-text">最も伝えたいキーメッセージを<br>反転配色で強調して表示します</div>
-  <div class="km-supp">補足説明・出典・根拠などを小さく添えます（省略可）</div>
+  <!-- コンテンツエリア：KICKER → 主張 → 白罫線1本 → 補足1行（全面塗りの上に白文字） -->
+  <div class="content-area">
+    <div class="ki-block">
+      <div class="ki-kicker">Key Message ／ 結論</div>
+      <div class="ki-msg">確認の型を先に決めた案件ほど、<br>手戻りは小さく済む</div>
+      <div class="ki-rule"></div>
+      <div class="ki-sub">数字・固有名詞・リンクの3点を、最後に人が見る。それだけで足りる</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
