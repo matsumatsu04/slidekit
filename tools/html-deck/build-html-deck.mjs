@@ -274,7 +274,7 @@ function main() {
     const sectionWithIconStyle = applyIconStyle(sectionWithAssets, config.iconStyle);
 
     // 5. ページ番号注入
-    const numberedSection = maybeInjectPageNumber(sectionWithIconStyle, n, N, config);
+    const numberedSection = maybeInjectPageNumber(tagHeadingForV2(sectionWithIconStyle, config), n, N, config);
 
     // 6. 元フラグメント名を data-sk-src として埋め込む
     //    （ギャラリーのデッキビューアが「スライドN＝どのファイルか」をフィードバックプロンプトに書けるようにする）
@@ -745,6 +745,12 @@ function buildBackgroundCss(bgCssUrl) {
 section.slide[data-sk-bg="on"] { background-image:url("${bgCssUrl}") !important; background-size:cover !important; background-position:center !important; background-repeat:no-repeat !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }`;
 }
 
+// v2: 共通見出し（.sk-h）に見出しスタイルを属性で持たせる（スタイルBの縦バー寸法を v2 用に上書きするため）
+function tagHeadingForV2(sectionHtml, config) {
+  if (config.frame !== 'v2') return sectionHtml;
+  return sectionHtml.split('<div class="sk-h"').join(`<div class="sk-h" data-v2-style="${config.headingStyle}"`);
+}
+
 function maybeInjectPageNumber(sectionHtml, n, total, config) {
   if (!config.pageNumbers) return sectionHtml;
   if (config.noPageNoOn.includes(n)) return sectionHtml;
@@ -829,10 +835,17 @@ ${config.frame === 'v2' ? buildFrameV2Css() : ''}
 function buildFrameV2Css() {
   return `
 /* ===== フレーム v2（2026-09-02）===== */
+/* パターンは *{box-sizing:border-box;margin:0;padding:0} 前提で組まれている。デッキ側にも同じリセットを入れる */
+.slide, .slide * { box-sizing:border-box; }
+.slide p, .slide h1, .slide h2, .slide h3, .slide h4, .slide ul, .slide ol, .slide li, .slide figure { margin:0; padding:0; }
+.slide ul, .slide ol { list-style:none; }
 .slide { color:var(--sk-ink); font-feature-settings:"palt" 1; line-break:strict; word-break:normal; letter-spacing:.06em; line-height:1.8; }
 .slide b, .slide strong { font-weight:700; }
-.sk-h { letter-spacing:.06em; color:var(--sk-ink); }
-.sk-msg { top:82px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
+/* 見出し・リードの左端を本文の左右余白 48px に揃える。スタイルB の縦バーは v2 の 3×18px */
+.sk-h { left:48px; right:48px; letter-spacing:.06em; color:var(--sk-ink); }
+.sk-h[data-v2-style="b"] { padding-left:16px; }
+.sk-h[data-v2-style="b"]::before { left:0; top:29px; width:3px; height:18px; }
+.sk-msg { top:82px; left:48px; right:48px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
 .sk-msg b { color:var(--sk-accent); font-weight:700; }
 .sk-kicker { display:block; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }
 .sk-note { font-size:11.5px; color:var(--sk-muted); letter-spacing:.06em; line-height:1.8; }
@@ -841,7 +854,7 @@ function buildFrameV2Css() {
 .sk-foot .sk-brand { font-size:11px; font-weight:700; color:var(--sk-ink); letter-spacing:.1em; }
 .sk-foot .sk-copy { flex:1; }
 .sk-foot .sk-pageno { position:static; font-size:9px; color:var(--sk-muted); }
-/* 塗りつぶしスライドではフラグメント側で .sk-foot, .sk-foot .sk-brand { color:#fff } を上書きする */
+/* 塗りつぶしスライドでは、そのスライドのルートクラスでスコープして .sN-xxx .sk-foot, .sN-xxx .sk-foot .sk-brand { color:#fff } を上書きする */
 `;
 }
 

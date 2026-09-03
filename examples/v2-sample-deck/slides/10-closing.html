@@ -1,0 +1,34 @@
+<!-- P164 closing-solid-claim: 全面アクセント塗り＋白文字。左にKICKER＋大見出し2行＋本文2行、右に白カードの挿絵、下に白罫線＋結論1文 -->
+<section class="slide s10-closing">
+  <div class="s10-wrap">
+    <div class="s10-top">
+      <div class="s10-left">
+        <div class="s10-kicker">Conclusion</div>
+        <h1 class="s10-title">境界を先に決めると、<br>制作は速くなる。</h1>
+        <div class="s10-body">作る・確かめる・直すを、現場の近くに置く。<br>決める役は、最後まで人が持つ。</div>
+      </div>
+      <div class="s10-card">
+        <img class="s10-illust" src="assets/illust/paper-pile.jpg" alt="締めのカードの挿絵（書類の山と作業する人）">
+      </div>
+    </div>
+    <div class="s10-rule"></div>
+    <div class="s10-claim">まずは小さな案件で試し、人が結果を読んでから、次の工程へ広げる。</div>
+  </div>
+</section>
+<style>
+/* 全面アクセント塗り＋白文字 */
+.slide.s10-closing { background:var(--sk-accent); color:#FFFFFF; }
+/* 塗りつぶしスライドのフッター上書き（このスライドに限定。無指定だと全スライドのフッターが白くなる） */
+.s10-closing .sk-foot, .s10-closing .sk-foot .sk-brand, .s10-closing .sk-foot .sk-pageno { color:#FFFFFF; }
+.s10-wrap * { box-sizing:border-box; }
+.s10-wrap   { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; gap:24px; }
+.s10-top    { display:flex; align-items:stretch; gap:40px; }
+.s10-left   { flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; }
+.s10-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.7); line-height:1; }
+.s10-title  { margin:0; font-size:28px; font-weight:700; letter-spacing:.06em; line-height:1.5; color:#FFFFFF; }
+.s10-body   { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:rgba(255,255,255,.85); }
+.s10-card   { width:352px; height:256px; flex-shrink:0; background:#FFFFFF; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:center; }
+.s10-illust { display:block; width:100%; height:100%; object-fit:contain; }
+.s10-rule   { height:1px; background:rgba(255,255,255,.35); }
+.s10-claim  { font-size:16px; font-weight:700; letter-spacing:.06em; line-height:1.8; color:#FFFFFF; }
+</style>

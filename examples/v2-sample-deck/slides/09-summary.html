@@ -1,0 +1,41 @@
+<!-- P065 summary-three-points: 淡いカード3枚（KICKER→見出し→罫線→本文）＋下に結論ピル。塗りはピルだけ -->
+<section class="slide s9-summary">
+  <div class="sk-h">決めておく3つのこと</div>
+  <div class="sk-msg">着手前に<b>線引き・小さな試作・確認の型</b>の3つを決めておく。</div>
+  <div class="s9-content">
+    <div class="s9-cards">
+      <div class="s9-card">
+        <div class="s9-kicker">Point 1 ／ 前提</div>
+        <div class="s9-head">判断の基準を先に決める</div>
+        <div class="s9-rule"></div>
+        <div class="s9-body">AIに任せる範囲と、人が最後に決める範囲を、着手前に線引きしておく。</div>
+      </div>
+      <div class="s9-card">
+        <div class="s9-kicker">Point 2 ／ 進め方</div>
+        <div class="s9-head">小さく試して段階で広げる</div>
+        <div class="s9-rule"></div>
+        <div class="s9-body">ページ単位の試作から始め、崩れなければ次の工程へ広げていく。</div>
+      </div>
+      <div class="s9-card">
+        <div class="s9-kicker">Point 3 ／ 運用</div>
+        <div class="s9-head">確認の手順を型にする</div>
+        <div class="s9-rule"></div>
+        <div class="s9-body">見る順番と確認項目を決めておけば、誰が見ても同じ品質で通せる。</div>
+      </div>
+    </div>
+    <div class="s9-pill">線引きしてから、小さく試す</div>
+  </div>
+</section>
+<style>
+/* 本文エリア：見出し＋リード併用で top:128px・下端は 500px（bottom:40px）。カード＋ピルを上下中央 */
+.s9-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:24px; }
+.s9-content * { box-sizing:border-box; }
+.s9-cards  { display:flex; gap:16px; width:100%; align-items:stretch; }
+.s9-card   { flex:1; background:var(--sk-soft); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:8px; }
+.s9-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }
+.s9-head   { font-size:16px; font-weight:700; letter-spacing:.06em; line-height:1.5; }
+.s9-rule   { height:1px; background:var(--sk-line); margin:4px 0; }
+.s9-body   { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; }
+.s9-pill   { display:inline-flex; align-items:center; justify-content:center; height:34px; padding:0 28px; border-radius:17px;
+             background:var(--sk-accent); color:#FFFFFF; font-size:14px; font-weight:400; letter-spacing:.2em; line-height:1; white-space:nowrap; }
+</style>

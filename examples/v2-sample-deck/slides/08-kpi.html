@@ -1,0 +1,57 @@
+<!-- P063 three-kpi-big-number: 等幅・等高のKPIカード3枚（KICKER→大きな数字＋単位→罫線→説明→例：）。中央の1枚だけ塗り。数字はダミー -->
+<section class="slide s8-kpi">
+  <div class="sk-h">効果は3つの数字で見る</div>
+  <div class="sk-msg">速さだけでなく、<b>手直しの回数</b>で見ると効果が分かります。</div>
+  <div class="s8-content">
+    <div class="s8-row">
+
+      <div class="s8-card">
+        <div class="s8-kicker">TIME ／ 制作日数</div>
+        <div class="s8-num-row"><span class="s8-num">2</span><span class="s8-unit">日</span></div>
+        <div class="s8-rule"></div>
+        <div class="s8-desc">設計から公開までの日数</div>
+        <div class="s8-note">例：従来は5日</div>
+      </div>
+
+      <div class="s8-card s8-card-fill">
+        <div class="s8-kicker">REVISIONS ／ 手直し回数</div>
+        <div class="s8-num-row"><span class="s8-num">1</span><span class="s8-unit">回</span></div>
+        <div class="s8-rule"></div>
+        <div class="s8-desc">公開前の手直しの平均回数</div>
+        <div class="s8-note">例：従来は3〜4回</div>
+      </div>
+
+      <div class="s8-card">
+        <div class="s8-kicker">CHECK ／ 目視の網羅率</div>
+        <div class="s8-num-row"><span class="s8-num">100</span><span class="s8-unit">%</span></div>
+        <div class="s8-rule"></div>
+        <div class="s8-desc">公開前に目視した割合</div>
+        <div class="s8-note">例：従来は主要ページのみ</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<style>
+/* 本文エリア：見出し＋リード併用で top:128px・下端は 500px（bottom:40px）。カード列は上下中央 */
+.s8-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; flex-direction:column; justify-content:center; }
+.s8-content * { box-sizing:border-box; }
+.s8-row { display:flex; gap:16px; align-items:stretch; }
+/* KPIカード（等幅・等高）。既定は淡い地 */
+.s8-card { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:28px 24px; border-radius:12px;
+           background:var(--sk-soft); border:1px solid var(--sk-line); }
+/* 主役の1枚だけアクセント塗り（塗りは1枚に1つ） */
+.s8-card-fill { background:var(--sk-accent); border-color:var(--sk-accent); color:#FFFFFF; }
+.s8-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent); white-space:nowrap; }
+.s8-card-fill .s8-kicker { color:#FFFFFF; }
+/* 数字は大きく、単位は小さく */
+.s8-num-row { margin-top:16px; display:flex; align-items:baseline; justify-content:center; gap:4px; }
+.s8-num { font-size:40px; font-weight:700; line-height:1; letter-spacing:.02em; color:var(--sk-accent); }
+.s8-unit { font-size:16px; font-weight:400; line-height:1; }
+.s8-card-fill .s8-num, .s8-card-fill .s8-unit { color:#FFFFFF; }
+.s8-rule { margin-top:16px; width:100%; height:1px; background:var(--sk-line); }
+.s8-card-fill .s8-rule { background:rgba(255,255,255,.35); }
+.s8-desc { margin-top:12px; font-size:16px; line-height:1.8; }
+.s8-note { margin-top:8px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+.s8-card-fill .s8-note { color:#FFFFFF; opacity:.85; }
+</style>

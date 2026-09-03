@@ -1,0 +1,84 @@
+<!-- P058 before-after-two-col: 左＝淡い地の BEFORE、右＝アクセント塗りの AFTER（塗りは右の1つだけ）。本文は見出し＋リード併用で top:128px 起点 -->
+<section class="slide s3-ba">
+  <div class="sk-h">導入前後で変わる制作の流れ</div>
+  <div class="sk-msg">AIを入れて変わるのは、<b>確認が工程の中に入る</b>こと。</div>
+  <div class="s3-content">
+    <div class="s3-row">
+
+      <!-- BEFORE パネル（淡い地） -->
+      <div class="s3-panel s3-before">
+        <div class="s3-kicker">BEFORE ／ 人が全部つくる</div>
+        <div class="s3-flow">
+          <div class="s3-box"><span class="s3-box-l">HUMAN</span><span class="s3-box-t">設計と構成</span></div>
+          <svg class="s3-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-muted)" opacity=".5"/></svg>
+          <div class="s3-box"><span class="s3-box-l">HUMAN</span><span class="s3-box-t">手で全部組む</span></div>
+        </div>
+        <div class="s3-chips">
+          <div class="s3-chip">× 修正は組み直し</div>
+          <div class="s3-chip">× 確認は納品直前</div>
+          <div class="s3-chip">× 手順が人に依存</div>
+          <div class="s3-chip">× 工数が読めない</div>
+        </div>
+        <div class="s3-note">例：文言の差し替え1回で半日、確認は最終日にまとめて行う</div>
+      </div>
+
+      <!-- AFTER パネル（アクセント塗り・白文字） -->
+      <div class="s3-panel s3-after">
+        <div class="s3-kicker">AFTER ／ AI × 人</div>
+        <div class="s3-flow">
+          <div class="s3-box"><span class="s3-box-l">PLAN</span><span class="s3-box-t">設計</span></div>
+          <svg class="s3-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+          <div class="s3-box"><span class="s3-box-l">BUILD</span><span class="s3-box-t">生成</span></div>
+          <svg class="s3-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+          <div class="s3-box"><span class="s3-box-l">CHECK</span><span class="s3-box-t">確認</span></div>
+          <svg class="s3-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+          <div class="s3-box s3-box-outline"><span class="s3-box-l">PUBLISH</span><span class="s3-box-t">公開</span></div>
+        </div>
+        <div class="s3-chips">
+          <div class="s3-chip">○ 修正は再生成</div>
+          <div class="s3-chip">○ 確認は工程ごと</div>
+          <div class="s3-chip">○ 指示が記録に残る</div>
+          <div class="s3-chip">○ 工数が読める</div>
+        </div>
+        <div class="s3-note">例：差し替えは10分で再生成、確認は工程ごとに10分ずつ</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<style>
+/* 本文エリア：見出し＋リード併用なので top:128px。フッター（下端14px）と重ねないよう bottom:40px（=500px）まで */
+.s3-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; flex-direction:column; justify-content:center; }
+.s3-content * { box-sizing:border-box; }
+.s3-row { display:flex; gap:16px; align-items:stretch; }
+/* パネル: 左＝淡い地（BEFORE）、右＝アクセント塗り（AFTER・白文字）。塗りは1枚に1つ */
+.s3-panel { flex:1; min-width:0; border-radius:12px; padding:24px; display:flex; flex-direction:column; }
+.s3-before { background:var(--sk-soft); border:1px solid var(--sk-line); }
+.s3-after  { background:var(--sk-accent); color:#FFFFFF; }
+/* KICKER（英字ラベル ／ 補足） */
+.s3-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent); white-space:nowrap; }
+.s3-after .s3-kicker { color:#FFFFFF; }
+/* 工程の箱（白）と三角矢印（SVG・幅12px） */
+.s3-flow { display:flex; align-items:center; justify-content:space-between; margin-top:20px; height:88px; }
+.s3-before .s3-flow { padding:0 8px; }
+.s3-box { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; height:88px; padding:0 4px;
+          border-radius:6px; background:#FFFFFF; border:1px solid var(--sk-line); color:var(--sk-ink); }
+.s3-before .s3-box { width:150px; }
+.s3-after  .s3-box { width:76px; border-color:#FFFFFF; }
+.s3-box-l { font-size:10px; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted); white-space:nowrap; }
+.s3-box-t { font-size:16px; font-weight:700; line-height:1; white-space:nowrap; }
+.s3-after .s3-box-t { color:var(--sk-accent); }
+/* 最終工程（公開）は塗らず 1.5px の枠線 */
+.s3-box-outline { background:transparent; border:1.5px solid #FFFFFF; }
+.s3-after .s3-box-outline .s3-box-t,
+.s3-after .s3-box-outline .s3-box-l { color:#FFFFFF; }
+.s3-arw { flex:none; display:block; }
+/* 丸角チップ（2列） */
+.s3-chips { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
+.s3-chip { height:36px; padding:0 12px; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:16px; line-height:1; white-space:nowrap; }
+.s3-before .s3-chip { background:#FFFFFF; border:1px solid var(--sk-line); }
+.s3-after  .s3-chip { background:rgba(255,255,255,.14); color:#FFFFFF; }
+/* 注記（例：〜） */
+.s3-note { margin-top:16px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+.s3-after .s3-note { color:#FFFFFF; opacity:.85; }
+</style>

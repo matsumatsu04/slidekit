@@ -1,0 +1,22 @@
+<!-- P112 toc-two-column: 左に contents ラベル、右に「番号｜細い縦罫線｜項目名」。見出し無し・塗り無し -->
+<section class="slide s2-toc">
+  <div class="s2-area">
+    <div class="s2-label">contents</div>
+    <div class="s2-list">
+      <div class="s2-item"><span class="s2-no">01</span><span class="s2-vline"></span><span class="s2-txt">導入前後で変わる制作の流れ</span></div>
+      <div class="s2-item"><span class="s2-no">02</span><span class="s2-vline"></span><span class="s2-txt">導入前に決める4つの前提</span></div>
+      <div class="s2-item"><span class="s2-no">03</span><span class="s2-vline"></span><span class="s2-txt">段階的に入れる手順と進め方の比較</span></div>
+      <div class="s2-item"><span class="s2-no">04</span><span class="s2-vline"></span><span class="s2-txt">確認の型・効果の見方・まとめ</span></div>
+    </div>
+  </div>
+</section>
+<style>
+.s2-area  { position:absolute; inset:0; }
+.s2-label { position:absolute; left:72px; top:0; bottom:0; display:flex; align-items:center;
+            font-size:15px; font-weight:700; letter-spacing:.3em; color:var(--sk-accent); line-height:1; }
+.s2-list  { position:absolute; left:476px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; gap:32px; }
+.s2-item  { display:flex; align-items:center; height:28px; }
+.s2-no    { width:48px; flex-shrink:0; font-size:24px; font-weight:700; letter-spacing:.04em; color:var(--sk-accent); line-height:1; }
+.s2-vline { width:1px; height:22px; flex-shrink:0; background:var(--sk-line); margin:0 20px 0 12px; }
+.s2-txt   { font-size:16px; font-weight:400; letter-spacing:.2em; line-height:1; white-space:nowrap; }
+</style>

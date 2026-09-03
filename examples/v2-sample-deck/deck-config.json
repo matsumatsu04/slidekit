@@ -1,0 +1,21 @@
+{
+  "title": "AIをWeb制作に入れる前に決めておくこと",
+  "theme": {
+    "accent": "#1E2E53",
+    "accent2": "#C9A227",
+    "soft": "#E8EBF2",
+    "text": "#3f4a52",
+    "muted": "#8A8F98",
+    "bg": "#FFFFFF"
+  },
+  "font": "Noto Sans JP",
+  "pageNumbers": true,
+  "noPageNoOn": [1, 2, 10],
+  "headingStyle": "b",
+  "iconStyle": "solid",
+  "frame": "v2",
+  "brand": {
+    "name": "SlideKit",
+    "copyright": "Sample deck — generated with SlideKit"
+  }
+}

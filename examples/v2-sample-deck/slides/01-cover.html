@@ -1,0 +1,19 @@
+<!-- P165 cover-illust-band: 淡いティント地・上部にKICKER＋大見出し・下半分に挿絵の帯。表紙はサブタイトルを置かない（2026-08-31） -->
+<section class="slide s1-cover">
+  <div class="s1-top">
+    <div class="s1-kicker">Study Session ／ AI × Web Production</div>
+    <h1 class="s1-title">AIをWeb制作に入れる前に決めておくこと</h1>
+  </div>
+  <div class="s1-band">
+    <img class="s1-illust" src="assets/illust/office-street.jpg" alt="表紙の帯の挿絵（街路沿いのオフィスビルと通行人）">
+  </div>
+</section>
+<style>
+.slide.s1-cover { background:var(--sk-soft); }
+.s1-top    { position:absolute; left:48px; right:48px; top:0; height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+.s1-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--sk-accent2, var(--sk-accent)); line-height:1; white-space:nowrap; }
+.s1-title  { margin:0; font-size:30px; font-weight:700; letter-spacing:.1em; line-height:1.4; color:var(--sk-accent); }
+.s1-band   { position:absolute; left:0; right:0; bottom:0; height:260px; }
+/* 挿絵は白地で生成されるので multiply で地色に溶かす。object-position で見せる高さを調整する */
+.s1-illust { display:block; width:100%; height:100%; object-fit:cover; object-position:center 74%; mix-blend-mode:multiply; }
+</style>

@@ -1,0 +1,64 @@
+<!-- P026 horizontal-timeline-cards: 淡い地のステップカードをSVG三角矢印でつなぐ。「今ここ」の1枚だけ塗り、最後の1枚だけ1.5px枠線 -->
+<section class="slide s5-steps">
+  <div class="sk-h">試作から現場に入れる手順</div>
+  <div class="sk-msg">全案件に一度に広げず、<b>月2件までの限定導入</b>で手順を固めます。</div>
+  <div class="s5-content">
+    <div class="s5-row">
+      <div class="s5-card">
+        <div class="s5-kicker">STEP 1</div>
+        <div class="s5-ttl">試作</div>
+        <div class="s5-rule"></div>
+        <div class="s5-body">1ページ生成して<br>手直しの量を見る</div>
+        <div class="s5-note">例：LP1本を2日で</div>
+      </div>
+      <svg class="s5-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent)"/></svg>
+      <div class="s5-card s5-card-fill">
+        <div class="s5-kicker">STEP 2 ／ 今ここ</div>
+        <div class="s5-ttl">限定導入</div>
+        <div class="s5-rule"></div>
+        <div class="s5-body">小さな案件だけで<br>同じ手順を回す</div>
+        <div class="s5-note">例：月2件まで</div>
+      </div>
+      <svg class="s5-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent)"/></svg>
+      <div class="s5-card">
+        <div class="s5-kicker">STEP 3</div>
+        <div class="s5-ttl">確認必須</div>
+        <div class="s5-rule"></div>
+        <div class="s5-body">公開前に人が<br>全ページを見る</div>
+        <div class="s5-note">例：目視チェック表</div>
+      </div>
+      <svg class="s5-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent)"/></svg>
+      <div class="s5-card s5-card-last">
+        <div class="s5-kicker">STEP 4 ／ 最終</div>
+        <div class="s5-ttl">運用</div>
+        <div class="s5-rule"></div>
+        <div class="s5-body">合意した基準だけ<br>必須にして回す</div>
+        <div class="s5-note">例：基準は3項目</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+/* 本文エリア：見出し＋リード併用で top:128px・下端は 500px（bottom:40px）。カード列は上下中央 */
+.s5-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; flex-direction:column; justify-content:center; }
+.s5-content * { box-sizing:border-box; }
+.s5-row { display:flex; align-items:stretch; gap:8px; }
+/* ステップカード（等幅・等高）。既定は淡い地 */
+.s5-card { flex:1; min-width:0; display:flex; flex-direction:column; padding:20px 16px; border-radius:12px;
+           background:var(--sk-soft); border:1px solid var(--sk-line); }
+/* 「今ここ」の1枚だけアクセント塗り（塗りは1枚に1つ） */
+.s5-card-fill { background:var(--sk-accent); border-color:var(--sk-accent); color:#FFFFFF; }
+/* 最終工程（運用）は塗らず 1.5px のアクセント枠線 */
+.s5-card-last { background:#FFFFFF; border:1.5px solid var(--sk-accent); }
+.s5-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent); white-space:nowrap; }
+.s5-card-fill .s5-kicker { color:#FFFFFF; }
+.s5-ttl { margin-top:12px; font-size:18px; font-weight:700; line-height:1.4; }
+.s5-card-last .s5-ttl { color:var(--sk-accent); }
+.s5-rule { margin-top:12px; height:1px; background:var(--sk-line); }
+.s5-card-fill .s5-rule { background:rgba(255,255,255,.35); }
+.s5-body { margin-top:12px; font-size:16px; line-height:1.8; }
+.s5-note { margin-top:auto; padding-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+.s5-card-fill .s5-note { color:#FFFFFF; opacity:.85; }
+/* 三角矢印（SVG・幅12px） */
+.s5-arw { flex:none; align-self:center; display:block; }
+</style>

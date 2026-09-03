@@ -1,0 +1,60 @@
+<!-- P053 comparison-matrix-table: 本物の表。塗りはヘッダ行だけ、左列はアクセント色の太字、行は細い罫線だけで区切る -->
+<section class="slide s6-table">
+  <div class="sk-h">進め方ごとの比較</div>
+  <div class="sk-msg">月3件以上つくるなら、<b>AI × 人</b>の進め方から検討する。</div>
+  <div class="s6-content">
+    <div class="s6-wrap">
+      <table class="s6-tbl">
+        <thead>
+          <tr>
+            <th style="width:140px;">進め方</th>
+            <th>初期コスト</th>
+            <th>修正の速さ</th>
+            <th>向いている案件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="s6-axis">自社で内製</td>
+            <td>人件費のみ</td>
+            <td>担当者の手が空き次第</td>
+            <td>更新が多い自社サイト</td>
+          </tr>
+          <tr>
+            <td class="s6-axis">外注</td>
+            <td>案件ごとに見積</td>
+            <td>往復に数日かかる</td>
+            <td>大型で仕様が固い案件</td>
+          </tr>
+          <tr>
+            <td class="s6-axis">テンプレート</td>
+            <td>数千円程度</td>
+            <td>型の範囲内なら即日</td>
+            <td>単発のLP・告知ページ</td>
+          </tr>
+          <tr>
+            <td class="s6-axis">AI × 人</td>
+            <td>ツール代のみ</td>
+            <td>再生成で当日中</td>
+            <td>更新が多い中小案件</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="s6-note">例：単発の告知ページはテンプレートのままでよい</div>
+  </div>
+</section>
+<style>
+/* 本文エリア：見出し＋リード併用で top:128px・下端は 500px（bottom:40px）。表は上下中央 */
+.s6-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; flex-direction:column; justify-content:center; }
+.s6-content * { box-sizing:border-box; }
+/* 本物の表。塗りはヘッダ行だけ（角丸は上2隅） */
+.s6-wrap { border-radius:10px 10px 0 0; overflow:hidden; }
+.s6-tbl { width:100%; border-collapse:collapse; table-layout:fixed; }
+.s6-tbl th { background:var(--sk-accent); color:#FFFFFF; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1;
+             text-align:left; vertical-align:middle; height:40px; padding:0 16px; }
+.s6-tbl td { font-size:16px; line-height:1.8; text-align:left; vertical-align:middle; height:48px; padding:12px 16px; border-bottom:1px solid var(--sk-line); }
+/* 左列（比較対象）はアクセント色の太字 */
+.s6-tbl td.s6-axis { color:var(--sk-accent); font-weight:700; }
+.s6-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+</style>

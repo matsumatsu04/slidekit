@@ -1,0 +1,60 @@
+<!-- P038 four-card-2x2: 等高の2×2カード。02だけ塗り、04（右下＝最終）だけ1.5px枠線。本文は top:128px 起点 -->
+<section class="slide s4-cards">
+  <div class="sk-h">導入前に決める4つの前提</div>
+  <div class="sk-msg">道具を選ぶ前に、<b>人が決める範囲</b>を紙に書いておく。</div>
+  <div class="s4-content">
+    <div class="s4-grid">
+      <div class="s4-card">
+        <div class="s4-kicker">Target ／ 対象</div>
+        <div class="s4-row"><span class="s4-no">01</span><span class="s4-h">小さな案件から始める</span></div>
+        <div class="s4-line"></div>
+        <p class="s4-body">自分で判断できる1ページの案件から。</p>
+        <div class="s4-note">例：自社サイトの1ページ</div>
+      </div>
+      <div class="s4-card s4-fill">
+        <div class="s4-kicker">Tools ／ 環境</div>
+        <div class="s4-row"><span class="s4-no">02</span><span class="s4-h">道具を1つずつに絞る</span></div>
+        <div class="s4-line"></div>
+        <p class="s4-body">生成と実装のツールを1つずつ固定する。</p>
+        <div class="s4-note">例：ブラウザとエディタを1つずつ</div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-kicker">Check ／ 確認</div>
+        <div class="s4-row"><span class="s4-no">03</span><span class="s4-h">人が見る場所を決める</span></div>
+        <div class="s4-line"></div>
+        <p class="s4-body">表記・リンク・余白は公開前に目で見る。</p>
+        <div class="s4-note">例：チェック表を1枚にまとめる</div>
+      </div>
+      <div class="s4-card s4-outline">
+        <div class="s4-kicker">Record ／ 記録</div>
+        <div class="s4-row"><span class="s4-no">04</span><span class="s4-h">判断の記録を残す</span></div>
+        <div class="s4-line"></div>
+        <p class="s4-body">指示と修正差分を案件フォルダに残す。</p>
+        <div class="s4-note">例：フォルダにログを1本置く</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+/* 本文エリア：左右48px・見出し＋リード併用で top:128px・下端は 500px（bottom:40px） */
+.s4-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; align-items:center; }
+.s4-content * { box-sizing:border-box; }
+.s4-content p { margin:0; }
+/* 2×2カード：等高・soft地・角丸11・gap16。パターンの高さ392pxは本文エリア（372px）を超えるので、エリア高いっぱい（100%）で組む */
+.s4-grid { width:100%; height:100%; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:16px; }
+.s4-card { border-radius:11px; padding:16px 24px; background:var(--sk-soft); display:flex; flex-direction:column; align-items:flex-start; }
+.s4-fill { background:var(--sk-accent); color:#FFFFFF; }
+.s4-outline { background:#FFFFFF; border:1.5px solid var(--sk-accent); }
+/* カードの型：KICKER → 番号＋見出し → 細罫線 → 本文 → 例： */
+.s4-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent); }
+.s4-fill .s4-kicker { color:#FFFFFF; }
+.s4-row { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+.s4-no { font-size:24px; font-weight:400; line-height:28px; letter-spacing:.04em; color:var(--sk-accent); }
+.s4-fill .s4-no { color:#FFFFFF; }
+.s4-h { font-size:18px; font-weight:700; line-height:28px; }
+.s4-line { width:100%; height:1px; background:var(--sk-line); margin:10px 0; }
+.s4-fill .s4-line { background:rgba(255,255,255,.35); }
+.s4-body { font-size:16px; line-height:1.8; }
+.s4-note { margin-top:8px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+.s4-fill .s4-note { color:#FFFFFF; opacity:.8; }
+</style>

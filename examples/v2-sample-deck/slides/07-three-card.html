@@ -1,0 +1,56 @@
+<!-- P042 three-column-icon-card: 等幅・等高の3カード（アイコン→KICKER→見出し→罫線→本文→例：）。中央の1枚だけ塗り -->
+<section class="slide s7-three">
+  <div class="sk-h">公開前の確認は3つの型で回す</div>
+  <div class="sk-msg">確認は担当者の勘に任せず、<b>誰が見ても同じ</b>になる型にします。</div>
+  <div class="s7-content">
+    <div class="s7-cards">
+      <div class="s7-card">
+        <div class="s7-icon"><i class="fa-solid fa-font"></i></div>
+        <div class="s7-kicker">Text ／ 表記</div>
+        <div class="s7-h">表記ゆれを見る</div>
+        <div class="s7-line"></div>
+        <p class="s7-body">社名・サービス名・数字の書き方を、一覧と突き合わせる。</p>
+        <div class="s7-note">例：表記一覧を1枚持つ</div>
+      </div>
+      <div class="s7-card s7-fill">
+        <div class="s7-icon"><i class="fa-solid fa-link"></i></div>
+        <div class="s7-kicker">Link ／ 導線</div>
+        <div class="s7-h">リンク先を全部踏む</div>
+        <div class="s7-line"></div>
+        <p class="s7-body">ボタンとリンクを1つずつ開き、遷移先と文言を確かめる。</p>
+        <div class="s7-note">例：公開前に全ページを実機で</div>
+      </div>
+      <div class="s7-card">
+        <div class="s7-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+        <div class="s7-kicker">Layout ／ 余白</div>
+        <div class="s7-h">余白と折り返しを見る</div>
+        <div class="s7-line"></div>
+        <p class="s7-body">見出しの折り返しと画像の欠けを、実機の幅で確認する。</p>
+        <div class="s7-note">例：スマホ幅で1周する</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+/* 本文エリア：左右48px・見出し＋リード併用で top:128px・下端は 500px（bottom:40px）。中身は上下中央 */
+.s7-content { position:absolute; left:48px; right:48px; top:128px; bottom:40px; display:flex; align-items:center; }
+.s7-content * { box-sizing:border-box; }
+.s7-content p { margin:0; }
+/* 3カード：等高・gap16・角丸11。中央だけ塗り（1枚に塗りは1つ） */
+.s7-cards { width:100%; height:336px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.s7-card { border-radius:11px; padding:28px 24px; background:#FFFFFF; border:1px solid var(--sk-line); display:flex; flex-direction:column; align-items:flex-start; }
+.s7-fill { background:var(--sk-accent); border-color:var(--sk-accent); color:#FFFFFF; }
+/* アイコン：20px・丸地は soft（塗りカード内は白の半透明） */
+.s7-icon { width:40px; height:40px; border-radius:50%; background:var(--sk-soft); display:flex; align-items:center; justify-content:center;
+           font-size:20px; line-height:1; color:var(--sk-accent); margin-bottom:20px; }
+.s7-fill .s7-icon { background:rgba(255,255,255,.2); color:#FFFFFF; }
+/* カードの型：KICKER → 見出し → 細罫線 → 本文 → 例： */
+.s7-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent); }
+.s7-fill .s7-kicker { color:#FFFFFF; }
+.s7-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+.s7-line { width:100%; height:1px; background:var(--sk-line); margin:12px 0; }
+.s7-fill .s7-line { background:rgba(255,255,255,.35); }
+.s7-body { font-size:16px; line-height:1.8; }
+.s7-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted); }
+.s7-fill .s7-note { color:#FFFFFF; opacity:.8; }
+</style>

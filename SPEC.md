@@ -391,7 +391,7 @@ html2pptx.app のテンプレート（AI PLAY GUILD「速さと安全は、両�
 
 - 見出しは **スタイルB（縦バー）を既定**。バー幅3px・高さ18px・タイトルと垂直中心を合わせる
 - **リード1文（`.sk-msg`）を本文スライドでは必須**にする。結論を書き、要所だけ `<b>` で強調（1文に1箇所）
-- **フッター**（左下ワードマーク＋©、右下頁番号）はビルダーが描く。`deck-config.json` に
+- **フッター**（左下ワードマーク＋©、右下頁番号）はビルダーが描く。全面塗りの頁で白抜きにするときは、その頁のルートクラスでスコープして `.sN-xxx .sk-foot{color:#fff}` と書く（スコープ無しだと全頁に効く）。`deck-config.json` に
   `"frame": "v2", "brand": { "name": "Macminol", "copyright": "Copyright © Macminol. All rights reserved." }`
 - 左右余白は 48px（幅の5%・代表の癖「44px前後」と同水準）。カードは**等高**・gap 16px・角丸 10〜12px
 
