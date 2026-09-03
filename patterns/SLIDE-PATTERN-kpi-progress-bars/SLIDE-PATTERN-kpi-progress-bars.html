@@ -4,20 +4,31 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-kpi-progress-bars</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 110px; display:flex; flex-direction:column; justify-content:center; gap:34px; }
-  .pb-row { display:flex; flex-direction:column; gap:8px; }
-  .pb-head { display:flex; align-items:baseline; justify-content:space-between; }
-  .pb-name { font-size:14px; font-weight:bold; color:#333333; }
-  .pb-nums { display:flex; align-items:baseline; gap:6px; }
-  .pb-val { font-size:24px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
-  .pb-target { font-size:12px; color:#999999; }
-  .pb-track { height:14px; background:var(--sk-soft,#EEEEEE); border-radius:7px; overflow:hidden; }
-  .pb-fill { height:100%; background:var(--sk-accent,#666666); border-radius:7px; }
-  .f1 { width:82%; } .f2 { width:64%; } .f3 { width:91%; }
-  .pb-note { font-size:11px; color:#999999; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・行の束は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* KPI進捗バー4本：行は細罫線で区切る。塗りはバーの進捗だけ */
+  .pb-list { width:100%; display:flex; flex-direction:column; }
+  .pb-row  { padding:16px 0; }
+  .pb-row + .pb-row { border-top:1px solid var(--sk-line,#E2E2E2); }
+  /* 行の型：KICKER＋指標名（左）／数値20px＋単位（右端）→ バー8px → 目標値の注記 */
+  .pb-head   { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+  .pb-label  { display:flex; align-items:baseline; gap:12px; min-width:0; }
+  .pb-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); white-space:nowrap; }
+  .pb-name   { font-size:16px; font-weight:700; line-height:1.5; }
+  .pb-value  { display:flex; align-items:baseline; gap:4px; white-space:nowrap; }
+  .pb-num    { font-size:20px; font-weight:700; line-height:1; letter-spacing:.02em; color:var(--sk-accent,#666666); }
+  .pb-unit   { font-size:11.5px; font-weight:400; line-height:1; }
+  .pb-track  { margin-top:8px; height:8px; border-radius:4px; background:var(--sk-soft,#F0F0F0); overflow:hidden; }
+  .pb-fill   { height:100%; border-radius:4px; background:var(--sk-accent,#666666); }
+  .pb-note   { margin-top:8px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -37,11 +48,44 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：KPI進捗バー4本（バーの width ＝ 達成率） -->
   <div class="content-area">
-    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">82%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f1"></div></div><div class="pb-note">補足が入ります（前月比+5pt など）</div></div>
-    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">64%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f2"></div></div><div class="pb-note">補足が入ります</div></div>
-    <div class="pb-row"><div class="pb-head"><div class="pb-name">指標名が入ります</div><div class="pb-nums"><span class="pb-val">91%</span><span class="pb-target">/ 目標 100%</span></div></div><div class="pb-track"><div class="pb-fill f3"></div></div><div class="pb-note">補足が入ります</div></div>
+    <div class="pb-list">
+      <div class="pb-row">
+        <div class="pb-head">
+          <div class="pb-label"><span class="pb-kicker">Leads</span><span class="pb-name">問い合わせ数</span></div>
+          <div class="pb-value"><span class="pb-num">128</span><span class="pb-unit">件</span></div>
+        </div>
+        <div class="pb-track"><div class="pb-fill" style="width:85%"></div></div>
+        <div class="pb-note">目標 150件 ／ 達成率 85%</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-head">
+          <div class="pb-label"><span class="pb-kicker">CVR</span><span class="pb-name">問い合わせ率</span></div>
+          <div class="pb-value"><span class="pb-num">2.4</span><span class="pb-unit">%</span></div>
+        </div>
+        <div class="pb-track"><div class="pb-fill" style="width:80%"></div></div>
+        <div class="pb-note">目標 3.0% ／ 達成率 80%</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-head">
+          <div class="pb-label"><span class="pb-kicker">Pages</span><span class="pb-name">公開ページ数</span></div>
+          <div class="pb-value"><span class="pb-num">36</span><span class="pb-unit">ページ</span></div>
+        </div>
+        <div class="pb-track"><div class="pb-fill" style="width:90%"></div></div>
+        <div class="pb-note">目標 40ページ ／ 達成率 90%</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-head">
+          <div class="pb-label"><span class="pb-kicker">Review</span><span class="pb-name">目視チェック完了率</span></div>
+          <div class="pb-value"><span class="pb-num">62</span><span class="pb-unit">%</span></div>
+        </div>
+        <div class="pb-track"><div class="pb-fill" style="width:62%"></div></div>
+        <div class="pb-note">目標 100% ／ 達成率 62%</div>
+      </div>
+    </div>
   </div>
 </div>
 </body>

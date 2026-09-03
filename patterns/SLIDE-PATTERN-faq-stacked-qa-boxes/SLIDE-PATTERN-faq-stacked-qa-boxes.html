@@ -1,109 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>SLIDE-PATTERN-faq-stacked-qa-boxes</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { margin:0; padding:0; background:#FFFFFF; font-family:sans-serif; }
-    .slide {
-      width: 960px;
-      height: 540px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 18px 40px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .content-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    /* Q&Aボックス群のラッパー */
-    .qa-stack {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    /* 各Q&Aボックス */
-    .qa-box {
-      flex: 1;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 6px;
-      padding: 16px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    /* Q行 */
-    .q-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .q-prefix {
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      flex-shrink: 0;
-    }
-    .q-prefix-label {
-      font-size: 10px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      margin-left: 4px;
-    }
-    .q-text {
-      font-size: 14px;
-      font-weight: bold;
-      color: #333333;
-      line-height: 1.5;
-    }
-    /* A行 */
-    .a-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-    .a-prefix {
-      font-size: 13px;
-      font-weight: bold;
-      color: #888888;
-      flex-shrink: 0;
-    }
-    .a-text {
-      font-size: 13px;
-      color: #333333;
-      line-height: 1.7;
-    }
-    .a-row-label {
-      font-size: 10px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-faq-stacked-qa-boxes</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・箱の束は上下中央（箱の中身は上ぞろえ） */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 縦積みのQ&A箱3つ：内容高・gap12・角丸11・淡い地。1箱目だけ塗り（1枚に塗りは1つ） */
+  .fs-stack { width:100%; display:flex; flex-direction:column; gap:12px; }
+  .fs-box   { box-sizing:border-box; border-radius:11px; padding:16px 24px; background:var(--sk-soft,#F0F0F0);
+              display:flex; align-items:flex-start; gap:20px; }
+  .fs-fill  { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 箱の型：左にQ（KICKER型 Q.01）→ 質問16px太字 → 回答16px */
+  .fs-q { flex:0 0 48px; padding-top:7px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); white-space:nowrap; }
+  .fs-fill .fs-q { color:#FFFFFF; }
+  .fs-text { flex:1; min-width:0; }
+  .fs-h { font-size:16px; font-weight:700; line-height:1.5; }
+  .fs-a { margin-top:4px; font-size:16px; line-height:1.8; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -121,67 +43,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-  <div class="slide">
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-    <!-- コンテンツエリア -->
-    <div class="content-area">
-      <div class="content-label">Content Area — faq-stacked-qa-boxes</div>
-
-      <!-- Q&Aボックス群（縦積み） -->
-      <div class="qa-stack">
-
-        <!-- Q&Aボックス1 -->
-        <div class="qa-box">
-          <div class="q-row">
-            <span class="q-prefix">Q.
-              <span class="q-prefix-label">← accent color</span>
-            </span>
-            <span class="q-text">よくある質問の文章がここに入ります？</span>
-          </div>
-          <div class="a-row">
-            <span class="a-prefix">A.
-              <span class="a-row-label">← body text</span>
-            </span>
-            <span class="a-text">
-              回答文がここに入ります。はい、可能です。詳細については担当者にお問い合わせください。<br>
-              複数行にまたがる場合もこのように続きます。
-            </span>
-          </div>
+  <!-- コンテンツエリア：縦積みのQ&A箱（Q.01＝いちばん多い質問を塗りで主役に） -->
+  <div class="content-area">
+    <div class="fs-stack">
+      <div class="fs-box fs-fill">
+        <div class="fs-q">Q.01</div>
+        <div class="fs-text">
+          <div class="fs-h">AIに任せると品質は落ちない？</div>
+          <div class="fs-a">下書きはAI、表記と導線の最終確認は人が行う。公開前の目視は全ページで通す。</div>
         </div>
-
-        <!-- Q&Aボックス2 -->
-        <div class="qa-box">
-          <div class="q-row">
-            <span class="q-prefix">Q.</span>
-            <span class="q-text">2つめのよくある質問の文章がここに入ります？</span>
-          </div>
-          <div class="a-row">
-            <span class="a-prefix">A.</span>
-            <span class="a-text">
-              回答文がここに入ります。プランをご決定いただければ対応可能です。<br>
-              オプション料金は一切発生せず、シンプルな料金体系となっています。
-            </span>
-          </div>
+      </div>
+      <div class="fs-box">
+        <div class="fs-q">Q.02</div>
+        <div class="fs-text">
+          <div class="fs-h">途中で仕様を変えられる？</div>
+          <div class="fs-a">変えられる。差分を記録に残し、影響する工程だけを組み直す。</div>
         </div>
-
-        <!-- Q&Aボックス3 -->
-        <div class="qa-box">
-          <div class="q-row">
-            <span class="q-prefix">Q.</span>
-            <span class="q-text">3つめのよくある質問の文章がここに入ります？</span>
-          </div>
-          <div class="a-row">
-            <span class="a-prefix">A.</span>
-            <span class="a-text">
-              回答文がここに入ります。問題ございません。納品後も編集しやすいデザインで制作しておりますので、<br>
-              社内で修正のご対応が可能です。
-            </span>
-          </div>
+      </div>
+      <div class="fs-box">
+        <div class="fs-q">Q.03</div>
+        <div class="fs-text">
+          <div class="fs-h">公開後の修正は誰がする？</div>
+          <div class="fs-a">文言や画像の差し替えは社内で直せる形で納品する。構造の変更は相談して進める。</div>
         </div>
-
       </div>
     </div>
   </div>
+</div>
 </body>
 </html>
