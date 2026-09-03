@@ -82,6 +82,8 @@ const DEFAULT_THEME = {
   text: '#333333',
   muted: '#8A8F98',
   bg: '#FFFFFF',
+  ink: '#3f4a52',   // 本文のインク色（純黒を使わない。v2フレームで .slide の既定色になる）
+  line: '#e2e2e2',  // 罫線・カード枠の色
 };
 
 // 共通見出し（sk-h）のスタイル一覧。patterns/ 側の sk-head v5（data-hstyle="a"〜"f"）と
@@ -176,6 +178,13 @@ function main() {
     iconStyle: ICON_STYLES.includes(rawConfig.iconStyle) ? rawConfig.iconStyle : 'solid',
     // 画像を index.html に埋め込むか（既定 true）。false にすると従来どおり assets/ への相対参照になる
     inlineAssets: rawConfig.inlineAssets !== false,
+    // フレーム v2（2026-09-02・デザイン規律の見直し）: 文字の組み（palt・字間・行間・太さ2種）と
+    // 共通部品（.sk-msg リード／.sk-kicker／.sk-note／.sk-pill）と、フッター（ワードマーク・©・頁番号）を
+    // ビルダー側で描く。既存デッキは "frame" 未指定＝v1 のまま変わらない
+    frame: rawConfig.frame === 'v2' ? 'v2' : 'v1',
+    brand: rawConfig.brand && typeof rawConfig.brand === 'object'
+      ? { name: String(rawConfig.brand.name || ''), copyright: String(rawConfig.brand.copyright || '') }
+      : null,
     // 背景画像レイヤー（未指定なら null ＝ 従来と完全に同じ出力）
     background: normalizeBackgroundConfig(rawConfig.background),
     // スライド単位の設定（bg の上書き・kind/pattern のヒント）。省略可
@@ -740,7 +749,12 @@ function maybeInjectPageNumber(sectionHtml, n, total, config) {
   if (!config.pageNumbers) return sectionHtml;
   if (config.noPageNoOn.includes(n)) return sectionHtml;
 
-  const span = `<span class="sk-pageno">${n} / ${total}</span>`;
+  let span = `<span class="sk-pageno">${n} / ${total}</span>`;
+  if (config.frame === 'v2') {
+    // フッター（ワードマーク・©・頁番号）。brand 未指定なら頁番号だけを右下に置く
+    const b = config.brand || { name: '', copyright: '' };
+    span = `<div class="sk-foot">${b.name ? `<span class="sk-brand">${escapeHtml(b.name)}</span>` : ''}<span class="sk-copy">${escapeHtml(b.copyright || '')}</span>${span}</div>`;
+  }
 
   // 抽出済みの section 文字列は、必ず対応する </section> で終わっている。
   const closeRe = /<\/section\s*>/gi;
@@ -784,6 +798,8 @@ function buildCommonCss(config, bgCssUrl) {
   --sk-text: ${t.text};
   --sk-muted: ${t.muted};
   --sk-bg: ${t.bg};
+  --sk-ink: ${t.ink};
+  --sk-line: ${t.line};
 }
 html, body { margin:0; padding:0; }
 body { font-family: '${config.font}', "Noto Sans JP", sans-serif; background:#E9EAEC; display:flex; flex-direction:column; align-items:center; gap:24px; padding:24px 0; }
@@ -799,6 +815,7 @@ ${buildHeadingCss(config.headingStyle)}
    2026-08-21: right:40/bottom:16 → 32/12 → さらに右20px・下4px 動かして 12/8（代表指示） */
 .sk-pageno { position:absolute; right:12px; bottom:8px; font-size:12px; color:var(--sk-muted,#8A8F98); }
 
+${config.frame === 'v2' ? buildFrameV2Css() : ''}
 @page { size:960px 540px; margin:0; }
 @media print {
   html, body { background:#fff; }
@@ -806,6 +823,26 @@ ${buildHeadingCss(config.headingStyle)}
   .slide { margin:0; box-shadow:none; scroll-snap-align:none; page-break-after:always; break-after:page; }
   .slide:last-child { page-break-after:auto; break-after:auto; }
 }${buildBackgroundCss(bgCssUrl)}`;
+}
+
+// フレーム v2 の共通CSS（SPEC「デザインの規律 v2」の数値をそのまま持つ）
+function buildFrameV2Css() {
+  return `
+/* ===== フレーム v2（2026-09-02）===== */
+.slide { color:var(--sk-ink); font-feature-settings:"palt" 1; line-break:strict; word-break:normal; letter-spacing:.06em; line-height:1.8; }
+.slide b, .slide strong { font-weight:700; }
+.sk-h { letter-spacing:.06em; color:var(--sk-ink); }
+.sk-msg { top:82px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
+.sk-msg b { color:var(--sk-accent); font-weight:700; }
+.sk-kicker { display:block; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }
+.sk-note { font-size:11.5px; color:var(--sk-muted); letter-spacing:.06em; line-height:1.8; }
+.sk-pill { display:inline-flex; align-items:center; justify-content:center; height:34px; padding:0 28px; border-radius:17px; background:var(--sk-accent); color:#fff; font-size:14px; letter-spacing:.2em; white-space:nowrap; }
+.sk-foot { position:absolute; left:36px; right:36px; bottom:14px; display:flex; align-items:baseline; gap:18px; font-size:9px; color:var(--sk-muted); letter-spacing:.08em; line-height:1; pointer-events:none; }
+.sk-foot .sk-brand { font-size:11px; font-weight:700; color:var(--sk-ink); letter-spacing:.1em; }
+.sk-foot .sk-copy { flex:1; }
+.sk-foot .sk-pageno { position:static; font-size:9px; color:var(--sk-muted); }
+/* 塗りつぶしスライドではフラグメント側で .sk-foot, .sk-foot .sk-brand { color:#fff } を上書きする */
+`;
 }
 
 function buildDocument(config, allStyles, sections, bgCssUrl) {

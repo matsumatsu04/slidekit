@@ -42,6 +42,8 @@ Google Slidesへの編集可能ファイルとしての納品が必要な場合�
   "noPageNoOn": [1],
   "headingStyle": "a",
   "iconStyle": "solid",
+  "frame": "v2",
+  "brand": { "name": "Macminol", "copyright": "Copyright © Macminol. All rights reserved." },
   "background": { "image": "soft-diagonal", "default": "auto" },
   "slides": [
     { "file": "01-cover.html", "bg": false }
@@ -58,6 +60,12 @@ Google Slidesへの編集可能ファイルとしての納品が必要な場合�
   軽くしたい場合だけ `"inlineAssets": false` にすると従来どおりの相対参照になる。
 - `background` / `slides` は省略可（省略時は従来と完全に同じ出力）。淡い背景画像を各スライドの最下層に敷き、
   ページごとに ON/OFF する仕組み。詳細は下記「背景画像レイヤー」節。
+- `frame` に `"v2"` を書くと**デザインの規律 v2**（SPEC.md「デザインの規律 v2」）の共通CSSが当たる（2026-09-02）:
+  `.slide` に palt・禁則・字間.06em・行間1.8・インク色、`.sk-msg` がリード仕様（15px・字間.1em・行間1.9・`<b>` がアクセント色）、
+  `.sk-kicker`（英字ラベル）・`.sk-note`（注記）・`.sk-pill`（結論ピル）が使える。**新規デッキは v2 を既定にする。**
+  省略時は従来どおり（既存デッキの再ビルド結果は変わらない）。
+- `brand` は v2 のフッター（左下ワードマーク＋©、右下頁番号）の文言。`pageNumbers:true` の頁に描かれ、`noPageNoOn` の頁には出ない。
+  全面塗りのスライドではフラグメント側で `.sk-foot,.sk-foot .sk-brand{color:#fff}` を上書きする。
 - `headingStyle` 省略時は `"a"`。共通見出し（`.sk-h`）のデザインを `"a"`〜`"d"` の4種から選ぶ
   （`patterns/` 側の sk-head v5・`data-hstyle` と同じ4種。詳細は SPEC.md の「共通見出し」節）。
   未対応の値を指定した場合はビルド時に警告を出し `"a"` にフォールバックする。
