@@ -6,18 +6,48 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; align-items:center; justify-content:center; gap:0; padding:24px 64px; }
-  .bm-party { width:200px; padding:24px 16px; text-align:center; border:1px solid var(--sk-soft,#DDDDDD); background:#FFFFFF; flex-shrink:0; }
-  .bm-party.center { border:2px solid var(--sk-accent,#777777); background:var(--sk-soft,#F5F7FA); padding:30px 16px; }
-  .bm-name { font-size:16px; font-weight:bold; color:#333333; }
-  .bm-desc { font-size:11px; color:#888888; margin-top:6px; line-height:1.6; }
-  .bm-flow { flex:1; display:flex; flex-direction:column; justify-content:center; gap:26px; padding:0 12px; min-width:130px; }
-  .bm-arrow { position:relative; height:2px; background:var(--sk-accent,#999999); }
-  .bm-arrow.right::after { content:""; position:absolute; right:-1px; top:-5px; border-left:10px solid var(--sk-accent,#999999); border-top:6px solid transparent; border-bottom:6px solid transparent; }
-  .bm-arrow.left::before { content:""; position:absolute; left:-1px; top:-5px; border-right:10px solid var(--sk-accent,#999999); border-top:6px solid transparent; border-bottom:6px solid transparent; }
-  .bm-flow-label { font-size:11px; font-weight:bold; color:#555555; text-align:center; margin:-20px 0 0; }
-  .bm-flow-label.under { margin:4px 0 0; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。図は上下中央・左右中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+  /* ── 3者の三角配置（自社＝頂点・顧客＝左下・協力会社＝右下）。ステージ 720×304 に絶対配置。ノード高さ96px固定 ── */
+  .bm-wrap { width: 720px; }
+  .bm-stage { position: relative; width: 720px; height: 304px; }
+  /* 接続線: 1px の罫線色。自社の左右辺の中心 ⇄ 相手の上辺の中心を直角に結ぶ（往復2本を内外に重ねる）。ラベルの両側で線を切る（白矩形で消さない） */
+  .bm-lines { position: absolute; left: 0; top: 0; width: 720px; height: 304px; display: block; }
+  .bm-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+  /* 三角矢印（幅12px）だけアクセント色 */
+  .bm-lines .bm-arw { fill: var(--sk-accent,#555555); stroke: none; shape-rendering: auto; }
+
+  /* ノードの型: KICKER → 名前16px/700 → 1行説明16px。淡い地・角丸8px・幅200px */
+  .bm-node { position: absolute; width: 200px; height: 96px; padding: 12px 16px; border-radius: 8px; background: var(--sk-soft,#F0F0F0); display: flex; flex-direction: column; justify-content: center; }
+  /* 自社だけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .bm-fill { background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .bm-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; overflow: hidden; }
+  .bm-fill .bm-kicker { color: #FFFFFF; }
+  .bm-name { margin-top: 8px; font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+  .bm-desc { margin-top: 4px; font-size: 16px; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+
+  /* 座標（左端x／上端y）: 自社は上段中央 top:0、顧客・協力会社は下段 top:208 */
+  .bm-us      { left: 260px; top: 0; }
+  .bm-client  { left: 0;     top: 208px; }
+  .bm-partner { left: 520px; top: 208px; }
+
+  /* 線上のラベル: 11.5px・muted。横線の中点（x=176／544）に置き、線はその両側28pxで止まる */
+  .bm-rel { position: absolute; transform: translate(-50%, -50%); font-size: 11.5px; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+  .bm-rel-1 { left: 176px; top: 36px; }
+  .bm-rel-2 { left: 176px; top: 60px; }
+  .bm-rel-3 { left: 544px; top: 36px; }
+  .bm-rel-4 { left: 544px; top: 60px; }
+
+  /* 注記（例：〜） */
+  .bm-note { margin-top: 24px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -37,19 +67,59 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：自社（頂点・塗り）⇄ 顧客／協力会社 の往復2本ずつ。塗りは自社だけ -->
   <div class="content-area">
-    <div class="bm-party"><div class="bm-name">顧客</div><div class="bm-desc">対象の説明が入ります</div></div>
-    <div class="bm-flow">
-      <div><div class="bm-arrow left"></div><div class="bm-flow-label under">対価（料金）が入ります</div></div>
-      <div><div class="bm-arrow right"></div><div class="bm-flow-label under">提供価値が入ります</div></div>
+    <div class="bm-wrap">
+      <div class="bm-stage">
+
+        <!-- 接続線（外側＝自社から相手へ、内側＝相手から自社へ。横線の中点でラベル分の隙間を空ける） -->
+        <svg class="bm-lines" viewBox="0 0 720 304" aria-hidden="true">
+          <!-- 自社 → 顧客（外側・y=36 → x=88） -->
+          <path d="M260 36H204 M148 36H88V196"/>
+          <path class="bm-arw" d="M80 196L88 208 96 196Z"/>
+          <!-- 顧客 → 自社（内側・x=112 → y=60） -->
+          <path d="M112 208V60H148 M204 60H248"/>
+          <path class="bm-arw" d="M248 52L260 60 248 68Z"/>
+          <!-- 自社 → 協力会社（外側・y=36 → x=632） -->
+          <path d="M460 36H516 M572 36H632V196"/>
+          <path class="bm-arw" d="M624 196L632 208 640 196Z"/>
+          <!-- 協力会社 → 自社（内側・x=608 → y=60） -->
+          <path d="M608 208V60H572 M516 60H472"/>
+          <path class="bm-arw" d="M472 52L460 60 472 68Z"/>
+        </svg>
+
+        <!-- 自社（頂点・塗り） -->
+        <div class="bm-node bm-fill bm-us">
+          <div class="bm-kicker">COMPANY ／ 自社</div>
+          <div class="bm-name">Web制作会社</div>
+          <div class="bm-desc">要件整理と進行管理</div>
+        </div>
+
+        <!-- 顧客（左下） -->
+        <div class="bm-node bm-client">
+          <div class="bm-kicker">CLIENT ／ 顧客</div>
+          <div class="bm-name">中小企業の広報担当</div>
+          <div class="bm-desc">サイト制作を依頼</div>
+        </div>
+
+        <!-- 協力会社（右下） -->
+        <div class="bm-node bm-partner">
+          <div class="bm-kicker">PARTNER ／ 協力会社</div>
+          <div class="bm-name">フリーランスの制作者</div>
+          <div class="bm-desc">デザイン制作を担当</div>
+        </div>
+
+        <!-- 線上のラベル（何が行き来するか） -->
+        <div class="bm-rel bm-rel-1">納品</div>
+        <div class="bm-rel bm-rel-2">依頼</div>
+        <div class="bm-rel bm-rel-3">発注</div>
+        <div class="bm-rel bm-rel-4">成果物</div>
+
+      </div>
+      <div class="bm-note">例：自社が顧客の依頼を受け、制作の一部を協力会社に発注して、まとめて納品する</div>
     </div>
-    <div class="bm-party center"><div class="bm-name">自社</div><div class="bm-desc">役割の説明が入ります</div></div>
-    <div class="bm-flow">
-      <div><div class="bm-arrow right"></div><div class="bm-flow-label under">発注・依頼が入ります</div></div>
-      <div><div class="bm-arrow left"></div><div class="bm-flow-label under">納品・成果物が入ります</div></div>
-    </div>
-    <div class="bm-party"><div class="bm-name">パートナー</div><div class="bm-desc">相手の説明が入ります</div></div>
   </div>
 </div>
 </body>

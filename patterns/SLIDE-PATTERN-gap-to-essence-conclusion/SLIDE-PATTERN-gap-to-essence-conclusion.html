@@ -3,39 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-gap-to-essence-conclusion</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:20px 64px 24px; display:flex; flex-direction:column; min-height:0; }
-  .gte-main { flex:1; display:flex; align-items:stretch; min-height:0; }
-  /* 左ゾーン: 現状の2カード＋ギャップ矢印 */
-  .gte-left { width:45%; background:#F2F2F2; border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; }
-  .gte-zone-title { font-size:15px; font-weight:bold; color:#333333; text-align:center; flex-shrink:0; }
-  .gte-left-body { flex:1; display:flex; flex-direction:column; justify-content:center; }
-  .gte-card { background:#FFFFFF; border-radius:8px; padding:10px 14px; }
-  .gte-card-title { font-size:13px; font-weight:bold; color:#333333; margin-bottom:4px; }
-  .gte-line { display:flex; gap:6px; font-size:11.5px; color:#555555; line-height:1.6; }
-  .gte-line .dot { width:4px; height:4px; border-radius:50%; background:#AAAAAA; margin-top:7px; flex-shrink:0; }
-  .gte-gap { display:flex; flex-direction:column; align-items:center; margin:4px 0; color:var(--sk-accent2,var(--sk-accent,#888888)); }
-  .gte-gap i { font-size:14px; line-height:1; }
-  .gte-card--essence { border:1.5px solid var(--sk-accent,#888888); }
-  /* 中央: 右向き大矢印 */
-  .gte-center { width:56px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .gte-center i { font-size:26px; color:#BBBBBB; }
-  /* 右ゾーン: 本質の番号リスト */
-  .gte-right { flex:1; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 90%); border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; }
-  .gte-right-sub { font-size:11px; color:#666666; text-align:center; line-height:1.6; margin-top:4px; flex-shrink:0; }
-  .gte-right-sub .em { color:var(--sk-accent,#555555); font-weight:bold; }
-  .gte-right-body { flex:1; display:flex; flex-direction:column; justify-content:center; gap:8px; }
-  .gte-item { background:#FFFFFF; border-radius:8px; padding:9px 12px; display:flex; align-items:center; gap:10px; }
-  .gte-num { width:24px; height:24px; border-radius:50%; background:var(--sk-accent,#555555); color:#FFFFFF; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .gte-item-name { font-size:13px; font-weight:bold; color:#333333; }
-  .gte-item-note { margin-left:auto; font-size:10.5px; color:#777777; text-align:right; line-height:1.4; }
-  /* 下部: 結論バンド */
-  .gte-conclusion { flex-shrink:0; margin-top:14px; background:var(--sk-soft,#F0F0F0); border-radius:8px; padding:10px 16px; text-align:center; font-size:18px; font-weight:bold; color:#333333; line-height:1.5; }
-  .gte-conclusion .em { color:var(--sk-accent,#555555); }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。3箱＋結論バンドを上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 横流れ3箱（表面の課題 → 隠れたギャップ → 本質）。等幅・等高184px・中身は上ぞろえ ── */
+  .ge-row { display: flex; align-items: stretch; height: 184px; }
+  .ge-box { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px; border-radius: 11px; background: var(--sk-soft,#F0F0F0); }
+
+  /* 箱の型: KICKER → 見出し18px/700 → 本文16px×2行 */
+  .ge-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ge-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ge-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+
+  /* 箱の間の矢印: 幅48pxの列。1pxの線＋三角矢印（幅12px・アクセント色）で左の箱の右辺から右の箱の左辺まで */
+  .ge-conn { flex: none; width: 48px; display: flex; align-items: center; justify-content: center; }
+  .ge-conn svg { width: 48px; height: 16px; display: block; }
+  .ge-conn path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+  .ge-conn .ge-arw { fill: var(--sk-accent,#555555); stroke: none; shape-rendering: auto; }
+
+  /* 結論バンド: アクセント塗り・白文字・角丸11px（塗りは1枚でここだけ）。KICKER → 結論18px/700 */
+  .ge-band { margin-top: 24px; padding: 20px 28px; border-radius: 11px; background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .ge-band .ge-kicker { color: #FFFFFF; }
+  .ge-concl { margin-top: 8px; font-size: 18px; font-weight: 700; line-height: 1.4; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -55,54 +54,54 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：表面の課題 → 隠れたギャップ → 本質 の3箱と、下の結論バンド（塗りはバンドだけ） -->
   <div class="content-area">
-    <div class="gte-main">
-      <!-- 左ゾーン: 現状 -->
-      <div class="gte-left">
-        <div class="gte-zone-title">現状の小見出しが入ります</div>
-        <div class="gte-left-body">
-          <div class="gte-card">
-            <div class="gte-card-title">上段カードのタイトルが入ります</div>
-            <div class="gte-line"><span class="dot"></span><span>箇条書きの1行目が入ります</span></div>
-            <div class="gte-line"><span class="dot"></span><span>箇条書きの2行目が入ります</span></div>
-          </div>
-          <div class="gte-gap"><i class="fa-solid fa-caret-up"></i><i class="fa-solid fa-caret-down"></i></div>
-          <div class="gte-card gte-card--essence">
-            <div class="gte-card-title">下段カードのタイトルが入ります</div>
-            <div class="gte-line"><span class="dot"></span><span>箇条書きの1行目が入ります</span></div>
-            <div class="gte-line"><span class="dot"></span><span>箇条書きの2行目が入ります</span></div>
-            <div class="gte-line"><span class="dot"></span><span>箇条書きの3行目が入ります</span></div>
-          </div>
-        </div>
+    <div class="ge-row">
+
+      <!-- 表面の課題 -->
+      <div class="ge-box">
+        <div class="ge-kicker">SURFACE ／ 表面の課題</div>
+        <div class="ge-ttl">問い合わせが来ない</div>
+        <div class="ge-body">サイトはあるのに、月の問い合わせがほぼ無い</div>
       </div>
-      <!-- 中央: 大矢印 -->
-      <div class="gte-center"><i class="fa-solid fa-arrow-right"></i></div>
-      <!-- 右ゾーン: 本質 -->
-      <div class="gte-right">
-        <div class="gte-zone-title">本質は「キーワード」が入ります</div>
-        <div class="gte-right-sub">補足テキストの1行目が入ります<br>補足の<span class="em">強調部分</span>を含む2行目が入ります</div>
-        <div class="gte-right-body">
-          <div class="gte-item">
-            <div class="gte-num">1</div>
-            <div class="gte-item-name">項目名が入ります</div>
-            <div class="gte-item-note">補足テキストが<br>入ります</div>
-          </div>
-          <div class="gte-item">
-            <div class="gte-num">2</div>
-            <div class="gte-item-name">項目名が入ります</div>
-            <div class="gte-item-note">補足テキストが<br>入ります</div>
-          </div>
-          <div class="gte-item">
-            <div class="gte-num">3</div>
-            <div class="gte-item-name">項目名が入ります</div>
-            <div class="gte-item-note">補足テキストが<br>入ります</div>
-          </div>
-        </div>
+
+      <div class="ge-conn">
+        <svg viewBox="0 0 48 16" aria-hidden="true">
+          <path d="M0 8H36"/>
+          <path class="ge-arw" d="M36 0L48 8 36 16Z"/>
+        </svg>
       </div>
+
+      <!-- 隠れたギャップ -->
+      <div class="ge-box">
+        <div class="ge-kicker">GAP ／ 隠れたギャップ</div>
+        <div class="ge-ttl">誰向けか書いていない</div>
+        <div class="ge-body">実績は載っているが、誰向けの何が強みか読めない</div>
+      </div>
+
+      <div class="ge-conn">
+        <svg viewBox="0 0 48 16" aria-hidden="true">
+          <path d="M0 8H36"/>
+          <path class="ge-arw" d="M36 0L48 8 36 16Z"/>
+        </svg>
+      </div>
+
+      <!-- 本質 -->
+      <div class="ge-box">
+        <div class="ge-kicker">ESSENCE ／ 本質</div>
+        <div class="ge-ttl">訴求の設計が無い</div>
+        <div class="ge-body">誰に何を約束するかが決まらないまま作っている</div>
+      </div>
+
     </div>
-    <!-- 下部: 結論バンド -->
-    <div class="gte-conclusion">これはまさに「<span class="em">キーワード</span>」の課題 ＝ <span class="em">結論の言い切り</span>が入ります</div>
+
+    <!-- 結論バンド（アクセント塗り・白文字） -->
+    <div class="ge-band">
+      <div class="ge-kicker">CONCLUSION ／ 結論</div>
+      <div class="ge-concl">先に決めるのは、誰に何を約束するか</div>
+    </div>
   </div>
 </div>
 </body>

@@ -4,20 +4,52 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-sitemap-tree-3level</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px; display: flex; align-items: center; }
-  .top-node { width: 128px; background: var(--sk-accent,#555555); padding: 16px 8px; text-align: center; font-size: 16px; font-weight: bold; color: #FFFFFF; flex-shrink: 0; }
-  .h-line { width: 32px; height: 2px; background: var(--sk-accent,#BBBBBB); flex-shrink: 0; }
-  /* 幹線は「最初の行の中心」から「最後の行の中心」まで（端点ルール: 行高を固定しtop/bottom=行高の半分で止める） */
-  .rows { flex: 1; display: flex; flex-direction: column; gap: 24px; position: relative; }
-  .rows::before { content: ""; position: absolute; left: 0; top: 36px; bottom: 36px; width: 2px; background: var(--sk-accent,#BBBBBB); }
-  .row { display: flex; align-items: center; height: 72px; }
-  .stub { width: 32px; height: 2px; background: var(--sk-accent,#BBBBBB); flex-shrink: 0; }
-  .lv2 { width: 224px; border: 2px solid var(--sk-accent,#999999); background: #FFFFFF; padding: 12px 16px; flex-shrink: 0; }
-  .lv2 .name { font-size: 15px; font-weight: bold; color: #333333; }
-  .lv2 .note { font-size: 11px; color: #333333; margin-top: 4px; }
-  .lv3 { border: 1px solid var(--sk-accent,#BBBBBB); background: var(--sk-soft,#EFEFEF); padding: 12px 16px; font-size: 13px; color: #333333; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。ツリーは上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 3段ツリー（L1=トップ1 → L2=5 → L3=3＋2）。ステージ 864×240 に絶対配置。行の高さ48px・段の間48px ── */
+  .st-stage { position: relative; width: 864px; height: 240px; }
+  /* 接続線: 1px の罫線色。端点はノード辺の中心（上辺・下辺）で止める。白い矩形で消さない */
+  .st-lines { position: absolute; left: 0; top: 0; width: 864px; height: 240px; display: block; }
+  .st-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+
+  /* 階層KICKER: 各段の左端（x=0・幅40px）。行の高さに合わせて上下中央 */
+  .st-kicker { position: absolute; left: 0; width: 40px; height: 48px; display: flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .st-k1 { top: 0; }
+  .st-k2 { top: 96px; }
+  .st-k3 { top: 192px; }
+
+  /* ノードの型: ページ名1行。淡い地・角丸6px。高さ48px固定（名前の長さで線の端点がずれない） */
+  .st-node { position: absolute; height: 48px; padding: 0 12px; border-radius: 6px; background: var(--sk-soft,#F0F0F0); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 16px; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+  .st-l2 { width: 144px; }
+  .st-l3 { width: 120px; }
+  /* トップページだけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .st-top { width: 200px; font-weight: 700; background: var(--sk-accent,#555555); color: #FFFFFF; }
+
+  /* 座標（左端x／上端y）: L1 top:0、L2 top:96、L3 top:192。L2は幅144・間24で5つ、L3は幅120・間8で親の中心に揃える */
+  .st-n1  { left: 356px; top: 0; }
+  .st-n2a { left: 48px;  top: 96px; }
+  .st-n2b { left: 216px; top: 96px; }
+  .st-n2c { left: 384px; top: 96px; }
+  .st-n2d { left: 552px; top: 96px; }
+  .st-n2e { left: 720px; top: 96px; }
+  .st-n3a { left: 100px; top: 192px; }
+  .st-n3b { left: 228px; top: 192px; }
+  .st-n3c { left: 356px; top: 192px; }
+  .st-n3d { left: 500px; top: 192px; }
+  .st-n3e { left: 628px; top: 192px; }
+
+  /* 注記（例：〜） */
+  .st-note { margin-top: 24px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -39,32 +71,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：サイトマップのツリー（L1=トップページだけ → L2=5 → 下層を持つL2の下にL3）。塗りはトップだけ -->
   <div class="content-area">
-    <div class="top-node">TOP</div>
-    <div class="h-line"></div>
-    <div class="rows">
-      <div class="row">
-        <div class="stub"></div>
-        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
-        <div class="stub"></div>
-        <div class="lv3">下層ページ名（ほか2ページ）</div>
-      </div>
-      <div class="row">
-        <div class="stub"></div>
-        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
-        <div class="stub"></div>
-        <div class="lv3">下層ページ名（ほか3ページ）</div>
-      </div>
-      <div class="row">
-        <div class="stub"></div>
-        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
-      </div>
-      <div class="row">
-        <div class="stub"></div>
-        <div class="lv2"><div class="name">ページ名が入ります</div><div class="note">補足が入ります</div></div>
-      </div>
+    <div class="st-stage">
+
+      <!-- 接続線（幹線は最初の接続点の中心から最後の接続点の中心まで。ノード辺の中心で止める） -->
+      <svg class="st-lines" viewBox="0 0 864 240" aria-hidden="true">
+        <!-- L1 → 母線 → L2（5つ） -->
+        <path d="M456 48V96 M120 72H792 M120 72V96 M288 72V96 M624 72V96 M792 72V96"/>
+        <!-- L2（2番目）→ 子母線 → L3 3つ -->
+        <path d="M288 144V192 M160 168H416 M160 168V192 M416 168V192"/>
+        <!-- L2（4番目）→ 子母線 → L3 2つ -->
+        <path d="M624 144V168 M560 168H688 M560 168V192 M688 168V192"/>
+      </svg>
+
+      <!-- 階層KICKER（各段の左端） -->
+      <div class="st-kicker st-k1">L1</div>
+      <div class="st-kicker st-k2">L2</div>
+      <div class="st-kicker st-k3">L3</div>
+
+      <!-- L1（トップページ・塗り） -->
+      <div class="st-node st-top st-n1">トップページ</div>
+
+      <!-- L2（第2階層 5つ） -->
+      <div class="st-node st-l2 st-n2a">会社概要</div>
+      <div class="st-node st-l2 st-n2b">サービス</div>
+      <div class="st-node st-l2 st-n2c">制作実績</div>
+      <div class="st-node st-l2 st-n2d">採用情報</div>
+      <div class="st-node st-l2 st-n2e">お問い合わせ</div>
+
+      <!-- L3（サービスの下に3つ） -->
+      <div class="st-node st-l3 st-n3a">Web制作</div>
+      <div class="st-node st-l3 st-n3b">LINE構築</div>
+      <div class="st-node st-l3 st-n3c">AI活用支援</div>
+
+      <!-- L3（採用情報の下に2つ） -->
+      <div class="st-node st-l3 st-n3d">募集要項</div>
+      <div class="st-node st-l3 st-n3e">社員の声</div>
+
     </div>
+    <div class="st-note">例：全11ページ。第1階層はトップページだけ。下層を持つ第2階層（サービス・採用情報）だけ第3階層を展開する</div>
   </div>
 </div>
 </body>

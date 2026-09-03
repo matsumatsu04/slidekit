@@ -3,32 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-axis-labeled-shift-comparison</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:24px 64px 32px; min-height:0; }
-  .shift-grid { width:100%; height:100%; display:grid; grid-template-columns:72px 16px 1fr 56px 1fr; grid-template-rows:40px 1fr 1fr 1fr; }
-  .axis-badge { grid-column:1; place-self:center; width:56px; height:56px; border-radius:50%; background:#ECECEC; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:bold; color:#555555; }
-  .axis-1 { grid-row:2; }
-  .axis-2 { grid-row:3; }
-  .axis-3 { grid-row:4; }
-  .panel { grid-row:1 / 5; margin-top:16px; border-radius:12px; }
-  .panel-old { grid-column:3; background:#F2F2F2; }
-  .panel-new { grid-column:5; background:color-mix(in srgb, var(--sk-accent,#8C8C8C), #FFFFFF 88%); }
-  .pill { grid-row:1; justify-self:center; align-self:start; z-index:2; height:32px; padding:0 24px; border-radius:999px; display:flex; align-items:center; font-size:13px; font-weight:bold; color:#FFFFFF; }
-  .pill-old { grid-column:3; background:#999999; }
-  .pill-new { grid-column:5; background:var(--sk-accent,#666666); }
-  .row-card { background:#FFFFFF; border-radius:8px; margin:10px 24px; z-index:1; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13.5px; color:#333333; line-height:1.6; padding:8px 16px; }
-  .card-old-1, .card-new-1 { grid-row:2; }
-  .card-old-2, .card-new-2 { grid-row:3; }
-  .card-old-3, .card-new-3 { grid-row:4; }
-  .card-old-1, .card-old-2, .card-old-3 { grid-column:3; color:#777777; }
-  .card-new-1, .card-new-2, .card-new-3 { grid-column:5; }
-  .row-card .em { color:var(--sk-accent,#555555); font-weight:bold; }
-  .shift-arrow { grid-column:4; grid-row:1 / 5; place-self:center; margin-top:16px; }
-  .shift-arrow i { font-size:24px; color:var(--sk-accent,#888888); }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。パネル列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左＝従来（塗りなし）／右＝これから（淡い地）の等幅・等高2パネル＋中央の矢印。中身は上ぞろえ ── */
+  .sc-row { display: flex; align-items: stretch; }
+  .sc-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 20px 28px; border-radius: 11px; border: 1px solid var(--sk-line,#e2e2e2); }
+  .sc-before { background: #FFFFFF; }
+  /* 塗りは右の淡い地だけ（濃い塗りは置かない） */
+  .sc-after { background: var(--sk-soft,#F0F0F0); }
+
+  /* パネルの型: 軸ラベルKICKER → 見出し18px/700 → 細罫線 → 行×3（項目KICKER → 本文16px×2行） */
+  .sc-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .sc-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .sc-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  /* 行は高さ96px固定（左右で同じ軸が同じ高さに並ぶ）。2行目以降は上に細罫線 */
+  .sc-item { height: 96px; padding-top: 16px; }
+  .sc-item + .sc-item { border-top: 1px solid var(--sk-line,#e2e2e2); }
+  .sc-body { margin-top: 8px; font-size: 16px; line-height: 1.8; }
+
+  /* 中央の矢印: 幅48pxの列。1pxの線＋三角矢印（幅12px・アクセント色）で左パネルの右辺から右パネルの左辺まで */
+  .sc-conn { flex: none; width: 48px; display: flex; align-items: center; justify-content: center; }
+  .sc-conn svg { width: 48px; height: 16px; display: block; }
+  .sc-conn path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+  .sc-conn .sc-arw { fill: var(--sk-accent,#555555); stroke: none; shape-rendering: auto; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -48,29 +56,58 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：BEFORE（塗りなし）→ AFTER（淡い地）。3つの軸を左右で同じ行に対応させる -->
   <div class="content-area">
-    <div class="shift-grid">
-      <!-- 大パネル2枚（背景） -->
-      <div class="panel panel-old"></div>
-      <div class="panel panel-new"></div>
-      <!-- ピル型ラベル（パネル上辺に食い込む） -->
-      <div class="pill pill-old">従来の◯◯</div>
-      <div class="pill pill-new">新しい◯◯</div>
-      <!-- 左端の軸ラベル列 -->
-      <div class="axis-badge axis-1">起点</div>
-      <div class="axis-badge axis-2">対象</div>
-      <div class="axis-badge axis-3">要素</div>
-      <!-- 左パネルの白カード3枚 -->
-      <div class="row-card card-old-1">従来の方式の記述が入ります</div>
-      <div class="row-card card-old-2">従来の方式の記述が入ります</div>
-      <div class="row-card card-old-3">従来の方式の記述が入ります</div>
-      <!-- パネル間の矢印 -->
-      <div class="shift-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-      <!-- 右パネルの白カード3枚 -->
-      <div class="row-card card-new-1">新しい方式の<span class="em">キーワード</span>が入ります</div>
-      <div class="row-card card-new-2">新しい方式の記述が入ります</div>
-      <div class="row-card card-new-3">新しい方式の記述が入ります</div>
+    <div class="sc-row">
+
+      <!-- 左：従来（塗りなし） -->
+      <div class="sc-panel sc-before">
+        <div class="sc-kicker">BEFORE ／ 従来</div>
+        <div class="sc-ttl">制作会社に都度依頼する運用</div>
+        <div class="sc-rule"></div>
+        <div class="sc-item">
+          <div class="sc-kicker">SPEED ／ 更新の速さ</div>
+          <div class="sc-body">修正のたびに制作会社へ依頼し、反映まで1〜2週間かかる</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-kicker">COST ／ 費用</div>
+          <div class="sc-body">修正1件ごとに見積と請求が発生し、小さな直しほど割高になる</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-kicker">OWNER ／ 担当</div>
+          <div class="sc-body">外注先の担当者1人に頼り、不在のときは更新が止まる</div>
+        </div>
+      </div>
+
+      <!-- 中央の矢印（左パネルの右辺 → 右パネルの左辺） -->
+      <div class="sc-conn">
+        <svg viewBox="0 0 48 16" aria-hidden="true">
+          <path d="M0 8H36"/>
+          <path class="sc-arw" d="M36 0L48 8 36 16Z"/>
+        </svg>
+      </div>
+
+      <!-- 右：これから（淡い地） -->
+      <div class="sc-panel sc-after">
+        <div class="sc-kicker">AFTER ／ これから</div>
+        <div class="sc-ttl">自社で手順どおりに回す運用</div>
+        <div class="sc-rule"></div>
+        <div class="sc-item">
+          <div class="sc-kicker">SPEED ／ 更新の速さ</div>
+          <div class="sc-body">担当者がその日のうちに直し、確認してそのまま公開できる</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-kicker">COST ／ 費用</div>
+          <div class="sc-body">月額の範囲で回数を気にせず直せる</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-kicker">OWNER ／ 担当</div>
+          <div class="sc-body">手順書があり、社内の誰でも同じ手順で回せる</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
