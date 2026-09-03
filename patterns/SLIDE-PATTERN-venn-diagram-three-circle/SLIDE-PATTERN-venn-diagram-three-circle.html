@@ -4,19 +4,44 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-venn-diagram-three-circle</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; justify-content: center; }
-  .venn-wrap { position: relative; width: 500px; height: 400px; }
-  .circle { position: absolute; width: 220px; height: 220px; border-radius: 50%; background: var(--sk-accent,#999999); opacity: 0.35; border: 1px solid var(--sk-accent,#888888); }
-  .circle-a { left: 50px; top: 20px; }
-  .circle-b { left: 230px; top: 20px; }
-  .circle-c { left: 140px; top: 170px; }
-  .circle-label { position: absolute; font-size: 13px; font-weight: bold; color: #333333; z-index: 2; }
-  .label-a { left: 96px; top: 56px; }
-  .label-b { left: 312px; top: 56px; }
-  .label-c { left: 210px; top: 306px; }
-  .center-label { position: absolute; left: 50%; top: 190px; transform: translateX(-50%); z-index: 3; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); border-radius: 999px; padding: 8px 16px; font-size: 12px; font-weight: bold; color: #333333; white-space: nowrap; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。左＝ベン図／右＝説明 を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; gap: 32px; }
+
+  /* ── 左：3円のベン図（淡い地＋1.5px罫線。重なりは乗算で淡く濃くする。opacity は使わない） ── */
+  .vn-wrap { position: relative; flex: none; width: 400px; height: 305px; }
+  .vn-circle { position: absolute; width: 210px; height: 210px; border-radius: 50%;
+               background: var(--sk-soft,#F0F0F0); border: 1.5px solid var(--sk-line,#e2e2e2); mix-blend-mode: multiply; }
+  .vn-a { left: 40px; top: 0; }
+  .vn-b { left: 150px; top: 0; }
+  .vn-c { left: 95px; top: 95px; }
+  /* 各円のラベル: KICKER ＋ 見出し16px（円の重ならない領域に置く） */
+  .vn-label { position: absolute; width: 110px; text-align: center; z-index: 2; }
+  .vn-label-a { left: 50px; top: 60px; }
+  .vn-label-b { left: 240px; top: 60px; }
+  .vn-label-c { left: 145px; top: 236px; }
+  .vn-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .vn-ttl { margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.8; white-space: nowrap; }
+  /* 中央の重なりラベル: アクセント塗りの小ピル（白文字）。塗りは1枚に1つ */
+  .vn-pill { position: absolute; left: 200px; top: 137px; transform: translate(-50%, -50%); z-index: 3;
+             height: 34px; padding: 0 16px; border-radius: 17px; background: var(--sk-accent,#555555); color: #FFFFFF;
+             display: flex; align-items: center; font-size: 14px; font-weight: 400; letter-spacing: .20em; line-height: 1; white-space: nowrap; }
+
+  /* ── 右：3行の説明（KICKER ＋ 本文16px・行罫線で区切る）＋ 例： ── */
+  .vn-list { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .vn-item { padding: 12px 0; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .vn-item:first-child { padding-top: 0; }
+  .vn-item:last-child { border-bottom: none; }
+  .vn-text { margin-top: 6px; font-size: 16px; line-height: 1.8; }
+  .vn-note { margin-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -38,17 +63,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝3円のベン図（塗りは中央ピルだけ）／右＝3行の説明 -->
   <div class="content-area">
-    <div class="venn-wrap">
-      <div class="circle circle-a"></div>
-      <div class="circle circle-b"></div>
-      <div class="circle circle-c"></div>
-      <div class="circle-label label-a">要素Aが入ります</div>
-      <div class="circle-label label-b">要素Bが入ります</div>
-      <div class="circle-label label-c">要素Cが入ります</div>
-      <div class="center-label">統合ラベルが入ります</div>
+
+    <!-- 左：ベン図 -->
+    <div class="vn-wrap">
+      <div class="vn-circle vn-a"></div>
+      <div class="vn-circle vn-b"></div>
+      <div class="vn-circle vn-c"></div>
+      <div class="vn-label vn-label-a"><div class="vn-kicker">Design</div><div class="vn-ttl">設計の視点</div></div>
+      <div class="vn-label vn-label-b"><div class="vn-kicker">Build</div><div class="vn-ttl">制作の速さ</div></div>
+      <div class="vn-label vn-label-c"><div class="vn-kicker">Operate</div><div class="vn-ttl">運用の継続</div></div>
+      <div class="vn-pill">強みの交点</div>
     </div>
+
+    <!-- 右：3行の説明 -->
+    <div class="vn-list">
+      <div class="vn-item">
+        <div class="vn-kicker">A ／ 設計の視点</div>
+        <div class="vn-text">誰に何を伝えるかを先に決めてから作る</div>
+      </div>
+      <div class="vn-item">
+        <div class="vn-kicker">B ／ 制作の速さ</div>
+        <div class="vn-text">決めた設計を型に流し込み、2週間で公開する</div>
+      </div>
+      <div class="vn-item">
+        <div class="vn-kicker">C ／ 運用の継続</div>
+        <div class="vn-text">公開後も毎月直し続けて、数字で成果を追う</div>
+      </div>
+      <div class="vn-note">例：3つのうち1つでも欠けると、作って終わりになる</div>
+    </div>
+
   </div>
 </div>
 </body>

@@ -4,23 +4,51 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-price-total-highlight</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 24px 64px 32px; display: flex; flex-direction: column; }
-  /* 内訳リスト（縦罫のみ・表の檻なし） */
-  .breakdown { display: flex; flex-direction: column; }
-  .b-row { display: flex; align-items: center; gap: 20px; padding: 12px 8px; border-bottom: 1px solid var(--sk-soft,#E8E8E8); }
-  .b-name { width: 200px; flex-shrink: 0; font-size: 15px; font-weight: bold; color: #333333; }
-  .b-div { width: 1px; align-self: stretch; background: var(--sk-accent,#CCCCCC); }
-  .b-desc { flex: 1; font-size: 12px; color: #333333; line-height: 1.5; }
-  .b-price { width: 140px; flex-shrink: 0; text-align: right; font-size: 15px; font-weight: bold; color: #333333; }
-  /* 合計バンド */
-  .total-band { margin-top: auto; padding-top: 20px; border-top: 2px solid var(--sk-accent,#CCCCCC); display: flex; align-items: baseline; justify-content: center; gap: 16px; }
-  .t-label { font-size: 18px; font-weight: bold; color: #333333; }
-  .t-amount { font-size: 64px; font-weight: bold; color: var(--sk-accent2, var(--sk-accent,#888888)); line-height: 1; }
-  .t-unit { font-size: 24px; font-weight: bold; color: var(--sk-accent2, var(--sk-accent,#888888)); }
-  .t-note { font-size: 12px; color: #333333; }
-  .note-line { text-align: center; font-size: 11px; color: #333333; margin-top: 8px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。内訳表＋合計パネルの行は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左：内訳の表（罫線だけ）／ 右：合計パネル（唯一の塗り）。等高 ── */
+  .pt-row { display: flex; gap: 16px; align-items: stretch; height: 280px; }
+  .pt-left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .pt-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  /* 列見出しは KICKER 型（塗らない・下罫線だけ） */
+  .pt-table th {
+    font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1;
+    color: var(--sk-accent,#555555); text-align: left; vertical-align: middle; height: 32px; padding: 0 12px;
+    border-bottom: 1px solid var(--sk-line,#e2e2e2);
+  }
+  .pt-table td {
+    font-size: 16px; line-height: 1.8; text-align: left; vertical-align: middle;
+    height: 48px; padding: 8px 12px; border-bottom: 1px solid var(--sk-line,#e2e2e2);
+  }
+  .pt-table th.pt-price, .pt-table td.pt-price { text-align: right; }
+  .pt-table td.pt-item { font-weight: 700; }
+  /* 合計行だけ淡い地・金額28px・太字・アクセント色 */
+  .pt-table tr.pt-total td { background: var(--sk-soft,#F0F0F0); height: 56px; border-bottom: none; }
+  .pt-table tr.pt-total td.pt-item { border-radius: 10px 0 0 10px; }
+  .pt-table tr.pt-total td.pt-price { border-radius: 0 10px 10px 0; font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: var(--sk-accent,#555555); }
+  .pt-table tr.pt-total td.pt-scope { font-size: 11.5px; color: var(--sk-muted,#888888); }
+  .pt-note { margin-top: auto; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+
+  /* 合計パネル（アクセント塗り・白文字。塗りは1枚に1つ） */
+  .pt-panel { flex: none; width: 280px; display: flex; flex-direction: column; padding: 24px 28px; border-radius: 12px;
+              background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .pt-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: #FFFFFF; white-space: nowrap; }
+  .pt-num-row { margin-top: 16px; display: flex; align-items: baseline; gap: 6px; }
+  .pt-num { font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: #FFFFFF; }
+  .pt-unit { font-size: 14px; font-weight: 400; line-height: 1; color: #FFFFFF; }
+  .pt-rule { margin-top: 16px; height: 1px; background: rgba(255,255,255,.35); }
+  .pt-lines { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .pt-panel .pt-note { color: #FFFFFF; opacity: .85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -40,35 +68,58 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝内訳の表（罫線だけ）／右＝合計パネル（唯一の塗り） -->
   <div class="content-area">
-    <div class="breakdown">
-      <div class="b-row">
-        <div class="b-name">項目名が入ります</div>
-        <div class="b-div"></div>
-        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
-        <div class="b-price">000,000円</div>
+    <div class="pt-row">
+
+      <!-- 左：内訳の表 -->
+      <div class="pt-left">
+        <table class="pt-table">
+          <thead>
+            <tr>
+              <th style="width:144px;">Item ／ 項目</th>
+              <th>Scope ／ 範囲</th>
+              <th class="pt-price" style="width:184px;">Price ／ 金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="pt-item">デザイン</td>
+              <td class="pt-scope">TOP＋下層4ページの制作</td>
+              <td class="pt-price">320,000円</td>
+            </tr>
+            <tr>
+              <td class="pt-item">実装</td>
+              <td class="pt-scope">スマホ対応・フォーム設置</td>
+              <td class="pt-price">240,000円</td>
+            </tr>
+            <tr>
+              <td class="pt-item">ディレクション</td>
+              <td class="pt-scope">進行管理・公開前の確認</td>
+              <td class="pt-price">80,000円</td>
+            </tr>
+            <tr class="pt-total">
+              <td class="pt-item">合計</td>
+              <td class="pt-scope">税別・素材はご支給の場合</td>
+              <td class="pt-price">640,000円</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pt-note">例：ページの追加は1枚あたり4万円で見積もる</div>
       </div>
-      <div class="b-row">
-        <div class="b-name">項目名が入ります</div>
-        <div class="b-div"></div>
-        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
-        <div class="b-price">000,000円</div>
+
+      <!-- 右：合計パネル（アクセント塗り・白文字） -->
+      <div class="pt-panel">
+        <div class="pt-kicker">TOTAL ／ 合計</div>
+        <div class="pt-num-row"><span class="pt-num">64</span><span class="pt-unit">万円（税別）</span></div>
+        <div class="pt-rule"></div>
+        <div class="pt-lines">発行から1ヶ月まで有効<br>着手時50%・納品時50%<br>公開後の更新は月額で別途</div>
+        <div class="pt-note">例：初回のお支払いは32万円</div>
       </div>
-      <div class="b-row">
-        <div class="b-name">項目名が入ります</div>
-        <div class="b-div"></div>
-        <div class="b-desc">項目の内容説明が入ります。作業範囲や成果物を1行で記述します。</div>
-        <div class="b-price">000,000円</div>
-      </div>
+
     </div>
-    <div class="total-band">
-      <span class="t-label">合計</span>
-      <span class="t-amount">000</span>
-      <span class="t-unit">万円</span>
-      <span class="t-note">（税別）</span>
-    </div>
-    <div class="note-line">お見積り有効期限：発行日より1ヶ月　／　お支払い条件：着手時50%・納品時50%</div>
   </div>
 </div>
 </body>

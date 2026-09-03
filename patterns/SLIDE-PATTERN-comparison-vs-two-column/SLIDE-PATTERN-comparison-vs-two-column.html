@@ -6,16 +6,42 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:28px 80px 32px; position:relative; display:flex; gap:56px; }
-  .vs-col { flex:1; border:2px solid var(--sk-soft,#DDDDDD); display:flex; flex-direction:column; }
-  .vs-col.ours { border-color:var(--sk-accent,#777777); }
-  .vs-head { padding:14px; text-align:center; font-size:16px; font-weight:bold; color:#555555; background:var(--sk-soft,#F0F0F0); }
-  .vs-col.ours .vs-head { background:var(--sk-accent,#555555); color:#FFFFFF; }
-  .vs-row { padding:13px 20px; font-size:12.5px; color:#333333; line-height:1.6; border-top:1px solid var(--sk-soft,#EEEEEE); display:flex; gap:10px; }
-  .vs-row-label { font-size:11px; font-weight:bold; color:#999999; width:76px; flex-shrink:0; padding-top:1px; }
-  .vs-col.ours .vs-row { font-weight:500; }
-  .vs-badge { position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; background:var(--sk-accent2, var(--sk-accent,#777777)); color:#FFFFFF; font-size:16px; font-weight:bold; display:flex; align-items:center; justify-content:center; z-index:2; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。パネル列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左右2パネル（等幅・等高）＋中央の vs ── */
+  .cv-row { display: flex; align-items: stretch; height: 280px; }
+  .cv-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px 28px; border-radius: 12px; }
+  /* 左＝淡い地（一般）、右＝アクセント塗り・白文字（自社）。塗りは1枚に1つ */
+  .cv-left  { background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2); }
+  .cv-right { background: var(--sk-accent,#555555); color: #FFFFFF; }
+
+  /* パネルの型: KICKER → 案名18px → 細罫線 → 比較項目3行（ラベル10px＋値16px） → 例： */
+  .cv-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .cv-right .cv-kicker { color: #FFFFFF; }
+  .cv-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .cv-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .cv-right .cv-rule { background: rgba(255,255,255,.35); }
+  .cv-items { margin-top: 8px; display: flex; flex-direction: column; }
+  .cv-item { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; }
+  .cv-label { flex: none; width: 128px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+  .cv-right .cv-label { color: #FFFFFF; opacity: .85; }
+  .cv-val { flex: 1; min-width: 0; font-size: 16px; line-height: 1.8; }
+  .cv-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+  .cv-right .cv-note { color: #FFFFFF; opacity: .85; }
+
+  /* 中央コネクタ（vs）: 白丸に細枠。幅48pxの列の中央に置く */
+  .cv-conn { flex: none; width: 48px; display: flex; align-items: center; justify-content: center; }
+  .cv-conn-circle { width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; border: 1px solid var(--sk-line,#e2e2e2);
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 14px; font-weight: 700; letter-spacing: .04em; line-height: 1; color: var(--sk-accent,#555555); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -35,22 +61,41 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝一般（淡い地）／右＝自社（塗り）の対決型比較。中央に vs の白丸 -->
   <div class="content-area">
-    <div class="vs-col">
-      <div class="vs-head">一般的なサービス</div>
-      <div class="vs-row"><div class="vs-row-label">比較軸1</div><div>内容テキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸2</div><div>内容テキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸3</div><div>内容テキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸4</div><div>内容テキストが入ります</div></div>
-    </div>
-    <div class="vs-badge">VS</div>
-    <div class="vs-col ours">
-      <div class="vs-head">自社サービス名</div>
-      <div class="vs-row"><div class="vs-row-label">比較軸1</div><div>優位性のテキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸2</div><div>優位性のテキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸3</div><div>優位性のテキストが入ります</div></div>
-      <div class="vs-row"><div class="vs-row-label">比較軸4</div><div>優位性のテキストが入ります</div></div>
+    <div class="cv-row">
+
+      <!-- 左パネル（一般・淡い地） -->
+      <div class="cv-panel cv-left">
+        <div class="cv-kicker">OTHERS ／ 一般的な制作会社</div>
+        <div class="cv-ttl">案件ごとに見積もって作る</div>
+        <div class="cv-rule"></div>
+        <div class="cv-items">
+          <div class="cv-item"><div class="cv-label">Price ／ 料金</div><div class="cv-val">初期費用50万円〜</div></div>
+          <div class="cv-item"><div class="cv-label">Delivery ／ 納期</div><div class="cv-val">公開まで1〜3ヶ月</div></div>
+          <div class="cv-item"><div class="cv-label">Update ／ 更新</div><div class="cv-val">都度見積・別料金</div></div>
+        </div>
+        <div class="cv-note">例：文言の差し替えでも見積から始まる</div>
+      </div>
+
+      <!-- 中央コネクタ（vs） -->
+      <div class="cv-conn"><div class="cv-conn-circle">vs</div></div>
+
+      <!-- 右パネル（自社・アクセント塗り・白文字） -->
+      <div class="cv-panel cv-right">
+        <div class="cv-kicker">OURS ／ 月額制のWeb制作</div>
+        <div class="cv-ttl">月額で作って直し続ける</div>
+        <div class="cv-rule"></div>
+        <div class="cv-items">
+          <div class="cv-item"><div class="cv-label">Price ／ 料金</div><div class="cv-val">初期費用なし・月額3万円〜</div></div>
+          <div class="cv-item"><div class="cv-label">Delivery ／ 納期</div><div class="cv-val">公開まで2週間</div></div>
+          <div class="cv-item"><div class="cv-label">Update ／ 更新</div><div class="cv-val">月2回まで料金に含む</div></div>
+        </div>
+        <div class="cv-note">例：文言の差し替えは翌営業日に反映</div>
+      </div>
+
     </div>
   </div>
 </div>

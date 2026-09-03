@@ -6,16 +6,30 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:28px 72px 32px; display:grid; grid-template-columns:repeat(3,1fr); }
-  .stat-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-right:1px solid var(--sk-soft,#EEEEEE); border-bottom:1px solid var(--sk-soft,#EEEEEE); padding:12px; }
-  .stat-cell:nth-child(3n) { border-right:none; }
-  .stat-cell:nth-child(n+4) { border-bottom:none; }
-  .st-label { font-size:12px; font-weight:bold; color:#888888; }
-  .st-numrow { display:flex; align-items:baseline; gap:3px; }
-  .st-num { font-size:44px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
-  .st-unit { font-size:16px; font-weight:bold; color:#888888; }
-  .st-supp { font-size:10.5px; color:#AAAAAA; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。グリッドは上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 3列×2行の等高セル（淡い地・角丸11・gap16）。1枚だけ塗り ── */
+  .sg-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 16px; height: 272px; }
+  .sg-cell { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 20px 24px; border-radius: 11px;
+             background: var(--sk-soft,#F0F0F0); }
+  .sg-fill { background: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* セルの型: KICKER → 数字28px・太字・アクセント色＋単位14px → 1行の説明16px */
+  .sg-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .sg-fill .sg-kicker { color: #FFFFFF; }
+  .sg-num-row { margin-top: 12px; display: flex; align-items: baseline; gap: 4px; }
+  .sg-num { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: var(--sk-accent,#555555); }
+  .sg-unit { font-size: 14px; font-weight: 400; line-height: 1; }
+  .sg-fill .sg-num, .sg-fill .sg-unit { color: #FFFFFF; }
+  .sg-desc { margin-top: 8px; font-size: 16px; line-height: 1.8; white-space: nowrap; }
+  .sg-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -35,14 +49,43 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：6つの統計を 3列×2行 の等高セルで。塗りは主役の1枚だけ -->
   <div class="content-area">
-    <div class="stat-cell"><div class="st-label">設立</div><div class="st-numrow"><span class="st-num">2019</span><span class="st-unit">年</span></div><div class="st-supp">補足が入ります</div></div>
-    <div class="stat-cell"><div class="st-label">社員数</div><div class="st-numrow"><span class="st-num">128</span><span class="st-unit">名</span></div><div class="st-supp">補足が入ります</div></div>
-    <div class="stat-cell"><div class="st-label">平均年齢</div><div class="st-numrow"><span class="st-num">31.5</span><span class="st-unit">歳</span></div><div class="st-supp">補足が入ります</div></div>
-    <div class="stat-cell"><div class="st-label">導入社数</div><div class="st-numrow"><span class="st-num">500</span><span class="st-unit">社+</span></div><div class="st-supp">補足が入ります</div></div>
-    <div class="stat-cell"><div class="st-label">継続率</div><div class="st-numrow"><span class="st-num">96</span><span class="st-unit">%</span></div><div class="st-supp">補足が入ります</div></div>
-    <div class="stat-cell"><div class="st-label">拠点数</div><div class="st-numrow"><span class="st-num">4</span><span class="st-unit">拠点</span></div><div class="st-supp">補足が入ります</div></div>
+    <div class="sg-grid">
+      <div class="sg-cell">
+        <div class="sg-kicker">Founded ／ 設立</div>
+        <div class="sg-num-row"><span class="sg-num">2019</span><span class="sg-unit">年</span></div>
+        <div class="sg-desc">Web制作の受託から始めた</div>
+      </div>
+      <div class="sg-cell">
+        <div class="sg-kicker">Members ／ 社員数</div>
+        <div class="sg-num-row"><span class="sg-num">12</span><span class="sg-unit">名</span></div>
+        <div class="sg-desc">デザインと開発が半々</div>
+      </div>
+      <div class="sg-cell">
+        <div class="sg-kicker">Projects ／ 制作実績</div>
+        <div class="sg-num-row"><span class="sg-num">300</span><span class="sg-unit">件</span></div>
+        <div class="sg-desc">中小企業のサイトが中心</div>
+      </div>
+      <div class="sg-cell">
+        <div class="sg-kicker">Clients ／ 取引社数</div>
+        <div class="sg-num-row"><span class="sg-num">80</span><span class="sg-unit">社</span></div>
+        <div class="sg-desc">半数が2年以上の継続</div>
+      </div>
+      <div class="sg-cell sg-fill">
+        <div class="sg-kicker">Retention ／ 継続率</div>
+        <div class="sg-num-row"><span class="sg-num">96</span><span class="sg-unit">%</span></div>
+        <div class="sg-desc">月額プランの1年後の継続</div>
+      </div>
+      <div class="sg-cell">
+        <div class="sg-kicker">Offices ／ 拠点</div>
+        <div class="sg-num-row"><span class="sg-num">2</span><span class="sg-unit">拠点</span></div>
+        <div class="sg-desc">本社と地方のサテライト</div>
+      </div>
+    </div>
+    <div class="sg-note">例：数値は前期末時点。継続率は月額プランのみ</div>
   </div>
 </div>
 </body>
