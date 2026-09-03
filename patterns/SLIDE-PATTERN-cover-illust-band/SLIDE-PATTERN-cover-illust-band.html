@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: cover-illust-band</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    .slide { width:960px; height:540px; background:var(--sk-soft,#F0F0F0); border:1px solid #CCCCCC; overflow:hidden; position:relative;
+             color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+    /* v2（2026-09-02）: 淡いティント地。上部に KICKER＋大見出し＋サブ1行を中央寄せ、下半分に挿絵の帯。
+       共通部品は使えないので、同じ数値を ci- 接頭辞で持つ */
+    .ci-top    { position:absolute; left:48px; right:48px; top:0; height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+    .ci-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--sk-accent2,#999999); line-height:1; white-space:nowrap; }
+    .ci-title  { font-size:30px; font-weight:700; letter-spacing:.1em; line-height:1.4; color:var(--sk-accent,#666666); }
+    .ci-sub    { font-size:13px; font-weight:400; letter-spacing:.16em; color:var(--sk-muted,#8A8A8A); line-height:1; white-space:nowrap; }
+    .ci-band   { position:absolute; left:0; right:0; bottom:0; height:260px; }
+    /* 挿絵は白地で生成されるので multiply で地色に溶かす。object-position で見せる高さを調整する */
+    .ci-illust { display:block; width:100%; height:100%; object-fit:cover; object-position:center 74%; mix-blend-mode:multiply; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="ci-top">
+      <div class="ci-kicker">Macminol ／ AI-driven Web Production Guide</div>
+      <h1 class="ci-title">AIをWeb制作に入れる前に決めておくこと</h1>
+      <div class="ci-sub">試作から現場に入れるまでの手順と、人が決める境界</div>
+    </div>
+    <div class="ci-band">
+      <img class="ci-illust" src="../../assets/illust/office-street.jpg" alt="表紙の帯の挿絵（オフィス街を歩く人・assets/illust/office-street.jpg）">
+    </div>
+  </div>
+</body>
+</html>

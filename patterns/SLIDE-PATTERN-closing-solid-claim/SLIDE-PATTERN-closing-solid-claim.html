@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLIDE-PATTERN: closing-solid-claim</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+    /* 全面アクセント塗り＋白文字。グレー版のフォールバック地は白文字が読める濃さ（#555555） */
+    .slide { width:960px; height:540px; background:var(--sk-accent,#555555); border:1px solid #CCCCCC; overflow:hidden; position:relative;
+             color:#FFFFFF; font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+    /* v2（2026-09-02）: 左に KICKER＋大見出し2行＋本文2行、右に白い角丸カードの挿絵。下に細い白罫線＋結論1文（太字）。
+       共通部品は使えないので、同じ数値を cc- 接頭辞で持つ */
+    .cc-wrap   { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; gap:24px; }
+    .cc-top    { display:flex; align-items:stretch; gap:40px; }
+    .cc-left   { flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; }
+    .cc-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.7); line-height:1; }
+    .cc-title  { font-size:28px; font-weight:700; letter-spacing:.06em; line-height:1.5; color:#FFFFFF; }
+    .cc-body   { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:rgba(255,255,255,.85); }
+    .cc-card   { width:352px; height:256px; flex-shrink:0; background:#FFFFFF; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:center; }
+    .cc-illust { display:block; width:100%; height:100%; object-fit:contain; }
+    .cc-rule   { height:1px; background:rgba(255,255,255,.35); }
+    .cc-claim  { font-size:16px; font-weight:700; letter-spacing:.06em; line-height:1.8; color:#FFFFFF; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="cc-wrap">
+      <div class="cc-top">
+        <div class="cc-left">
+          <div class="cc-kicker">Conclusion</div>
+          <h1 class="cc-title">境界を先に決めると、<br>制作は速くなる。</h1>
+          <div class="cc-body">価値はAIに判断を丸投げすることではない。<br>作る・確かめる・直すを、現場の近くへ持ってこられること。</div>
+        </div>
+        <div class="cc-card">
+          <img class="cc-illust" src="../../assets/illust/paper-pile.jpg" alt="締めのカードの挿絵（書類の山と作業する人・assets/illust/paper-pile.jpg）">
+        </div>
+      </div>
+      <div class="cc-rule"></div>
+      <div class="cc-claim">まずは小さな案件で試し、人が結果を読んでから、次の工程へ広げる。</div>
+    </div>
+  </div>
+</body>
+</html>

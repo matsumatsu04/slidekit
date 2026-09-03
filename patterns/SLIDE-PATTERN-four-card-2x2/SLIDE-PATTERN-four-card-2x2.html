@@ -5,14 +5,33 @@
 <title>SLIDE-PATTERN-four-card-2x2</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 16px 32px 20px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
-  .card { border: 1px solid var(--sk-accent,#E0E0E0); display: flex; flex-direction: column; overflow: hidden; }
-  .card-header { background: var(--sk-soft,#E8E8E8); padding: 8px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--sk-accent,#D8D8D8); }
-  .card-num { font-size: 18px; font-weight: bold; color: #888; }
-  .card-heading { font-size: 14px; font-weight: bold; color: #333333; }
-  .card-body { flex: 1; padding: 10px 16px; font-size: 12px; color: #333333; line-height: 1.7; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#444444); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2×2カード：等高・soft地・角丸11・gap16。02だけ塗り、04（右下＝最終）だけ1.5px枠線 */
+  .fc-grid { width:100%; height:392px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:16px; }
+  .fc-card { box-sizing:border-box; border-radius:11px; padding:16px 24px; background:var(--sk-soft,#F0F0F0);
+             display:flex; flex-direction:column; align-items:flex-start; }
+  .fc-fill { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .fc-outline { background:#FFFFFF; border:1.5px solid var(--sk-accent,#666666); }
+  /* カードの型：KICKER → 番号＋見出し → 細罫線 → 本文 → 例： */
+  .fc-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .fc-fill .fc-kicker { color:#FFFFFF; }
+  .fc-row { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+  .fc-no { font-size:24px; font-weight:400; line-height:28px; letter-spacing:.04em; color:var(--sk-accent,#666666); }
+  .fc-fill .fc-no { color:#FFFFFF; }
+  .fc-h { font-size:18px; font-weight:700; line-height:28px; }
+  .fc-line { width:100%; height:1px; background:var(--sk-line,#E2E2E2); margin:10px 0; }
+  .fc-fill .fc-line { background:rgba(255,255,255,.35); }
+  .fc-body { font-size:16px; line-height:1.8; }
+  .fc-note { margin-top:8px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
+  .fc-fill .fc-note { color:#FFFFFF; opacity:.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -20,7 +39,7 @@ html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-t
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -31,35 +50,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア：2×2グリッド -->
+  <!-- コンテンツエリア：2×2グリッド（02＝主役の塗り、04＝最終項目の枠線） -->
   <div class="content-area">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-num">01</div>
-        <div class="card-heading">見出し1が入ります</div>
+    <div class="fc-grid">
+      <div class="fc-card">
+        <div class="fc-kicker">Target ／ 対象</div>
+        <div class="fc-row"><span class="fc-no">01</span><span class="fc-h">小さな案件から</span></div>
+        <div class="fc-line"></div>
+        <p class="fc-body">最初は1ページの案件を選び、修正の判断を自分でできる範囲から始める。</p>
+        <div class="fc-note">例：自社サイトの1ページ</div>
       </div>
-      <div class="card-body">本文テキストが入ります。各カードの詳細説明を2〜4行程度で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-num">02</div>
-        <div class="card-heading">見出し2が入ります</div>
+      <div class="fc-card fc-fill">
+        <div class="fc-kicker">Tools ／ 環境</div>
+        <div class="fc-row"><span class="fc-no">02</span><span class="fc-h">道具を固定する</span></div>
+        <div class="fc-line"></div>
+        <p class="fc-body">生成と実装のツールを1つずつに絞り、確認する場所を散らさない。</p>
+        <div class="fc-note">例：ブラウザとエディタを1つずつ</div>
       </div>
-      <div class="card-body">本文テキストが入ります。各カードの詳細説明を2〜4行程度で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-num">03</div>
-        <div class="card-heading">見出し3が入ります</div>
+      <div class="fc-card">
+        <div class="fc-kicker">Check ／ 確認</div>
+        <div class="fc-row"><span class="fc-no">03</span><span class="fc-h">人が見る場所を決める</span></div>
+        <div class="fc-line"></div>
+        <p class="fc-body">表記・リンク・余白の3点は、公開前に必ず目で確かめる。</p>
+        <div class="fc-note">例：チェック表を1枚にまとめる</div>
       </div>
-      <div class="card-body">本文テキストが入ります。各カードの詳細説明を2〜4行程度で記述します。</div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-num">04</div>
-        <div class="card-heading">見出し4が入ります</div>
+      <div class="fc-card fc-outline">
+        <div class="fc-kicker">Storage ／ 保存</div>
+        <div class="fc-row"><span class="fc-no">04</span><span class="fc-h">判断の記録を残す</span></div>
+        <div class="fc-line"></div>
+        <p class="fc-body">指示・生成物・修正差分を案件フォルダに残し、次の案件で流用する。</p>
+        <div class="fc-note">例：フォルダにログを1本置く</div>
       </div>
-      <div class="card-body">本文テキストが入ります。各カードの詳細説明を2〜4行程度で記述します。</div>
     </div>
   </div>
 </div>

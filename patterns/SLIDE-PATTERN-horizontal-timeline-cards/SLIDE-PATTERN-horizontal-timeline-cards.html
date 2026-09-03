@@ -4,22 +4,40 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-horizontal-timeline-cards</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 16px 32px 20px; display: flex; flex-direction: column; }
-  .timeline-row { display: flex; align-items: center; padding: 0 24px; margin-bottom: 16px; position: relative; }
-  .timeline-line { position: absolute; top: 50%; left: calc(24px + (100% - 48px)/8); right: calc(24px + (100% - 48px)/8); height: 2px; background: var(--sk-soft,#DDDDDD); z-index: 0; }
-  .timeline-dots { display: flex; justify-content: space-around; width: 100%; position: relative; z-index: 1; }
-  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--sk-accent,#CCCCCC); border: 2px solid #FFFFFF; }
-  .cards-row { display: flex; gap: 12px; flex: 1; }
-  .card { flex: 1; background: #FFFFFF; border: 1px solid var(--sk-accent,#E0E0E0); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; }
-  .step-label { font-size: 10px; color: #888; margin-bottom: 2px; }
-  .step-number { font-size: 28px; font-weight: bold; color: #CCCCCC; line-height: 1.1; margin-bottom: 6px; }
-  .card-heading { font-size: 13px; font-weight: bold; color: #333333; margin-bottom: 8px; line-height: 1.3; }
-  .card-bullets { list-style: none; padding: 0; margin: 0; }
-  .card-bullets li { font-size: 11px; color: #333333; padding: 2px 0; line-height: 1.5; }
-  .card-bullets li::before { content: "▶ "; color: #BBBBBB; font-size: 9px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。カード列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+  .tl-row { display: flex; align-items: stretch; gap: 8px; }
+  /* ステップカード（等幅・等高）。既定は淡い地 */
+  .tl-card {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    padding: 20px 16px; border-radius: 12px;
+    background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 「今ここ」の1枚だけアクセント塗り（塗りは1枚に1つ） */
+  .tl-card-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* 最終工程（運用など）は塗らず 1.5px のアクセント枠線 */
+  .tl-card-last { background: #FFFFFF; border: 1.5px solid var(--sk-accent,#555555); }
+  .tl-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .tl-card-fill .tl-kicker { color: #FFFFFF; }
+  .tl-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .tl-card-last .tl-ttl { color: var(--sk-accent,#555555); }
+  .tl-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .tl-card-fill .tl-rule { background: rgba(255,255,255,.35); }
+  .tl-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .tl-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+  .tl-card-fill .tl-note { color: #FFFFFF; opacity: .85; }
+  /* 三角矢印（SVG・幅12px） */
+  .tl-arw { flex: none; align-self: center; display: block; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -27,7 +45,7 @@ html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-t
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -40,51 +58,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
   <!-- コンテンツエリア -->
   <div class="content-area">
-    <div class="timeline-row">
-      <div class="timeline-line"></div>
-      <div class="timeline-dots">
-        <div class="timeline-dot"></div>
-        <div class="timeline-dot"></div>
-        <div class="timeline-dot"></div>
-        <div class="timeline-dot"></div>
+    <div class="tl-row">
+      <div class="tl-card">
+        <div class="tl-kicker">STEP 1</div>
+        <div class="tl-ttl">試作</div>
+        <div class="tl-rule"></div>
+        <div class="tl-body">1ページ生成して<br>手直しの量を見る</div>
+        <div class="tl-note">例：LP1本を2日で</div>
       </div>
-    </div>
-    <div class="cards-row">
-      <div class="card">
-        <div class="step-label">STEP</div>
-        <div class="step-number">01</div>
-        <div class="card-heading">見出しが入ります</div>
-        <ul class="card-bullets">
-          <li>詳細ポイント1</li>
-          <li>詳細ポイント2</li>
-        </ul>
+      <svg class="tl-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+      <div class="tl-card">
+        <div class="tl-kicker">STEP 2</div>
+        <div class="tl-ttl">限定導入</div>
+        <div class="tl-rule"></div>
+        <div class="tl-body">小さな案件だけで<br>同じ手順を回す</div>
+        <div class="tl-note">例：月2件まで</div>
       </div>
-      <div class="card">
-        <div class="step-label">STEP</div>
-        <div class="step-number">02</div>
-        <div class="card-heading">見出しが入ります</div>
-        <ul class="card-bullets">
-          <li>詳細ポイント1</li>
-          <li>詳細ポイント2</li>
-        </ul>
+      <svg class="tl-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+      <div class="tl-card tl-card-fill">
+        <div class="tl-kicker">STEP 3 ／ 今ここ</div>
+        <div class="tl-ttl">確認必須</div>
+        <div class="tl-rule"></div>
+        <div class="tl-body">公開前に人が<br>全ページを見る</div>
+        <div class="tl-note">例：目視チェック表</div>
       </div>
-      <div class="card">
-        <div class="step-label">STEP</div>
-        <div class="step-number">03</div>
-        <div class="card-heading">見出しが入ります</div>
-        <ul class="card-bullets">
-          <li>詳細ポイント1</li>
-          <li>詳細ポイント2</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="step-label">STEP</div>
-        <div class="step-number">04</div>
-        <div class="card-heading">見出しが入ります</div>
-        <ul class="card-bullets">
-          <li>詳細ポイント1</li>
-          <li>詳細ポイント2</li>
-        </ul>
+      <svg class="tl-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+      <div class="tl-card tl-card-last">
+        <div class="tl-kicker">STEP 4 ／ 最終</div>
+        <div class="tl-ttl">運用</div>
+        <div class="tl-rule"></div>
+        <div class="tl-body">合意した基準だけ<br>必須にして回す</div>
+        <div class="tl-note">例：基準は3項目</div>
       </div>
     </div>
   </div>

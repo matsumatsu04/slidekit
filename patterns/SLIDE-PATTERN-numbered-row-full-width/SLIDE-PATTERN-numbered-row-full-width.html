@@ -2,157 +2,29 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLIDE-PATTERN-numbered-row-full-width</title>
 <style>
-  /* スライド全体のリセットと基本設定 */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { margin:0; padding:0; background:#E0E0E0; font-family:sans-serif; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#444444); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-  /* スライド本体：960×540px固定 */
-  .slide {
-    width: 960px;
-    height: 540px;
-    background: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* エリアラベル共通スタイル */
-
-  /* タイトルエリア */
-  .title-area {
-    padding: 14px 40px 12px;
-    border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-    flex-shrink: 0;
-    background: #FFFFFF;
-  }
-
-  /* コンテンツエリア */
-  .content-area {
-    flex: 1;
-    padding: 16px 40px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow: hidden;
-  }
-
-
-  /* 番号付き横長バナー行 */
-  .row-item {
-    flex: 1;
-    background: #FFFFFF;
-    border: 1px solid var(--sk-accent,#CCCCCC);
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    padding: 0 16px 0 0;
-    gap: 0;
-    overflow: hidden;
-  }
-
-  /* 左ゾーン：番号バッジ */
-  .row-badge-zone {
-    width: 72px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: stretch;
-    background: var(--sk-soft,#CCCCCC);
-    position: relative;
-  }
-
-  .row-badge-label {
-    font-size: 9px;
-    color: #888888;
-    text-transform: uppercase;
-    position: absolute;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-  }
-
-  .row-badge-number {
-    font-size: 22px;
-    font-weight: bold;
-    color: #333333;
-    margin-top: 10px;
-  }
-
-  /* シェブロンゾーン */
-  .row-chevron-zone {
-    width: 36px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: stretch;
-    background: var(--sk-soft,#E8E8E8);
-  }
-
-  .chevron {
-    font-size: 16px;
-    color: #AAAAAA;
-  }
-
-  /* 中央ゾーン：見出し */
-  .row-heading-zone {
-    width: 180px;
-    flex-shrink: 0;
-    padding: 8px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-  }
-
-  .row-heading-zone-label {
-    font-size: 9px;
-    color: #AAAAAA;
-    text-transform: uppercase;
-    position: absolute;
-    top: 4px;
-    left: 16px;
-  }
-
-  .row-heading-text {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333333;
-    margin-top: 10px;
-  }
-
-  /* 右ゾーン：説明テキスト */
-  .row-desc-zone {
-    flex: 1;
-    padding: 8px 0 8px 16px;
-    border-left: 1px dashed var(--sk-accent,#CCCCCC);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-  }
-
-  .row-desc-zone-label {
-    font-size: 9px;
-    color: #AAAAAA;
-    text-transform: uppercase;
-    position: absolute;
-    top: 4px;
-    left: 16px;
-  }
-
-  .row-desc-text {
-    font-size: 11px;
-    color: #333333;
-    line-height: 1.5;
-    margin-top: 10px;
-  }
+  /* 番号付きの行：番号（24px・400・アクセント色）｜見出し｜本文＋例：。細罫線で区切る（塗りなし） */
+  .nr-list { width:100%; }
+  .nr-cols { display:grid; grid-template-columns:64px 224px 1fr; }
+  /* 列見出し（英字ラベル＝差し色 accent2） */
+  .nr-header { padding:0 0 8px; border-bottom:1px solid var(--sk-line,#E2E2E2); }
+  .nr-header span { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent2,#999999); }
+  .nr-row { align-items:start; padding:20px 0; border-bottom:1px solid var(--sk-line,#E2E2E2); }
+  .nr-no { font-size:24px; font-weight:400; line-height:28px; letter-spacing:.04em; color:var(--sk-accent,#666666); }
+  .nr-h { font-size:18px; font-weight:700; line-height:28px; padding-right:16px; }
+  .nr-body { font-size:16px; line-height:28px; }
+  .nr-note { margin-top:4px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -160,7 +32,7 @@ html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-t
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -169,89 +41,49 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-
-  <!-- タイトルエリア（SLIDE.mdで定義） -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- コンテンツエリア：番号付き横長バナー行 -->
+  <!-- コンテンツエリア：番号付きの行を細罫線で区切って縦に積む -->
   <div class="content-area">
+    <div class="nr-list">
+      <div class="nr-cols nr-header"><span>No.</span><span>Step</span><span>Detail</span></div>
 
-    <!-- 行1 -->
-    <div class="row-item">
-      <div class="row-badge-zone">
-        <span class="row-badge-label">badge</span>
-        <span class="row-badge-number">1</span>
+      <div class="nr-cols nr-row">
+        <div class="nr-no">01</div>
+        <div class="nr-h">対象を決める</div>
+        <div>
+          <p class="nr-body">権限のある小さな案件を1つ選ぶ。</p>
+          <div class="nr-note">例：自社サイトの1ページ</div>
+        </div>
       </div>
-      <div class="row-chevron-zone">
-        <span class="chevron">›</span>
+
+      <div class="nr-cols nr-row">
+        <div class="nr-no">02</div>
+        <div class="nr-h">型を用意する</div>
+        <div>
+          <p class="nr-body">構図と文言の順番を先に決め、装飾は最後に足す。</p>
+          <div class="nr-note">例：設計書を1枚にまとめる</div>
+        </div>
       </div>
-      <div class="row-heading-zone">
-        <span class="row-heading-zone-label">heading</span>
-        <span class="row-heading-text">項目見出し 01</span>
+
+      <div class="nr-cols nr-row">
+        <div class="nr-no">03</div>
+        <div class="nr-h">小さく試す</div>
+        <div>
+          <p class="nr-body">1ページだけ生成し、表記とリンクを目で確かめる。</p>
+          <div class="nr-note">例：公開前に3点を確認する</div>
+        </div>
       </div>
-      <div class="row-desc-zone">
-        <span class="row-desc-zone-label">description</span>
-        <p class="row-desc-text">この項目の説明文が入ります。サービスや事業の内容を<br>簡潔に2〜3行で記述します。</p>
+
+      <div class="nr-cols nr-row">
+        <div class="nr-no">04</div>
+        <div class="nr-h">記録して広げる</div>
+        <div>
+          <p class="nr-body">指示と修正差分を残し、次の案件で同じ手順を使う。</p>
+          <div class="nr-note">例：案件フォルダにログを1本置く</div>
+        </div>
       </div>
     </div>
-
-    <!-- 行2 -->
-    <div class="row-item">
-      <div class="row-badge-zone">
-        <span class="row-badge-label">badge</span>
-        <span class="row-badge-number">2</span>
-      </div>
-      <div class="row-chevron-zone">
-        <span class="chevron">›</span>
-      </div>
-      <div class="row-heading-zone">
-        <span class="row-heading-zone-label">heading</span>
-        <span class="row-heading-text">項目見出し 02</span>
-      </div>
-      <div class="row-desc-zone">
-        <span class="row-desc-zone-label">description</span>
-        <p class="row-desc-text">この項目の説明文が入ります。サービスや事業の内容を<br>簡潔に2〜3行で記述します。</p>
-      </div>
-    </div>
-
-    <!-- 行3 -->
-    <div class="row-item">
-      <div class="row-badge-zone">
-        <span class="row-badge-label">badge</span>
-        <span class="row-badge-number">3</span>
-      </div>
-      <div class="row-chevron-zone">
-        <span class="chevron">›</span>
-      </div>
-      <div class="row-heading-zone">
-        <span class="row-heading-zone-label">heading</span>
-        <span class="row-heading-text">項目見出し 03</span>
-      </div>
-      <div class="row-desc-zone">
-        <span class="row-desc-zone-label">description</span>
-        <p class="row-desc-text">この項目の説明文が入ります。サービスや事業の内容を<br>簡潔に2〜3行で記述します。</p>
-      </div>
-    </div>
-
-    <!-- 行4 -->
-    <div class="row-item">
-      <div class="row-badge-zone">
-        <span class="row-badge-label">badge</span>
-        <span class="row-badge-number">4</span>
-      </div>
-      <div class="row-chevron-zone">
-        <span class="chevron">›</span>
-      </div>
-      <div class="row-heading-zone">
-        <span class="row-heading-zone-label">heading</span>
-        <span class="row-heading-text">項目見出し 04</span>
-      </div>
-      <div class="row-desc-zone">
-        <span class="row-desc-zone-label">description</span>
-        <p class="row-desc-text">この項目の説明文が入ります。サービスや事業の内容を<br>簡潔に2〜3行で記述します。</p>
-      </div>
-    </div>
-
   </div>
 </div>
 </body>

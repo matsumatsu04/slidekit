@@ -15,94 +15,67 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
     }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
+    /* コンテンツエリア（見出しON時は上76px以降。カード列は上下中央） */
     .content-area {
+      flex: 1;
+      padding: 24px 48px;
       display: flex;
-      padding: 20px 48px;
-      gap: 24px;
-      align-items: center;
-      flex: 1;
+      flex-direction: column;
+      justify-content: center;
     }
-    /* KPIカラムラッパー（区切り線付き） */
-    .kpi-wrapper {
+    .kp-row { display: flex; gap: 16px; align-items: stretch; }
+    /* KPIカード（等幅・等高）。既定は淡い地 */
+    .kp-card {
       flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-    /* KPIカラム */
-    .kpi-col {
-      flex: 1;
-      border: 1px solid var(--sk-accent,#E0E0E0);
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 28px 16px;
-      gap: 8px;
+      text-align: center;
+      padding: 28px 24px;
+      border-radius: 12px;
+      background: var(--sk-soft,#F0F0F0);
+      border: 1px solid var(--sk-line,#e2e2e2);
     }
-    .kpi-label {
-      font-size: 11px;
-      color: #999;
+    /* 主役の1枚だけアクセント塗り（塗りは1枚に1つ） */
+    .kp-card-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+    .kp-kicker {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .kpi-number-row {
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
-    }
-    .kpi-number {
-      font-size: 48px;
-      font-weight: bold;
-      color: var(--sk-accent,#333333);
       line-height: 1;
+      color: var(--sk-accent,#555555);
+      white-space: nowrap;
     }
-    .kpi-unit {
-      font-size: 20px;
-      color: #888;
-      font-weight: normal;
-    }
-    .kpi-description {
-      font-size: 13px;
-      color: #333333;
-      text-align: center;
-      line-height: 1.4;
-    }
-    .kpi-supplement {
-      font-size: 11px;
-      color: #999;
-      text-align: center;
-    }
-    /* カラム間の縦区切り線 */
-    .col-divider {
-      width: 1px;
-      height: 60%;
-      background: var(--sk-soft,#EEEEEE);
-      flex-shrink: 0;
-      align-self: center;
-      margin: 0 12px;
-    }
-  
+    .kp-card-fill .kp-kicker { color: #FFFFFF; }
+    /* 数字は大きく、単位は小さく */
+    .kp-num-row { margin-top: 16px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
+    .kp-num { font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: var(--sk-accent,#555555); }
+    .kp-unit { font-size: 16px; font-weight: 400; line-height: 1; }
+    .kp-card-fill .kp-num, .kp-card-fill .kp-unit { color: #FFFFFF; }
+    .kp-rule { margin-top: 16px; width: 100%; height: 1px; background: var(--sk-line,#e2e2e2); }
+    .kp-card-fill .kp-rule { background: rgba(255,255,255,.35); }
+    .kp-desc { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+    .kp-note { margin-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+    .kp-card-fill .kp-note { color: #FFFFFF; opacity: .85; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -115,46 +88,36 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
     <!-- コンテンツエリア -->
     <div class="content-area">
+      <div class="kp-row">
 
-      <!-- KPI 1 -->
-      <div class="kpi-col">
-        <div class="kpi-label">月間売上高</div>
-        <div class="kpi-number-row">
-          <span class="kpi-number">4.8</span>
-          <span class="kpi-unit">億円</span>
+        <!-- KPI 1 -->
+        <div class="kp-card">
+          <div class="kp-kicker">TIME ／ 制作日数</div>
+          <div class="kp-num-row"><span class="kp-num">2</span><span class="kp-unit">日</span></div>
+          <div class="kp-rule"></div>
+          <div class="kp-desc">設計から公開までの日数</div>
+          <div class="kp-note">例：従来は5日</div>
         </div>
-        <div class="kpi-description">前年同期比で過去最高を更新</div>
-        <div class="kpi-supplement">前回比 +23%</div>
-      </div>
 
-      <!-- 区切り線 -->
-      <div class="col-divider"></div>
-
-      <!-- KPI 2 -->
-      <div class="kpi-col">
-        <div class="kpi-label">新規顧客数</div>
-        <div class="kpi-number-row">
-          <span class="kpi-number">312</span>
-          <span class="kpi-unit">社</span>
+        <!-- KPI 2（主役・塗り） -->
+        <div class="kp-card kp-card-fill">
+          <div class="kp-kicker">REVISIONS ／ 手直し回数</div>
+          <div class="kp-num-row"><span class="kp-num">1</span><span class="kp-unit">回</span></div>
+          <div class="kp-rule"></div>
+          <div class="kp-desc">公開前の手直しの平均回数</div>
+          <div class="kp-note">例：従来は3〜4回</div>
         </div>
-        <div class="kpi-description">3ヶ月連続で月次目標を達成</div>
-        <div class="kpi-supplement">目標達成率 104%</div>
-      </div>
 
-      <!-- 区切り線 -->
-      <div class="col-divider"></div>
-
-      <!-- KPI 3 -->
-      <div class="kpi-col">
-        <div class="kpi-label">顧客継続率</div>
-        <div class="kpi-number-row">
-          <span class="kpi-number">96.2</span>
-          <span class="kpi-unit">%</span>
+        <!-- KPI 3 -->
+        <div class="kp-card">
+          <div class="kp-kicker">CHECK ／ 目視の網羅率</div>
+          <div class="kp-num-row"><span class="kp-num">100</span><span class="kp-unit">%</span></div>
+          <div class="kp-rule"></div>
+          <div class="kp-desc">公開前に目視した割合</div>
+          <div class="kp-note">例：チェック表で全ページ確認</div>
         </div>
-        <div class="kpi-description">業界平均を10ポイント上回る</div>
-        <div class="kpi-supplement">前回比 +1.8pt</div>
-      </div>
 
+      </div>
     </div>
   </div>
 </body>

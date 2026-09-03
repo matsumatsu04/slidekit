@@ -15,77 +15,40 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      color: var(--sk-ink,#3f4a52);
+      font-weight: 400;
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
     }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
+    /* v2（2026-09-02）: 3枚の淡いカード（KICKER→見出し→罫線→本文）＋下に結論ピル。塗りはピルだけ。
+       共通部品は使えないので、同じ数値を sp- 接頭辞で持つ */
     .content-area {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 24px 80px;
-      gap: 16px;
-      flex: 1;
-    }
-    .summary-label {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
-    }
-    /* ポイントアイテム */
-    .point-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--sk-accent,#F0F0F0);
-    }
-    .check-icon {
-      width: 28px;
-      height: 28px;
-      border: 2px solid var(--sk-accent2, var(--sk-accent,#CCCCCC));
-      display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: var(--sk-accent2,#888);
-      flex-shrink: 0;
+      gap: 24px;
+      padding: 0 48px;
     }
-    .point-text {
-      flex: 1;
-    }
-    .point-heading {
-      font-size: 15px;
-      font-weight: bold;
-      color: #333333;
-      line-height: 1.4;
-    }
-    .point-body {
-      font-size: 13px;
-      color: #333333;
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-  
+    .sp-cards  { display:flex; gap:16px; width:100%; align-items:stretch; }
+    .sp-card   { flex:1; background:var(--sk-soft,#F0F0F0); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:8px; }
+    .sp-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent,#666666); line-height:1; }
+    .sp-head   { font-size:16px; font-weight:700; letter-spacing:.06em; line-height:1.5; }
+    .sp-rule   { height:1px; background:var(--sk-line,#e2e2e2); margin:4px 0; }
+    .sp-body   { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; }
+    .sp-pill   { display:inline-flex; align-items:center; justify-content:center; height:34px; padding:0 28px; border-radius:17px;
+                 background:var(--sk-accent,#666666); color:#FFFFFF; font-size:14px; font-weight:400; letter-spacing:.2em; line-height:1; white-space:nowrap; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -98,35 +61,30 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
     <!-- コンテンツエリア -->
     <div class="content-area">
-      <div class="summary-label">Summary</div>
-
-      <!-- ポイント 1 -->
-      <div class="point-item">
-        <div class="check-icon">✓</div>
-        <div class="point-text">
-          <div class="point-heading">顧客体験の向上が売上増加の最大要因</div>
-          <div class="point-body">NPS改善により既存顧客の継続率が前年比+8%向上し、売上にも直結した</div>
+      <div class="sp-cards">
+        <!-- ポイント 1 -->
+        <div class="sp-card">
+          <div class="sp-kicker">Point 1 ／ 前提</div>
+          <div class="sp-head">判断の基準を先に決める</div>
+          <div class="sp-rule"></div>
+          <div class="sp-body">AIに任せる範囲と、人が最後に決める範囲を、着手前に線引きしておく。</div>
+        </div>
+        <!-- ポイント 2 -->
+        <div class="sp-card">
+          <div class="sp-kicker">Point 2 ／ 進め方</div>
+          <div class="sp-head">小さく試して段階で広げる</div>
+          <div class="sp-rule"></div>
+          <div class="sp-body">ページ単位の試作から始め、崩れなければ次の工程へ広げていく。</div>
+        </div>
+        <!-- ポイント 3 -->
+        <div class="sp-card">
+          <div class="sp-kicker">Point 3 ／ 運用</div>
+          <div class="sp-head">確認の手順を型にする</div>
+          <div class="sp-rule"></div>
+          <div class="sp-body">見る順番と確認項目を決めておけば、誰が見ても同じ品質で通せる。</div>
         </div>
       </div>
-
-      <!-- ポイント 2 -->
-      <div class="point-item">
-        <div class="check-icon">✓</div>
-        <div class="point-text">
-          <div class="point-heading">デジタル化により業務効率が大幅に改善</div>
-          <div class="point-body">手作業の80%をシステムに移行し、1人あたりの処理件数が2.3倍に増加した</div>
-        </div>
-      </div>
-
-      <!-- ポイント 3 -->
-      <div class="point-item">
-        <div class="check-icon">✓</div>
-        <div class="point-text">
-          <div class="point-heading">次四半期は新市場開拓を最優先課題とする</div>
-          <div class="point-body">東南アジア3カ国での展開準備を進め、来期Q1中のローンチを目指す</div>
-        </div>
-      </div>
-
+      <div class="sp-pill">線引きしてから、小さく試す</div>
     </div>
   </div>
 </body>

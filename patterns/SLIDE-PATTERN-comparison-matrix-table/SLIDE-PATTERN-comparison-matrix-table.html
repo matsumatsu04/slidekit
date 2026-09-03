@@ -4,16 +4,33 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-comparison-matrix-table</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 16px 40px; display: flex; flex-direction: column; }
-  table { width: 100%; border-collapse: collapse; flex: 1; }
-  th { font-size: 12px; font-weight: bold; padding: 8px 12px; border: 1px solid var(--sk-accent,#E0E0E0); text-align: center; background: var(--sk-soft,#F0F0F0); color: #333333; }
-  th.highlight { background: var(--sk-accent,#555555); color: #FFFFFF; }
-  td { font-size: 12px; padding: 8px 12px; border: 1px solid var(--sk-accent,#E8E8E8); vertical-align: top; color: #333333; text-align: center; }
-  td.row-label { text-align: left; font-weight: bold; color: #333333; background: #FFFFFF; }
-  td.highlight { background: #FFFFFF; color: #222; font-weight: 500; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。表は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+  /* 本物の表。塗りはヘッダ行だけ（角丸は上2隅） */
+  .cm-wrap { border-radius: 10px 10px 0 0; overflow: hidden; }
+  .cm-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .cm-table th {
+    background: var(--sk-accent,#555555); color: #FFFFFF;
+    font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1;
+    text-align: left; vertical-align: middle; height: 40px; padding: 0 16px;
+  }
+  .cm-table td {
+    font-size: 16px; line-height: 1.8; text-align: left; vertical-align: middle;
+    height: 48px; padding: 12px 16px;
+    border-bottom: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 左列（比較対象）はアクセント色の太字 */
+  .cm-table td.cm-axis { color: var(--sk-accent,#555555); font-weight: 700; }
+  .cm-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -21,7 +38,7 @@ html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-t
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -34,48 +51,45 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
   <!-- コンテンツエリア -->
   <div class="content-area">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:140px;"></th>
-          <th>対象A</th>
-          <th>対象B</th>
-          <th class="highlight">対象C（強調）</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="row-label">比較軸1</td>
-          <td>内容テキスト</td>
-          <td>内容テキスト</td>
-          <td class="highlight">強調内容テキスト</td>
-        </tr>
-        <tr>
-          <td class="row-label">比較軸2</td>
-          <td>内容テキスト</td>
-          <td>内容テキスト</td>
-          <td class="highlight">強調内容テキスト</td>
-        </tr>
-        <tr>
-          <td class="row-label">比較軸3</td>
-          <td>内容テキスト</td>
-          <td>内容テキスト</td>
-          <td class="highlight">強調内容テキスト</td>
-        </tr>
-        <tr>
-          <td class="row-label">比較軸4</td>
-          <td>内容テキスト</td>
-          <td>内容テキスト</td>
-          <td class="highlight">強調内容テキスト</td>
-        </tr>
-        <tr>
-          <td class="row-label">比較軸5</td>
-          <td>内容テキスト</td>
-          <td>内容テキスト</td>
-          <td class="highlight">強調内容テキスト</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="cm-wrap">
+      <table class="cm-table">
+        <thead>
+          <tr>
+            <th style="width:140px;">進め方</th>
+            <th>初期コスト</th>
+            <th>修正の速さ</th>
+            <th>向いている案件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cm-axis">自社で内製</td>
+            <td>人件費のみ</td>
+            <td>担当者の手が空き次第</td>
+            <td>更新が多い自社サイト</td>
+          </tr>
+          <tr>
+            <td class="cm-axis">外注</td>
+            <td>案件ごとに見積</td>
+            <td>往復に数日かかる</td>
+            <td>大型で仕様が固い案件</td>
+          </tr>
+          <tr>
+            <td class="cm-axis">テンプレート</td>
+            <td>無料〜数千円</td>
+            <td>型の範囲内なら即日</td>
+            <td>単発のLP・告知ページ</td>
+          </tr>
+          <tr>
+            <td class="cm-axis">AI × 人</td>
+            <td>ツール代のみ</td>
+            <td>再生成で当日中</td>
+            <td>更新が多い中小案件</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cm-note">例：月3件以上つくるなら「AI × 人」から検討する</div>
   </div>
 </div>
 </body>

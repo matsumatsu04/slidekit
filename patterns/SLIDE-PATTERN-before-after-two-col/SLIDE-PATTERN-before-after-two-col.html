@@ -15,96 +15,109 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
     }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
+    /* コンテンツエリア（見出しON時は上76px以降。本文ブロックは上下中央） */
     .content-area {
+      flex: 1;
+      padding: 24px 48px;
       display: flex;
-      padding: 24px 40px;
-      gap: 24px;
-      flex: 1;
-      align-items: stretch;
+      flex-direction: column;
+      justify-content: center;
     }
-    /* BEFOREカラム */
-    .col-before,
-    .col-after {
+    .ba-row { display: flex; gap: 16px; align-items: stretch; }
+    /* パネル: 左＝淡い地（BEFORE）、右＝アクセント塗り（AFTER・白文字）。塗りは1枚に1つ */
+    .ba-panel {
       flex: 1;
-      border: 1px solid var(--sk-accent,#CCCCCC);
+      min-width: 0;
+      border-radius: 12px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
     }
-    .col-header {
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      letter-spacing: 0.06em;
+    .ba-before { background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2); }
+    .ba-after  { background: var(--sk-accent,#555555); color: #FFFFFF; }
+    /* KICKER（英字ラベル ／ 補足） */
+    .ba-kicker {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--sk-accent,#555555);
+      white-space: nowrap;
     }
-    .col-before .col-header {
-      background: var(--sk-soft,#F0F0F0);
+    .ba-after .ba-kicker { color: #FFFFFF; }
+    /* 工程の箱（白）と三角矢印（SVG・幅12px） */
+    .ba-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      height: 88px;
     }
-    .col-after .col-header {
-      background: var(--sk-soft,#E8E8E8);
-      border-bottom: 1px solid var(--sk-accent,#CCCCCC);
-    }
-    .col-body {
-      padding: 16px 20px;
+    .ba-before .ba-flow { padding: 0 8px; }
+    .ba-box {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 88px;
+      padding: 0 4px;
+      border-radius: 6px;
+      background: #FFFFFF;
+      border: 1px solid var(--sk-line,#e2e2e2);
+      color: var(--sk-ink,#3f4a52);
+    }
+    .ba-before .ba-box { width: 150px; }
+    .ba-after  .ba-box { width: 76px; border-color: #FFFFFF; }
+    .ba-box-l { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+    .ba-box-t { font-size: 16px; font-weight: 700; line-height: 1; white-space: nowrap; }
+    .ba-after .ba-box-t { color: var(--sk-accent,#555555); }
+    /* 最終工程（公開・運用など）は塗らず 1.5px の枠線 */
+    .ba-box-outline { background: transparent; border: 1.5px solid #FFFFFF; }
+    .ba-after .ba-box-outline .ba-box-t,
+    .ba-after .ba-box-outline .ba-box-l { color: #FFFFFF; }
+    .ba-arw { flex: none; display: block; }
+    /* 丸角チップ（2列） */
+    .ba-chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
-      flex: 1;
+      margin-top: 20px;
     }
-    .list-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .marker-x {
-      color: #888;
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .marker-o {
-      color: #333333;
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .item-text {
-      color: #333333;
-    }
-    /* 中央矢印 */
-    .center-arrow {
+    .ba-chip {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
-      font-size: 32px;
-      color: #CCCCCC;
-      width: 48px;
+      font-size: 16px;
+      line-height: 1;
+      white-space: nowrap;
     }
-  
+    .ba-before .ba-chip { background: #FFFFFF; border: 1px solid var(--sk-line,#e2e2e2); }
+    .ba-after  .ba-chip { background: rgba(255,255,255,.14); color: #FFFFFF; }
+    /* 注記（例：〜） */
+    .ba-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+    .ba-after .ba-note { color: #FFFFFF; opacity: .85; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
-html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;border-radius:2px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:26px;width:4px;height:28px;background:var(--sk-accent,#333333);}
 html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
@@ -117,56 +130,47 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 
     <!-- コンテンツエリア -->
     <div class="content-area">
+      <div class="ba-row">
 
-      <!-- BEFORE カラム -->
-      <div class="col-before">
-        <div class="col-header">BEFORE</div>
-        <div class="col-body">
-          <div class="list-item">
-            <span class="marker-x">×</span>
-            <span class="item-text">手作業によるデータ入力でミスが頻発している</span>
+        <!-- BEFORE パネル（淡い地） -->
+        <div class="ba-panel ba-before">
+          <div class="ba-kicker">BEFORE ／ 人が全部つくる</div>
+          <div class="ba-flow">
+            <div class="ba-box"><span class="ba-box-l">HUMAN</span><span class="ba-box-t">設計と構成</span></div>
+            <svg class="ba-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-muted,#888888)" opacity=".5"/></svg>
+            <div class="ba-box"><span class="ba-box-l">HUMAN</span><span class="ba-box-t">手で全部組む</span></div>
           </div>
-          <div class="list-item">
-            <span class="marker-x">×</span>
-            <span class="item-text">情報共有が属人化しており引き継ぎが困難</span>
+          <div class="ba-chips">
+            <div class="ba-chip">× 修正は組み直し</div>
+            <div class="ba-chip">× 確認が納品前</div>
+            <div class="ba-chip">× 担当者に依存</div>
+            <div class="ba-chip">× 工数が読めない</div>
           </div>
-          <div class="list-item">
-            <span class="marker-x">×</span>
-            <span class="item-text">承認フローが紙ベースで処理に数日かかる</span>
-          </div>
-          <div class="list-item">
-            <span class="marker-x">×</span>
-            <span class="item-text">各部門のデータが分散して全体把握が困難</span>
-          </div>
+          <div class="ba-note">例：修正1回ごとに半日、確認は最終日に集中する</div>
         </div>
-      </div>
 
-      <!-- 中央矢印 -->
-      <div class="center-arrow">→</div>
-
-      <!-- AFTER カラム -->
-      <div class="col-after">
-        <div class="col-header">AFTER</div>
-        <div class="col-body">
-          <div class="list-item">
-            <span class="marker-o">○</span>
-            <span class="item-text">システム連携による自動入力でエラーをゼロに</span>
+        <!-- AFTER パネル（アクセント塗り・白文字） -->
+        <div class="ba-panel ba-after">
+          <div class="ba-kicker">AFTER ／ AI × 人</div>
+          <div class="ba-flow">
+            <div class="ba-box"><span class="ba-box-l">PLAN</span><span class="ba-box-t">設計</span></div>
+            <svg class="ba-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+            <div class="ba-box"><span class="ba-box-l">BUILD</span><span class="ba-box-t">生成</span></div>
+            <svg class="ba-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+            <div class="ba-box"><span class="ba-box-l">CHECK</span><span class="ba-box-t">確認</span></div>
+            <svg class="ba-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="#FFFFFF"/></svg>
+            <div class="ba-box ba-box-outline"><span class="ba-box-l">PUBLISH</span><span class="ba-box-t">公開</span></div>
           </div>
-          <div class="list-item">
-            <span class="marker-o">○</span>
-            <span class="item-text">クラウドで全員がリアルタイムに情報共有可能</span>
+          <div class="ba-chips">
+            <div class="ba-chip">○ 修正は再生成</div>
+            <div class="ba-chip">○ 確認が工程内</div>
+            <div class="ba-chip">○ 根拠が残る</div>
+            <div class="ba-chip">○ 工数が読める</div>
           </div>
-          <div class="list-item">
-            <span class="marker-o">○</span>
-            <span class="item-text">電子承認システムで最短1日での処理を実現</span>
-          </div>
-          <div class="list-item">
-            <span class="marker-o">○</span>
-            <span class="item-text">統合ダッシュボードで全社データを一元管理</span>
-          </div>
+          <div class="ba-note">例：修正は10分で再生成、確認は工程ごとに10分</div>
         </div>
-      </div>
 
+      </div>
     </div>
   </div>
 </body>
