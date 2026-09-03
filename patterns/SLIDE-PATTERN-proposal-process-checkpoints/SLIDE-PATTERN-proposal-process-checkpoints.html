@@ -3,34 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-proposal-process-checkpoints</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; flex-direction:column; justify-content:center; padding:24px 64px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。カード列＋注記は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* タイムライン（点線はバッジ中心で始端・終端） */
-  .pc-timeline { position:relative; height:112px; flex-shrink:0; }
-  .pc-line { position:absolute; top:63px; left:12.5%; right:12.5%; border-top:2px dotted var(--sk-soft,#BBBBBB); }
-  .pc-badge { position:absolute; top:64px; width:52px; height:52px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent,#555555); border-radius:6px; z-index:2; }
-  .pc-badge > span { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-45deg); color:#FFFFFF; line-height:1.2; }
-  .pc-badge .b-en { font-size:7px; letter-spacing:.1em; }
-  .pc-badge .b-num { font-size:15px; font-weight:bold; }
-  .pc-mini { position:absolute; top:64px; width:12px; height:12px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent2,var(--sk-accent,#888888)); border-radius:2px; z-index:1; }
-  .pc-note { position:absolute; top:24px; transform:translateX(-50%); font-size:9px; color:#888888; white-space:nowrap; }
-
-  /* 4等分カラム */
-  .pc-cols { display:flex; margin-top:8px; }
-  .pc-col { flex:1; padding:0 16px; }
-  .pc-col + .pc-col { border-left:1px solid var(--sk-soft,#EEEEEE); }
-  .pc-en { font-size:9px; font-weight:bold; letter-spacing:.12em; color:var(--sk-accent,#888888); }
-  .pc-name { font-size:13px; font-weight:bold; color:#333333; margin-top:2px; }
-  .pc-desc { font-size:10px; color:#666666; line-height:1.8; margin-top:8px; }
-  .pc-chips { margin-top:12px; display:flex; flex-direction:column; gap:4px; }
-  .pc-chip-row { display:flex; align-items:center; gap:4px; }
-  .pc-chip { font-size:8.5px; color:#666666; border:1px solid var(--sk-soft,#CCCCCC); border-radius:8px; padding:2px 8px; white-space:nowrap; }
-  .pc-arw { font-size:7px; color:#BBBBBB; }
+  /* ── 工程カード4枚（等幅・等高）を SVG の三角矢印でつなぐ ── */
+  .pc-row { display: flex; align-items: stretch; gap: 8px; }
+  .pc-card {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    padding: 20px 16px; border-radius: 11px;
+    background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 現在の工程1枚だけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .pc-card-now { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* カードの中身の型：KICKER「STEP n ／ 期間」→ 見出し18px → 細い罫線 → チェックポイント3行 */
+  .pc-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .pc-card-now .pc-kicker { color: #FFFFFF; }
+  .pc-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .pc-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .pc-card-now .pc-rule { background: rgba(255,255,255,.35); }
+  .pc-list { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+  .pc-ck { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.8; }
+  /* チェック記号は SVG（12px・線2px）。行の高さ25pxの中で縦中央に置く */
+  .pc-ck svg { flex: none; width: 12px; height: 12px; margin-top: 6px; display: block; }
+  .pc-ck svg path { fill: none; stroke: var(--sk-accent,#555555); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .pc-card-now .pc-ck svg path { stroke: #FFFFFF; }
+  /* 三角矢印（SVG・幅12px） */
+  .pc-arw { flex: none; align-self: center; display: block; }
+  .pc-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -50,62 +60,61 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：工程カード4枚（KICKER／見出し／罫線／チェックポイント3行）→ 三角矢印 → 注記 -->
   <div class="content-area">
+    <div class="pc-row">
 
-    <div class="pc-timeline">
-      <div class="pc-line"></div>
-      <div class="pc-note" style="left:25%;">お客様確認 1</div>
-      <div class="pc-note" style="left:50%;">お客様確認 2</div>
-      <div class="pc-note" style="left:75%;">お客様確認 3</div>
-      <div class="pc-mini" style="left:25%;"></div>
-      <div class="pc-mini" style="left:50%;"></div>
-      <div class="pc-mini" style="left:75%;"></div>
-      <div class="pc-badge" style="left:12.5%;"><span><span class="b-en">PHASE</span><span class="b-num">01</span></span></div>
-      <div class="pc-badge" style="left:37.5%;"><span><span class="b-en">PHASE</span><span class="b-num">02</span></span></div>
-      <div class="pc-badge" style="left:62.5%;"><span><span class="b-en">PHASE</span><span class="b-num">03</span></span></div>
-      <div class="pc-badge" style="left:87.5%;"><span><span class="b-en">PHASE</span><span class="b-num">04</span></span></div>
+      <div class="pc-card">
+        <div class="pc-kicker">STEP 1 ／ 1週目</div>
+        <div class="pc-ttl">ヒアリング</div>
+        <div class="pc-rule"></div>
+        <div class="pc-list">
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>目的とゴールの確認</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>現状の課題の整理</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>予算と納期の目安</span></div>
+        </div>
+      </div>
+      <svg class="pc-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+
+      <div class="pc-card pc-card-now">
+        <div class="pc-kicker">STEP 2 ／ 2週目</div>
+        <div class="pc-ttl">提案・見積</div>
+        <div class="pc-rule"></div>
+        <div class="pc-list">
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>構成案と参考例</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>見積と契約条件</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>進め方の合意</span></div>
+        </div>
+      </div>
+      <svg class="pc-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+
+      <div class="pc-card">
+        <div class="pc-kicker">STEP 3 ／ 3〜6週目</div>
+        <div class="pc-ttl">制作</div>
+        <div class="pc-rule"></div>
+        <div class="pc-list">
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>初稿デザインの確認</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>修正は2回まで</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>原稿と写真の受領</span></div>
+        </div>
+      </div>
+      <svg class="pc-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
+
+      <div class="pc-card">
+        <div class="pc-kicker">STEP 4 ／ 7週目</div>
+        <div class="pc-ttl">公開・引き渡し</div>
+        <div class="pc-rule"></div>
+        <div class="pc-list">
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>公開前の最終確認</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>操作説明の実施</span></div>
+          <div class="pc-ck"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5L5 9.5 10 3"/></svg><span>保守範囲の確認</span></div>
+        </div>
+      </div>
+
     </div>
-
-    <div class="pc-cols">
-      <div class="pc-col">
-        <div class="pc-en">PLANNING</div>
-        <div class="pc-name">工程名が入ります</div>
-        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。お客様にお願いする準備事項もここに書きます。</div>
-        <div class="pc-chips">
-          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
-          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
-        </div>
-      </div>
-      <div class="pc-col">
-        <div class="pc-en">DESIGN</div>
-        <div class="pc-name">工程名が入ります</div>
-        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。前工程の確認結果を受けて進めます。</div>
-        <div class="pc-chips">
-          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
-          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
-        </div>
-      </div>
-      <div class="pc-col">
-        <div class="pc-en">BUILD</div>
-        <div class="pc-name">工程名が入ります</div>
-        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。中間確認の位置づけもここで示します。</div>
-        <div class="pc-chips">
-          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
-          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
-        </div>
-      </div>
-      <div class="pc-col">
-        <div class="pc-en">LAUNCH</div>
-        <div class="pc-name">工程名が入ります</div>
-        <div class="pc-desc">工程の説明テキストが入ります。実施内容と成果物を3〜5行で記述します。納品後の流れにも1行触れられます。</div>
-        <div class="pc-chips">
-          <div class="pc-chip-row"><span class="pc-chip">作業項目A</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物A</span></div>
-          <div class="pc-chip-row"><span class="pc-chip">作業項目B</span><i class="fa-solid fa-arrow-right pc-arw"></i><span class="pc-chip">成果物B</span></div>
-        </div>
-      </div>
-    </div>
-
+    <div class="pc-note">例：✓ はお客様に確認いただく項目。塗りは現在の工程（今ここ）</div>
   </div>
 </div>
 </body>
