@@ -55,6 +55,9 @@ html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76
 html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
 html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
 html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
+
+/* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
+.slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
