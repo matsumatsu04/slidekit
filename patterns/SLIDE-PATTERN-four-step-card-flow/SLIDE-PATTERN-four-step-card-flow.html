@@ -4,12 +4,34 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-four-step-card-flow</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { width: 960px; height: 540px; overflow: hidden; font-family: sans-serif; background: #FFFFFF; display: flex; flex-direction: column; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* リード文16px → タイムライン（SVG 1枚）→ 4カード（等幅204px・等高・1.5px枠・塗りなし） */
+  .fs-wrap { width:100%; }
+  .fs-lead { font-size:16px; line-height:1.8; }
+  /* タイムライン：線は1つ目のドット中心から4つ目のドット中心まで。ドットの x はカードの中心（102/322/542/762）に固定 */
+  .fs-timeline { display:block; width:864px; height:12px; margin:20px 0 16px; }
+  .fs-cards { display:grid; grid-template-columns:repeat(4,204px); gap:16px; height:216px; }
+  .fs-card { min-width:0; border:1.5px solid var(--sk-line,#e2e2e2); border-radius:11px; padding:20px 16px;
+             display:flex; flex-direction:column; align-items:flex-start; }
+  /* カードの型：KICKER「STEP 01」→ 見出し18px → 細罫線 → 本文16px */
+  .fs-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .fs-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .fs-line { width:100%; height:1px; background:var(--sk-line,#e2e2e2); margin:12px 0; flex-shrink:0; }
+  .fs-body { font-size:16px; line-height:1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
-html[data-heading="on"] body{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
@@ -24,84 +46,48 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-
-<div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-<!-- コンテンツエリア -->
-<div style="flex:1; display:flex; flex-direction:column; padding:16px 32px 14px; gap:10px; overflow:hidden;">
-
-  <!-- リード文 -->
-  <div style="flex-shrink:0;">
-    <div style="font-size:11px; color: #333333; line-height:1.6; background:#FFFFFF; padding:8px 14px; border-radius:4px; border:1px solid var(--sk-accent,#EEEEEE);">
-      リード文：このプロセスの背景や意義を1〜2文で説明します。全体の流れを把握するための導入テキストが入ります。
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：リード文 → タイムライン（線1本＋ドット4つ・塗りは1つ目だけ）→ 4カード（塗りなし・1.5px枠） -->
+  <div class="content-area">
+    <div class="fs-wrap">
+      <div class="fs-lead">相談から公開まで4つの工程で進め、工程ごとにお客様と確認の場を設けます。</div>
+      <svg class="fs-timeline" width="864" height="12" viewBox="0 0 864 12" aria-hidden="true">
+        <line x1="102" y1="6" x2="762" y2="6" stroke="var(--sk-accent,#666666)" stroke-width="1.5"/>
+        <circle cx="102" cy="6" r="5.25" fill="var(--sk-accent,#555555)" stroke="var(--sk-accent,#555555)" stroke-width="1.5"/>
+        <circle cx="322" cy="6" r="5.25" fill="#FFFFFF" stroke="var(--sk-accent,#666666)" stroke-width="1.5"/>
+        <circle cx="542" cy="6" r="5.25" fill="#FFFFFF" stroke="var(--sk-accent,#666666)" stroke-width="1.5"/>
+        <circle cx="762" cy="6" r="5.25" fill="#FFFFFF" stroke="var(--sk-accent,#666666)" stroke-width="1.5"/>
+      </svg>
+      <div class="fs-cards">
+        <div class="fs-card">
+          <div class="fs-kicker">STEP 01</div>
+          <div class="fs-h">ヒアリング</div>
+          <div class="fs-line"></div>
+          <p class="fs-body">目的と対象、いまの課題を聞き取り、要件を1枚に書く。</p>
+        </div>
+        <div class="fs-card">
+          <div class="fs-kicker">STEP 02</div>
+          <div class="fs-h">設計・構成</div>
+          <div class="fs-line"></div>
+          <p class="fs-body">ページ構成と文言の骨子を決め、参考例で方向を合わせる。</p>
+        </div>
+        <div class="fs-card">
+          <div class="fs-kicker">STEP 03</div>
+          <div class="fs-h">制作・確認</div>
+          <div class="fs-line"></div>
+          <p class="fs-body">デザインと実装を進め、確認は決めた順番で2回まわす。</p>
+        </div>
+        <div class="fs-card">
+          <div class="fs-kicker">STEP 04</div>
+          <div class="fs-h">公開・運用</div>
+          <div class="fs-line"></div>
+          <p class="fs-body">公開前の最終確認を通し、月1回の見直し枠を先に取る。</p>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- タイムライン + カードエリア -->
-  <div style="flex:1; display:flex; flex-direction:column; min-height:0; position:relative;">
-
-    <!-- タイムライン横線とドット -->
-    <div style="position:relative; height:28px; flex-shrink:0; margin:0 20px;">
-      <!-- 横線 -->
-      <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:#CCCCCC; transform:translateY(-50%);"></div>
-      <!-- 4つのドット（等間隔） -->
-      <div style="position:absolute; top:50%; left:12.5%; transform:translate(-50%, -50%); width:12px; height:12px; border-radius:50%; background:#AAAAAA; border:2px solid #FFFFFF;"></div>
-      <div style="position:absolute; top:50%; left:37.5%; transform:translate(-50%, -50%); width:12px; height:12px; border-radius:50%; background:#AAAAAA; border:2px solid #FFFFFF;"></div>
-      <div style="position:absolute; top:50%; left:62.5%; transform:translate(-50%, -50%); width:12px; height:12px; border-radius:50%; background:#AAAAAA; border:2px solid #FFFFFF;"></div>
-      <div style="position:absolute; top:50%; left:87.5%; transform:translate(-50%, -50%); width:12px; height:12px; border-radius:50%; background:#AAAAAA; border:2px solid #FFFFFF;"></div>
-    </div>
-
-    <!-- 4枚のカード -->
-    <div style="flex:1; display:flex; gap:12px; min-height:0;">
-
-      <!-- カード1 -->
-      <div style="flex:1; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); border-radius:10px; padding:14px 12px 10px; display:flex; flex-direction:column; gap:5px; min-height:0;">
-        <div style="font-size:26px; font-weight:bold; color:#888; line-height:1; letter-spacing:-1px;">01</div>
-        <div style="font-size:12px; color: #333333; font-weight:bold; line-height:1.4;">ステップ名が<br>入ります</div>
-        <div style="height:1px; background:#CCCCCC; flex-shrink:0;"></div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細1が入ります</span></div>
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細2が入ります</span></div>
-        </div>
-      </div>
-
-      <!-- カード2 -->
-      <div style="flex:1; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); border-radius:10px; padding:14px 12px 10px; display:flex; flex-direction:column; gap:5px; min-height:0;">
-        <div style="font-size:26px; font-weight:bold; color:#888; line-height:1; letter-spacing:-1px;">02</div>
-        <div style="font-size:12px; color: #333333; font-weight:bold; line-height:1.4;">ステップ名が<br>入ります</div>
-        <div style="height:1px; background:#CCCCCC; flex-shrink:0;"></div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細1が入ります</span></div>
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細2が入ります</span></div>
-        </div>
-      </div>
-
-      <!-- カード3 -->
-      <div style="flex:1; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); border-radius:10px; padding:14px 12px 10px; display:flex; flex-direction:column; gap:5px; min-height:0;">
-        <div style="font-size:26px; font-weight:bold; color:#888; line-height:1; letter-spacing:-1px;">03</div>
-        <div style="font-size:12px; color: #333333; font-weight:bold; line-height:1.4;">ステップ名が<br>入ります</div>
-        <div style="height:1px; background:#CCCCCC; flex-shrink:0;"></div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細1が入ります</span></div>
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細2が入ります</span></div>
-        </div>
-      </div>
-
-      <!-- カード4 -->
-      <div style="flex:1; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); border-radius:10px; padding:14px 12px 10px; display:flex; flex-direction:column; gap:5px; min-height:0;">
-        <div style="font-size:26px; font-weight:bold; color:#888; line-height:1; letter-spacing:-1px;">04</div>
-        <div style="font-size:12px; color: #333333; font-weight:bold; line-height:1.4;">ステップ名が<br>入ります</div>
-        <div style="height:1px; background:#CCCCCC; flex-shrink:0;"></div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細1が入ります</span></div>
-          <div style="font-size:10px; color: #333333; display:flex; gap:5px;"><span style="color:#AAAAAA;">›</span><span>箇条書き詳細2が入ります</span></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
 </div>
-
 </body>
 </html>

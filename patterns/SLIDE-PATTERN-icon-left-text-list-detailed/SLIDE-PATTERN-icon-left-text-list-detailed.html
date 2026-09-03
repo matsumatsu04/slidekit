@@ -1,93 +1,37 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-icon-left-text-list-detailed</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 960px;
-      height: 540px;
-      overflow: hidden;
-      font-family: sans-serif;
-      background: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-area .title-dummy {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 16px 48px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    /* 各行（縦リスト） */
-    .list-row {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      background: #FFFFFF;
-      border-radius: 4px;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      padding: 12px 20px;
-      gap: 20px;
-    }
-    /* アイコンエリア（左側・大きめ） */
-    .row-icon {
-      flex-shrink: 0;
-      width: 72px;
-      height: 72px;
-      background: var(--sk-soft,#E0E0E0);
-      border: 1px dashed var(--sk-accent,#CCCCCC);
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    /* 右側テキストエリア */
-    .row-text {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    /* 見出し */
-    .row-heading {
-      flex-shrink: 0;
-    }
-    .heading-text {
-      font-size: 15px;
-      font-weight: bold;
-      color: #888;
-    }
-    /* 説明テキスト */
-    .row-description {
-      flex-shrink: 0;
-    }
-    .description-text {
-      font-size: 11px;
-      color: #333333;
-      line-height: 1.7;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-icon-left-text-list-detailed</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 縦3行のリスト：行の区切りは横1px罫線だけ（行の塗り・枠・アイコンは置かない） */
+  .il-list { width:100%; }
+  .il-row { display:flex; align-items:flex-start; gap:24px; padding:20px 0; }
+  .il-row + .il-row { border-top:1px solid var(--sk-line,#e2e2e2); }
+  /* 左：番号の丸48px（1.5pxのアクセント枠・番号16px/700）。主役の1つだけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .il-no { flex:none; width:48px; height:48px; border-radius:50%; border:1.5px solid var(--sk-accent,#666666); background:#FFFFFF;
+           display:flex; align-items:center; justify-content:center;
+           font-size:16px; font-weight:700; line-height:1; letter-spacing:.04em; color:var(--sk-accent,#666666); }
+  .il-no-fill { background:var(--sk-accent,#555555); border-color:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 右：見出し18px/700 → 本文16px×2行。見出し行の中心を丸の中心に合わせる（(48−25)/2≒12px） */
+  .il-text { flex:1; min-width:0; padding-top:12px; }
+  .il-h { font-size:18px; font-weight:700; line-height:1.4; }
+  .il-body { margin-top:4px; font-size:16px; line-height:1.8; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
-html[data-heading="on"] body{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
@@ -102,53 +46,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- コンテンツエリア（縦3行リスト） -->
+  <!-- コンテンツエリア：縦3行リスト（左＝番号の丸48px・右＝見出し18px＋本文2行。塗りは01の丸だけ） -->
   <div class="content-area">
-
-    <!-- 行1 -->
-    <div class="list-row">
-      <div class="row-icon">
-      </div>
-      <div class="row-text">
-        <div class="row-heading">
-          <div class="heading-text">項目1の見出しテキスト</div>
-        </div>
-        <div class="row-description">
-          <div class="description-text">各項目の詳細説明が入ります。2〜4行程度のテキストで、項目の内容・価値・具体的な説明を記述します。<br>必要に応じて複数行にわたって説明を展開できます。</div>
+    <div class="il-list">
+      <div class="il-row">
+        <div class="il-no il-no-fill">01</div>
+        <div class="il-text">
+          <div class="il-h">目的と対象を先に1枚に書く</div>
+          <p class="il-body">誰に何を伝える資料かを決めてから、ページの順番に落とす。ここが曖昧なまま作り始めると、あとで構成ごと直すことになる。</p>
         </div>
       </div>
-    </div>
-
-    <!-- 行2 -->
-    <div class="list-row">
-      <div class="row-icon">
-      </div>
-      <div class="row-text">
-        <div class="row-heading">
-          <div class="heading-text">項目2の見出しテキスト</div>
+      <div class="il-row">
+        <div class="il-no">02</div>
+        <div class="il-text">
+          <div class="il-h">型で組み立て、装飾は最後に足す</div>
+          <p class="il-body">構図と文言を先に固め、色や図形はあとから足す。先に飾ると、文言を直すたびに配置まで崩れて手戻りが増える。</p>
         </div>
-        <div class="row-description">
-          <div class="description-text">各項目の詳細説明が入ります。2〜4行程度のテキストで、項目の内容・価値・具体的な説明を記述します。<br>必要に応じて複数行にわたって説明を展開できます。</div>
+      </div>
+      <div class="il-row">
+        <div class="il-no">03</div>
+        <div class="il-text">
+          <div class="il-h">公開したあとも月1回は見直す</div>
+          <p class="il-body">公開して終わりにせず、反応を見て翌月の直し方を決める。小さな修正を溜めないよう、月初に見直す枠を先に取っておく。</p>
         </div>
       </div>
     </div>
-
-    <!-- 行3 -->
-    <div class="list-row">
-      <div class="row-icon">
-      </div>
-      <div class="row-text">
-        <div class="row-heading">
-          <div class="heading-text">項目3の見出しテキスト</div>
-        </div>
-        <div class="row-description">
-          <div class="description-text">各項目の詳細説明が入ります。2〜4行程度のテキストで、項目の内容・価値・具体的な説明を記述します。<br>必要に応じて複数行にわたって説明を展開できます。</div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /content-area -->
+  </div>
+</div>
 </body>
 </html>

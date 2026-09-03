@@ -4,19 +4,30 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-gantt-schedule-bands</title>
 <style>
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px; display: flex; flex-direction: column; }
-  .gantt { flex: 1; display: grid; grid-template-columns: 144px repeat(6, 1fr); grid-template-rows: 40px repeat(5, 1fr); }
-  .head-cell { display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #333333; border-bottom: 2px solid var(--sk-accent,#999999); border-left: 1px dashed var(--sk-soft,#DDDDDD); }
-  .head-label { border-bottom: 2px solid var(--sk-accent,#999999); }
-  .proc-name { display: flex; align-items: center; font-size: 15px; font-weight: bold; color: #333333; border-bottom: 1px solid var(--sk-soft,#DDDDDD); }
-  .cell { border-left: 1px dashed var(--sk-soft,#DDDDDD); border-bottom: 1px solid var(--sk-soft,#DDDDDD); position: relative; }
-  .band { position: absolute; top: 50%; transform: translateY(-50%); height: 24px; background: var(--sk-accent,#C0C0C0); left: 8px; right: 8px; }
-  .band.start { left: 8px; }
-  .band.end { right: 8px; }
-  .band.mid { left: 0; right: 0; }
-  .band.strong { background: var(--sk-accent,#8C8C8C); }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* ガント：幅864（工程名160＋8列×88）・目盛り行32＋工程5行×56。罫線・帯・ダイヤは SVG 1枚に座標計算で描く */
+  .gt-wrap { width:100%; }
+  .gt-chart { position:relative; width:864px; height:316px; }
+  .gt-svg { position:absolute; left:0; top:0; display:block; }
+  /* 目盛り行：W1〜W8 の KICKER（accent2＝英字ラベル用）。各列の左端＋8px・下ぞろえ */
+  .gt-head { position:absolute; left:160px; top:0; width:704px; height:32px; display:grid; grid-template-columns:repeat(8,1fr); align-items:end; }
+  .gt-w { padding:0 0 10px 8px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent2,#999999); }
+  /* 工程名列：幅160px・16px/700・行高56px（帯と同じ行の中心に合わせる） */
+  .gt-names { position:absolute; left:0; top:32px; width:160px; }
+  .gt-name { height:56px; display:flex; align-items:center; padding-right:16px; font-size:16px; font-weight:700; line-height:1.4; }
+  /* マイルストーンの注記：ダイヤの右8px・11.5px・muted（行の中心にそろえる） */
+  .gt-ms { position:absolute; height:56px; display:flex; align-items:center; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); white-space:nowrap; }
+  .gt-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -38,57 +49,61 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：目盛り行（W1〜W8）＋工程名列＋横帯。塗りは「今の工程」の帯1本だけ。ダイヤ＝マイルストーン -->
   <div class="content-area">
-    <div class="gantt">
-      <!-- 目盛り行 -->
-      <div class="head-label"></div>
-      <div class="head-cell">1週目</div>
-      <div class="head-cell">2週目</div>
-      <div class="head-cell">3週目</div>
-      <div class="head-cell">4週目</div>
-      <div class="head-cell">5週目</div>
-      <div class="head-cell">6週目</div>
-      <!-- 工程1 -->
-      <div class="proc-name">要件定義</div>
-      <div class="cell"><div class="band"></div></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <!-- 工程2 -->
-      <div class="proc-name">デザイン</div>
-      <div class="cell"></div>
-      <div class="cell"><div class="band start mid"></div></div>
-      <div class="cell"><div class="band end mid"></div></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <!-- 工程3 -->
-      <div class="proc-name">実装</div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"><div class="band start mid"></div></div>
-      <div class="cell"><div class="band mid"></div></div>
-      <div class="cell"><div class="band end mid"></div></div>
-      <div class="cell"></div>
-      <!-- 工程4 -->
-      <div class="proc-name">テスト</div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"><div class="band start mid"></div></div>
-      <div class="cell"><div class="band end mid"></div></div>
-      <!-- 工程5 -->
-      <div class="proc-name">公開</div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"><div class="band strong"></div></div>
+    <div class="gt-wrap">
+      <div class="gt-chart">
+        <svg class="gt-svg" width="864" height="316" viewBox="0 0 864 316" aria-hidden="true">
+          <!-- 罫線：横＝目盛り行の下と各行の下（y=32+56n）、縦＝列の境界（x=160+88k）。0.5pxずらして1pxを鮮明に -->
+          <g stroke="var(--sk-line,#e2e2e2)" stroke-width="1">
+            <line x1="0" y1="32.5" x2="864" y2="32.5"/>
+            <line x1="0" y1="88.5" x2="864" y2="88.5"/>
+            <line x1="0" y1="144.5" x2="864" y2="144.5"/>
+            <line x1="0" y1="200.5" x2="864" y2="200.5"/>
+            <line x1="0" y1="256.5" x2="864" y2="256.5"/>
+            <line x1="0" y1="312.5" x2="864" y2="312.5"/>
+            <line x1="160.5" y1="32.5" x2="160.5" y2="312.5"/>
+            <line x1="248.5" y1="32.5" x2="248.5" y2="312.5"/>
+            <line x1="336.5" y1="32.5" x2="336.5" y2="312.5"/>
+            <line x1="424.5" y1="32.5" x2="424.5" y2="312.5"/>
+            <line x1="512.5" y1="32.5" x2="512.5" y2="312.5"/>
+            <line x1="600.5" y1="32.5" x2="600.5" y2="312.5"/>
+            <line x1="688.5" y1="32.5" x2="688.5" y2="312.5"/>
+            <line x1="776.5" y1="32.5" x2="776.5" y2="312.5"/>
+            <line x1="863.5" y1="32.5" x2="863.5" y2="312.5"/>
+          </g>
+          <!-- 帯：高さ16px・行の中心（y=行の上端+20）。始点・終点は列の境界にそろえる。塗りは今の工程（実装）1本だけ -->
+          <rect x="160" y="52" width="176" height="16" rx="2" fill="var(--sk-soft,#F0F0F0)"/>
+          <rect x="336" y="108" width="176" height="16" rx="2" fill="var(--sk-soft,#F0F0F0)"/>
+          <rect x="424" y="164" width="264" height="16" rx="2" fill="var(--sk-accent,#555555)"/>
+          <rect x="600" y="220" width="176" height="16" rx="2" fill="var(--sk-soft,#F0F0F0)"/>
+          <!-- マイルストーン：ダイヤ12px（白地・1.5pxのアクセント枠）。承認＝デザイン帯の終点、公開＝W8の起点 -->
+          <g fill="#FFFFFF" stroke="var(--sk-accent,#666666)" stroke-width="1.5">
+            <path d="M512 111L517 116 512 121 507 116Z"/>
+            <path d="M776 279L781 284 776 289 771 284Z"/>
+          </g>
+        </svg>
+        <div class="gt-head">
+          <div class="gt-w">W1</div>
+          <div class="gt-w">W2</div>
+          <div class="gt-w">W3</div>
+          <div class="gt-w">W4</div>
+          <div class="gt-w">W5</div>
+          <div class="gt-w">W6</div>
+          <div class="gt-w">W7</div>
+          <div class="gt-w">W8</div>
+        </div>
+        <div class="gt-names">
+          <div class="gt-name">要件定義</div>
+          <div class="gt-name">デザイン</div>
+          <div class="gt-name">実装</div>
+          <div class="gt-name">テスト</div>
+          <div class="gt-name">公開</div>
+        </div>
+        <div class="gt-ms" style="left:526px; top:88px;">承認</div>
+        <div class="gt-ms" style="left:790px; top:256px;">公開日</div>
+      </div>
+      <div class="gt-note">例：塗りは今の工程1本だけ。ダイヤは承認・公開などの節目。帯の始点と終点は列の境界にそろえる</div>
     </div>
   </div>
 </div>

@@ -1,151 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-three-col-icon-card-header-band</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      width: 960px;
-      height: 540px;
-      overflow: hidden;
-      font-family: sans-serif;
-      background: #FFFFFF;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-area .title-dummy {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 16px 32px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* リード文エリア */
-    .lead-area {
-      border: 1px dashed var(--sk-accent,#CCCCCC);
-      background: var(--sk-soft,#F0F0F0);
-      padding: 8px 14px;
-      margin-bottom: 14px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-    .lead-area .lead-text {
-      font-size: 11px;
-      color: #333333;
-    }
-    /* カードグループ */
-    .cards-wrapper {
-      flex: 1;
-      display: flex;
-      gap: 16px;
-    }
-    /* 各カード */
-    .card {
-      flex: 1;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-    /* ヘッダーバンド */
-    .card-header-band {
-      background: var(--sk-accent,#CCCCCC);
-      height: 48px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    /* アイコンエリア（バンドに重なる六角形） */
-    .card-icon-wrap {
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-      margin-top: -18px;
-      margin-bottom: 6px;
-    }
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--sk-soft,#E0E0E0);
-      border: 2px solid var(--sk-accent,#CCCCCC);
-      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /* カード本体 */
-    .card-body {
-      flex: 1;
-      padding: 0 12px 10px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* 見出し */
-    .card-heading {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      text-align: center;
-      padding-bottom: 5px;
-      border-bottom: 2px solid var(--sk-accent,#CCCCCC);
-      margin-bottom: 8px;
-    }
-    /* 箇条書き */
-    .card-bullets {
-      flex: 1;
-      font-size: 10px;
-      color: #333333;
-    }
-    .bullet-item {
-      padding: 2px 0 2px 10px;
-      position: relative;
-      color: #333333;
-      font-size: 10px;
-      line-height: 1.5;
-    }
-    .bullet-item::before {
-      content: "・";
-      position: absolute;
-      left: 0;
-    }
-    /* CTAボタン */
-    .card-cta {
-      margin-top: 8px;
-      flex-shrink: 0;
-    }
-    .cta-button {
-      display: block;
-      background: var(--sk-soft,#CCCCCC);
-      border: 1px solid var(--sk-accent,#999999);
-      color: #333333;
-      text-align: center;
-      padding: 6px 10px;
-      border-radius: 3px;
-      font-size: 11px;
-      font-weight: bold;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-three-col-icon-card-header-band</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 3列カード：等高・soft地・gap16・角丸11・上ぞろえ。帯の代わりにカード上辺3pxのアクセント線（面でなく線） */
+  .hb-wrap { width:100%; }
+  .hb-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; height:304px; }
+  .hb-card { min-width:0; border-radius:11px; background:var(--sk-soft,#F0F0F0); overflow:hidden; display:flex; flex-direction:column; }
+  .hb-bar { height:3px; background:var(--sk-accent,#666666); flex-shrink:0; }
+  .hb-in { flex:1; padding:20px 24px 24px; display:flex; flex-direction:column; align-items:flex-start; }
+  /* カードの型：KICKER「01 ／ 英字」→ 見出し18px → 細罫線 → 箇条書き16px（先頭4pxの角ドット）→ CTA */
+  .hb-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .hb-h { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .hb-line { width:100%; height:1px; background:var(--sk-line,#e2e2e2); margin:12px 0; flex-shrink:0; }
+  .hb-list { display:flex; flex-direction:column; gap:4px; }
+  .hb-li { position:relative; padding-left:16px; font-size:16px; line-height:1.8; }
+  .hb-li::before { content:""; position:absolute; left:0; top:12px; width:4px; height:4px; background:var(--sk-accent,#666666); }
+  /* CTA：カード最下部。1枚目だけアクセント塗り・白文字（塗りは1枚に1つ）。他は白地＋1.5pxのアクセント枠 */
+  .hb-cta { align-self:stretch; margin-top:auto; padding-top:20px; }
+  .hb-btn { display:block; padding:8px 12px; border-radius:6px; border:1.5px solid var(--sk-accent,#666666); background:#FFFFFF; color:var(--sk-accent,#666666);
+            font-size:14px; font-weight:700; line-height:1.6; letter-spacing:.08em; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .hb-btn-fill { background:var(--sk-accent,#555555); border-color:var(--sk-accent,#555555); color:#FFFFFF; }
+  .hb-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
-html[data-heading="on"] body{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
 html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
 .sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
 html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
@@ -160,86 +52,59 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：3列カード（上辺3pxのアクセント線・KICKER＋番号・見出し・箇条書き・CTA）。塗りは1枚目のCTAだけ -->
   <div class="content-area">
-
-    <!-- リード文 -->
-    <div class="lead-area">
-      <div class="lead-text">スライドの補足説明・文脈を示すリード文が入ります。1〜2行程度でスライド全体の意図を説明します。</div>
+    <div class="hb-wrap">
+      <div class="hb-cards">
+        <div class="hb-card">
+          <div class="hb-bar"></div>
+          <div class="hb-in">
+            <div class="hb-kicker">01 ／ Attract</div>
+            <div class="hb-h">入口を増やす</div>
+            <div class="hb-line"></div>
+            <div class="hb-list">
+              <div class="hb-li">検索からの流入を増やす</div>
+              <div class="hb-li">SNSの発信を型にする</div>
+              <div class="hb-li">紹介の導線をつくる</div>
+            </div>
+            <div class="hb-cta"><span class="hb-btn hb-btn-fill">目標 ／ 問い合わせの増加</span></div>
+          </div>
+        </div>
+        <div class="hb-card">
+          <div class="hb-bar"></div>
+          <div class="hb-in">
+            <div class="hb-kicker">02 ／ Convert</div>
+            <div class="hb-h">初回の体験を整える</div>
+            <div class="hb-line"></div>
+            <div class="hb-list">
+              <div class="hb-li">返信までの流れを決める</div>
+              <div class="hb-li">初回相談の台本を作る</div>
+              <div class="hb-li">見積の書式をそろえる</div>
+            </div>
+            <div class="hb-cta"><span class="hb-btn">目標 ／ 相談から受注へ</span></div>
+          </div>
+        </div>
+        <div class="hb-card">
+          <div class="hb-bar"></div>
+          <div class="hb-in">
+            <div class="hb-kicker">03 ／ Retain</div>
+            <div class="hb-h">また頼まれる仕組み</div>
+            <div class="hb-line"></div>
+            <div class="hb-list">
+              <div class="hb-li">納品後の定例を設ける</div>
+              <div class="hb-li">月次の報告を1枚にする</div>
+              <div class="hb-li">追加提案の型をつくる</div>
+            </div>
+            <div class="hb-cta"><span class="hb-btn">目標 ／ 継続と紹介</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hb-note">例：塗りは重点施策の1つだけ。ボタンには各施策の目標を書く</div>
     </div>
-
-    <!-- 3カード -->
-    <div class="cards-wrapper">
-
-      <!-- カード1 -->
-      <div class="card">
-        <div class="card-header-band">
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-icon">
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-heading">
-            カードの見出しテキスト
-          </div>
-          <div class="card-bullets">
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（1項目目）</div>
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（2項目目）</div>
-          </div>
-          <div class="card-cta">
-            <div class="cta-button">目標：数値・KPI</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- カード2 -->
-      <div class="card">
-        <div class="card-header-band">
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-icon">
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-heading">
-            カードの見出しテキスト
-          </div>
-          <div class="card-bullets">
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（1項目目）</div>
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（2項目目）</div>
-          </div>
-          <div class="card-cta">
-            <div class="cta-button">目標：数値・KPI</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- カード3 -->
-      <div class="card">
-        <div class="card-header-band">
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-icon">
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-heading">
-            カードの見出しテキスト
-          </div>
-          <div class="card-bullets">
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（1項目目）</div>
-            <div class="bullet-item">取り組み内容・施策の説明テキスト（2項目目）</div>
-          </div>
-          <div class="card-cta">
-            <div class="cta-button">目標：数値・KPI</div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /cards-wrapper -->
-  </div><!-- /content-area -->
+  </div>
+</div>
 </body>
 </html>
