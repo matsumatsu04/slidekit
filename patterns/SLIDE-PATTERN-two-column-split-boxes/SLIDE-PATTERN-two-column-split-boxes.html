@@ -4,15 +4,40 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-column-split-boxes</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; display: flex; align-items: center; padding: 24px 32px; gap: 0; }
-  .box { flex: 1; border: 1px dashed var(--sk-accent,#CCCCCC); background: #FFFFFF; padding: 28px 32px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-  .box-heading { font-size: 20px; font-weight: bold; color: #333333; margin-bottom: 14px; }
-  .box-body { font-size: 13px; color: #333333; line-height: 1.8; }
-  .connector { width: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .connector-circle { width: 44px; height: 44px; border-radius: 50%; background: var(--sk-soft,#E8E8E8); border: 1px dashed var(--sk-accent,#CCCCCC); display: flex; align-items: center; justify-content: center; font-size: 18px; color: #AAAAAA; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。パネル列は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左右2パネル（等幅・等高）＋中央コネクタ ── */
+  .sb-row { display: flex; align-items: stretch; height: 280px; }
+  .sb-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px 28px; border-radius: 12px; }
+  /* 左＝淡い地、右＝アクセント塗り（白文字）。塗りは1枚に1つ */
+  .sb-left  { background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2); }
+  .sb-right { background: var(--sk-accent,#555555); color: #FFFFFF; }
+
+  /* パネルの型: KICKER → 見出し18px → 細罫線 → 本文16px → 例： */
+  .sb-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .sb-right .sb-kicker { color: #FFFFFF; }
+  .sb-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .sb-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .sb-right .sb-rule { background: rgba(255,255,255,.35); }
+  .sb-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .sb-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+  .sb-right .sb-note { color: #FFFFFF; opacity: .85; }
+
+  /* 中央コネクタ（vs）: 白丸に細枠。幅48pxの列の中央に置く */
+  .sb-conn { flex: none; width: 48px; display: flex; align-items: center; justify-content: center; }
+  .sb-conn-circle { width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; border: 1px solid var(--sk-line,#e2e2e2);
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 14px; font-weight: 700; letter-spacing: .04em; line-height: 1; color: var(--sk-accent,#555555); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,22 +59,31 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝淡い地／右＝塗り の2パネル対比（中央に vs の白丸） -->
   <div class="content-area">
-    <div class="box">
-      <div class="box-heading">左側の見出しが入ります</div>
-      <div class="box-body">
-        左側のコンテンツ本文が入ります。対比の左側（例：導入前、課題、現状）を説明します。3〜5行程度のテキストが配置されます。具体的な数値や事実を記述するとより効果的です。
+    <div class="sb-row">
+
+      <!-- 左パネル（淡い地） -->
+      <div class="sb-panel sb-left">
+        <div class="sb-kicker">OPTION A ／ 自社で更新</div>
+        <div class="sb-ttl">担当者が空き時間に直す</div>
+        <div class="sb-rule"></div>
+        <div class="sb-body">更新は担当者の手が空いたときに行う。手順は口頭で引き継ぎ、確認も本人がその場で済ませるので、記録が残らない。</div>
+        <div class="sb-note">例：月2回の更新に半日ずつ。担当が変わると止まる</div>
       </div>
-    </div>
-    <div class="connector">
-      <div class="connector-circle">→</div>
-    </div>
-    <div class="box">
-      <div class="box-heading">右側の見出しが入ります</div>
-      <div class="box-body">
-        右側のコンテンツ本文が入ります。対比の右側（例：導入後、解決策、目標）を説明します。3〜5行程度のテキストが配置されます。具体的な数値や効果を記述するとより効果的です。
+
+      <!-- 中央コネクタ（vs） -->
+      <div class="sb-conn"><div class="sb-conn-circle">vs</div></div>
+
+      <!-- 右パネル（アクセント塗り・白文字） -->
+      <div class="sb-panel sb-right">
+        <div class="sb-kicker">OPTION B ／ 手順を決めて回す</div>
+        <div class="sb-ttl">1枚の手順で誰でも直せる</div>
+        <div class="sb-rule"></div>
+        <div class="sb-body">更新の手順を1枚にまとめ、月1回の見直しで直す。確認は別の人が行い、何を直したかを記録に残す。</div>
+        <div class="sb-note">例：月2回の更新に1時間ずつ。担当が変わっても続く</div>
       </div>
+
     </div>
   </div>
 </div>

@@ -4,12 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN-three-stage-circle-flow</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    /* ページ背景・中央寄せ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-
-    /* スライドラベル */
 
     /* スライド本体 960×540px */
     .slide {
@@ -20,102 +17,58 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* コンテンツエリア */
-    .content {
-      display: flex;
-      padding: 16px 32px;
-      align-items: center;
-      gap: 0;
+    /* コンテンツエリア（見出しON時は上76px以降。ステージ列は上下中央） */
+    .content-area {
       flex: 1;
-    }
-
-    /* ── ステージブロック ── */
-    .stage {
+      padding: 24px 48px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-    }
-
-    /* 円形アイコン */
-    .stage-circle {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 2px solid var(--sk-accent,#CCCCCC);
-      background: #FFFFFF;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      flex-direction: column;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .stage-icon {
-      font-size: 32px;
-      color: #AAAAAA;
-      line-height: 1;
-    }
-    .stage-name {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      text-align: center;
-      line-height: 1.3;
     }
 
-    /* テキスト部分 */
-    .stage h3 {
-      font-size: 15px;
-      font-weight: bold;
-      color: #333333;
-      margin: 0;
-      text-align: center;
-    }
-    .stage h4 {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      margin: 0;
-      text-align: center;
-    }
-    .stage-divider {
-      width: 40px;
-      height: 1px;
-      background: #CCCCCC;
-    }
-    .stage ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    /* ── ステージ列（3枚等幅・等高。カードの間は三角矢印） ── */
+    .tc-row { display: flex; align-items: stretch; gap: 8px; height: 280px; }
+
+    /* ステージカード。既定は淡い地 */
+    .tc-card {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      padding: 24px 20px 20px;
+      border-radius: 12px;
+      background: var(--sk-soft,#F0F0F0);
+      border: 1px solid var(--sk-line,#e2e2e2);
     }
-    .stage ul li {
-      font-size: 11px;
-      color: #333333;
-      text-align: center;
-      line-height: 1.5;
-    }
-    .stage ul li::before {
-      content: "・";
-      color: #AAAAAA;
-    }
+    /* 中央の1枚だけアクセント塗り（塗りは1枚に1つ） */
+    .tc-card-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+    /* 最終工程が「結果」（公開・運用）のときの任意形: 塗らず 1.5px のアクセント枠線 */
+    .tc-card-last { background: #FFFFFF; border: 1.5px solid var(--sk-accent,#555555); }
 
-    /* ── 矢印 ── */
-    .arrow {
-      align-self: center;
-      position: relative;
-      top: -70px;
-      font-size: 24px;
-      color: var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-    }
-  
+    /* カードの型: KICKER → 見出し → 細罫線 → 本文2行 → 例： */
+    .tc-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+    .tc-card-fill .tc-kicker { color: #FFFFFF; }
+    .tc-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+    .tc-card-last .tc-ttl { color: var(--sk-accent,#555555); }
+    .tc-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+    .tc-card-fill .tc-rule { background: rgba(255,255,255,.35); }
+    .tc-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+    .tc-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+    .tc-card-fill .tc-note { color: #FFFFFF; opacity: .85; }
+
+    /* 三角矢印（SVG・幅12px） */
+    .tc-arw { flex: none; align-self: center; display: block; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -134,68 +87,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 
-
   <div class="slide">
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
 
-    <!-- コンテンツエリア -->
-    <div class="content">
+    <!-- コンテンツエリア：3ステージのカードを三角矢印でつなぐ（中央＝主役の塗り） -->
+    <div class="content-area">
+      <div class="tc-row">
 
-      <!-- ステージ1 -->
-      <div class="stage">
-        <div class="stage-circle">
-          <span class="stage-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
-          <span class="stage-name">STEP 1<br>現状把握</span>
+        <!-- ステージ1 -->
+        <div class="tc-card">
+          <div class="tc-kicker">STEP 1 ／ 現状把握</div>
+          <div class="tc-ttl">聞き取りと棚卸し</div>
+          <div class="tc-rule"></div>
+          <div class="tc-body">業務の流れを聞き取り<br>詰まる所を書き出す</div>
+          <div class="tc-note">例：面談2回・棚卸し表1枚</div>
         </div>
-        <h3>ヒアリング・診断</h3>
-        <h4>課題の可視化と優先度整理</h4>
-        <div class="stage-divider"></div>
-        <ul>
-          <li>現状業務フローの棚卸し</li>
-          <li>課題・ボトルネックの特定</li>
-          <li>優先度マトリクスの作成</li>
-        </ul>
-      </div>
 
-      <!-- 矢印1 -->
-      <div class="arrow">→</div>
+        <svg class="tc-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
 
-      <!-- ステージ2 -->
-      <div class="stage">
-        <div class="stage-circle">
-          <span class="stage-icon"><i class="fa-solid fa-gears"></i></span>
-          <span class="stage-name">STEP 2<br>設計・構築</span>
+        <!-- ステージ2（主役・塗り） -->
+        <div class="tc-card tc-card-fill">
+          <div class="tc-kicker">STEP 2 ／ 設計・構築</div>
+          <div class="tc-ttl">小さく組んで試す</div>
+          <div class="tc-rule"></div>
+          <div class="tc-body">1つの業務だけ組み<br>手直しの量を測る</div>
+          <div class="tc-note">例：1業務を2週間で</div>
         </div>
-        <h3>要件定義・開発</h3>
-        <h4>最適解の設計と実装</h4>
-        <div class="stage-divider"></div>
-        <ul>
-          <li>システム要件の定義と確認</li>
-          <li>プロトタイプの設計・構築</li>
-          <li>ステークホルダーレビュー</li>
-        </ul>
-      </div>
 
-      <!-- 矢印2 -->
-      <div class="arrow">→</div>
+        <svg class="tc-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg>
 
-      <!-- ステージ3 -->
-      <div class="stage">
-        <div class="stage-circle">
-          <span class="stage-icon"><i class="fa-solid fa-arrows-rotate"></i></span>
-          <span class="stage-name">STEP 3<br>運用・改善</span>
+        <!-- ステージ3 -->
+        <div class="tc-card">
+          <div class="tc-kicker">STEP 3 ／ 運用・改善</div>
+          <div class="tc-ttl">手順を渡して回す</div>
+          <div class="tc-rule"></div>
+          <div class="tc-body">使う人に手順を渡し<br>月1回で見直す</div>
+          <div class="tc-note">例：月次レビュー30分</div>
         </div>
-        <h3>展開・定着支援</h3>
-        <h4>継続的な改善サイクル確立</h4>
-        <div class="stage-divider"></div>
-        <ul>
-          <li>本番リリースと研修実施</li>
-          <li>KPIモニタリングの開始</li>
-          <li>定期レビューと改善提案</li>
-        </ul>
-      </div>
 
-    </div><!-- /content -->
+      </div>
+    </div><!-- /content-area -->
 
   </div><!-- /slide -->
 

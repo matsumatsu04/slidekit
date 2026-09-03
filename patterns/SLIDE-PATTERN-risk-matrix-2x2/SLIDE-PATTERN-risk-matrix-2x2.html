@@ -15,172 +15,68 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      /* デザインの規律 v2: 文字の組み */
+      color: var(--sk-ink,#3f4a52);
+      font-feature-settings: "palt" 1;
+      line-break: strict;
+      letter-spacing: .06em;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
     }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
+    /* コンテンツエリア（見出しON時は上76px以降。マトリクスは上下中央） */
     .content-area {
       flex: 1;
-      display: flex;
-      padding: 16px 48px;
-      gap: 24px;
-      overflow: hidden;
-    }
-    /* 左側: マトリクス本体 */
-    .matrix-body {
-      flex: 3;
+      padding: 24px 48px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-    }
-    .matrix-with-yaxis {
-      flex: 1;
-      display: flex;
-      gap: 8px;
-      overflow: hidden;
-    }
-    /* Y軸ラベル */
-    .y-axis-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      width: 20px;
-      flex-shrink: 0;
     }
-    .y-axis-label {
-      font-size: 12px;
-      color: #333333;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      white-space: nowrap;
-      letter-spacing: 0.05em;
+
+    /* ── マトリクス全体：左に縦軸ラベル列、下に横軸ラベル行 ── */
+    .rm-wrap {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      grid-template-rows: 1fr 24px;
+      gap: 8px;
+      height: 392px;
     }
-    .y-axis-arrows {
-      font-size: 10px;
-      color: #999;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      margin-top: 4px;
-    }
-    /* 2×2グリッド */
-    .matrix-grid {
-      flex: 1;
+    /* 軸ラベル（KICKER型・muted）。矢印は SVG の三角（幅12px）だけ */
+    .rm-axis { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+    .rm-y { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    /* 縦軸は下から上に読む向き（全文字を横倒しにしてから180°回す。和文が逆さにならない） */
+    .rm-y .rm-axis { writing-mode: vertical-rl; text-orientation: sideways; transform: rotate(180deg); }
+    .rm-x { grid-column: 2; grid-row: 2; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .rm-arw { flex: none; display: block; }
+
+    /* 2×2 グリッド（等高・gap 12px） */
+    .rm-grid {
+      grid-column: 2;
+      grid-row: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap: 0;
-      border: 1px solid var(--sk-accent,#CCCCCC);
+      gap: 12px;
     }
-    .matrix-cell {
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      padding: 12px;
+    /* 象限：淡い地・角丸11px。右上（高影響×高確率）だけアクセント塗り（塗りは1枚に1つ） */
+    .rm-cell {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      padding: 20px 24px;
+      border-radius: 11px;
+      background: var(--sk-soft,#F0F0F0);
+      border: 1px solid var(--sk-line,#e2e2e2);
     }
-    .cell-top-left  { background: #FFFFFF; }
-    .cell-top-right { background: var(--sk-soft,#EEEEEE); }
-    .cell-bot-left  { background: #FFFFFF; }
-    .cell-bot-right { background: var(--sk-soft,#F0F0F0); }
+    .rm-cell-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
 
-    .cell-label {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-    }
-    .cell-description {
-      font-size: 10px;
-      color: #999;
-      margin-bottom: 4px;
-    }
-    .cell-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .badge {
-      background: var(--sk-soft,#E8E8E8);
-      padding: 2px 8px;
-      font-size: 11px;
-      color: #333333;
-      border-radius: 2px;
-      border: 1px solid var(--sk-accent,#D8D8D8);
-    }
-    /* X軸ラベル */
-    .x-axis-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding-left: 28px;
-    }
-    .x-axis-label {
-      font-size: 12px;
-      color: #333333;
-      letter-spacing: 0.05em;
-    }
-    .x-axis-arrows {
-      font-size: 10px;
-      color: #999;
-    }
-    /* 軸の端ラベル */
-    .axis-ends {
-      display: flex;
-      justify-content: space-between;
-      padding-left: 28px;
-      margin-top: 2px;
-    }
-    .axis-end-label {
-      font-size: 10px;
-      color: #AAAAAA;
-    }
-    /* 右側: 凡例エリア */
-    .legend-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
-      padding: 8px 0;
-    }
-    .legend-title {
-      font-size: 11px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .legend-swatch {
-      width: 20px;
-      height: 14px;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-    }
-    .legend-text {
-      font-size: 12px;
-      color: #333333;
-    }
-    .legend-sub {
-      font-size: 10px;
-      color: #999;
-    }
-  
+    /* 象限の型: KICKER → 見出し16px太字 → 1行の説明 → 例：（該当リスク） */
+    .rm-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+    .rm-cell-fill .rm-kicker { color: #FFFFFF; }
+    .rm-ttl { margin-top: 10px; font-size: 16px; font-weight: 700; line-height: 1.4; }
+    .rm-desc { margin-top: 4px; font-size: 16px; line-height: 1.8; }
+    .rm-note { margin-top: auto; padding-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+    .rm-cell-fill .rm-note { color: #FFFFFF; opacity: .85; }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -201,101 +97,55 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
   <div class="slide">
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
 
-    <!-- コンテンツエリア -->
+    <!-- コンテンツエリア：2×2 マトリクス（右上＝最優先の塗り）＋KICKER型の軸ラベル -->
     <div class="content-area">
+      <div class="rm-wrap">
 
-      <!-- 左側: マトリクス本体 -->
-      <div class="matrix-body">
-        <div class="matrix-with-yaxis">
-          <!-- Y軸ラベル -->
-          <div class="y-axis-wrapper">
-            <span class="y-axis-label">影響度</span>
-            <span class="y-axis-arrows">↑ 高</span>
+        <!-- 縦軸ラベル（上向きの三角＋影響度） -->
+        <div class="rm-y">
+          <svg class="rm-arw" width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M0 12L8 0 16 12Z" fill="var(--sk-muted,#888888)"/></svg>
+          <span class="rm-axis">IMPACT ／ 影響度</span>
+        </div>
+
+        <!-- 2×2 グリッド -->
+        <div class="rm-grid">
+          <!-- 左上: 高影響・低確率 -->
+          <div class="rm-cell">
+            <div class="rm-kicker">HIGH IMPACT ／ 低確率</div>
+            <div class="rm-ttl">重点管理</div>
+            <div class="rm-desc">起きたときの手順を先に決めておく。</div>
+            <div class="rm-note">例：システム障害・法規制の変更</div>
           </div>
-
-          <!-- 2×2グリッド -->
-          <div class="matrix-grid">
-            <!-- 左上: 高影響・低確率 -->
-            <div class="matrix-cell cell-top-left">
-              <div class="cell-label">重点管理</div>
-              <div class="cell-description">高影響・低確率</div>
-              <div class="cell-badges">
-                <span class="badge">コンプライアンス違反</span>
-                <span class="badge">システム障害</span>
-              </div>
-            </div>
-            <!-- 右上: 高影響・高確率 -->
-            <div class="matrix-cell cell-top-right">
-              <div class="cell-label">最優先対応</div>
-              <div class="cell-description">高影響・高確率</div>
-              <div class="cell-badges">
-                <span class="badge">人材不足</span>
-                <span class="badge">コスト超過</span>
-              </div>
-            </div>
-            <!-- 左下: 低影響・低確率 -->
-            <div class="matrix-cell cell-bot-left">
-              <div class="cell-label">経過観察</div>
-              <div class="cell-description">低影響・低確率</div>
-              <div class="cell-badges">
-                <span class="badge">軽微な仕様変更</span>
-              </div>
-            </div>
-            <!-- 右下: 低影響・高確率 -->
-            <div class="matrix-cell cell-bot-right">
-              <div class="cell-label">対応計画</div>
-              <div class="cell-description">低影響・高確率</div>
-              <div class="cell-badges">
-                <span class="badge">スケジュール遅延</span>
-                <span class="badge">認識齟齬</span>
-              </div>
-            </div>
+          <!-- 右上: 高影響・高確率（最優先・塗り） -->
+          <div class="rm-cell rm-cell-fill">
+            <div class="rm-kicker">HIGH IMPACT ／ 高確率</div>
+            <div class="rm-ttl">最優先対応</div>
+            <div class="rm-desc">今週中に対策と担当を決める。</div>
+            <div class="rm-note">例：人手不足・コスト超過</div>
+          </div>
+          <!-- 左下: 低影響・低確率 -->
+          <div class="rm-cell">
+            <div class="rm-kicker">LOW IMPACT ／ 低確率</div>
+            <div class="rm-ttl">経過観察</div>
+            <div class="rm-desc">月1回の確認だけにして、手を止めない。</div>
+            <div class="rm-note">例：軽微な仕様変更</div>
+          </div>
+          <!-- 右下: 低影響・高確率 -->
+          <div class="rm-cell">
+            <div class="rm-kicker">LOW IMPACT ／ 高確率</div>
+            <div class="rm-ttl">対応計画</div>
+            <div class="rm-desc">まとめて処理する日を決めておく。</div>
+            <div class="rm-note">例：日程のずれ・認識の食い違い</div>
           </div>
         </div>
 
-        <!-- X軸ラベル -->
-        <div class="axis-ends">
-          <span class="axis-end-label">低 ←</span>
-          <span class="axis-end-label">→ 高</span>
+        <!-- 横軸ラベル（発生確率＋右向きの三角） -->
+        <div class="rm-x">
+          <span class="rm-axis">PROBABILITY ／ 発生確率</span>
+          <svg class="rm-arw" width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-muted,#888888)"/></svg>
         </div>
-        <div class="x-axis-wrapper">
-          <span class="x-axis-label">発生確率</span>
-        </div>
+
       </div>
-
-      <!-- 右側: 凡例エリア -->
-      <div class="legend-area">
-        <div class="legend-title">凡例</div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background: var(--sk-soft,#EEEEEE);"></div>
-          <div>
-            <div class="legend-text">最優先対応</div>
-            <div class="legend-sub">高影響・高確率</div>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background: #FFFFFF;"></div>
-          <div>
-            <div class="legend-text">重点管理</div>
-            <div class="legend-sub">高影響・低確率</div>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background: var(--sk-soft,#F0F0F0);"></div>
-          <div>
-            <div class="legend-text">対応計画</div>
-            <div class="legend-sub">低影響・高確率</div>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background: #FFFFFF;"></div>
-          <div>
-            <div class="legend-text">経過観察</div>
-            <div class="legend-sub">低影響・低確率</div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </body>

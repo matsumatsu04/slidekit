@@ -4,17 +4,34 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-vertical-step-flow</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 16px 120px; display: flex; flex-direction: column; justify-content: center; gap: 0; }
-  .step-row { display: flex; align-items: stretch; }
-  .step-label-cell { width: 120px; background: var(--sk-soft,#E0E0E0); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #333333; padding: 10px; flex-shrink: 0; }
-  .step-label-cell.final { background: var(--sk-accent,#C0C0C0); color: #FFFFFF; }
-  .step-content-cell { flex: 1; border: 1px solid var(--sk-accent,#E0E0E0); border-left: none; padding: 10px 20px; display: flex; align-items: center; font-size: 13px; color: #333333; background: #FFFFFF; }
-  .step-content-cell.final { background: var(--sk-soft,#F0F0F0); font-weight: bold; }
-  .arrow-row { display: flex; justify-content: center; padding: 3px 0; }
-  .arrow { font-size: 18px; color: #BBBBBB; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。縦フローは幅720pxで上下中央） */
+  .content-area { flex: 1; padding: 24px 120px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 縦フロー：行の高さは固定（幹線の端点を番号の中心で止めるため） ── */
+  .vs-flow { position: relative; }
+  /* 幹線：最初の番号の中心（top 20px）から最後の番号の中心（bottom 96-20px）まで。塗りなし・細い罫線 */
+  .vs-flow::before { content: ""; position: absolute; left: 20px; top: 20px; bottom: 76px; width: 1px; margin-left: -0.5px; background: var(--sk-line,#e2e2e2); }
+  .vs-row { position: relative; display: flex; align-items: flex-start; gap: 24px; height: 96px; }
+  /* 番号（24px・400・アクセント色）。幹線の上に載るので地色を白にする */
+  .vs-no { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+           font-size: 24px; font-weight: 400; line-height: 1; letter-spacing: .04em; color: var(--sk-accent,#555555); background: #FFFFFF; }
+  /* 最後の項目だけ番号を丸で囲む（1.5px のアクセント枠線・塗らない） */
+  .vs-row-last .vs-no { border-radius: 50%; border: 1.5px solid var(--sk-accent,#555555); }
+  /* 右：見出し18px → 本文16px → 例： */
+  .vs-text { flex: 1; min-width: 0; padding-top: 6px; }
+  .vs-ttl { font-size: 18px; font-weight: 700; line-height: 28px; }
+  .vs-row-last .vs-ttl { color: var(--sk-accent,#555555); }
+  .vs-body { margin-top: 4px; font-size: 16px; line-height: 1.8; }
+  .vs-note { margin-top: 2px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -36,31 +53,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：番号＋幹線の縦フロー（最後の番号だけ丸囲み） -->
   <div class="content-area">
-    <div class="step-row">
-      <div class="step-label-cell">STEP 1</div>
-      <div class="step-content-cell">ステップ1の内容が入ります</div>
-    </div>
-    <div class="arrow-row"><div class="arrow">▼</div></div>
-    <div class="step-row">
-      <div class="step-label-cell">STEP 2</div>
-      <div class="step-content-cell">ステップ2の内容が入ります</div>
-    </div>
-    <div class="arrow-row"><div class="arrow">▼</div></div>
-    <div class="step-row">
-      <div class="step-label-cell">STEP 3</div>
-      <div class="step-content-cell">ステップ3の内容が入ります</div>
-    </div>
-    <div class="arrow-row"><div class="arrow">▼</div></div>
-    <div class="step-row">
-      <div class="step-label-cell">STEP 4</div>
-      <div class="step-content-cell">ステップ4の内容が入ります</div>
-    </div>
-    <div class="arrow-row"><div class="arrow">▼</div></div>
-    <div class="step-row">
-      <div class="step-label-cell final">STEP 5</div>
-      <div class="step-content-cell final">最終ステップの内容（強調）が入ります</div>
+    <div class="vs-flow">
+
+      <div class="vs-row">
+        <div class="vs-no">01</div>
+        <div class="vs-text">
+          <div class="vs-ttl">フォームから申し込む</div>
+          <div class="vs-body">希望日と相談したいことを3つまで書く。</div>
+          <div class="vs-note">例：所要3分。返信は翌営業日まで</div>
+        </div>
+      </div>
+
+      <div class="vs-row">
+        <div class="vs-no">02</div>
+        <div class="vs-text">
+          <div class="vs-ttl">30分の面談で現状を聞く</div>
+          <div class="vs-body">今の業務の流れと、詰まっている所を整理する。</div>
+          <div class="vs-note">例：オンライン。資料の準備は不要</div>
+        </div>
+      </div>
+
+      <div class="vs-row">
+        <div class="vs-no">03</div>
+        <div class="vs-text">
+          <div class="vs-ttl">範囲と期間を決めて契約</div>
+          <div class="vs-body">見積と契約書を確認し、開始日を決める。</div>
+          <div class="vs-note">例：開始の1週間前まで</div>
+        </div>
+      </div>
+
+      <div class="vs-row vs-row-last">
+        <div class="vs-no">04</div>
+        <div class="vs-text">
+          <div class="vs-ttl">初回ミーティングで着手</div>
+          <div class="vs-body">担当と連絡手段を決めて、最初の作業を始める。</div>
+          <div class="vs-note">例：初週にキックオフ30分</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
