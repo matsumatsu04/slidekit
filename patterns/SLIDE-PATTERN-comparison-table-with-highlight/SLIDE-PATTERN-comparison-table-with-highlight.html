@@ -1,92 +1,41 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>SLIDE-PATTERN-comparison-table-with-highlight</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { margin:0; padding:0; background:#FFFFFF; font-family:sans-serif; }
-    .slide {
-      width: 960px;
-      height: 540px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 28px 40px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-    }
-    .content-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      position: absolute;
-      top: 10px;
-      left: 40px;
-    }
-    /* 比較テーブル */
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-    }
-    .comparison-table th {
-      background: var(--sk-accent,#555555);
-      color: #FFFFFF;
-      font-size: 13px;
-      font-weight: bold;
-      padding: 12px 16px;
-      text-align: center;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-    }
-    .comparison-table td {
-      font-size: 13px;
-      padding: 14px 16px;
-      text-align: center;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      vertical-align: middle;
-    }
-    /* 行ラベル（第1列） */
-    .comparison-table td:first-child {
-      background: var(--sk-soft,#F0F0F0);
-      font-weight: bold;
-    }
-    /* 通常データ行：背景交互 */
-    .row-even td { background: #FFFFFF; }
-    .row-odd td { background: #FFFFFF; }
-    .row-even td:first-child,
-    .row-odd td:first-child { background: var(--sk-soft,#F0F0F0); }
-    /* ハイライトセル（価格等の強調値・差し色） */
-    .highlight-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: var(--sk-accent2, var(--sk-accent,#333333));
-    }
-    /* ハイライトラベル */
-    .highlight-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-comparison-table-with-highlight</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。表は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+  /* 本物の表。塗りはヘッダ行だけ（角丸は上2隅） */
+  .ch-wrap { border-radius: 10px 10px 0 0; overflow: hidden; }
+  .ch-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .ch-table th {
+    background: var(--sk-accent,#555555); color: #FFFFFF;
+    font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1;
+    text-align: left; vertical-align: middle; height: 40px; padding: 0 16px; white-space: nowrap;
+  }
+  .ch-table td {
+    font-size: 16px; line-height: 1.8; text-align: left; vertical-align: middle;
+    height: 48px; padding: 12px 16px;
+    border-bottom: 1px solid var(--sk-line,#e2e2e2);
+  }
+  /* 左列（比較軸）はアクセント色の太字 */
+  .ch-table td.ch-axis { color: var(--sk-accent,#555555); font-weight: 700; }
+  /* 推奨列だけ淡い地（列全体・角丸なし）。ヘッダは他の列と同じアクセント塗り */
+  .ch-table td.ch-rec { background: var(--sk-soft,#F0F0F0); }
+  /* 推奨列のヘッダに付ける小さなタグ（白の細枠・塗らない） */
+  .ch-tag { display: inline-block; margin-left: 8px; padding: 4px 6px 4px 8px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; font-size: 10px; letter-spacing: .18em; line-height: 1; vertical-align: middle; }
+  .ch-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -104,56 +53,51 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-  <div class="slide">
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-
-    <!-- コンテンツエリア -->
-    <div class="content-area">
-      <div class="content-label">Content Area — comparison-table-with-highlight</div>
-
-      <!-- 比較テーブル本体 -->
-      <table class="comparison-table">
+  <!-- コンテンツエリア：比較表（ヘッダ塗り → 左列＝比較軸 / 選択肢 × 3。推奨列だけ淡い地）→ 例： -->
+  <div class="content-area">
+    <div class="ch-wrap">
+      <table class="ch-table">
         <thead>
           <tr>
-            <!-- ヘッダー行：アクセントカラー背景 -->
-            <th>プラン名</th>
-            <th>
-              <div class="highlight-label">highlight col</div>
-              価格（月額）
-            </th>
-            <th>対応範囲</th>
-            <th>納期目安</th>
-            <th>おすすめの方</th>
+            <th style="width:160px;">比較軸</th>
+            <th>ライト</th>
+            <th>スタンダード<span class="ch-tag">おすすめ</span></th>
+            <th>プレミアム</th>
           </tr>
         </thead>
         <tbody>
-          <!-- データ行1 -->
-          <tr class="row-even">
-            <td>ライトプラン</td>
-            <td><span class="highlight-value">¥3,000</span></td>
+          <tr>
+            <td class="ch-axis">月額</td>
+            <td>3万円</td>
+            <td class="ch-rec">5万円</td>
+            <td>8万円〜</td>
+          </tr>
+          <tr>
+            <td class="ch-axis">対応範囲</td>
             <td>デザインのみ</td>
-            <td>2〜5日</td>
-            <td>既存資料があり<br>デザインのみ変えたい方</td>
+            <td class="ch-rec">構成から制作まで</td>
+            <td>企画から運用まで</td>
           </tr>
-          <!-- データ行2 -->
-          <tr class="row-odd">
-            <td>スタンダードプラン</td>
-            <td><span class="highlight-value">¥5,000</span></td>
-            <td>ページ調整・<br>リデザイン</td>
-            <td>3〜7日</td>
-            <td>既存資料があるが<br>構成から変えたい方</td>
+          <tr>
+            <td class="ch-axis">修正回数</td>
+            <td>1回まで</td>
+            <td class="ch-rec">3回まで</td>
+            <td>回数の上限なし</td>
           </tr>
-          <!-- データ行3 -->
-          <tr class="row-even">
-            <td>ハイエンドプラン</td>
-            <td><span class="highlight-value">¥8,000〜</span></td>
-            <td>ヒアリング・<br>ストーリー設計</td>
-            <td>5〜10日</td>
-            <td>既存資料の有無に関わらず<br>構成から提案が欲しい方</td>
+          <tr>
+            <td class="ch-axis">向いている人</td>
+            <td>素材が揃っている</td>
+            <td class="ch-rec">構成から相談したい</td>
+            <td>運用も任せたい</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div class="ch-note">例：迷ったらスタンダードから。運用まで任せる場合だけプレミアムを検討する</div>
   </div>
+</div>
 </body>
 </html>

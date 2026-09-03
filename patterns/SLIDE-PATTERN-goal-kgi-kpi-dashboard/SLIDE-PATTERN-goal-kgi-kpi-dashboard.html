@@ -1,152 +1,47 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-goal-kgi-kpi-dashboard</title>
-  <style>
-    /* ページ全体のスタイル */
-    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-goal-kgi-kpi-dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。目標ブロック＋カード列の束を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
 
-    /* スライドラベル */
+  /* 英字ラベル（KICKER）。塗りカードの中は白 */
+  .gk-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
 
-    /* スライド本体 */
-    .slide {
-      width: 960px;
-      height: 540px;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+  /* ── 上段：目標（KICKER → 大見出し22px → 1行説明）。塗りなし ── */
+  .gk-goal-ttl { margin-top: 12px; font-size: 22px; font-weight: 700; line-height: 1.4; }
+  .gk-goal-desc { margin-top: 8px; font-size: 16px; line-height: 1.8; }
 
-    /* エリアラベル共通 */
+  /* ── 下段：KGI 1枚（塗り）＋ KPI 3枚（淡い地）。等高・上ぞろえ ── */
+  .gk-row { display: flex; gap: 16px; align-items: stretch; }
+  .gk-card { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px 20px; border-radius: 12px;
+             background: var(--sk-soft,#F0F0F0); border: 1px solid var(--sk-line,#e2e2e2); }
+  /* KGI だけアクセント塗り（塗りは1枚に1つ） */
+  .gk-kgi { flex: none; width: 240px; background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  .gk-kgi .gk-kicker { color: #FFFFFF; }
 
-    /* コンテンツエリア全体 */
-    .content-area {
-      display: flex;
-      flex-direction: column;
-      padding: 8px 24px;
-      gap: 8px;
-      flex: 1;
-    }
+  /* 数字は大きく、単位は小さく（14px） */
+  .gk-num-row { margin-top: 16px; display: flex; align-items: baseline; gap: 4px; }
+  .gk-num { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; color: var(--sk-accent,#555555); }
+  .gk-kgi .gk-num { font-size: 32px; color: #FFFFFF; }
+  .gk-unit { font-size: 14px; font-weight: 400; line-height: 1; }
+  .gk-rule { margin-top: 16px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .gk-kgi .gk-rule { background: rgba(255,255,255,.35); }
+  .gk-desc { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .gk-note { margin-top: auto; padding-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+  .gk-kgi .gk-note { color: #FFFFFF; opacity: .85; }
 
-    /* 第1層：目標 */
-    .layer-goal {
-      background: var(--sk-soft,#F0F0F0);
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      padding: 6px 16px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .goal-text {
-      font-size: 13px;
-      font-weight: bold;
-      color: #333333;
-      margin: 0;
-    }
-
-    /* 第2層：KGI */
-    .layer-kgi {
-      display: flex;
-      gap: 12px;
-      padding: 4px 0;
-      flex-shrink: 0;
-    }
-
-    .kgi-cell {
-      flex: 1;
-      border: 1px solid var(--sk-accent,#E0E0E0);
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .badge {
-      font-size: 10px;
-      background: var(--sk-soft,#E8E8E8);
-      padding: 2px 6px;
-      display: inline-block;
-      color: #333333;
-      width: fit-content;
-    }
-
-    .kgi-number {
-      font-size: 22px;
-      font-weight: bold;
-      color: var(--sk-accent2, var(--sk-accent,#333333));
-      line-height: 1.2;
-    }
-
-    .kgi-unit {
-      font-size: 11px;
-      color: #333333;
-    }
-
-    .kgi-deadline {
-      font-size: 10px;
-      color: #999;
-    }
-
-    /* 第3層：KPI */
-    .layer-kpi {
-      display: flex;
-      gap: 12px;
-      padding: 4px 0;
-      flex-shrink: 0;
-    }
-
-    .kpi-cell {
-      flex: 1;
-      border: 1px solid var(--sk-accent,#E0E0E0);
-      padding: 8px 12px;
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      font-weight: bold;
-      color: #333333;
-      margin: 4px 0;
-    }
-
-    /* 簡易縦棒グラフ */
-    .bar-chart {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      height: 40px;
-      padding-top: 4px;
-    }
-
-    .bar {
-      width: 12px;
-      background: #CCCCCC;
-    }
-
-    /* 第4層：施策 */
-    .layer-strategy {
-      display: flex;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .strategy-box {
-      flex: 1;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      padding: 8px 12px;
-    }
-
-    .strategy-text {
-      font-size: 12px;
-      font-weight: bold;
-      color: #333333;
-      margin: 4px 0 0;
-    }
-  
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -164,118 +59,60 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-
-  <!-- スライドラベル -->
-
-  <!-- スライド本体 -->
-  <div class="slide">
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：上＝目標（GOAL）／下＝KGI 1枚（塗り）＋ KPI 3枚（淡い地） -->
+  <div class="content-area">
 
-    <!-- コンテンツエリア -->
-    <div class="content-area">
+    <!-- 上段：目標 -->
+    <div class="gk-goal">
+      <div class="gk-kicker">GOAL ／ 今期の目標</div>
+      <div class="gk-goal-ttl">紹介に頼らず、毎月の新規受注を安定させる</div>
+      <div class="gk-goal-desc">問い合わせから受注までの各段階に数値目標を置き、月1回の会議で見直す。</div>
+    </div>
 
-      <!-- 第1層：目標 -->
-      <div class="layer-goal">
-        
-        <p class="goal-text">「顧客満足度No.1のサービスプロバイダーとして、持続可能な成長を実現する」</p>
+    <!-- 下段：KGI 1枚 ＋ KPI 3枚 -->
+    <div class="gk-row">
+
+      <!-- KGI（塗り） -->
+      <div class="gk-card gk-kgi">
+        <div class="gk-kicker">KGI ／ 年間売上</div>
+        <div class="gk-num-row"><span class="gk-num">1.2</span><span class="gk-unit">億円</span></div>
+        <div class="gk-rule"></div>
+        <div class="gk-desc">今期末までの売上目標</div>
+        <div class="gk-note">例：前年は0.9億円</div>
       </div>
 
-      <!-- 第2層：KGI -->
-      <div class="layer-kgi">
+      <!-- KPI 1 -->
+      <div class="gk-card">
+        <div class="gk-kicker">KPI 1 ／ 集客</div>
+        <div class="gk-num-row"><span class="gk-num">30</span><span class="gk-unit">件／月</span></div>
+        <div class="gk-rule"></div>
+        <div class="gk-desc">月の問い合わせ数</div>
+        <div class="gk-note">例：現状は12件</div>
+      </div>
 
-        <!-- KGI① -->
-        <div class="kgi-cell">
-          <span class="badge">KGI①</span>
-          <div class="kgi-number">120<span class="kgi-unit"> 億円</span></div>
-          <div class="kgi-deadline">2025年3月末達成</div>
-          <div style="font-size:11px; color: #333333;">売上高目標</div>
-        </div>
+      <!-- KPI 2 -->
+      <div class="gk-card">
+        <div class="gk-kicker">KPI 2 ／ 提案</div>
+        <div class="gk-num-row"><span class="gk-num">60</span><span class="gk-unit">%</span></div>
+        <div class="gk-rule"></div>
+        <div class="gk-desc">提案まで進む割合</div>
+        <div class="gk-note">例：現状は40%</div>
+      </div>
 
-        <!-- KGI② -->
-        <div class="kgi-cell">
-          <span class="badge">KGI②</span>
-          <div class="kgi-number">85<span class="kgi-unit"> %</span></div>
-          <div class="kgi-deadline">通期維持</div>
-          <div style="font-size:11px; color: #333333;">顧客継続率</div>
-        </div>
+      <!-- KPI 3 -->
+      <div class="gk-card">
+        <div class="gk-kicker">KPI 3 ／ 受注</div>
+        <div class="gk-num-row"><span class="gk-num">5</span><span class="gk-unit">件／月</span></div>
+        <div class="gk-rule"></div>
+        <div class="gk-desc">月の新規受注数</div>
+        <div class="gk-note">例：現状は2件</div>
+      </div>
 
-        <!-- KGI③ -->
-        <div class="kgi-cell">
-          <span class="badge">KGI③</span>
-          <div class="kgi-number">500<span class="kgi-unit"> 社</span></div>
-          <div class="kgi-deadline">年度末累計</div>
-          <div style="font-size:11px; color: #333333;">新規契約社数</div>
-        </div>
-
-      </div><!-- /.layer-kgi -->
-
-      <!-- 第3層：KPI -->
-      <div class="layer-kpi">
-
-        <!-- KPI① -->
-        <div class="kpi-cell">
-          <span class="badge">KPI①</span>
-          <div class="kpi-label">月次売上進捗</div>
-          <div class="bar-chart">
-            <div class="bar" style="height:30%;"></div>
-            <div class="bar" style="height:45%;"></div>
-            <div class="bar" style="height:60%;"></div>
-            <div class="bar" style="height:55%;"></div>
-            <div class="bar" style="height:75%;"></div>
-            <div class="bar" style="height:80%;"></div>
-          </div>
-        </div>
-
-        <!-- KPI② -->
-        <div class="kpi-cell">
-          <span class="badge">KPI②</span>
-          <div class="kpi-label">解約率推移</div>
-          <div class="bar-chart">
-            <div class="bar" style="height:60%;"></div>
-            <div class="bar" style="height:55%;"></div>
-            <div class="bar" style="height:50%;"></div>
-            <div class="bar" style="height:40%;"></div>
-            <div class="bar" style="height:35%;"></div>
-            <div class="bar" style="height:25%;"></div>
-          </div>
-        </div>
-
-        <!-- KPI③ -->
-        <div class="kpi-cell">
-          <span class="badge">KPI③</span>
-          <div class="kpi-label">新規獲得件数</div>
-          <div class="bar-chart">
-            <div class="bar" style="height:20%;"></div>
-            <div class="bar" style="height:35%;"></div>
-            <div class="bar" style="height:50%;"></div>
-            <div class="bar" style="height:65%;"></div>
-            <div class="bar" style="height:70%;"></div>
-            <div class="bar" style="height:85%;"></div>
-          </div>
-        </div>
-
-      </div><!-- /.layer-kpi -->
-
-      <!-- 第4層：施策 -->
-      <div class="layer-strategy">
-
-        <!-- 重点施策① -->
-        <div class="strategy-box">
-          <span class="badge">重点施策①</span>
-          <p class="strategy-text">カスタマーサクセス体制の強化とオンボーディングプロセスの見直し</p>
-        </div>
-
-        <!-- 重点施策② -->
-        <div class="strategy-box">
-          <span class="badge">重点施策②</span>
-          <p class="strategy-text">デジタルマーケティング投資拡大による新規リード獲得チャネルの多様化</p>
-        </div>
-
-      </div><!-- /.layer-strategy -->
-
-    </div><!-- /.content-area -->
-
-  </div><!-- /.slide -->
-
+    </div>
+  </div>
+</div>
 </body>
 </html>

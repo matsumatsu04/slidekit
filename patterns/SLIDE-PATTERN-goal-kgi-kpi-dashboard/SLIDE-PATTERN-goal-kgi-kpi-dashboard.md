@@ -1,100 +1,85 @@
 ---
 name: goal-kgi-kpi-dashboard
 category: KPI
-summary: 4層の階層構造（目標→KGI→KPI→施策）を上下に積層したダッシュボード。目標設定の全体像を体系化。
-scenes: 経営目標と階層KPI関連図、戦略体系図、目標展開の可視化、OKR/KPI体系の説明
+summary: 上に目標（KICKER「GOAL」／大見出し22px／1行説明）、下にKGI 1枚（アクセント塗り・数字32px白）とKPI 3枚（--sk-soft 地・数字28pxアクセント色）を等高で横に並べる目標ダッシュボード。数字は大きく単位は小さく（14px）。塗りはKGIだけ。
+scenes: 経営目標とKGI/KPIの関係図、期初の目標発表、事業計画の目標ページ、OKRのサマリー
 tier: mid
 id: P064
 ---
 # SLIDE-PATTERN-goal-kgi-kpi-dashboard
 
-このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。スライド生成AIや人間のデザイナーが一貫したレイアウトを再現できるよう、構造・要素・使用方法を定義します。
-
----
+このファイルはスライドのコンテンツエリア（タイトル行より下の領域）のレイアウトパターン定義書です。SLIDE.mdと組み合わせてAIツールに渡すことで、このパターンのスライドを生成できます。タイトルエリア・ページ番号・装飾はSLIDE.mdの `Slide Frame` セクションで定義されるため、このファイルには含みません。
 
 ## Overview
 
-| 項目 | 内容 |
-|------|------|
-| パターン名 | goal-kgi-kpi-dashboard |
-| 別名・通称 | 目標KGI KPIダッシュボード |
-| 用途 | 組織の目標ビジョンからKGI・KPIまでを4層構造で一覧表示するダッシュボードレイアウト |
-| 適したコンテンツ | 年次目標発表、経営方針説明、事業計画スライド、OKR/KPI管理資料 |
-| レイアウト種別 | 縦積み4層ダッシュボード |
+**パターン名：** goal-kgi-kpi-dashboard
+**概要：** 上に目標（KICKER「GOAL」／大見出し22px／1行説明）、下にKGI 1枚（アクセント塗り・数字32px白）とKPI 3枚（`--sk-soft` 地・数字28pxアクセント色）を等高で横に並べる目標ダッシュボード。数字は大きく単位は小さく（14px）。塗りはKGIだけ。
+**適したシーン：** 経営目標とKGI/KPIの関係図、期初の目標発表、事業計画の目標ページ、OKRのサマリー
 
----
+## Structure（構造）
 
-## Structure
+コンテンツエリア（左右余白48px）の上下中央に、上段「目標ブロック」と下段「カード列」を24px空けて積む。目標ブロックは塗りなしの文字だけ（KICKER → 大見出し → 1行説明）。カード列は左にKGI 1枚（幅240px・アクセント塗り・白文字）、右にKPI 3枚（等幅・`--sk-soft` 地）を gap 16px で並べ、4枚は等高・中身は上ぞろえ。各カードは「KICKER／数字＋単位／細い罫線／1行の説明／例：」の同じ型。
 
-コンテンツエリアを上から下へ4層に分割する構造です。
+    structure:
+      layout: goal-top + kgi-kpi-row
+      content_area:
+        padding: "24px 48px"
+        vertical_align: center      # 見出しON時は上76px以降の上下中央
+        gap: 24px                   # 目標ブロックとカード列の間
+      goal_block:                   # 塗りなし・左ぞろえ
+        - kicker: "GOAL ／ 補足"     # 10px / 700 / .18em / アクセント色
+        - heading                   # 22px / 700 / 行間1.4（20文字前後・1行）
+        - description               # 16px / 400 / 1行
+      row:
+        display: flex
+        gap: 16px
+        align_items: stretch        # 4枚は等高
+        kgi_card:
+          width: 240px
+          surface: accent_fill      # 塗りは1枚に1つ（ここだけ）
+          number: "32px / 700 / 白"
+        kpi_cards:
+          count: 3                  # 等幅（flex:1）
+          surface: soft             # --sk-soft 地 + 1px 罫線
+          number: "28px / 700 / アクセント色"
+        card_common:
+          border_radius: 12px
+          padding: "24px 20px"
+          elements:
+            - kicker: "KGI ／ 指標名" or "KPI 1 ／ 指標名"   # 塗りカード内は白
+            - number_row: "数字（大）＋単位 14px（ベースラインを揃える）"
+            - rule: "1px（塗りカード内は白35%）"
+            - description: "1行の説明（16px・8文字以内）"
+            - note: "例：現状は〜（11.5px・muted。カード下端に寄せる）"
 
-```
-┌──────────────────────────────────────────────┐
-│ 第1層：目標（横幅フル・中央配置）             │
-├────────────┬────────────┬────────────────────┤
-│ KGI①       │ KGI②       │ KGI③               │ ← 第2層：KGI（3列）
-├────────────┼────────────┼────────────────────┤
-│ KPI①       │ KPI②       │ KPI③               │ ← 第3層：KPI+棒グラフ（3列）
-├──────────────────────┬─────────────────────-─┤
-│ 重点施策①            │ 重点施策②             │ ← 第4層：施策（2列）
-└──────────────────────┴───────────────────────┘
-```
+## Elements（各要素の役割）
 
----
+| 要素 | 配置 | 役割 |
+|---|---|---|
+| GOAL KICKER | 上段の最上 | `GOAL ／ 今期の目標` のように英字＋日本語補足。アクセント色 |
+| 目標の見出し | KICKER の下 | 期の目標を1文で（22px・700・20文字前後） |
+| 目標の説明 | 見出しの下 | 目標の測り方・見直し方を1行（16px） |
+| KGI カード | 下段の左（塗り） | 目標を1つの数字に落とした最重要指標。数字32px白・単位14px。塗りはこの1枚だけ |
+| KPI カード | 下段の右 3枚（淡い地） | KGI に至る途中の指標。数字28pxアクセント色・単位14px |
+| 数字と単位 | 各カード | 数字は大きく、単位は小さく。ベースラインを揃える |
+| 細い罫線 | 数字の下 | 数字と説明の区切り（塗りカード内は白35%） |
+| 説明 | 罫線の下 | 指標が何を示すか1行（8文字以内） |
+| 注記 | 各カード最下 | 「例：現状は〜」で比較の基準を1行添える |
 
-## Elements
+## Usage Guide（AIへの使い方）
 
-### コンテンツエリア全体
-- `display: flex; flex-direction: column; padding: 8px 24px; gap: 8px; flex: 1;`
+このパターンをAIに指示する際のプロンプト例：
 
-### 第1層：目標エリア
-- 横幅フル、`background: #F0F0F0; border: 1px solid #CCCCCC; padding: 6px 16px; text-align: center;`
-- エリアラベル（`.area-label`）: 「目標」
-- 目標テキスト: `font-size: 13px; font-weight: bold; color: #333;`
+> 「SLIDE-PATTERN-goal-kgi-kpi-dashboardのレイアウトで、目標「[1文]」（説明「[1行]」）、KGI「[指標名・数値・単位・説明・現状]」、KPI 3つ「[指標名・数値・単位・説明・現状]」のスライドを作成してください。塗りはKGIのカードだけ、数字は大きく単位は小さく書いてください。デザインはSLIDE.mdに従ってください。」
 
-### 第2層：KGIエリア
-- コンテナ: `display: flex; gap: 12px; padding: 4px 0;`
-- 各KGIセル（3つ）: `flex: 1; border: 1px solid #E0E0E0; padding: 8px 12px; display: flex; flex-direction: column; gap: 4px;`
-  - バッジ: `font-size: 10px; background: #E8E8E8; padding: 2px 6px; display: inline-block;` ← 「KGI①」「KGI②」「KGI③」
-  - アイコン代替（省略可）
-  - 数値: `font-size: 22px; font-weight: bold; color: #333;`
-  - 単位: `font-size: 11px; color: #555;`
-  - 期限テキスト: `font-size: 10px; color: #999;`
+**注意点：**
+- 塗りはKGIの1枚だけ。KPIは淡い地のまま（KPIのどれかを塗って主役を増やさない）
+- KGIは1つ、KPIは3つ。KGIが複数ある・施策まで載せたい場合は枚数を分ける（旧版の4層＝目標／KGI×3／KPI×3／施策×2 は情報過多のため廃止）
+- 数字は1〜3桁が見やすい（5桁以上は万・億などの単位に変換する）。棒グラフなどの図は置かない
+- 説明は8文字以内で1行。入らなければ文言を短くする（文字を小さくしない）
+- 注記は4枚で表現を揃える（すべて「例：現状は〜」など）
 
-### 第3層：KPIエリア
-- コンテナ: `display: flex; gap: 12px; padding: 4px 0;`
-- 各KPIセル（3つ）: `flex: 1; border: 1px solid #E0E0E0; padding: 8px 12px;`
-  - バッジ: 「KPI①」「KPI②」「KPI③」（KGIバッジと同スタイル）
-  - ラベルテキスト: `font-size: 11px; font-weight: bold; color: #333;`
-  - 簡易縦棒グラフ: `display: flex; align-items: flex-end; gap: 4px; height: 40px; padding-top: 4px;`
-    - 各棒: `width: 12px; background: #CCCCCC;` + 適切な高さ（%で指定）
-
-### 第4層：施策エリア
-- コンテナ: `display: flex; gap: 12px;`
-- 各施策ボックス（2つ）: `flex: 1; background: #F5F5F5; border: 1px solid #CCCCCC; padding: 8px 12px;`
-  - バッジ: 「重点施策①」「重点施策②」
-  - テキスト: `font-size: 12px; font-weight: bold; color: #333;`
-
----
-
-## Usage Guide
-
-### 適した場面
-- 経営会議・全社方針発表での目標体系説明
-- OKR/KPI設定会議のサマリースライド
-- 四半期・年次レビュー資料のダッシュボードページ
-- 事業計画書の冒頭ページ
-
-### 入れるべき情報
-| 層 | 記載内容 |
-|----|--------|
-| 第1層（目標） | 単一の目標ビジョン文またはスローガン（20〜40字程度） |
-| 第2層（KGI） | 3つの重要目標指標（数値＋単位＋期限） |
-| 第3層（KPI） | 各KGIに紐づく3つのKPI（進捗グラフ付き） |
-| 第4層（施策） | 2つの重点施策タイトル |
-
-### 注意点
-- KGIの数値は大きく目立たせる（22px以上）
-- 棒グラフの高さは実際のデータ比率を反映させること
-- 各層のラベル（エリアラベル）は `area-label` クラスで統一する
-- 施策テキストは1行に収まる短い表現を推奨
+## v2 での描き直し（2026-09-02）
+- 4層（目標帯／KGI×3／KPI×3＋棒グラフ／施策×2）の詰め込みを、上＝目標（KICKER「GOAL」／22px見出し／1行説明）・下＝KGI 1枚＋KPI 3枚の2段に減らした
+- KGIだけアクセント塗り（数字32px白）、KPIは `--sk-soft` 地（数字28pxアクセント色）にし、単位は14pxに落として「数字は大きく単位は小さく」にした（塗りは1枚に1つ）
+- カードを「KICKER／数字／細い罫線／1行の説明／例：」の同じ型・等高・上ぞろえにし、文字を v2 の表（KICKER 10px・本文16px・注記11.5px・インク色）に揃えた

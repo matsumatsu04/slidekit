@@ -4,21 +4,32 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-col-text-body</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  /* タイトルエリア */
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  /* コンテンツエリア */
-  .content-area { flex: 1; display: flex; gap: 0; padding: 24px 48px; }
-  /* 各カラム */
-  .col { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 8px 32px 8px 0; }
-  .col:last-child { padding: 8px 0 8px 32px; }
-  /* カラム間縦線 */
-  .col-divider { width: 1px; background: var(--sk-soft,#EEEEEE); flex-shrink: 0; align-self: stretch; }
-  /* カラム内要素 */
-  .col-heading { font-size: 16px; font-weight: bold; color: #333333; line-height: 1.3; }
-  .col-divider-h { width: 40px; height: 2px; background: #CCCCCC; }
-  .col-body { font-size: 13px; color: #333333; line-height: 1.8; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  .slide p { margin: 0; }
+  /* コンテンツエリア（見出しON時は上76px以降。2カラムの束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左右2カラム（等幅・等高・上ぞろえ）＋中央の縦罫線。塗りなし ── */
+  .tc-row { display: flex; align-items: stretch; }
+  .tc-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .tc-col:first-child { padding-right: 32px; }
+  .tc-col:last-child { padding-left: 32px; }
+  .tc-divider { flex: none; width: 1px; background: var(--sk-line,#e2e2e2); }
+
+  /* カラムの型: KICKER → 見出し18px → 本文16px（最大3段落・段落間12px）→ 例： */
+  .tc-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .tc-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .tc-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .tc-body p + p { margin-top: 12px; }
+  .tc-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -38,29 +49,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- タイトルエリア -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア（左右2カラム） -->
+  <!-- コンテンツエリア：左右2カラムの本文（KICKER → 見出し → 本文 → 例：）。中央に1pxの縦罫線 -->
   <div class="content-area">
-    <!-- 左カラム -->
-    <div class="col">
-      <div class="col-heading">左カラムの見出しが入ります</div>
-      <div class="col-divider-h"></div>
-      <div class="col-body">
-        左カラムの本文テキストが入ります。説明文や詳細情報を3〜4行程度で記述します。<br><br>
-        読みやすい行間（line-height: 1.8）で、要点を簡潔に伝えます。
+    <div class="tc-row">
+
+      <!-- 左カラム -->
+      <div class="tc-col">
+        <div class="tc-kicker">ISSUE ／ 課題</div>
+        <div class="tc-ttl">確認が後回しになり、公開日が読めない</div>
+        <div class="tc-body">
+          <p>制作が終わってから確認を始めるため、修正の往復が3回を超えることが珍しくない。担当者の手が空くのを待つ時間も加わり、公開日が決まらない。</p>
+          <p>確認の観点が人によって違い、同じ指摘が別の案件でも繰り返される。</p>
+        </div>
+        <div class="tc-note">例：直近3件の平均で、確認開始から公開まで12日</div>
       </div>
-    </div>
-    <!-- カラム間縦線 -->
-    <div class="col-divider"></div>
-    <!-- 右カラム -->
-    <div class="col">
-      <div class="col-heading">右カラムの見出しが入ります</div>
-      <div class="col-divider-h"></div>
-      <div class="col-body">
-        右カラムの本文テキストが入ります。左カラムと対比・比較する内容を3〜4行程度で記述します。<br><br>
-        左右の文量をできるだけ揃えるとレイアウトのバランスが取れます。
+
+      <!-- 中央の縦罫線 -->
+      <div class="tc-divider"></div>
+
+      <!-- 右カラム -->
+      <div class="tc-col">
+        <div class="tc-kicker">APPROACH ／ 打ち手</div>
+        <div class="tc-ttl">確認の観点を、着手前に1枚で決める</div>
+        <div class="tc-body">
+          <p>数字・固有名詞・リンクの3点を確認項目として先に書き出し、制作と確認を同じ基準で進める。担当者が変わっても観点がぶれない。</p>
+          <p>確認は制作の途中で2回に分け、公開前の往復を1回に抑える。</p>
+        </div>
+        <div class="tc-note">例：観点を決めた案件では、確認開始から公開まで5日</div>
       </div>
+
     </div>
   </div>
 </div>
