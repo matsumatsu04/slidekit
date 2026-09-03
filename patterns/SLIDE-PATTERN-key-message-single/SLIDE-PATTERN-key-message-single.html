@@ -5,17 +5,21 @@
 <title>SLIDE-PATTERN-key-message-single</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  /* タイトルエリア */
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  /* コンテンツエリア */
-  .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 32px 120px; }
-  /* 区切り線 */
-  .divider-line { width: 60px; height: 1px; background: #CCCCCC; flex-shrink: 0; }
-  /* キーメッセージ */
-  .key-message { font-size: 22px; font-weight: bold; color: #333333; text-align: center; line-height: 1.6; }
-  /* 補足テキスト */
-  .supplemental { font-size: 13px; color: #888; text-align: center; line-height: 1.6; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 1枚1メッセージ：KICKER → 主張（28px・700・インク色・字間.08em）→ 細い罫線1本（差し色）→ 補足1行（16px・muted）。塗りなし・中央 */
+  .km-block  { width:100%; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .km-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .km-msg    { margin-top:24px; max-width:760px; font-size:28px; font-weight:700; letter-spacing:.08em; line-height:1.6; }
+  .km-rule   { width:48px; height:1px; background:var(--sk-accent2,#999999); margin:28px 0; }
+  .km-sub    { max-width:760px; font-size:16px; font-weight:400; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -35,20 +39,16 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- タイトルエリア -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：KICKER → 主張 → 罫線1本 → 補足1行 -->
   <div class="content-area">
-    <!-- 上部区切り線 -->
-    <div class="divider-line"></div>
-    <!-- キーメッセージ -->
-    <div class="key-message">
-      ここに最も伝えたいキーメッセージを<br>1〜2行で大きく表示します
+    <div class="km-block">
+      <div class="km-kicker">Key Message ／ 結論</div>
+      <div class="km-msg">判断の基準を先に決めると、<br>AIの出力を迷わず使える</div>
+      <div class="km-rule"></div>
+      <p class="km-sub">基準は「数字と固有名詞は人が確認する」の1行で足りる</p>
     </div>
-    <!-- 下部区切り線 -->
-    <div class="divider-line"></div>
-    <!-- 補足テキスト -->
-    <div class="supplemental">補足説明・出典・根拠などを小さく表示します（省略可）</div>
   </div>
 </div>
 </body>

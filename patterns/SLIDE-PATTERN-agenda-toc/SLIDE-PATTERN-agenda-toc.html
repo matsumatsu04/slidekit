@@ -1,182 +1,83 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN-agenda-toc</title>
-  <style>
-    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-agenda-toc</title>
+<style>
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
+  /* 目次：KICKER（AGENDA ／ 目次）の下に「番号｜細い縦罫線｜項目名 …… 頁」の行を等間隔で積む。塗りなし・上下中央 */
+  .ag-block  { width:100%; }
+  .ag-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); margin-bottom:32px; }
+  .ag-list   { display:flex; flex-direction:column; gap:28px; }
+  .ag-row    { display:flex; align-items:center; height:28px; }
+  .ag-no     { width:48px; flex-shrink:0; font-size:24px; font-weight:400; letter-spacing:.04em; line-height:1; color:var(--sk-accent,#666666); }
+  .ag-vline  { width:1px; height:22px; flex-shrink:0; background:var(--sk-line,#E2E2E2); margin:0 20px 0 12px; }
+  .ag-txt    { font-size:16px; font-weight:400; letter-spacing:.1em; line-height:1; white-space:nowrap; }
+  .ag-leader { flex:1; height:0; border-bottom:1px dotted var(--sk-line,#E2E2E2); align-self:flex-end; margin:0 16px 7px; }
+  .ag-page   { flex-shrink:0; font-size:11.5px; font-weight:400; letter-spacing:.06em; line-height:1; color:var(--sk-muted,#8A8A8A); white-space:nowrap; }
 
-    .slide {
-      width: 960px;
-      height: 540px;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      position: relative;
-      overflow: hidden;
-      box-sizing: border-box;
-      padding: 40px 80px 40px 64px;
-      display: flex;
-      flex-direction: column;
-    }
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:31px;width:3px;height:18px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
 
-
-    /* ヘッダーエリア */
-    .header-area {
-      margin-bottom: 28px;
-    }
-
-    .section-label-text {
-      font-size: 11px;
-      font-weight: bold;
-      color: #AAAAAA;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .title-text {
-      font-size: 28px;
-      font-weight: bold;
-      color: #333333;
-      line-height: 1.2;
-    }
-
-    /* リストエリア */
-    .list-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-    }
-
-    /* 各行 */
-    .toc-row {
-      display: flex;
-      align-items: baseline;
-      gap: 0;
-    }
-
-    .toc-number {
-      font-size: 22px;
-      font-weight: bold;
-      color: #333333;
-      width: 48px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .toc-divider {
-      font-size: 18px;
-      color: #CCCCCC;
-      margin: 0 12px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .toc-item-name {
-      font-size: 15px;
-      color: #333333;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .toc-leader {
-      flex: 1;
-      border-bottom: 1px dotted #CCCCCC;
-      margin: 0 12px;
-      position: relative;
-      top: -4px;
-    }
-
-    .toc-page {
-      font-size: 13px;
-      color: #333333;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    /* エリアラベル用のラッパー */
-  
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
-
-
-  <div class="slide">
-
-    <!-- ヘッダーエリア -->
-    <div class="header-area">
-      <div class="section-label-text">AGENDA</div>
-      <div class="title-text">目次</div>
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義。目次は通常OFF） -->
+  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：KICKER ＋ 番号｜縦罫線｜項目名 …… 頁 の行を等間隔に -->
+  <div class="content-area">
+    <div class="ag-block">
+      <div class="ag-kicker">Agenda ／ 目次</div>
+      <div class="ag-list">
+        <div class="ag-row">
+          <span class="ag-no">01</span><span class="ag-vline"></span>
+          <span class="ag-txt">制作フローで時間を取られている工程</span>
+          <span class="ag-leader"></span><span class="ag-page">p.3</span>
+        </div>
+        <div class="ag-row">
+          <span class="ag-no">02</span><span class="ag-vline"></span>
+          <span class="ag-txt">AIに任せる工程と、人が決める工程</span>
+          <span class="ag-leader"></span><span class="ag-page">p.8</span>
+        </div>
+        <div class="ag-row">
+          <span class="ag-no">03</span><span class="ag-vline"></span>
+          <span class="ag-txt">試作を現場へ入れる3つの手順</span>
+          <span class="ag-leader"></span><span class="ag-page">p.14</span>
+        </div>
+        <div class="ag-row">
+          <span class="ag-no">04</span><span class="ag-vline"></span>
+          <span class="ag-txt">導入前に確認する4つの前提</span>
+          <span class="ag-leader"></span><span class="ag-page">p.21</span>
+        </div>
+        <div class="ag-row">
+          <span class="ag-no">05</span><span class="ag-vline"></span>
+          <span class="ag-txt">まとめと次の一歩</span>
+          <span class="ag-leader"></span><span class="ag-page">p.27</span>
+        </div>
+      </div>
     </div>
-
-    <!-- リストエリア -->
-    <div class="list-area">
-
-      <div>
-      </div>
-
-      <!-- 行 01 -->
-      <div class="toc-row">
-        <div class="toc-number">01</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.3</div>
-      </div>
-
-      <!-- 行 02 -->
-      <div class="toc-row">
-        <div class="toc-number">02</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.10</div>
-      </div>
-
-      <!-- 行 03 -->
-      <div class="toc-row">
-        <div class="toc-number">03</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.18</div>
-      </div>
-
-      <!-- 行 04 -->
-      <div class="toc-row">
-        <div class="toc-number">04</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.25</div>
-      </div>
-
-      <!-- 行 05 -->
-      <div class="toc-row">
-        <div class="toc-number">05</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.32</div>
-      </div>
-
-      <!-- 行 06 -->
-      <div class="toc-row">
-        <div class="toc-number">06</div>
-        <div class="toc-divider">|</div>
-        <div class="toc-item-name">セクション名が入ります</div>
-        <div class="toc-leader"></div>
-        <div class="toc-page">p.40</div>
-      </div>
-
-    </div><!-- /list-area -->
-
-  </div><!-- /slide -->
-
+  </div>
+</div>
 </body>
 </html>

@@ -5,15 +5,22 @@
 <title>SLIDE-PATTERN-numbered-list-with-body</title>
 <style>
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  .content-area { flex: 1; padding: 16px 48px; display: flex; flex-direction: column; justify-content: space-around; }
-  .list-item { display: flex; align-items: flex-start; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--sk-accent,#EEEEEE); }
-  .list-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .badge { width: 48px; height: 48px; border-radius: 50%; background: var(--sk-soft,#E0E0E0); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #333333; flex-shrink: 0; }
-  .item-content { flex: 1; }
-  .item-heading { font-size: 17px; font-weight: bold; color: #333333; margin-bottom: 6px; }
-  .item-body { font-size: 13px; color: #333333; line-height: 1.6; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 番号付きリスト：番号（24px・400・アクセント色・囲まない）｜見出し18px→本文16px→例：。行は細罫線で区切り等間隔（塗りなし） */
+  .nl-list { width:100%; border-top:1px solid var(--sk-line,#E2E2E2); }
+  .nl-row  { display:grid; grid-template-columns:64px 1fr; align-items:start; padding:20px 0; border-bottom:1px solid var(--sk-line,#E2E2E2); }
+  .nl-no   { font-size:24px; font-weight:400; line-height:28px; letter-spacing:.04em; color:var(--sk-accent,#666666); }
+  .nl-h    { font-size:18px; font-weight:700; line-height:28px; }
+  .nl-body { margin-top:4px; font-size:16px; line-height:1.8; }
+  .nl-note { margin-top:4px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -35,27 +42,32 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：番号｜見出し→本文→例： の行を細罫線で区切って縦に積む -->
   <div class="content-area">
-    <div class="list-item">
-      <div class="badge">01</div>
-      <div class="item-content">
-        <div class="item-heading">見出しが入ります</div>
-        <div class="item-body">本文テキストが入ります。項目の詳細説明を2〜3行程度で記述します。具体的な内容や背景を補足します。</div>
+    <div class="nl-list">
+      <div class="nl-row">
+        <div class="nl-no">01</div>
+        <div>
+          <div class="nl-h">型を用意する</div>
+          <p class="nl-body">よくある質問の答えを、先に短い定型文にしておく。</p>
+          <div class="nl-note">例：料金・納期・対応範囲の3本から始める</div>
+        </div>
       </div>
-    </div>
-    <div class="list-item">
-      <div class="badge">02</div>
-      <div class="item-content">
-        <div class="item-heading">見出しが入ります</div>
-        <div class="item-body">本文テキストが入ります。項目の詳細説明を2〜3行程度で記述します。具体的な内容や背景を補足します。</div>
+      <div class="nl-row">
+        <div class="nl-no">02</div>
+        <div>
+          <div class="nl-h">一次回答を分ける</div>
+          <p class="nl-body">まず受け取った旨を返し、詳しい回答は後から送る。</p>
+          <div class="nl-note">例：受領の返信は当日中、本回答は翌営業日まで</div>
+        </div>
       </div>
-    </div>
-    <div class="list-item">
-      <div class="badge">03</div>
-      <div class="item-content">
-        <div class="item-heading">見出しが入ります</div>
-        <div class="item-body">本文テキストが入ります。項目の詳細説明を2〜3行程度で記述します。具体的な内容や背景を補足します。</div>
+      <div class="nl-row">
+        <div class="nl-no">03</div>
+        <div>
+          <div class="nl-h">記録から直す</div>
+          <p class="nl-body">返信に時間がかかった質問を月1回集め、定型文を増やす。</p>
+          <div class="nl-note">例：月末の30分で見直す</div>
+        </div>
       </div>
     </div>
   </div>

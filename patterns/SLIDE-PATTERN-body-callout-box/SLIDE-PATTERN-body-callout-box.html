@@ -4,15 +4,24 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-body-callout-box</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:24px 88px 32px; display:flex; flex-direction:column; justify-content:center; gap:20px; }
-  .cb-body { font-size:14px; color:#333333; line-height:2.0; }
-  .cb-box { border-left:4px solid var(--sk-accent,#888888); background:var(--sk-soft,#F4F4F4); padding:16px 22px; display:flex; flex-direction:column; gap:6px; }
-  .cb-box-label { font-size:11px; font-weight:bold; color:var(--sk-accent,#888888); letter-spacing:0.1em; }
-  .cb-box-text { font-size:15px; font-weight:bold; color:#333333; line-height:1.7; }
-  .cb-note { font-size:11.5px; color:#999999; line-height:1.7; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 本文段落（16px・行間1.8）＋ コールアウト箱（soft地・角丸11px・左に3pxの直角バー）。箱の中は KICKER → 太字16px。塗りはこの箱1つ */
+  .cb-block  { width:100%; }
+  .cb-body   { font-size:16px; line-height:1.8; }
+  .cb-box    { position:relative; margin-top:24px; background:var(--sk-soft,#F0F0F0); border-radius:11px; padding:20px 24px 20px 28px; }
+  .cb-box::before { content:""; position:absolute; left:0; top:16px; bottom:16px; width:3px; background:var(--sk-accent,#666666); }
+  .cb-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .cb-point  { margin-top:8px; font-size:16px; font-weight:700; line-height:1.8; }
+  .cb-note   { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#8A8A8A); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -32,14 +41,18 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：本文段落 → コールアウト箱（KICKER → 太字）→ 例： -->
   <div class="content-area">
-    <div class="cb-body">本文のテキストがここに入ります。背景・状況・前提などを3〜4行で説明します。読み手が次のポイントボックスの重要性を理解できるだけの文脈をここで用意します。文章は2.0の行間でゆったり組みます。</div>
-    <div class="cb-box">
-      <div class="cb-box-label">POINT</div>
-      <div class="cb-box-text">このスライドで最も重要なポイントの文章がここに入ります。左のアクセントバーと淡色地で本文から浮き上がらせます。</div>
+    <div class="cb-block">
+      <p class="cb-body">AIに制作の一部を任せるとき、最初に決めておきたいのは、どこまでをAIに任せ、どこから人が確認するかの線引きです。線引きが無いまま始めると、出力を毎回ゼロから読み直すことになり、確認の時間が制作の時間を上回ります。線引きを先に1枚に書いておけば、出力を採用するかどうかをその場で決められます。</p>
+      <div class="cb-box">
+        <div class="cb-kicker">Point ／ 要点</div>
+        <div class="cb-point">任せる範囲と確認する範囲を、着手前に1枚で線引きする</div>
+      </div>
+      <div class="cb-note">例：数字・固有名詞・リンクの3点は必ず人が確認する、と決めておく</div>
     </div>
-    <div class="cb-note">※補足・注記・出典などが入ります（省略可）</div>
   </div>
 </div>
 </body>
