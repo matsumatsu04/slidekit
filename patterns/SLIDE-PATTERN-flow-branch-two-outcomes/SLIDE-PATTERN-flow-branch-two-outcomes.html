@@ -6,25 +6,40 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; position:relative; }
-  .fb-start { position:absolute; left:80px; top:50%; transform:translateY(-50%); width:170px; padding:18px 16px; border:2px solid var(--sk-accent,#888888); text-align:center; font-size:14px; font-weight:bold; color:#333333; background:#FFFFFF; }
-  .fb-line-1 { position:absolute; left:250px; top:50%; width:90px; height:2px; background:var(--sk-accent,#999999); }
-  .fb-diamond { position:absolute; left:352px; top:50%; transform:translateY(-50%) rotate(45deg); width:110px; height:110px; border:2px solid var(--sk-accent,#888888); background:var(--sk-soft,#F5F5F5); }
-  .fb-diamond-text { position:absolute; left:340px; top:50%; transform:translateY(-50%); width:134px; text-align:center; font-size:12px; font-weight:bold; color:#333333; line-height:1.5; }
-  .fb-yes-path { position:absolute; left:474px; top:calc(50% - 1px); width:80px; height:2px; background:var(--sk-accent,#999999); transform-origin:left center; transform:rotate(-38deg); }
-  .fb-no-path { position:absolute; left:474px; top:calc(50% - 1px); width:80px; height:2px; background:#CCCCCC; transform-origin:left center; transform:rotate(38deg); }
-  .fb-yes-label { position:absolute; left:496px; top:calc(50% - 46px); font-size:11px; font-weight:bold; color:var(--sk-accent,#888888); }
-  .fb-no-label { position:absolute; left:496px; top:calc(50% + 32px); font-size:11px; font-weight:bold; color:#AAAAAA; }
-  .fb-outcome { position:absolute; left:570px; width:300px; padding:16px 18px; }
-  .fb-ok { top:calc(50% - 128px); border:2px solid var(--sk-accent,#777777); }
-  .fb-ng { top:calc(50% + 40px); border:2px solid #CCCCCC; }
-  .fb-out-head { font-size:14px; font-weight:bold; margin-bottom:4px; }
-  .fb-ok .fb-out-head { color:var(--sk-accent,#333333); }
-  .fb-ng .fb-out-head { color:#888888; }
-  .fb-out-body { font-size:11.5px; line-height:1.6; }
-  .fb-ok .fb-out-body { color:#333333; }
-  .fb-ng .fb-out-body { color:#999999; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。分岐図は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 分岐図（起点1 → 判断1 → 結果2）。ステージ 864×288 に絶対配置。ノード高さ96px固定 ── */
+  .fb-stage { position: relative; width: 864px; height: 288px; }
+  /* 接続線: 1px の罫線色。端点はノード辺の中心。分岐点で直角に折る（白い矩形で消さない） */
+  .fb-lines { position: absolute; left: 0; top: 0; width: 864px; height: 288px; display: block; }
+  .fb-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+  /* 三角矢印（幅12px）だけアクセント色 */
+  .fb-lines .fb-arw { fill: var(--sk-accent,#555555); stroke: none; shape-rendering: auto; }
+
+  /* ノードの型: KICKER → 見出し16px/700 → 1行説明14px。淡い地・角丸8px。高さ96px固定（線の端点がずれない） */
+  .fb-node { position: absolute; height: 96px; padding: 12px 16px; border-radius: 8px; background: var(--sk-soft,#F0F0F0); display: flex; flex-direction: column; justify-content: center; }
+  .fb-start, .fb-judge { width: 240px; }
+  .fb-out { width: 272px; }
+  /* 推す結果（YES）だけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .fb-fill { background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .fb-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; overflow: hidden; }
+  .fb-fill .fb-kicker { color: #FFFFFF; }
+  .fb-ttl { margin-top: 8px; font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+  .fb-desc { margin-top: 4px; font-size: 14px; line-height: 1.6; white-space: nowrap; overflow: hidden; }
+
+  /* 座標（左端x／上端y）: 起点・判断は中央行 top:96、結果は top:0 / top:192 */
+  .fb-start { left: 0;     top: 96px; }
+  .fb-judge { left: 280px; top: 96px; }
+  .fb-yes   { left: 592px; top: 0; }
+  .fb-no    { left: 592px; top: 192px; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -44,18 +59,51 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：起点 → 判断 → YES／NO の2結果。塗りは推す結果（YES）だけ -->
   <div class="content-area">
-    <div class="fb-start">起点・入力が入ります</div>
-    <div class="fb-line-1"></div>
-    <div class="fb-diamond"></div>
-    <div class="fb-diamond-text">条件・判断が<br>入ります</div>
-    <div class="fb-yes-path"></div>
-    <div class="fb-no-path"></div>
-    <div class="fb-yes-label">YES</div>
-    <div class="fb-no-label">NO</div>
-    <div class="fb-outcome fb-ok"><div class="fb-out-head">YESの場合の結果が入ります</div><div class="fb-out-body">結果の説明テキストが入ります。次のアクションを1〜2行で記述します。</div></div>
-    <div class="fb-outcome fb-ng"><div class="fb-out-head">NOの場合の結果が入ります</div><div class="fb-out-body">結果の説明テキストが入ります。代替の流れを1〜2行で記述します。</div></div>
+    <div class="fb-stage">
+
+      <!-- 接続線（起点→判断は1本。判断→分岐点→上下の結果は直角に折る。端点はノード辺の中心） -->
+      <svg class="fb-lines" viewBox="0 0 864 288" aria-hidden="true">
+        <path d="M240 144H268"/>
+        <path d="M520 144H544V48H580"/>
+        <path d="M544 144V240H580"/>
+        <path class="fb-arw" d="M268 136L280 144 268 152Z"/>
+        <path class="fb-arw" d="M580 40L592 48 580 56Z"/>
+        <path class="fb-arw" d="M580 232L592 240 580 248Z"/>
+      </svg>
+
+      <!-- 起点 -->
+      <div class="fb-node fb-start">
+        <div class="fb-kicker">START ／ 起点</div>
+        <div class="fb-ttl">問い合わせが届く</div>
+        <div class="fb-desc">フォーム・電話・紹介のどれか</div>
+      </div>
+
+      <!-- 判断 -->
+      <div class="fb-node fb-judge">
+        <div class="fb-kicker">JUDGE ／ 判断</div>
+        <div class="fb-ttl">範囲が決まっているか</div>
+        <div class="fb-desc">ページ数と納期が書けるか</div>
+      </div>
+
+      <!-- 結果 YES（推す側・塗り） -->
+      <div class="fb-node fb-out fb-fill fb-yes">
+        <div class="fb-kicker">YES ／ 決まっている</div>
+        <div class="fb-ttl">見積を出して受注へ</div>
+        <div class="fb-desc">翌営業日に見積書を送る</div>
+      </div>
+
+      <!-- 結果 NO -->
+      <div class="fb-node fb-out fb-no">
+        <div class="fb-kicker">NO ／ まだ決まっていない</div>
+        <div class="fb-ttl">先にヒアリング</div>
+        <div class="fb-desc">面談で範囲を固めてから見積へ</div>
+      </div>
+
+    </div>
   </div>
 </div>
 </body>

@@ -4,21 +4,44 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-sitemap-indent-list</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 24px 64px; display: flex; flex-direction: column; }
-  .top-node { display: flex; align-items: center; gap: 16px; background: var(--sk-accent,#555555); padding: 12px 20px; }
-  .top-node .top-label { font-size: 14px; font-weight: bold; color: #FFFFFF; border: 2px solid #FFFFFF; padding: 2px 10px; }
-  .top-node .top-name { font-size: 16px; font-weight: bold; color: #FFFFFF; flex: 1; }
-  .top-node .top-supplement { font-size: 12px; color: #FFFFFF; }
-  /* 幹線は::beforeで「TOP帯の直下」から「最下行の中心」までを1本で引く（端点ルール: 白カバー禁止・全高に伸ばさない） */
-  .child-wrap { margin-left: 40px; padding-left: 24px; margin-top: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-  .child-wrap::before { content: ""; position: absolute; left: 0; top: -12px; bottom: 21px; width: 2px; background: var(--sk-accent,#BBBBBB); }
-  .child-row { position: relative; display: flex; align-items: center; gap: 16px; background: var(--sk-soft,#EFEFEF); padding: 12px 20px; height: 42px; }
-  .child-row::before { content: ""; position: absolute; left: -24px; top: 50%; margin-top: -1px; width: 24px; height: 2px; background: var(--sk-accent,#BBBBBB); }
-  .child-name { font-size: 15px; font-weight: bold; color: #333333; width: 160px; flex-shrink: 0; }
-  .child-desc { font-size: 12px; color: #333333; flex: 1; line-height: 1.5; }
-  .child-supplement { font-size: 12px; font-weight: bold; color: #333333; flex-shrink: 0; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。リストは上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 2列（左＝L1→L2／右＝L2→L3 の続き）。行の高さ40px固定・上ぞろえ ── */
+  .sm-cols { display: flex; gap: 48px; align-items: flex-start; }
+  .sm-col { position: relative; flex: 1; min-width: 0; }
+
+  /* 行: 階層ごとに字下げ（L1=0 / L2=32px / L3=64px）。行間は 1px の細罫線（字下げ位置から引く） */
+  .sm-row { height: 40px; display: flex; align-items: center; }
+  .sm-l2 { padding-left: 32px; }
+  .sm-l3 { padding-left: 64px; }
+  .sm-in { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  /* トップ行だけ淡い地・角丸6px（塗りはこれだけ） */
+  .sm-l1 .sm-in { background: var(--sk-soft,#F0F0F0); border-radius: 6px; border-bottom: none; }
+  .sm-l1 .sm-name { font-weight: 700; }
+
+  /* 行の型: 階層KICKER（幅40px）→ ページ名16px → 右端に補足11.5px muted */
+  .sm-kicker { flex: none; width: 40px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .sm-name { font-size: 16px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sm-sup { margin-left: auto; padding-left: 12px; font-size: 11.5px; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+
+  /* 字下げの縦罫線: 1px 罫線色。親の行の下端から、子の最後の行の中心まで（親KICKERの文字の下 x=字下げ+18px） */
+  .sm-guide { position: absolute; width: 1px; background: var(--sk-line,#e2e2e2); }
+  .sm-g-l1  { left: 18px; top: 40px;  height: 180px; }   /* L1（行0）→ L2 5行（最後の行の中心 y=220） */
+  .sm-g-l2a { left: 50px; top: 40px;  height: 100px; }   /* L2（行0）→ L3 3行（最後の行の中心 y=140） */
+  .sm-g-l2b { left: 50px; top: 200px; height: 60px;  }   /* L2（行4）→ L3 2行（最後の行の中心 y=260） */
+
+  /* 注記（例：〜） */
+  .sm-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -40,40 +63,36 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：字下げ型サイトマップ。第1階層＝トップページだけ。左列 L1→L2、右列 L2→L3 の続き -->
   <div class="content-area">
-    <div class="top-node">
-      <span class="top-label">TOP</span>
-      <span class="top-name">トップページ名が入ります</span>
-      <span class="top-supplement">1ページ</span>
+    <div class="sm-cols">
+
+      <!-- 左列：L1（トップ）→ L2 -->
+      <div class="sm-col">
+        <div class="sm-guide sm-g-l1"></div>
+        <div class="sm-row sm-l1"><div class="sm-in"><div class="sm-kicker">L1</div><div class="sm-name">トップページ</div><div class="sm-sup">全体の入口</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">サービス</div><div class="sm-sup">下層3ページ</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">制作実績</div><div class="sm-sup">一覧＋詳細</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">会社概要</div><div class="sm-sup">下層2ページ</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">お知らせ</div><div class="sm-sup">一覧＋詳細</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">お問い合わせ</div><div class="sm-sup">フォーム</div></div></div>
+      </div>
+
+      <!-- 右列：下層を持つ L2 → L3 -->
+      <div class="sm-col">
+        <div class="sm-guide sm-g-l2a"></div>
+        <div class="sm-guide sm-g-l2b"></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">サービス</div><div class="sm-sup">下層3ページ</div></div></div>
+        <div class="sm-row sm-l3"><div class="sm-in"><div class="sm-kicker">L3</div><div class="sm-name">Web制作</div><div class="sm-sup">料金表つき</div></div></div>
+        <div class="sm-row sm-l3"><div class="sm-in"><div class="sm-kicker">L3</div><div class="sm-name">LINE構築</div><div class="sm-sup">事例つき</div></div></div>
+        <div class="sm-row sm-l3"><div class="sm-in"><div class="sm-kicker">L3</div><div class="sm-name">AI活用支援</div><div class="sm-sup">相談フォーム</div></div></div>
+        <div class="sm-row sm-l2"><div class="sm-in"><div class="sm-kicker">L2</div><div class="sm-name">会社概要</div><div class="sm-sup">下層2ページ</div></div></div>
+        <div class="sm-row sm-l3"><div class="sm-in"><div class="sm-kicker">L3</div><div class="sm-name">代表あいさつ</div><div class="sm-sup"></div></div></div>
+        <div class="sm-row sm-l3"><div class="sm-in"><div class="sm-kicker">L3</div><div class="sm-name">アクセス</div><div class="sm-sup">地図つき</div></div></div>
+      </div>
+
     </div>
-    <div class="child-wrap">
-      <div class="child-row">
-        <div class="child-name">ページ名が入ります</div>
-        <div class="child-desc">このページに載る内容の説明が入ります。</div>
-        <div class="child-supplement">1ページ</div>
-      </div>
-      <div class="child-row">
-        <div class="child-name">ページ名が入ります</div>
-        <div class="child-desc">このページに載る内容の説明が入ります。</div>
-        <div class="child-supplement">1ページ</div>
-      </div>
-      <div class="child-row">
-        <div class="child-name">ページ名が入ります</div>
-        <div class="child-desc">このページに載る内容の説明が入ります。</div>
-        <div class="child-supplement">3ページ</div>
-      </div>
-      <div class="child-row">
-        <div class="child-name">ページ名が入ります</div>
-        <div class="child-desc">このページに載る内容の説明が入ります。</div>
-        <div class="child-supplement">1ページ</div>
-      </div>
-      <div class="child-row">
-        <div class="child-name">ページ名が入ります</div>
-        <div class="child-desc">このページに載る内容の説明が入ります。</div>
-        <div class="child-supplement">1ページ</div>
-      </div>
-    </div>
+    <div class="sm-note">例：全13ページ。下層を持つページは右列で展開し、3階層目までを1枚に収める</div>
   </div>
 </div>
 </body>

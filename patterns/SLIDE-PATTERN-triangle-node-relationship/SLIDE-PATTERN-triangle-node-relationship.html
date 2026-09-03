@@ -4,17 +4,50 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-triangle-node-relationship</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; justify-content: center; }
-  .tri-wrap { position: relative; width: 420px; height: 340px; }
-  .tri-line { position: absolute; height: 2px; background: var(--sk-accent,#BBBBBB); transform-origin: 0 50%; z-index: 1; }
-  .node-circle { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: #FFFFFF; border: 2px solid var(--sk-accent,#999999); display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; box-sizing: border-box; z-index: 2; }
-  .node-top { left: 140px; top: 10px; }
-  .node-left { left: 20px; top: 210px; }
-  .node-right { left: 260px; top: 210px; }
-  .node-text { font-size: 14px; font-weight: bold; color: #333333; }
-  .center-label { position: absolute; left: 210px; top: 213px; transform: translate(-50%, -50%); z-index: 3; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); border-radius: 999px; padding: 8px 16px; font-size: 12px; font-weight: bold; color: #333333; white-space: nowrap; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。左＝三角関係図／右＝3者の説明 を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; align-items: center; gap: 48px; }
+
+  /* ── 左：3者の三角関係図（320×288）。円ノード80px を頂点に絶対配置、3辺は1枚のSVG ── */
+  .tr-wrap { position: relative; flex: none; width: 320px; height: 288px; }
+  /* 辺: 1px 罫線色。端点は円の縁（半径39＝枠線の内側1px）で止める。関係ラベルの両側で線を切る（白矩形で消さない） */
+  .tr-lines { position: absolute; left: 0; top: 0; width: 320px; height: 288px; display: block; }
+  .tr-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; }
+  .tr-lines .tr-flat { shape-rendering: crispEdges; }
+
+  /* 円ノード: 1.5px 罫線色の枠・中に KICKER → 名前16px/700 */
+  .tr-node { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: #FFFFFF; border: 1.5px solid var(--sk-line,#e2e2e2);
+             display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  /* 頂点の1つ（主役）だけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .tr-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  .tr-a { left: 120px; top: 0; }
+  .tr-b { left: 0;     top: 208px; }
+  .tr-c { left: 240px; top: 208px; }
+  .tr-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .tr-fill .tr-kicker { color: #FFFFFF; }
+  .tr-name { margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+
+  /* 辺の関係ラベル: 11.5px・muted。辺の中点に置く（線はラベルの両側で止まる） */
+  .tr-rel { position: absolute; transform: translate(-50%, -50%); font-size: 11.5px; line-height: 1; color: var(--sk-muted,#888888); white-space: nowrap; }
+  .tr-rel-ab { left: 100px; top: 144px; }
+  .tr-rel-ac { left: 220px; top: 144px; }
+  .tr-rel-bc { left: 160px; top: 248px; }
+
+  /* ── 右：3者の説明（KICKER → 1行16px・行罫線で区切る）＋ 例： ── */
+  .tr-list { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .tr-item { padding: 12px 0; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .tr-item:first-child { padding-top: 0; }
+  .tr-item:last-of-type { border-bottom: none; }
+  .tr-text { margin-top: 6px; font-size: 16px; line-height: 1.8; }
+  .tr-note { margin-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -36,20 +69,49 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝3者の三角関係図（塗りは頂点1つだけ）／右＝3者の説明 -->
   <div class="content-area">
-    <div class="tri-wrap">
-      <!-- 三角形をつなぐ3本の直線 -->
-      <div class="tri-line" style="left:210px; top:80px; width:233px; transform:rotate(120.96deg);"></div>
-      <div class="tri-line" style="left:210px; top:80px; width:233px; transform:rotate(59.04deg);"></div>
-      <div class="tri-line" style="left:90px; top:280px; width:240px; transform:rotate(0deg);"></div>
-      <!-- 頂点の円3つ -->
-      <div class="node-circle node-top"><span class="node-text">要素Aが入ります</span></div>
-      <div class="node-circle node-left"><span class="node-text">要素Bが入ります</span></div>
-      <div class="node-circle node-right"><span class="node-text">要素Cが入ります</span></div>
-      <!-- 中央の統合ラベル -->
-      <div class="center-label">統合ラベルが入ります</div>
+
+    <!-- 左：三角関係図。円の中心 A(160,40) B(40,248) C(280,248)。各辺は中点±26px（底辺は±36px）を空けて2本に分ける -->
+    <div class="tr-wrap">
+      <svg class="tr-lines" viewBox="0 0 320 288" aria-hidden="true">
+        <!-- A–B（左辺） -->
+        <path d="M140.5 73.8L113 121.5"/>
+        <path d="M87 166.5L59.5 214.2"/>
+        <!-- A–C（右辺） -->
+        <path d="M179.5 73.8L207 121.5"/>
+        <path d="M233 166.5L260.5 214.2"/>
+        <!-- B–C（底辺） -->
+        <path class="tr-flat" d="M79 248H124"/>
+        <path class="tr-flat" d="M196 248H241"/>
+      </svg>
+
+      <div class="tr-node tr-fill tr-a"><div class="tr-kicker">User</div><div class="tr-name">利用者</div></div>
+      <div class="tr-node tr-b"><div class="tr-kicker">Client</div><div class="tr-name">発注者</div></div>
+      <div class="tr-node tr-c"><div class="tr-kicker">Maker</div><div class="tr-name">制作者</div></div>
+
+      <div class="tr-rel tr-rel-ab">商品と評価</div>
+      <div class="tr-rel tr-rel-ac">体験の設計</div>
+      <div class="tr-rel tr-rel-bc">依頼と提案</div>
     </div>
+
+    <!-- 右：3者の説明 -->
+    <div class="tr-list">
+      <div class="tr-item">
+        <div class="tr-kicker">User ／ 利用者</div>
+        <div class="tr-text">サイトを使う人。迷わず目的を果たせるかで判断する</div>
+      </div>
+      <div class="tr-item">
+        <div class="tr-kicker">Client ／ 発注者</div>
+        <div class="tr-text">成果を求める人。問い合わせや売上で判断する</div>
+      </div>
+      <div class="tr-item">
+        <div class="tr-kicker">Maker ／ 制作者</div>
+        <div class="tr-text">両者の間に立ち、設計と実装で目的をつなぐ</div>
+      </div>
+      <div class="tr-note">例：3者のどれか1つに寄ると、使われないサイトになる</div>
+    </div>
+
   </div>
 </div>
 </body>
