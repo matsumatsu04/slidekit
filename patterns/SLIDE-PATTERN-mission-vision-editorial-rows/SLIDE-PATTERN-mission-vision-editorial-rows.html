@@ -4,18 +4,27 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-mission-vision-editorial-rows</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; flex-direction:column; justify-content:center; gap:48px; padding:32px 96px; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-  .ed-row { display:flex; align-items:stretch; }
-  .ed-label { width:22%; display:flex; align-items:center; font-size:15px; font-weight:bold; letter-spacing:.28em; color:var(--sk-accent,#888888); flex-shrink:0; }
-  .ed-rule { width:1px; background:var(--sk-soft,#DDDDDD); flex-shrink:0; }
-  .ed-body { flex:1; padding-left:40px; }
-  .ed-heading { font-size:19px; font-weight:bold; color:#333333; line-height:1.6; }
-  .ed-cap { font-size:9px; letter-spacing:.16em; color:#AAAAAA; margin-top:4px; }
-  .ed-text { font-size:11px; color:#666666; line-height:1.9; margin-top:12px; }
+  /* MISSION／VISION／VALUE の3行：左に英字KICKER（14px・字間.2em・差し色・幅160px）＋日本語ラベル10px、右に見出し20px＋本文16px×2行。
+     行は横1px罫線で区切り、等高・上ぞろえ。塗りなし */
+  .ed-list   { width:100%; display:grid; grid-auto-rows:1fr; }
+  .ed-row    { display:grid; grid-template-columns:160px 1fr; column-gap:24px; align-items:start; padding:20px 0; border-top:1px solid var(--sk-line,#e2e2e2); }
+  .ed-row:first-child { border-top:none; }
+  .ed-label  { padding-top:8px; }
+  .ed-kicker { font-size:14px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-accent2,#999999); white-space:nowrap; }
+  .ed-sub    { margin-top:8px; font-size:10px; font-weight:400; letter-spacing:.18em; line-height:1; color:var(--sk-muted,#888888); white-space:nowrap; }
+  .ed-text   { min-width:0; }
+  .ed-ttl    { font-size:20px; font-weight:700; line-height:1.4; }
+  .ed-body   { margin-top:8px; font-size:16px; font-weight:400; line-height:1.8; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -35,29 +44,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：MISSION／VISION／VALUE の3行（左＝英字KICKER＋日本語ラベル、右＝見出し＋本文2行）。行は細罫線で区切る -->
   <div class="content-area">
+    <div class="ed-list">
 
-    <div class="ed-row">
-      <div class="ed-label">MISSION</div>
-      <div class="ed-rule"></div>
-      <div class="ed-body">
-        <div class="ed-heading">和文太字の大見出しが1〜2行で入ります</div>
-        <div class="ed-cap">ENGLISH CAPTION TEXT IS HERE</div>
-        <div class="ed-text">本文が入ります。理念に込めた思いと、その背景にある課題認識を3〜5行で記述します。読み物として成立する文章量を置けるのがこのパターンの持ち味です。飾らない言葉で書きます。</div>
+      <div class="ed-row">
+        <div class="ed-label">
+          <div class="ed-kicker">Mission</div>
+          <div class="ed-sub">使命</div>
+        </div>
+        <div class="ed-text">
+          <div class="ed-ttl">小さな会社の情報発信を、無理なく続く形にする</div>
+          <div class="ed-body">担当者が1人でも更新できる仕組みを設計し、公開したあとも数字を見ながら直し続ける。運用まで含めて1つの仕事と考える。</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ed-row">
-      <div class="ed-label">VISION</div>
-      <div class="ed-rule"></div>
-      <div class="ed-body">
-        <div class="ed-heading">和文太字の大見出しが1〜2行で入ります</div>
-        <div class="ed-cap">ENGLISH CAPTION TEXT IS HERE</div>
-        <div class="ed-text">本文が入ります。目指す状態と、そこへ向かう道筋を3〜5行で記述します。上の段と同じ構造をくり返すことで、編集誌のような静かなリズムが生まれます。</div>
+      <div class="ed-row">
+        <div class="ed-label">
+          <div class="ed-kicker">Vision</div>
+          <div class="ed-sub">目指す姿</div>
+        </div>
+        <div class="ed-text">
+          <div class="ed-ttl">地域の中小企業が、自分の言葉で発信している状態</div>
+          <div class="ed-body">社内で更新と改善が回っている会社を増やす。2030年までに、支援先200社がその状態に至ることを目指す。</div>
+        </div>
       </div>
-    </div>
 
+      <div class="ed-row">
+        <div class="ed-label">
+          <div class="ed-kicker">Value</div>
+          <div class="ed-sub">大切にすること</div>
+        </div>
+        <div class="ed-text">
+          <div class="ed-ttl">目的と数字を先に決めてから、手を動かす</div>
+          <div class="ed-body">何のために作るのか、何を測るのかを最初に合意する。迷ったら目的に立ち返り、数字で判断して次の一手を決める。</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 </body>

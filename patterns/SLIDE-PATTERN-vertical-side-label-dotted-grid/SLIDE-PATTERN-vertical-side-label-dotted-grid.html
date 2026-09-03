@@ -4,20 +4,34 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-vertical-side-label-dotted-grid</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; position:relative; display:flex; align-items:center; padding:24px 56px 24px 144px; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-  /* 左端の濃色帯（縦組み英字ラベル） */
-  .side-band { position:absolute; left:0; top:24px; bottom:24px; width:104px; background:var(--sk-accent,#555555); border-radius:0 28px 28px 0; display:flex; align-items:center; justify-content:center; }
-  .side-band span { writing-mode:vertical-rl; color:#FFFFFF; font-size:17px; font-weight:bold; letter-spacing:.4em; }
-
-  /* 点線ボーダーの角丸ボックス 3列×2行 */
-  .dg-grid { flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  .dg-box { border:1.5px dashed var(--sk-soft,#BBBBBB); border-radius:12px; padding:16px 18px; min-height:136px; }
-  .dg-title { font-size:12.5px; font-weight:bold; color:#333333; margin-bottom:8px; }
-  .dg-items { font-size:10px; color:#888888; line-height:1.9; }
+  /* 左：縦書きサイドラベル（幅48px・右に縦1px罫線）／右：項目6つの2行×3列グリッド（細罫線で区切る）。全体は等高ブロック */
+  .vg-wrap { width:100%; height:336px; display:flex; align-items:stretch; }
+  .vg-side { flex:none; width:48px; border-right:1px solid var(--sk-line,#e2e2e2); display:flex; justify-content:center; align-items:flex-start; padding-top:20px; }
+  .vg-side-label { writing-mode:vertical-rl; text-orientation:mixed; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+                   line-height:1; white-space:nowrap; color:var(--sk-accent2,#999999); }
+  .vg-grid { flex:1; min-width:0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:1fr 1fr; }
+  /* セル：等高・上ぞろえ。列は縦1px罫線、行は横1px罫線で区切る（1列目は左のサイド罫線が兼ねる） */
+  .vg-cell { min-width:0; padding:20px 24px; display:flex; flex-direction:column; align-items:flex-start; border-left:1px solid var(--sk-line,#e2e2e2); }
+  .vg-cell:nth-child(3n+1) { border-left:none; }
+  .vg-cell:nth-child(n+4) { border-top:1px solid var(--sk-line,#e2e2e2); }
+  /* 項目の型：番号ドット（12px・1.5px罫線枠）＋番号KICKER → 見出し16px・700 → 説明14px・muted。ドットは主役の1つだけ塗る */
+  .vg-mark { display:flex; align-items:center; gap:8px; }
+  .vg-dot { flex:none; width:12px; height:12px; border-radius:50%; border:1.5px solid var(--sk-line,#e2e2e2); background:#FFFFFF; }
+  .vg-dot-fill { background:var(--sk-accent,#555555); border-color:var(--sk-accent,#555555); }
+  .vg-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); white-space:nowrap; }
+  .vg-h { margin-top:12px; font-size:16px; font-weight:700; line-height:1.4; }
+  .vg-desc { margin-top:4px; font-size:16px; font-weight:400; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -37,38 +51,45 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左に縦書きのサイドラベル、右に項目6つ（2行×3列・細罫線区切り）。塗りは01のドットだけ -->
   <div class="content-area">
-
-    <div class="side-band"><span>SUPPORT</span></div>
-
-    <div class="dg-grid">
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E ／ 提供項目F</div>
-      </div>
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
-      </div>
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E ／ 提供項目F</div>
-      </div>
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D</div>
-      </div>
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
-      </div>
-      <div class="dg-box">
-        <div class="dg-title">項目カテゴリ名が入ります</div>
-        <div class="dg-items">提供項目A ／ 提供項目B ／ 提供項目C ／ 提供項目D ／ 提供項目E</div>
+    <div class="vg-wrap">
+      <div class="vg-side"><span class="vg-side-label">Scope ／ 対応範囲</span></div>
+      <div class="vg-grid">
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot vg-dot-fill"></span><span class="vg-kicker">01</span></div>
+          <div class="vg-h">更新代行</div>
+          <div class="vg-desc">文章や画像の差し替えを、月5件まで代行する</div>
+        </div>
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot"></span><span class="vg-kicker">02</span></div>
+          <div class="vg-h">障害対応</div>
+          <div class="vg-desc">表示崩れや停止を、営業日内に切り分けて直す</div>
+        </div>
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot"></span><span class="vg-kicker">03</span></div>
+          <div class="vg-h">バックアップ</div>
+          <div class="vg-desc">毎週1回、復元の手順つきで控えを取る</div>
+        </div>
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot"></span><span class="vg-kicker">04</span></div>
+          <div class="vg-h">計測レポート</div>
+          <div class="vg-desc">月初に、アクセスの要点を1枚にまとめて報告する</div>
+        </div>
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot"></span><span class="vg-kicker">05</span></div>
+          <div class="vg-h">ドメイン管理</div>
+          <div class="vg-desc">更新期限を前月に案内し、失効を防ぐ</div>
+        </div>
+        <div class="vg-cell">
+          <div class="vg-mark"><span class="vg-dot"></span><span class="vg-kicker">06</span></div>
+          <div class="vg-h">相談窓口</div>
+          <div class="vg-desc">質問は1か所に集め、翌営業日までに返す</div>
+        </div>
       </div>
     </div>
-
   </div>
 </div>
 </body>

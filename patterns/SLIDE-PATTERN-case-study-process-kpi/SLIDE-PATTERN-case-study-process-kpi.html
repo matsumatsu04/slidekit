@@ -3,43 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-case-study-process-kpi</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; overflow:hidden; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。行は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 左1/3: 案件情報 */
-  .cs-left { width:33%; padding:36px 24px 32px 48px; display:flex; flex-direction:column; border-right:1px solid var(--sk-soft,#EEEEEE); }
-  .cs-client { font-size:10px; color:#888888; letter-spacing:.08em; margin-bottom:8px; }
-  .cs-title { font-size:21px; font-weight:bold; color:#333333; line-height:1.5; margin-bottom:16px; }
-  .cs-lead { font-size:11px; color:#666666; line-height:1.9; margin-bottom:12px; }
-  .cs-link { font-size:10px; color:var(--sk-accent,#888888); }
-  .cs-link i { font-size:9px; margin-right:4px; }
-  .cs-badges { margin-top:auto; display:flex; gap:8px; }
-  .cs-badge { width:28px; height:28px; border:1px solid var(--sk-soft,#DDDDDD); border-radius:6px; display:flex; align-items:center; justify-content:center; color:#888888; font-size:12px; }
+  /* ── 左：事例の概要＋工程3ステップ（塗りなし）／右：成果KPIパネル（塗り・幅300px）。等高 ── */
+  .cs-row { display: flex; align-items: stretch; gap: 24px; height: 352px; }
+  .cs-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .cs-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .cs-name { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .cs-rule { margin-top: 16px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  /* 工程：縦積み3段（等高・上ぞろえ）。各段＝左に番号KICKER、右に見出し16px＋説明14px。段は細罫線で区切る */
+  .cs-steps { flex: 1; min-height: 0; display: grid; grid-auto-rows: 1fr; }
+  .cs-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 16px; align-items: start; padding: 12px 0; border-top: 1px solid var(--sk-line,#e2e2e2); }
+  .cs-step:first-child { border-top: none; }
+  .cs-step-no { padding-top: 8px; }
+  .cs-step-ttl { font-size: 16px; font-weight: 700; line-height: 1.4; }
+  .cs-step-desc { margin-top: 4px; font-size: 16px; line-height: 1.8; }
 
-  /* 右2/3: 画像＋下端バンド */
-  .cs-right { flex:1; display:flex; flex-direction:column; }
-  .cs-photo { flex:1; background:var(--sk-soft,#EFEFEF); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#AAAAAA; font-size:11px; }
-  .cs-photo i { font-size:26px; }
-  .cs-band { height:104px; background:#FFFFFF; border-top:1px solid var(--sk-soft,#EEEEEE); display:flex; align-items:center; padding:0 24px; gap:16px; flex-shrink:0; }
-  .cs-band-h { font-size:9px; font-weight:bold; letter-spacing:.14em; color:#888888; flex-shrink:0; }
-
-  /* 縮小プロセス（菱形ミニバッジ＋点線。点線はバッジ中心で始端・終端） */
-  .cs-proc { flex:1; position:relative; height:72px; }
-  .cs-proc-line { position:absolute; top:25px; left:12.5%; right:12.5%; border-top:2px dotted var(--sk-soft,#BBBBBB); }
-  .cs-mini { position:absolute; top:26px; width:20px; height:20px; transform:translate(-50%,-50%) rotate(45deg); background:var(--sk-accent,#555555); border-radius:3px; z-index:1; }
-  .cs-mini span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; transform:rotate(-45deg); color:#FFFFFF; font-size:8px; font-weight:bold; }
-  .cs-proc-label { position:absolute; top:44px; transform:translateX(-50%); font-size:8.5px; color:#666666; white-space:nowrap; }
-
-  /* 濃色反転の成果ボックス */
-  .cs-kpi { flex-shrink:0; background:var(--sk-accent,#555555); color:#FFFFFF; border-radius:8px; padding:12px 20px; display:flex; flex-direction:column; align-items:center; gap:2px; }
-  .cs-kpi-numrow { display:flex; align-items:baseline; gap:2px; }
-  .cs-kpi-num { font-size:30px; font-weight:bold; line-height:1; }
-  .cs-kpi-unit { font-size:12px; font-weight:bold; }
-  .cs-kpi-label { font-size:9px; }
+  /* 右：成果KPIパネル（アクセント塗り・白文字。塗りは1枚に1つ）。型: KICKER → 数字28px＋単位 → 説明 → 白35%罫線 → 指標2行 → 注記 */
+  .cs-result {
+    flex: none; width: 300px; display: flex; flex-direction: column;
+    padding: 24px 28px; border-radius: 11px;
+    background: var(--sk-accent,#555555); color: #FFFFFF;
+  }
+  .cs-result .cs-kicker { color: #FFFFFF; }
+  .cs-num-row { margin-top: 16px; display: flex; align-items: baseline; gap: 4px; }
+  .cs-num { font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .cs-unit { font-size: 16px; font-weight: 400; line-height: 1; }
+  .cs-desc { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .cs-wrule { margin-top: 16px; height: 1px; background: rgba(255,255,255,.35); }
+  .cs-metrics { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .cs-metric { display: flex; justify-content: space-between; gap: 12px; font-size: 16px; line-height: 1.8; color: rgba(255,255,255,.8); }
+  .cs-metric-v { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .cs-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: #FFFFFF; opacity: .85; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -59,44 +65,56 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝事例の概要と工程3ステップ（塗りなし）／右＝成果KPIパネル（塗り） -->
   <div class="content-area">
+    <div class="cs-row">
 
-    <div class="cs-left">
-      <div class="cs-client">発注元ラベルが入ります</div>
-      <div class="cs-title">導入事例のタイトルが2行で入ります</div>
-      <div class="cs-lead">事例のリード文が入ります。ご相談の背景、提案した内容、進め方の要点を4行ほどで記述します。成果につながった工夫もここで触れます。</div>
-      <div class="cs-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>参照リンクのテキストが入ります</div>
-      <div class="cs-badges">
-        <div class="cs-badge"><i class="fa-solid fa-globe"></i></div>
-        <div class="cs-badge"><i class="fa-solid fa-mobile-screen"></i></div>
-        <div class="cs-badge"><i class="fa-solid fa-magnifying-glass"></i></div>
-        <div class="cs-badge"><i class="fa-solid fa-chart-line"></i></div>
-      </div>
-    </div>
-
-    <div class="cs-right">
-      <div class="cs-photo"><i class="fa-solid fa-image"></i>実績の画像が入ります</div>
-      <div class="cs-band">
-        <div class="cs-band-h">PROCESS</div>
-        <div class="cs-proc">
-          <div class="cs-proc-line"></div>
-          <div class="cs-mini" style="left:12.5%;"><span>01</span></div>
-          <div class="cs-mini" style="left:37.5%;"><span>02</span></div>
-          <div class="cs-mini" style="left:62.5%;"><span>03</span></div>
-          <div class="cs-mini" style="left:87.5%;"><span>04</span></div>
-          <div class="cs-proc-label" style="left:12.5%;">工程名</div>
-          <div class="cs-proc-label" style="left:37.5%;">工程名</div>
-          <div class="cs-proc-label" style="left:62.5%;">工程名</div>
-          <div class="cs-proc-label" style="left:87.5%;">工程名</div>
-        </div>
-        <div class="cs-kpi">
-          <div class="cs-kpi-numrow"><span class="cs-kpi-num">150</span><span class="cs-kpi-unit">%</span></div>
-          <div class="cs-kpi-label">成果指標が入ります</div>
+      <!-- 左：事例の概要（KICKER → 事例名 → 細罫線）＋ 工程3ステップ（縦積み・等高） -->
+      <div class="cs-main">
+        <div class="cs-kicker">CASE ／ 製造業</div>
+        <div class="cs-name">部品メーカーの採用サイト刷新</div>
+        <div class="cs-rule"></div>
+        <div class="cs-steps">
+          <div class="cs-step">
+            <div class="cs-kicker cs-step-no">STEP 01</div>
+            <div>
+              <div class="cs-step-ttl">現状の棚卸し</div>
+              <div class="cs-step-desc">応募の経路と、離脱の多いページを1週間で洗い出す</div>
+            </div>
+          </div>
+          <div class="cs-step">
+            <div class="cs-kicker cs-step-no">STEP 02</div>
+            <div>
+              <div class="cs-step-ttl">型で設計する</div>
+              <div class="cs-step-desc">募集職種ごとのページを、同じ型で1枚にまとめる</div>
+            </div>
+          </div>
+          <div class="cs-step">
+            <div class="cs-kicker cs-step-no">STEP 03</div>
+            <div>
+              <div class="cs-step-ttl">公開して計測する</div>
+              <div class="cs-step-desc">公開後30日は週1回、数字を見て文言を直す</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
+      <!-- 右：成果KPIパネル（アクセント塗り・白文字） -->
+      <div class="cs-result">
+        <div class="cs-kicker">RESULT ／ 公開後3ヶ月</div>
+        <div class="cs-num-row"><span class="cs-num">2.4</span><span class="cs-unit">倍</span></div>
+        <div class="cs-desc">月間の応募数（公開前比）</div>
+        <div class="cs-wrule"></div>
+        <div class="cs-metrics">
+          <div class="cs-metric"><span>応募数</span><span class="cs-metric-v">月5件 → 月12件</span></div>
+          <div class="cs-metric"><span>直帰率</span><span class="cs-metric-v">68% → 41%</span></div>
+        </div>
+        <div class="cs-note">例：応募フォームの送信数で集計</div>
+      </div>
+
+    </div>
   </div>
 </div>
 </body>
