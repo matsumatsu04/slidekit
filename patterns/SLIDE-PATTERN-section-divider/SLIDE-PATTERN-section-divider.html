@@ -4,19 +4,33 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-section-divider</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  /* コンテンツエリア */
-  .content-area { flex: 1; display: flex; align-items: center; justify-content: flex-start; padding: 0 80px; position: relative; }
-  /* 左縦線アクセント */
-  .left-accent { width: 4px; height: 120px; background: #CCCCCC; flex-shrink: 0; margin-right: 40px; }
-  /* メインコンテンツ */
-  .main-content { display: flex; flex-direction: column; gap: 10px; }
-  .section-number { font-size: 48px; font-weight: bold; color: #AAAAAA; line-height: 1; letter-spacing: 0.05em; }
-  .section-title { font-size: 32px; font-weight: bold; color: #333333; line-height: 1.2; }
-  .section-subtitle { font-size: 15px; color: #333333; line-height: 1.5; margin-top: 4px; }
-  /* 下部ページ範囲 */
-  .footer-optional { position: absolute; bottom: 24px; right: 80px; font-size: 11px; color: #AAAAAA; }
+  /* 全面アクセント塗り＋白文字。グレー版のフォールバック地は白文字が読める濃さ（#555555） */
+  .slide { width:960px; height:540px; background:var(--sk-accent,#555555); border:1px solid #CCCCCC; overflow:hidden; position:relative;
+           font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-03）: 左ぞろえで KICKER（白60%）→ 章番号（64px・400・白）→ 章タイトル（28px・700）→ 白35%の罫線1本 → 説明1行。
+     塗りは全面の1つだけ・他に面を置かない。装飾は罫線1本だけ。共通部品は使えないので、同じ数値を sdv- 接頭辞で持つ。
+     文字色は .content-area で白にする（末尾の v2 文字の組みブロックが .slide にインク色を当てるため） */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; color:#FFFFFF; }
+  html[data-heading="on"] .content-area { top:76px; }
+  .sdv-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:rgba(255,255,255,.6); }
+  .sdv-no     { margin-top:20px; font-size:64px; font-weight:400; letter-spacing:.04em; line-height:1; color:#FFFFFF; }
+  .sdv-title  { margin-top:16px; max-width:760px; font-size:28px; font-weight:700; letter-spacing:.06em; line-height:1.5; color:#FFFFFF; }
+  .sdv-rule   { width:100%; height:1px; background:rgba(255,255,255,.35); margin:28px 0 24px; }
+  .sdv-sub    { max-width:760px; font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:rgba(255,255,255,.85); }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:31px;width:3px;height:18px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
 
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
@@ -24,18 +38,13 @@
 </head>
 <body>
 <div class="slide">
-  <!-- コンテンツエリア -->
+  <!-- 中扉は共通見出しOFFが既定。ONにした場合は .content-area が上76pxから始まる -->
   <div class="content-area">
-    <!-- 左縦線アクセント -->
-    <div class="left-accent"></div>
-    <!-- セクション番号・タイトル・サブタイトル -->
-    <div class="main-content">
-      <div class="section-number">02</div>
-      <div class="section-title">セクションタイトルが入ります</div>
-      <div class="section-subtitle">このセクションの内容を補足するサブタイトルが入ります</div>
-    </div>
-    <!-- 下部ページ範囲テキスト（任意） -->
-    <div class="footer-optional">P.10 – 15（オプション）</div>
+    <div class="sdv-kicker">Section</div>
+    <div class="sdv-no">01</div>
+    <div class="sdv-title">現状の制作フローと、時間を取られている工程</div>
+    <div class="sdv-rule"></div>
+    <div class="sdv-sub">1案件の工程を分解し、待ちと手戻りが起きる点を先に見る</div>
   </div>
 </div>
 </body>

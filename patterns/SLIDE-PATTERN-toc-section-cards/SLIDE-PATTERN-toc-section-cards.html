@@ -6,17 +6,26 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 72px; display:flex; flex-direction:column; justify-content:center; gap:22px; }
-  .tsc-head { display:flex; align-items:baseline; gap:14px; }
-  .tsc-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; }
-  .tsc-title { font-size:24px; font-weight:bold; color:#333333; }
-  .tsc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-  .tsc-card { border:1px solid var(--sk-soft,#E0E0E0); border-top:3px solid var(--sk-accent,#888888); padding:18px 16px 16px; display:flex; flex-direction:column; gap:8px; min-height:150px; }
-  .tsc-no { font-size:30px; font-weight:bold; color:var(--sk-accent,#BBBBBB); line-height:1; }
-  .tsc-name { font-size:14px; font-weight:bold; color:#333333; line-height:1.5; }
-  .tsc-desc { font-size:11px; color:#888888; line-height:1.6; }
-  .tsc-page { margin-top:auto; font-size:10.5px; color:#AAAAAA; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; position:relative;
+           color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-03）: KICKER（Contents ／ 目次）の下に、soft 地の章カード3枚（等幅・等高・角丸11px・padding 24px）。
+     カードの中身は「KICKER（01 ／ SECTION）→ 章名 18px/700 → 細罫線 → 説明1行 16px → 頁の注記」の型で上ぞろえ。
+     現在章（1枚目）だけアクセント塗り＋白文字。塗りはその1枚だけ。共通部品は使えないので、同じ数値を tsc- 接頭辞で持つ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+  .tsc-kicker { margin-bottom:24px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .tsc-grid   { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .tsc-card   { min-height:216px; background:var(--sk-soft,#F0F0F0); border-radius:11px; padding:24px; display:flex; flex-direction:column; align-items:flex-start; }
+  .tsc-cur    { background:var(--sk-accent,#555555); color:#FFFFFF; }
+  .tsc-ck     { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .tsc-name   { margin-top:12px; font-size:18px; font-weight:700; letter-spacing:.06em; line-height:1.5; }
+  .tsc-rule   { width:100%; height:1px; margin:16px 0; background:var(--sk-line,#e2e2e2); }
+  .tsc-desc   { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; }
+  .tsc-note   { margin-top:12px; font-size:11.5px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:var(--sk-muted,#888888); }
+  .tsc-cur .tsc-ck   { color:#FFFFFF; }
+  .tsc-cur .tsc-rule { background:rgba(255,255,255,.35); }
+  .tsc-cur .tsc-desc { color:rgba(255,255,255,.85); }
+  .tsc-cur .tsc-note { color:rgba(255,255,255,.7); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -36,14 +45,33 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義。目次は通常OFF） -->
+  <div class="sk-head" data-label="Contents"><span class="sk-head-ttl">本日の流れ</span></div>
+  <!-- コンテンツエリア：KICKER ＋ 章カード3枚（現在章だけ塗り） -->
   <div class="content-area">
-    <div class="tsc-head"><div class="tsc-label">CONTENTS</div><div class="tsc-title">本日の流れ</div></div>
+    <div class="tsc-kicker">Contents ／ 目次</div>
     <div class="tsc-grid">
-      <div class="tsc-card"><div class="tsc-no">01</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.3〜</div></div>
-      <div class="tsc-card"><div class="tsc-no">02</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.9〜</div></div>
-      <div class="tsc-card"><div class="tsc-no">03</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.15〜</div></div>
-      <div class="tsc-card"><div class="tsc-no">04</div><div class="tsc-name">章タイトルが入ります</div><div class="tsc-desc">章の内容の一言説明が入ります。</div><div class="tsc-page">p.21〜</div></div>
+      <div class="tsc-card tsc-cur">
+        <div class="tsc-ck">01 ／ Section</div>
+        <div class="tsc-name">制作フローの詰まり</div>
+        <div class="tsc-rule"></div>
+        <div class="tsc-desc">時間を取られる工程を見る</div>
+        <div class="tsc-note">p.3 〜 p.8</div>
+      </div>
+      <div class="tsc-card">
+        <div class="tsc-ck">02 ／ Section</div>
+        <div class="tsc-name">AIと人の役割分担</div>
+        <div class="tsc-rule"></div>
+        <div class="tsc-desc">判断の主体を先に決める</div>
+        <div class="tsc-note">p.9 〜 p.15</div>
+      </div>
+      <div class="tsc-card">
+        <div class="tsc-ck">03 ／ Section</div>
+        <div class="tsc-name">現場に入れる手順</div>
+        <div class="tsc-rule"></div>
+        <div class="tsc-desc">小さな案件で試して広げる</div>
+        <div class="tsc-note">p.16 〜 p.22</div>
+      </div>
     </div>
   </div>
 </div>

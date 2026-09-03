@@ -4,13 +4,31 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-section-center-circle-number</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: var(--sk-accent,#4A4A4A); border: 1px solid var(--sk-accent,#4A4A4A); overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
-  /* 中央の円形バッジ（白枠線・中に章番号） */
-  .circle-badge { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .circle-badge span { font-size: 20px; font-weight: bold; color: #FFFFFF; line-height: 1; }
-  /* 章タイトル */
-  .section-title { font-size: 36px; font-weight: bold; color: #FFFFFF; text-align: center; line-height: 1.4; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; position:relative;
+           color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-03）: 白地・中央ぞろえの縦積み。72px の円（1.5px の --sk-line 枠線・中に章番号 24px・400・アクセント色）→ KICKER → 章タイトル（28px・700）→ 説明1行（16px・muted）。
+     塗りなし（円は枠線だけ）。共通部品は使えないので、同じ数値を scc- 接頭辞で持つ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+  .scc-circle { width:72px; height:72px; border-radius:50%; border:1.5px solid var(--sk-line,#e2e2e2); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                font-size:24px; font-weight:400; letter-spacing:.04em; line-height:1; color:var(--sk-accent,#666666); }
+  .scc-kicker { margin-top:24px; font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .scc-title  { margin-top:12px; max-width:760px; font-size:28px; font-weight:700; letter-spacing:.06em; line-height:1.5; }
+  .scc-sub    { margin-top:12px; max-width:760px; font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:var(--sk-muted,#888888); }
+
+/* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
+.sk-head{display:none}
+html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
+html[data-heading="on"] .sk-head{display:flex;align-items:baseline;position:absolute;top:0;left:40px;right:40px;padding:24px 0 12px;box-sizing:border-box;border-bottom:2px solid var(--sk-accent,#333333);z-index:5;}
+.sk-head .sk-head-ttl{font-size:24px;font-weight:bold;color:#333333;line-height:1.2;}
+html[data-heading="on"][data-hstyle="b"] .sk-head{left:40px;right:auto;border-bottom:none;padding:24px 0 0 20px;align-items:center;position:absolute;}
+html[data-heading="on"][data-hstyle="b"] .sk-head::before{content:"";position:absolute;left:0;top:31px;width:3px;height:18px;background:var(--sk-accent,#333333);}
+html[data-heading="on"][data-hstyle="c"] .sk-head{left:0;right:0;top:0;height:76px;box-sizing:border-box;align-items:center;border-bottom:none;background:var(--sk-accent,#4A4A4A);padding:0 40px;}
+html[data-heading="on"][data-hstyle="c"] .sk-head-ttl{color:#FFFFFF;}
+html[data-heading="on"][data-hstyle="d"] .sk-head{flex-direction:column;align-items:flex-start;gap:4px;border-bottom:none;padding:16px 0 0;}
+html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(data-label);font-size:12px;font-weight:bold;color:var(--sk-accent,#555);letter-spacing:.06em;}
 
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
@@ -18,10 +36,13 @@
 </head>
 <body>
 <div class="slide">
-  <!-- 中央の円形章番号バッジ -->
-  <div class="circle-badge"><span>03</span></div>
-  <!-- 章タイトル -->
-  <div class="section-title">セクションタイトルが<br>ここに入ります</div>
+  <!-- 中扉は共通見出しOFFが既定。ONにした場合は .content-area が上76pxから始まる -->
+  <div class="content-area">
+    <div class="scc-circle">02</div>
+    <div class="scc-kicker">Section</div>
+    <div class="scc-title">試作を現場に入れるまでの3つの手順</div>
+    <div class="scc-sub">小さな案件で試し、結果を人が読んでから次の工程へ広げる</div>
+  </div>
 </div>
 </body>
 </html>
