@@ -6,15 +6,32 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:28px 72px 36px; display:flex; flex-direction:column; justify-content:center; gap:0; }
-  .kt-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; margin-bottom:18px; }
-  .kt-grid { display:flex; gap:32px; }
-  .kt-item { flex:1; display:flex; flex-direction:column; gap:10px; }
-  .kt-no { font-size:56px; font-weight:bold; color:var(--sk-soft,#DDDDDD); line-height:1; }
-  .kt-rule { width:40px; height:3px; background:var(--sk-accent,#888888); }
-  .kt-title { font-size:16px; font-weight:bold; color:#333333; line-height:1.5; }
-  .kt-body { font-size:12px; color:#666666; line-height:1.8; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。一覧＋ピルの束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+  /* ── 上段: KICKER。下に細罫線 ── */
+  .kt-top { width: 100%; padding: 0 16px 12px; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .kt-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+
+  /* ── 行: 番号（24px・400・アクセント色）＋ 見出し18px → 本文16px。行は細罫線で区切る。塗りなし ── */
+  .kt-list { width: 100%; display: flex; flex-direction: column; }
+  .kt-row { display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; padding: 16px 16px; border-top: 1px solid var(--sk-line,#e2e2e2); }
+  .kt-row:first-child { border-top: none; }
+  .kt-no { font-size: 24px; font-weight: 400; line-height: 1; letter-spacing: 0; color: var(--sk-accent,#555555); padding-top: 1px; }
+  .kt-text { min-width: 0; }
+  .kt-ttl { font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .kt-body { margin-top: 4px; font-size: 16px; font-weight: 400; line-height: 1.8; }
+
+  /* ── 結論ピル（このスライドで唯一のアクセント塗り） ── */
+  .kt-pill { display: inline-flex; align-items: center; justify-content: center; margin-top: 24px; height: 34px; padding: 0 28px; border-radius: 17px;
+             background: var(--sk-accent,#666666); color: #FFFFFF; font-size: 14px; font-weight: 400; letter-spacing: .2em; line-height: 1; white-space: nowrap; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,14 +51,41 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：KICKER ／ 持ち帰り3行（番号＋見出し＋本文・細罫線区切り）／ 結論ピル -->
   <div class="content-area">
-    <div class="kt-label">KEY TAKEAWAYS</div>
-    <div class="kt-grid">
-      <div class="kt-item"><div class="kt-no">1</div><div class="kt-rule"></div><div class="kt-title">持ち帰りポイントが入ります</div><div class="kt-body">補足説明のテキストが入ります。要点の根拠や具体例を2〜3行で記述します。</div></div>
-      <div class="kt-item"><div class="kt-no">2</div><div class="kt-rule"></div><div class="kt-title">持ち帰りポイントが入ります</div><div class="kt-body">補足説明のテキストが入ります。要点の根拠や具体例を2〜3行で記述します。</div></div>
-      <div class="kt-item"><div class="kt-no">3</div><div class="kt-rule"></div><div class="kt-title">持ち帰りポイントが入ります</div><div class="kt-body">補足説明のテキストが入ります。要点の根拠や具体例を2〜3行で記述します。</div></div>
+
+    <div class="kt-top">
+      <div class="kt-kicker">KEY TAKEAWAYS ／ 持ち帰り3点</div>
     </div>
+
+    <div class="kt-list">
+      <div class="kt-row">
+        <div class="kt-no">1</div>
+        <div class="kt-text">
+          <div class="kt-ttl">任せる範囲と確認する範囲を、先に線引きする</div>
+          <div class="kt-body">AIの出力を毎回ゼロから読み直さないために、着手前に1枚で決めておく。</div>
+        </div>
+      </div>
+      <div class="kt-row">
+        <div class="kt-no">2</div>
+        <div class="kt-text">
+          <div class="kt-ttl">小さく試して、崩れなければ次の工程へ広げる</div>
+          <div class="kt-body">ページ単位の試作から始めると、戻りが出ても直す範囲が小さく済む。</div>
+        </div>
+      </div>
+      <div class="kt-row">
+        <div class="kt-no">3</div>
+        <div class="kt-text">
+          <div class="kt-ttl">確認の手順を型にして、誰が見ても同じ品質で通す</div>
+          <div class="kt-body">数字・固有名詞・リンクの3点を見る順番まで決めておけば、担当が変わってもぶれない。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kt-pill">線引きしてから、小さく試す</div>
+
   </div>
 </div>
 </body>

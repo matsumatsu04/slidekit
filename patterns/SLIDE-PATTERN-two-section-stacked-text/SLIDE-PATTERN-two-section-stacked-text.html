@@ -4,23 +4,28 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-two-section-stacked-text</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  /* タイトルエリア */
-  .title-area { padding: 14px 40px 12px; border-bottom: 1px dashed var(--sk-accent,#CCCCCC); flex-shrink: 0; background: #FFFFFF; }
-  /* コンテンツエリア */
-  .content-area { flex: 1; display: flex; flex-direction: column; padding: 20px 48px; gap: 0; overflow: hidden; }
-  /* 上セクション */
-  .section-upper { flex: 1; border-bottom: 1px solid var(--sk-accent,#E0E0E0); padding-bottom: 16px; padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-  /* 下セクション */
-  .section-lower { flex: 1; padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-  /* 見出し（左アクセントボーダー） */
-  .section-heading { font-size: 16px; font-weight: bold; color: #333333; border-left: 3px solid var(--sk-accent,#CCCCCC); padding-left: 10px; line-height: 1.4; }
-  /* 本文テキスト */
-  .section-body { font-size: 13px; color: #333333; line-height: 1.8; }
-  /* 番号付きリスト */
-  .section-list { margin: 0; padding-left: 20px; }
-  .section-list li { font-size: 13px; color: #333333; line-height: 2; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  .slide p { margin: 0; }
+  /* コンテンツエリア（見出しON時は上76px以降。上下2段の束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 上下2段。段の間は1pxの横罫線。下段だけ --sk-soft 地の箱（角丸11px）で主従を付ける。アクセント塗りなし ── */
+  .ts-upper { padding: 0 0 24px; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ts-lower { margin-top: 24px; background: var(--sk-soft,#F0F0F0); border-radius: 11px; padding: 24px; }
+
+  /* 段の型: KICKER → 見出し18px → 本文16px（最大2段落・段落間12px） */
+  .ts-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ts-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ts-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .ts-body p + p { margin-top: 12px; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -40,29 +45,30 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
-  <!-- タイトルエリア -->
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア（上下2セクション） -->
+  <!-- コンテンツエリア：上段（KICKER → 見出し → 本文）／ 1px罫線 ／ 下段（--sk-soft 地の箱・同じ型） -->
   <div class="content-area">
-    <!-- 上セクション -->
-    <div class="section-upper">
-      <div class="section-heading">上段の見出しテキストが入ります</div>
-      <div class="section-body">
-        上段の本文テキストが入ります。背景や概要など、導入となる説明文を2〜3行程度で記述します。<br>
-        読みやすい行間で要点を整理し、下段につながる内容を簡潔にまとめてください。<br>
-        補足情報があればこの行に追記します。
+
+    <!-- 上段：背景・前提 -->
+    <div class="ts-upper">
+      <div class="ts-kicker">BACKGROUND ／ 背景</div>
+      <div class="ts-ttl">確認が制作の後ろに回り、公開日が読めない</div>
+      <div class="ts-body">
+        <p>制作が終わってから確認を始めるため、修正の往復が3回を超えることが珍しくない。担当者の手が空くのを待つ時間も加わり、公開日が最後まで決まらない。</p>
+        <p>確認の観点が人によって違い、同じ指摘が別の案件でも繰り返される。</p>
       </div>
     </div>
-    <!-- 下セクション -->
-    <div class="section-lower">
-      <div class="section-heading">下段の見出しテキストが入ります</div>
-      <div class="section-body">下段の導入文が1行程度入ります。以下のリストへの橋渡しとなる文章です。</div>
-      <ol class="section-list">
-        <li>番号付きリスト1項目目のテキストが入ります</li>
-        <li>番号付きリスト2項目目のテキストが入ります</li>
-        <li>番号付きリスト3項目目のテキストが入ります</li>
-      </ol>
+
+    <!-- 下段：打ち手（淡い地の箱で主役に） -->
+    <div class="ts-lower">
+      <div class="ts-kicker">APPROACH ／ 打ち手</div>
+      <div class="ts-ttl">確認の観点を、着手前に1枚で決める</div>
+      <div class="ts-body">
+        <p>数字・固有名詞・リンクの3点を確認項目として先に書き出し、制作と確認を同じ基準で進める。確認は制作の途中で2回に分け、公開前の往復を1回に抑える。</p>
+      </div>
     </div>
+
   </div>
 </div>
 </body>

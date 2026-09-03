@@ -6,15 +6,32 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .summary-area { flex:1; display:flex; flex-direction:column; justify-content:center; padding:24px 100px; gap:14px; }
-  .sum-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.15em; }
-  .sum-text { font-size:22px; font-weight:bold; color:#333333; line-height:1.7; }
-  .sum-supp { font-size:13px; color:#666666; line-height:1.8; }
-  .cta-band { flex-shrink:0; height:150px; background:var(--sk-accent,#4A4A4A); display:flex; align-items:center; justify-content:space-between; padding:0 100px; }
-  .cta-msg { font-size:22px; font-weight:bold; color:#FFFFFF; line-height:1.5; }
-  .cta-sub { font-size:12px; color:rgba(255,255,255,0.8); margin-top:4px; }
-  .cta-button { background:#FFFFFF; color:var(--sk-accent,#333333); font-size:15px; font-weight:bold; padding:14px 32px; border-radius:28px; white-space:nowrap; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。カード群＋CTA帯の束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 上: まとめ3項目（--sk-soft 地の等高カード。KICKER → 見出し16px → 本文16px）── */
+  .ns-cards { display: flex; gap: 16px; align-items: stretch; }
+  .ns-card  { flex: 1; min-width: 0; background: var(--sk-soft,#F0F0F0); border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; }
+  .ns-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ns-ttl  { margin-top: 12px; font-size: 16px; font-weight: 700; line-height: 1.5; }
+  .ns-body { margin-top: 8px; font-size: 16px; font-weight: 400; line-height: 1.8; }
+
+  /* ── 下: 全幅のCTA帯（このスライドで唯一のアクセント塗り。白文字・角丸11px・高さ72px）── */
+  .ns-band { margin-top: 24px; height: 72px; background: var(--sk-accent,#555555); color: #FFFFFF; border-radius: 11px; padding: 0 32px;
+             display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .ns-msg  { font-size: 18px; font-weight: 700; line-height: 1.4; min-width: 0; }
+  /* 右の小さな白枠ボタン風ラベル（塗らない・1.5pxの白枠） */
+  .ns-btn  { flex: none; display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border: 1.5px solid #FFFFFF; border-radius: 16px;
+             font-size: 12px; font-weight: 700; letter-spacing: .1em; line-height: 1; white-space: nowrap; color: #FFFFFF; }
+  /* 注記（例：〜）。帯の下に1行 */
+  .ns-note { margin-top: 12px; padding: 0 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,15 +51,36 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <div class="summary-area">
-    <div class="sum-label">SUMMARY</div>
-    <div class="sum-text">本日のまとめの文章がここに入ります。<br>結論を2行以内で言い切ります。</div>
-    <div class="sum-supp">補足説明のテキストが入ります。まとめの根拠や、次のアクションにつながる一言を添えます。</div>
-  </div>
-  <div class="cta-band">
-    <div><div class="cta-msg">まずは◯◯から始めましょう</div><div class="cta-sub">申込方法・期限・特典などの補足が入ります</div></div>
-    <div class="cta-button">お申し込みはこちら →</div>
+  <!-- コンテンツエリア：まとめ3カード（KICKER → 見出し → 本文）／ 全幅CTA帯（文言＋白枠ボタン風ラベル）／ 注記 -->
+  <div class="content-area">
+
+    <div class="ns-cards">
+      <div class="ns-card">
+        <div class="ns-kicker">Point 1 ／ 前提</div>
+        <div class="ns-ttl">判断の基準を先に決める</div>
+        <div class="ns-body">AIに任せる範囲と、人が最後に決める範囲を、着手前に線引きしておく。</div>
+      </div>
+      <div class="ns-card">
+        <div class="ns-kicker">Point 2 ／ 進め方</div>
+        <div class="ns-ttl">小さく試して段階で広げる</div>
+        <div class="ns-body">ページ単位の試作から始め、崩れなければ次の工程へ広げていく。</div>
+      </div>
+      <div class="ns-card">
+        <div class="ns-kicker">Point 3 ／ 運用</div>
+        <div class="ns-ttl">確認の手順を型にする</div>
+        <div class="ns-body">見る順番と確認項目を決めておけば、誰が見ても同じ品質で通せる。</div>
+      </div>
+    </div>
+
+    <div class="ns-band">
+      <div class="ns-msg">まずは1案件で、線引きの1枚を書くところから</div>
+      <div class="ns-btn">無料相談を予約する</div>
+    </div>
+
+    <div class="ns-note">例：期限・特典・申込方法など、CTAの補足はこの1行に添える</div>
+
   </div>
 </div>
 </body>

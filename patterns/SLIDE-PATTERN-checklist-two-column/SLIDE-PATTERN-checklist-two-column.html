@@ -6,13 +6,35 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 88px; display:grid; grid-template-columns:1fr 1fr; column-gap:64px; align-content:center; }
-  .cl-item { display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid var(--sk-soft,#F0F0F0); }
-  .cl-box { width:22px; height:22px; border:2px solid var(--sk-accent,#999999); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; color:var(--sk-accent,#999999); flex-shrink:0; margin-top:1px; }
-  .cl-text { flex:1; }
-  .cl-head { font-size:14px; font-weight:bold; color:#333333; line-height:1.4; }
-  .cl-sub { font-size:11px; color:#888888; margin-top:2px; line-height:1.6; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; font-weight: 400; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。2列の束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左右2列（等幅・等高・上ぞろえ）＋中央の1px縦罫線。アクセント塗りなし ── */
+  .cl-row { display: flex; align-items: stretch; }
+  .cl-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .cl-col:first-child { padding-right: 32px; }
+  .cl-col:last-child { padding-left: 32px; }
+  .cl-divider { flex: none; width: 1px; background: var(--sk-line,#e2e2e2); }
+
+  /* 列の型: KICKER（列名）→ 項目（チェック記号＋16px）。項目は細罫線で区切る */
+  .cl-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; padding: 0 0 12px; border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .cl-item { display: grid; grid-template-columns: 14px 1fr; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--sk-line,#e2e2e2); }
+  .cl-kicker + .cl-item { border-top: none; }
+  .cl-text { font-size: 16px; font-weight: 400; line-height: 1.8; min-width: 0; }
+  /* チェック記号: アクセント色 1.5px 枠の小さな四角（本文1行の縦中央に合わせる） */
+  .cl-check { position: relative; width: 14px; height: 14px; margin-top: 7px; border: 1.5px solid var(--sk-accent,#555555); border-radius: 2px; }
+  /* 済み: アクセント塗りの四角＋白のチェック（CSSで描く。塗りはこの小さな記号だけ） */
+  .cl-check.is-done { background: var(--sk-accent,#555555); }
+  .cl-check.is-done::after { content: ""; position: absolute; left: 3px; top: 0px; width: 4px; height: 7px; border: solid #FFFFFF; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  /* 注記（例：〜）。2列の下に1行 */
+  .cl-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -32,16 +54,35 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左右2列のチェックリスト（KICKER → 項目×4）。中央に1pxの縦罫線。先頭1項目だけ済み -->
   <div class="content-area">
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
-    <div class="cl-item"><div class="cl-box">✓</div><div class="cl-text"><div class="cl-head">チェック項目が入ります</div><div class="cl-sub">補足説明が入ります（省略可）</div></div></div>
+    <div class="cl-row">
+
+      <!-- 左列 -->
+      <div class="cl-col">
+        <div class="cl-kicker">BEFORE ／ 着手前に</div>
+        <div class="cl-item"><div class="cl-check is-done"></div><div class="cl-text">任せる範囲と確認する範囲を1枚に書く</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">確認項目（数字・固有名詞・リンク）を決める</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">試作するページを1つ選ぶ</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">確認する人と回数を決める</div></div>
+      </div>
+
+      <!-- 中央の縦罫線 -->
+      <div class="cl-divider"></div>
+
+      <!-- 右列 -->
+      <div class="cl-col">
+        <div class="cl-kicker">RELEASE ／ 公開前に</div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">数字と固有名詞を出典と突き合わせる</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">リンク先を実際に開いて確かめる</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">表記ゆれを用語集で直す</div></div>
+        <div class="cl-item"><div class="cl-check"></div><div class="cl-text">承認者の確認を記録に残す</div></div>
+      </div>
+
+    </div>
+    <div class="cl-note">例：済んだ項目は □ を塗りの ✓ に変える。列は「時期」や「担当」で分ける</div>
   </div>
 </div>
 </body>
