@@ -4,13 +4,36 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-column-stacked-tag-list</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px; display: flex; gap: 24px; }
-  .column { flex: 1; display: flex; flex-direction: column; }
-  .col-header { background: var(--sk-soft,#E8E8E8); border: 1px solid var(--sk-accent,#CCCCCC); text-align: center; padding: 8px 4px; font-size: 14px; font-weight: bold; color: #333333; margin-bottom: 16px; }
-  .tag-stack { display: flex; flex-direction: column; gap: 8px; }
-  .tag-box { border-radius: 8px; border: 1px solid var(--sk-accent,#CCCCCC); background: #FFFFFF; padding: 8px 12px; font-size: 12px; color: #333333; text-align: center; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。3列の束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 3列（等幅・等高・上ぞろえ）。列の間は1pxの縦罫線 ── */
+  .ct-row { display: flex; align-items: stretch; }
+  .ct-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 0 24px; }
+  .ct-col:first-child { padding-left: 0; }
+  .ct-col:last-child { padding-right: 0; }
+  .ct-divider { flex: none; width: 1px; background: var(--sk-line,#e2e2e2); }
+
+  /* 列の型: KICKER → 列見出し18px → 細罫線 → タグ（縦積み・8px間隔・左寄せ） */
+  .ct-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ct-ttl { margin-top: 8px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ct-rule { align-self: stretch; margin: 12px 0 16px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  /* タグ: 14px・淡い地・角丸6px。文字幅に合わせて左寄せ */
+  .ct-tag { padding: 4px 12px; border-radius: 6px; background: var(--sk-soft,#F0F0F0); font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .ct-tag + .ct-tag { margin-top: 8px; }
+  /* 主役の1つだけアクセント塗り・白文字（塗りは1枚に1つ。無くてもよい） */
+  .ct-tag-fill { background: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* 注記（例：〜）。3列の下に1行 */
+  .ct-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -32,46 +55,49 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：3列にタグを縦積み（KICKER → 列見出し → 細罫線 → タグ）。列間は縦罫線。塗りは1タグだけ -->
   <div class="content-area">
-    <!-- 列1（4個） -->
-    <div class="column">
-      <div class="col-header">カラム見出し</div>
-      <div class="tag-stack">
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
+    <div class="ct-row">
+
+      <!-- 列1（4個） -->
+      <div class="ct-col">
+        <div class="ct-kicker">PLAN ／ 企画</div>
+        <div class="ct-ttl">先に決めること</div>
+        <div class="ct-rule"></div>
+        <div class="ct-tag">目的とゴール</div>
+        <div class="ct-tag">対象となる読者</div>
+        <div class="ct-tag">訴求の軸</div>
+        <div class="ct-tag">公開の時期</div>
       </div>
-    </div>
-    <!-- 列2（3個） -->
-    <div class="column">
-      <div class="col-header">カラム見出し</div>
-      <div class="tag-stack">
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
+
+      <div class="ct-divider"></div>
+
+      <!-- 列2（5個・1つだけ塗り） -->
+      <div class="ct-col">
+        <div class="ct-kicker">MAKE ／ 制作</div>
+        <div class="ct-ttl">つくるもの</div>
+        <div class="ct-rule"></div>
+        <div class="ct-tag ct-tag-fill">構成案</div>
+        <div class="ct-tag">原稿</div>
+        <div class="ct-tag">図版・画像</div>
+        <div class="ct-tag">ページの実装</div>
+        <div class="ct-tag">動作の確認</div>
       </div>
-    </div>
-    <!-- 列3（5個） -->
-    <div class="column">
-      <div class="col-header">カラム見出し</div>
-      <div class="tag-stack">
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
+
+      <div class="ct-divider"></div>
+
+      <!-- 列3（3個） -->
+      <div class="ct-col">
+        <div class="ct-kicker">RUN ／ 運用</div>
+        <div class="ct-ttl">続けること</div>
+        <div class="ct-rule"></div>
+        <div class="ct-tag">月次の数値確認</div>
+        <div class="ct-tag">更新の手順書</div>
+        <div class="ct-tag">改善の提案</div>
       </div>
+
     </div>
-    <!-- 列4（2個） -->
-    <div class="column">
-      <div class="col-header">カラム見出し</div>
-      <div class="tag-stack">
-        <div class="tag-box">項目が入ります</div>
-        <div class="tag-box">項目が入ります</div>
-      </div>
-    </div>
+    <div class="ct-note">例：色のついた項目が今週の作業。列ごとの数は揃えなくてよい</div>
   </div>
 </div>
 </body>

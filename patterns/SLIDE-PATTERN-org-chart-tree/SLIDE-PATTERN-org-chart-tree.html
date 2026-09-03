@@ -4,27 +4,44 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-org-chart-tree</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 48px; display: flex; align-items: center; justify-content: center; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。ツリーは上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* 直角接続線のみの組織図ツリー（矩形＋横線・縦線のみ） */
-  .org-tree, .org-tree ul { list-style: none; margin: 0; padding: 0; }
-  .org-tree { display: flex; justify-content: center; }
-  .org-tree ul { display: flex; justify-content: center; padding-top: 28px; position: relative; }
-  .org-tree ul::before { content: ""; position: absolute; top: 0; left: 50%; width: 0; height: 28px; border-left: 2px solid var(--sk-accent,#BBBBBB); }
-  .org-tree li { position: relative; display: flex; flex-direction: column; align-items: center; padding: 28px 4px 0; }
-  .org-tree li::before, .org-tree li::after { content: ""; position: absolute; top: 0; right: 50%; width: 50%; height: 28px; border-top: 2px solid var(--sk-accent,#BBBBBB); }
-  .org-tree li::after { right: auto; left: 50%; border-left: 2px solid var(--sk-accent,#BBBBBB); }
-  /* 両端の子は「外側へのはみ出し」だけを消す（::afterのborder-left=子への縦線は残す） */
-  .org-tree li:first-child::before { border-top: none; }
-  .org-tree li:last-child::after { border-top: none; }
-  .org-tree > li { padding-top: 0; }
-  .org-tree > li::before, .org-tree > li::after { display: none; }
+  /* ── 3段ツリー（1→3→各2）。ステージ 864×288 に絶対配置。行の高さ64px・段の間48px ── */
+  .og-stage { position: relative; width: 864px; height: 288px; }
+  /* 接続線: 1px の罫線色。端点はノード辺の中心（上辺・下辺）で止める。白い矩形で消さない */
+  .og-lines { position: absolute; left: 0; top: 0; width: 864px; height: 288px; display: block; }
+  .og-lines path { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
 
-  .node { border: 2px solid var(--sk-accent,#999999); background: #FFFFFF; padding: 8px 14px; font-size: 13px; font-weight: bold; color: #333333; white-space: nowrap; border-radius: 4px; }
-  .node-l1 { font-size: 15px; padding: 12px 24px; background: var(--sk-soft,#E4E4E4); }
-  .node-l3 { font-size: 11px; font-weight: normal; padding: 6px 10px; border-color: var(--sk-accent,#CCCCCC); color: #333333; }
+  /* ノードの型: 役職KICKER → 名前16px/700。淡い地・角丸8px。高さは64px固定（線の端点がずれない） */
+  .og-node { position: absolute; width: 200px; height: 64px; padding: 12px 16px; border-radius: 8px; background: var(--sk-soft,#F0F0F0); display: flex; flex-direction: column; justify-content: center; }
+  .og-l3 { width: 132px; padding: 12px; }
+  /* 頂点だけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .og-top { background: var(--sk-accent,#555555); color: #FFFFFF; }
+  .og-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; overflow: hidden; }
+  .og-top .og-kicker { color: #FFFFFF; }
+  .og-name { margin-top: 8px; font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+
+  /* 座標（左端x／上端y）: 1段目 top:0、2段目 top:112、3段目 top:224 */
+  .og-n1 { left: 332px; top: 0; }
+  .og-n2a { left: 36px;  top: 112px; }
+  .og-n2b { left: 332px; top: 112px; }
+  .og-n2c { left: 628px; top: 112px; }
+  .og-n3a { left: 0;     top: 224px; }
+  .og-n3b { left: 140px; top: 224px; }
+  .og-n3c { left: 296px; top: 224px; }
+  .og-n3d { left: 436px; top: 224px; }
+  .og-n3e { left: 592px; top: 224px; }
+  .og-n3f { left: 732px; top: 224px; }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -46,36 +63,37 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：組織図（頂点1 → 2段目3 → 3段目 各2）。頂点だけ塗り -->
   <div class="content-area">
-    <ul class="org-tree">
-      <li>
-        <div class="node node-l1">最上位組織</div>
-        <ul>
-          <li>
-            <div class="node">部門が入ります</div>
-            <ul>
-              <li><div class="node node-l3">チームが入ります</div></li>
-              <li><div class="node node-l3">チームが入ります</div></li>
-            </ul>
-          </li>
-          <li>
-            <div class="node">部門が入ります</div>
-            <ul>
-              <li><div class="node node-l3">チームが入ります</div></li>
-              <li><div class="node node-l3">チームが入ります</div></li>
-            </ul>
-          </li>
-          <li>
-            <div class="node">部門が入ります</div>
-            <ul>
-              <li><div class="node node-l3">チームが入ります</div></li>
-              <li><div class="node node-l3">チームが入ります</div></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <div class="og-stage">
+
+      <!-- 接続線（幹線は最初の接続点の中心から最後の接続点の中心まで。ノード辺の中心で止める） -->
+      <svg class="og-lines" viewBox="0 0 864 288" aria-hidden="true">
+        <!-- 1段目 → 母線 → 2段目 -->
+        <path d="M432 64V88 M136 88H728 M136 88V112 M432 88V112 M728 88V112"/>
+        <!-- 2段目 → 子母線 → 3段目 -->
+        <path d="M136 176V200 M66 200H206 M66 200V224 M206 200V224"/>
+        <path d="M432 176V200 M362 200H502 M362 200V224 M502 200V224"/>
+        <path d="M728 176V200 M658 200H798 M658 200V224 M798 200V224"/>
+      </svg>
+
+      <!-- 1段目（頂点・塗り） -->
+      <div class="og-node og-top og-n1"><div class="og-kicker">PRESIDENT ／ 代表取締役</div><div class="og-name">佐藤 一郎</div></div>
+
+      <!-- 2段目（部門長） -->
+      <div class="og-node og-n2a"><div class="og-kicker">SALES ／ 営業部長</div><div class="og-name">鈴木 花子</div></div>
+      <div class="og-node og-n2b"><div class="og-kicker">PRODUCTION ／ 制作部長</div><div class="og-name">高橋 健</div></div>
+      <div class="og-node og-n2c"><div class="og-kicker">ADMIN ／ 管理部長</div><div class="og-name">田中 美咲</div></div>
+
+      <!-- 3段目（各部門2名） -->
+      <div class="og-node og-l3 og-n3a"><div class="og-kicker">LEAD ／ 主任</div><div class="og-name">伊藤 直樹</div></div>
+      <div class="og-node og-l3 og-n3b"><div class="og-kicker">STAFF ／ 担当</div><div class="og-name">渡辺 由美</div></div>
+      <div class="og-node og-l3 og-n3c"><div class="og-kicker">LEAD ／ 主任</div><div class="og-name">山本 亮</div></div>
+      <div class="og-node og-l3 og-n3d"><div class="og-kicker">STAFF ／ 担当</div><div class="og-name">中村 彩</div></div>
+      <div class="og-node og-l3 og-n3e"><div class="og-kicker">LEAD ／ 主任</div><div class="og-name">小林 大輔</div></div>
+      <div class="og-node og-l3 og-n3f"><div class="og-kicker">STAFF ／ 担当</div><div class="og-name">加藤 恵</div></div>
+
+    </div>
   </div>
 </div>
 </body>

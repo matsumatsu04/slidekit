@@ -1,147 +1,44 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>SLIDE-PATTERN-two-col-icon-list-comparison</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { margin:0; padding:0; background:#FFFFFF; font-family:sans-serif; }
-    .slide {
-      width: 960px;
-      height: 540px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* タイトルエリア */
-    .title-area {
-      padding: 14px 40px 12px;
-      border-bottom: 1px dashed var(--sk-accent,#CCCCCC);
-      flex-shrink: 0;
-      background: #FFFFFF;
-    }
-    .title-placeholder {
-      font-size: 16px;
-      color: #CCCCCC;
-      margin-top: 4px;
-    }
-    /* コンテンツエリア */
-    .content-area {
-      flex: 1;
-      padding: 16px 40px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .content-label {
-      font-size: 11px;
-      color: #999999;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    /* リード文 */
-    .lead-text {
-      text-align: center;
-      font-size: 13px;
-      color: #333333;
-      line-height: 1.7;
-      margin-bottom: 16px;
-      flex-shrink: 0;
-    }
-    .lead-label {
-      font-size: 10px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 4px;
-    }
-    /* 2カラム本体 */
-    .two-col-wrap {
-      flex: 1;
-      display: flex;
-      gap: 12px;
-      align-items: stretch;
-    }
-    /* 各カラムボックス */
-    .col-box {
-      flex: 1;
-      border-radius: 6px;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      background: var(--sk-soft,#F0F0F0);
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-    }
-    /* カラム見出し */
-    .col-header {
-      font-size: 14px;
-      font-weight: bold;
-      color: #333333;
-      text-align: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .col-header-label {
-      font-size: 10px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 2px;
-    }
-    /* リストアイテム */
-    .icon-item {
-      display: flex;
-      align-items: center;
-      padding: 8px 10px;
-      background: #FFFFFF;
-      border: 1px solid var(--sk-accent,#CCCCCC);
-      border-radius: 4px;
-      margin-bottom: 6px;
-      flex: 1;
-    }
-    .icon-item:last-child { margin-bottom: 0; }
-    /* アイコンプレースホルダー */
-    .icon-placeholder {
-      width: 36px;
-      height: 36px;
-      background: #DDDDDD;
-      border-radius: 4px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .icon-placeholder-label {
-      font-size: 8px;
-      color: #AAAAAA;
-      text-transform: uppercase;
-      text-align: center;
-    }
-    /* アイテムテキスト */
-    .item-text {
-      margin-left: 12px;
-      font-size: 12px;
-      color: #333333;
-      line-height: 1.5;
-    }
-    /* 中央コネクター */
-    .center-connector {
-      width: 28px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .connector-arrow {
-      font-size: 20px;
-      color: #AAAAAA;
-    }
-    .connector-label {
-      font-size: 9px;
-      color: #BBBBBB;
-      text-transform: uppercase;
-      writing-mode: vertical-rl;
-      margin-top: 4px;
-    }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-two-col-icon-list-comparison</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。2列の束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 左右2列（等幅・等高・上ぞろえ）＋中央の三角矢印 ── */
+  .ic-row { display: flex; align-items: stretch; height: 280px; }
+  .ic-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  /* 左列（現状）は塗りなし。右列（導入後＝推し）だけ淡い地・角丸11px（塗りは1枚に1つ） */
+  .ic-left  { padding: 24px 28px 24px 0; }
+  .ic-right { padding: 24px 28px; background: var(--sk-soft,#F0F0F0); border-radius: 11px; }
+  /* 中央コネクタ: SVG三角（幅12px）を40px幅の列の中央に置く */
+  .ic-conn { flex: none; width: 40px; display: flex; align-items: center; justify-content: center; }
+  .ic-conn svg { display: block; }
+
+  /* 列の型: KICKER → 列見出し18px → 細罫線 → 項目3つ（アイコン24px円＋本文16px）→ 注記 */
+  .ic-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ic-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ic-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .ic-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .ic-item { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; line-height: 1.8; }
+  /* アイコン: 24pxの丸地（左列＝淡い地・右列＝白）に14pxの線画SVG（グレー）。本文1行の縦中央に合わせる */
+  .ic-icon { flex: none; width: 24px; height: 24px; margin-top: 2px; border-radius: 50%; background: var(--sk-soft,#F0F0F0); color: var(--sk-muted,#888888); display: flex; align-items: center; justify-content: center; }
+  .ic-right .ic-icon { background: #FFFFFF; }
+  .ic-icon svg { display: block; width: 14px; height: 14px; }
+  .ic-text { min-width: 0; }
+  .ic-note { margin-top: auto; padding-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
+
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
 html[data-heading="on"] .slide{position:relative;box-sizing:border-box;padding-top:76px;}
@@ -159,85 +56,62 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </style>
 </head>
 <body>
-  <div class="slide">
+<div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝現状（塗りなし）／右＝導入後（淡い地）のアイコン付きリスト2列。中央に三角矢印 -->
+  <div class="content-area">
+    <div class="ic-row">
 
-    <!-- コンテンツエリア -->
-    <div class="content-area">
-      <div class="content-label">Content Area — two-col-icon-list-comparison</div>
-
-      <!-- リード文 -->
-      <div class="lead-text">
-        <span class="lead-label">Lead Text（省略可）</span>
-        社会のオンラインシフトに合わせて、<br>
-        オンラインストレージサービスを用いて企業のデジタル化を促進します。
+      <!-- 左列（現状・塗りなし） -->
+      <div class="ic-col ic-left">
+        <div class="ic-kicker">BEFORE ／ 現状</div>
+        <div class="ic-ttl">確認が最後にまとめて来る</div>
+        <div class="ic-rule"></div>
+        <ul class="ic-list">
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg></div>
+            <div class="ic-text">修正依頼が納品直前に集中する</div>
+          </li>
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h5l3 3v9H4z"/><path d="M6.5 8h3M6.5 11h3"/></svg></div>
+            <div class="ic-text">手順が担当者の頭の中にだけある</div>
+          </li>
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h10v7H7l-3 3z"/></svg></div>
+            <div class="ic-text">同じ質問に毎回ゼロから答える</div>
+          </li>
+        </ul>
+        <div class="ic-note">例：月末に指摘が10件まとめて届く</div>
       </div>
 
-      <!-- 2カラム -->
-      <div class="two-col-wrap">
+      <!-- 中央コネクタ（三角矢印・SVG） -->
+      <div class="ic-conn"><svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><path d="M0 0L12 8 0 16Z" fill="var(--sk-accent,#555555)"/></svg></div>
 
-        <!-- 左カラム -->
-        <div class="col-box">
-          <div class="col-header">
-            <span class="col-header-label">Col Header（Left）</span>
-            左グループの見出し
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト１が入ります</span>
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト２が入ります</span>
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト３が入ります</span>
-          </div>
-        </div>
-
-        <!-- 中央コネクター（省略可） -->
-        <div class="center-connector">
-          <div>
-            <div class="connector-arrow">▶</div>
-            <div class="connector-label">Connector（optional）</div>
-          </div>
-        </div>
-
-        <!-- 右カラム -->
-        <div class="col-box">
-          <div class="col-header">
-            <span class="col-header-label">Col Header（Right）</span>
-            右グループの見出し
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト１が入ります</span>
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト２が入ります</span>
-          </div>
-
-          <div class="icon-item">
-            <div class="icon-placeholder">
-            </div>
-            <span class="item-text">アイテムテキスト３が入ります</span>
-          </div>
-        </div>
-
+      <!-- 右列（導入後・淡い地＝この1枚で塗るのはここだけ） -->
+      <div class="ic-col ic-right">
+        <div class="ic-kicker">AFTER ／ 導入後</div>
+        <div class="ic-ttl">工程ごとに小さく確認する</div>
+        <div class="ic-rule"></div>
+        <ul class="ic-list">
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg></div>
+            <div class="ic-text">確認が各工程の中に組み込まれる</div>
+          </li>
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h5l3 3v9H4z"/><path d="M6.5 8h3M6.5 11h3"/></svg></div>
+            <div class="ic-text">手順が1枚の書面で共有される</div>
+          </li>
+          <li class="ic-item">
+            <div class="ic-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h10v7H7l-3 3z"/></svg></div>
+            <div class="ic-text">よくある質問は一覧から返せる</div>
+          </li>
+        </ul>
+        <div class="ic-note">例：工程ごとの確認は10分で済む</div>
       </div>
+
     </div>
   </div>
+</div>
 </body>
 </html>

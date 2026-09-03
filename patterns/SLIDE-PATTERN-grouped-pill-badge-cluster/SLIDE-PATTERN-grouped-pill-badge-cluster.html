@@ -4,14 +4,32 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-grouped-pill-badge-cluster</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px; display: flex; gap: 48px; }
-  .group { flex: 1; display: flex; flex-direction: column; }
-  .group + .group { border-left: 1px solid var(--sk-accent,#DDDDDD); padding-left: 48px; }
-  .group-heading { font-size: 16px; font-weight: bold; color: #333333; padding-bottom: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--sk-accent,#999999); }
-  .pill-wrap { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; }
-  .pill { padding: 8px 20px; border-radius: 999px; background: var(--sk-soft,#EFEFEF); border: 1px solid var(--sk-accent,#CCCCCC); font-size: 13px; color: #333333; white-space: nowrap; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  /* コンテンツエリア（見出しON時は上76px以降。グループの束は上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── グループ（縦積み・3つ）。左に KICKER（幅120px）→ 右にピルを折り返し。グループ間は細罫線 ── */
+  .pg-group { display: flex; align-items: flex-start; padding: 20px 0; }
+  .pg-group:first-child { padding-top: 0; }
+  .pg-group:last-child { padding-bottom: 0; }
+  .pg-group + .pg-group { border-top: 1px solid var(--sk-line,#e2e2e2); }
+  /* KICKER はピル1行目の縦中央に合わせる（ピル高さ32px → 上11px） */
+  .pg-kicker { flex: none; width: 120px; padding-top: 11px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .pg-pills { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  /* ピル: 14px・1.5px の罫線色の枠・角丸999px・padding 4px 14px */
+  .pg-pill { padding: 4px 14px; border: 1.5px solid var(--sk-line,#e2e2e2); border-radius: 999px; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  /* 主役の1つだけアクセント塗り・白文字（塗りは1枚に1つ） */
+  .pg-pill-fill { background: var(--sk-accent,#555555); border-color: var(--sk-accent,#555555); color: #FFFFFF; }
+  /* 注記（例：〜）。グループの束の下に1行 */
+  .pg-note { margin-top: 16px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -33,30 +51,48 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：グループ別ピル（3グループ縦積み・左KICKER・右に折り返し）。塗りは全体で1つ -->
   <div class="content-area">
-    <!-- グループ1（6個） -->
-    <div class="group">
-      <div class="group-heading">カテゴリ見出しが入ります</div>
-      <div class="pill-wrap">
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
+
+    <!-- グループ1（8個・2行に折り返す） -->
+    <div class="pg-group">
+      <div class="pg-kicker">DESIGN ／ 設計</div>
+      <div class="pg-pills">
+        <div class="pg-pill">情報設計</div>
+        <div class="pg-pill pg-pill-fill">ワイヤーフレーム</div>
+        <div class="pg-pill">デザインカンプ</div>
+        <div class="pg-pill">配色・書体</div>
+        <div class="pg-pill">UIパーツ</div>
+        <div class="pg-pill">画像・図版</div>
+        <div class="pg-pill">アイコン</div>
+        <div class="pg-pill">写真の選定</div>
       </div>
     </div>
-    <!-- グループ2（4個） -->
-    <div class="group">
-      <div class="group-heading">カテゴリ見出しが入ります</div>
-      <div class="pill-wrap">
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
-        <div class="pill">項目が入ります</div>
+
+    <!-- グループ2（5個） -->
+    <div class="pg-group">
+      <div class="pg-kicker">BUILD ／ 実装</div>
+      <div class="pg-pills">
+        <div class="pg-pill">ノーコード実装</div>
+        <div class="pg-pill">レスポンシブ対応</div>
+        <div class="pg-pill">フォーム設定</div>
+        <div class="pg-pill">アニメーション</div>
+        <div class="pg-pill">SEOの基本設定</div>
       </div>
     </div>
+
+    <!-- グループ3（4個） -->
+    <div class="pg-group">
+      <div class="pg-kicker">OPERATE ／ 運用</div>
+      <div class="pg-pills">
+        <div class="pg-pill">更新の手順書</div>
+        <div class="pg-pill">月次レポート</div>
+        <div class="pg-pill">改善の提案</div>
+        <div class="pg-pill">問い合わせ対応</div>
+      </div>
+    </div>
+
+    <div class="pg-note">例：色のついた項目が今回の範囲。ほかは追加で相談する</div>
   </div>
 </div>
 </body>
