@@ -2,7 +2,7 @@
 name: section-photo-overlay-left
 category: セクション
 summary: 実写写真＋暗色オーバーレイの上に、左80pxから「英字KICKER（SECTION 03・白82%）→ 章タイトル（32px・700・白）→ 64pxの白罫線 → 補足1行」を縦積みして上下中央に置く中扉。背景は画像アセット（差し替え可・色ティント対象外）
-scenes: 高級感・ブランド訴求のデッキの章区切り。同系統の写真素材の表紙（cover-photo-overlay-center）と揃えて使うと統一感が出る
+scenes: 高級感・ブランド訴求のデッキの章区切り。同じ画像背景の表紙（cover-geo-texture-left など）と揃えて使うと統一感が出る
 tier: high
 id: P106
 ---

@@ -43,23 +43,13 @@ const COLOR_PROPS = /^(color|background|background-color|background-image|border
  * 形式: name → { ルール番号: 理由 }
  */
 const GRANDFATHER = {
-  // 4. .md の4節（旧書式: 概要 / Elements / Usage Guide 構成）
-  'vertical-step-three-col': { 4: '旧書式（概要/適したシーン/Structure/Elements/Usage Guide）' },
-  'cover-minimal-disclaimer': { 4: '旧書式（概要/Structure/Elements/Usage Guide）' },
-  'cover-photo-overlay-center': { 4: '旧書式（概要/Elements/Usage Guide）', 6: '写真オーバーレイの固有色 rgba(15,18,24)（画像背景系・色ティント対象外）' },
-  'cover-geo-texture-left': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'cover-art-brush-left': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'cover-soft-3d-left': { 4: '旧書式（概要/Elements/Usage Guide）', 6: '画像背景に合わせた固有色 #2E4A6B / #8A8F98（色ティント対象外）' },
-  'cover-blob-side-left': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'cover-curve-shape-left': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'section-photo-overlay-left': { 4: '旧書式（概要/Elements/Usage Guide）', 6: '写真オーバーレイの固有色 rgba(15,18,24)（画像背景系・色ティント対象外）' },
-  'section-geo-texture-left': { 4: '旧書式（概要/Elements/Usage Guide）', 6: '画像背景に合わせた固有色 #CCC6BA（色ティント対象外）' },
-  'section-soft-3d-number-row': { 4: '旧書式（概要/Elements/Usage Guide）', 6: '画像背景に合わせた固有色 #8F9AAB（色ティント対象外）' },
-  'closing-blob-thanks-left': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'closing-curve-shape-footer': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  'closing-art-brush-contact': { 4: '旧書式（概要/Elements/Usage Guide）' },
-  // 5. HTML骨格（.slide ルート要素を持たず body を 960×540 にしている旧実装）
-  // 6. 色（グレー階調・var(--sk-*) 以外）
+  // 4. .md の4節（旧書式）— 2026-09-04 に全パターンが新書式へ移行したため 0 件
+  // 5. HTML骨格（.slide ルート要素を持たず body を 960×540 にしている旧実装）— 0 件
+  // 6. 色（グレー階調・var(--sk-*) 以外）— 画像背景系だけに残る「画像に合わせた固有色」
+  'cover-soft-3d-left': { 6: '画像背景に合わせた固有色 #2E4A6B / #8A8F98（色ティント対象外）' },
+  'section-photo-overlay-left': { 6: '写真オーバーレイの固有色 rgba(15,18,24)（画像背景系・色ティント対象外）' },
+  'section-geo-texture-left': { 6: '画像背景に合わせた固有色 #CCC6BA（色ティント対象外）' },
+  'section-soft-3d-number-row': { 6: '画像背景に合わせた固有色 #8F9AAB（色ティント対象外）' },
 };
 
 /**
