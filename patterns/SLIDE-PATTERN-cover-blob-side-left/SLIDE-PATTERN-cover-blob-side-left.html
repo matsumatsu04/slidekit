@@ -5,24 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN: cover-blob-side-left</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
-    /* 有機的ブロブ背景（画像アセット差し替え可）＋左の太字タイトル */
-    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
-    .company { position:absolute; left:64px; top:56px; font-size:16px; font-weight:bold; color:#1A1A1A; }
-    .main-title { position:absolute; left:64px; top:46%; transform:translateY(-50%); font-size:42px; font-weight:bold; color:#1A1A1A; line-height:1.35; }
-    .date { position:absolute; left:64px; bottom:48px; font-size:12px; font-weight:bold; color:#555555; letter-spacing:0.04em; }
-  
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; font-weight:400; }
+    /* 背景は画像アセット（表紙の画像背景系だけに認められた例外）。色ティントの対象外 */
+    .bs-bg     { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
+    /* v2（2026-09-04）: 絵柄が薄い左側に、KICKER → タイトル2行 → 64pxの区切り線 → 補足1行 を縦に組み、上下中央にそろえる。
+       ブロブが画面中央まで張り出すので、タイトルは1行6文字程度で折り返す（幅300px） */
+    .bs-text   { position:absolute; left:80px; top:50%; transform:translateY(-50%); width:300px; }
+    .bs-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-ink,#3f4a52); }
+    .bs-title  { margin-top:20px; font-size:40px; font-weight:700; letter-spacing:.06em; line-height:1.35; color:#1A1A1A; }
+    .bs-rule   { margin-top:28px; width:64px; height:1px; background:#AAAAAA; }
+    .bs-meta   { margin-top:24px; font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1; color:#555555; }
+
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
   <div class="slide">
-    <div class="bg"></div>
-    <div class="company">会社名が入ります</div>
-    <div class="main-title">メインタイトルが入ります</div>
-    <div class="date">2026.X.X 更新</div>
+    <div class="bs-bg"></div>
+    <div class="bs-text">
+      <div class="bs-kicker">Recruiting ／ 採用資料</div>
+      <h1 class="bs-title">採用のための<br>会社紹介資料</h1>
+      <div class="bs-rule"></div>
+      <div class="bs-meta">Macminol ／ 2026.04 更新</div>
+    </div>
   </div>
 </body>
 </html>
