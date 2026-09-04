@@ -4,22 +4,43 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-bar-diff-bracket</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; position:relative; padding:40px 120px 60px; }
-  .baseline { position:absolute; left:120px; right:120px; bottom:60px; height:2px; background:var(--sk-accent,#999999); }
-  .bar { position:absolute; bottom:62px; width:150px; }
-  .bar-before { left:200px; height:38%; background:#D8D8D8; }
-  .bar-after { left:480px; height:70%; background:var(--sk-accent,#4A4A4A); }
-  .bar-label { position:absolute; bottom:28px; width:150px; text-align:center; font-size:13px; font-weight:bold; color:#333333; }
-  .bl-1 { left:200px; } .bl-2 { left:480px; }
-  .bar-value { position:absolute; width:150px; text-align:center; font-size:16px; font-weight:bold; color:#888888; }
-  .bv-1 { left:200px; bottom:calc(62px + 38% + 8px); }
-  .bv-2 { left:480px; bottom:calc(62px + 70% + 8px); color:var(--sk-accent,#333333); font-size:22px; }
-  .guide { position:absolute; left:350px; right:240px; bottom:calc(62px + 38%); border-top:2px dashed var(--sk-soft,#CCCCCC); }
-  .bracket { position:absolute; left:690px; bottom:calc(62px + 38%); height:calc(70% - 38%); width:14px; border-top:2px solid var(--sk-accent2, var(--sk-accent,#777777)); border-right:2px solid var(--sk-accent2, var(--sk-accent,#777777)); border-bottom:2px solid var(--sk-accent2, var(--sk-accent,#777777)); }
-  .diff-badge { position:absolute; left:716px; bottom:calc(62px + 50%); background:var(--sk-accent2, var(--sk-accent,#777777)); color:#FFFFFF; font-size:13px; font-weight:bold; padding:5px 13px; border-radius:12px; white-space:nowrap; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px。中身（グラフ＋説明の2カラム）は上下中央、カラム同士は上ぞろえ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2カラム：左＝棒2本の SVG 512×352 ／ 右＝説明 320px（gap 32） */
+  .bd-wrap { width:100%; display:flex; align-items:flex-start; gap:32px; }
+  .bd-svg { display:block; flex:none; width:512px; height:352px; }
+  /* 横軸 1px 罫線色・頂点差の破線ガイド 1px 罫線色 */
+  .bd-axis { stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  .bd-guide { stroke:var(--sk-line,#e2e2e2); stroke-width:1; stroke-dasharray:4 3; }
+  /* 棒：前＝淡い地／後＝アクセント塗り（塗りは1枚に1つ） */
+  .bd-bar-before { fill:var(--sk-soft,#F0F0F0); }
+  .bd-bar-after { fill:var(--sk-accent,#555555); }
+  /* ブラケット 1px インク色（塗りなし） */
+  .bd-bracket { fill:none; stroke:var(--sk-ink,#3f4a52); stroke-width:1; }
+  /* 各棒の値 16px tabular-nums（棒の中心・上端の10px上） */
+  .bd-val text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); font-variant-numeric:tabular-nums; text-anchor:middle; }
+  /* 差分：KICKER（アクセント色）＋数値 24px / 700 / アクセント色の文字（バッジ塗りなし） */
+  .bd-diff-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent,#555555); }
+  .bd-diff-num { font-size:24px; font-weight:700; letter-spacing:.02em; fill:var(--sk-accent,#555555); font-variant-numeric:tabular-nums; }
+  /* 棒の下：KICKER（accent2＝英字ラベル）＋ラベル 16px */
+  .bd-kicker text { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent2,#999999); text-anchor:middle; }
+  .bd-label text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); text-anchor:middle; }
+  /* 右の説明：KICKER → 見出し18px/700 → 罫線 → 本文16px → 例：注記 */
+  .bd-side { flex:1; min-width:0; }
+  .bd-side-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); }
+  .bd-ttl { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .bd-rule { margin-top:12px; height:1px; background:var(--sk-line,#e2e2e2); }
+  .bd-body { margin-top:12px; font-size:16px; line-height:1.8; }
+  .bd-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -39,18 +60,52 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝棒2本（SVG 1枚。前＝淡い地／後＝塗り・頂点差を破線ガイド＋ブラケット＋差分の数値で示す）／右＝説明 -->
   <div class="content-area">
-    <div class="baseline"></div>
-    <div class="guide"></div>
-    <div class="bar bar-before"></div>
-    <div class="bar bar-after"></div>
-    <div class="bar-value bv-1">120</div>
-    <div class="bar-value bv-2">220</div>
-    <div class="bar-label bl-1">導入前</div>
-    <div class="bar-label bl-2">導入後</div>
-    <div class="bracket"></div>
-    <div class="diff-badge">+83%</div>
+    <div class="bd-wrap">
+
+      <!-- グラフ本体：1.2px/単位・棒幅96（前 x=80〜176・後 x=240〜336）・横軸 y=300 -->
+      <svg class="bd-svg" width="512" height="352" viewBox="0 0 512 352" aria-hidden="true">
+        <!-- 頂点差の破線ガイド：前の棒の上端（y=156.5）から右へ、ブラケットの縦線まで（棒の後ろに引く） -->
+        <line class="bd-guide" x1="176" y1="156.5" x2="372" y2="156.5"/>
+        <!-- 横軸 -->
+        <line class="bd-axis" x1="40" y1="300.5" x2="480" y2="300.5"/>
+        <!-- 棒：前 120 → 高さ144 ／ 後 220 → 高さ264（塗りはこれだけ） -->
+        <rect class="bd-bar-before" x="80" y="156" width="96" height="144"/>
+        <rect class="bd-bar-after" x="240" y="36" width="96" height="264"/>
+        <!-- 各棒の値 -->
+        <g class="bd-val">
+          <text x="128" y="146">120</text>
+          <text x="288" y="26">220</text>
+        </g>
+        <!-- ブラケット：後の棒の上端（36.5）と前の棒の上端（156.5）を結ぶ。縦線 x=372.5・端の刻み8px -->
+        <path class="bd-bracket" d="M364 36.5H372.5V156.5H364"/>
+        <!-- 差分：ブラケットの中心（y=96.5）に KICKER＋数値を垂直センター -->
+        <text class="bd-diff-kicker" x="388" y="88">DIFF ／ 差分</text>
+        <text class="bd-diff-num" x="388" y="116">+83%</text>
+        <!-- 棒の下：KICKER＋ラベル -->
+        <g class="bd-kicker">
+          <text x="128" y="322">BEFORE</text>
+          <text x="288" y="322">AFTER</text>
+        </g>
+        <g class="bd-label">
+          <text x="128" y="344">導入前</text>
+          <text x="288" y="344">導入後</text>
+        </g>
+      </svg>
+
+      <!-- 説明：型（KICKER → 見出し → 罫線 → 本文 → 例：） -->
+      <div class="bd-side">
+        <div class="bd-side-kicker">RESULT ／ 導入効果</div>
+        <div class="bd-ttl">問い合わせが月120件から220件に</div>
+        <div class="bd-rule"></div>
+        <div class="bd-body">導線を1本にまとめ、問い合わせ先を固定ポストに置いたことで、月の問い合わせが1.8倍になった。</div>
+        <div class="bd-note">例：導入前後それぞれ6ヶ月の月平均。単位は件</div>
+      </div>
+
+    </div>
   </div>
 </div>
 </body>

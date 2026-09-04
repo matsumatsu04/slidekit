@@ -4,25 +4,43 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-stacked-bar-two-composition</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; align-items:center; gap:64px; padding:32px 110px; }
-  .sb-chart { display:flex; gap:88px; align-items:flex-end; height:330px; border-bottom:2px solid var(--sk-accent,#999999); padding:0 24px; }
-  .sb-col { width:120px; display:flex; flex-direction:column; justify-content:flex-end; height:100%; position:relative; }
-  .sb-label { position:absolute; bottom:-30px; width:100%; text-align:center; font-size:13px; font-weight:bold; color:#333333; }
-  .seg { width:100%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; }
-  .seg-a { background:var(--sk-accent,#555555); color:#FFFFFF; }
-  .seg-b { background:color-mix(in srgb, var(--sk-accent,#555555) 55%, #FFFFFF); color:#FFFFFF; }
-  .seg-c { background:var(--sk-soft,#E0E0E0); color:#333333; }
-  .col1 .seg-a { height:26%; } .col1 .seg-b { height:34%; } .col1 .seg-c { height:40%; }
-  .col2 .seg-a { height:60%; } .col2 .seg-b { height:26%; } .col2 .seg-c { height:14%; }
-  .sb-legend { flex:1; display:flex; flex-direction:column; gap:16px; }
-  .lg-row { display:flex; align-items:flex-start; gap:12px; }
-  .lg-chip { width:14px; height:14px; border-radius:3px; flex-shrink:0; margin-top:3px; }
-  .lg-a { background:var(--sk-accent,#555555); } .lg-b { background:color-mix(in srgb, var(--sk-accent,#555555) 55%, #FFFFFF); } .lg-c { background:var(--sk-soft,#E0E0E0); }
-  .lg-name { font-size:13px; font-weight:bold; color:#333333; }
-  .lg-desc { font-size:11px; color:#888888; margin-top:2px; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px。中身（グラフ＋説明の2カラム）は上下中央、カラム同士は上ぞろえ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2カラム：左＝積み上げ棒2本＋凡例（引き出し）の SVG 512×352 ／ 右＝説明 320px（gap 32） */
+  .sb-wrap { width:100%; display:flex; align-items:flex-start; gap:32px; }
+  .sb-svg { display:block; flex:none; width:512px; height:352px; }
+  /* 横軸・引き出し線 1px 罫線色 */
+  .sb-axis { stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  .sb-lead line { stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  /* セグメント：伸ばす A だけアクセント塗り。B＝罫線色・C＝淡い地の2階調（color-mix なし）。間は白2pxの隙間 */
+  .sb-a rect { fill:var(--sk-accent,#555555); }
+  .sb-b rect { fill:var(--sk-line,#e2e2e2); }
+  .sb-c rect { fill:var(--sk-soft,#F0F0F0); }
+  /* セグメント内の % 16px tabular-nums（暗いセグメントは白文字） */
+  .sb-pct text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); font-variant-numeric:tabular-nums; text-anchor:middle; }
+  .sb-pct-w text { fill:#FFFFFF; }
+  /* 凡例（将来の棒の右に引き出し）：KICKER（accent2）＋名前 16px/700 */
+  .sb-lg-k text { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent2,#999999); }
+  .sb-lg-n text { font-size:16px; font-weight:700; fill:var(--sk-ink,#3f4a52); }
+  /* 棒の下：KICKER（accent2）＋ラベル 16px */
+  .sb-kicker text { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent2,#999999); text-anchor:middle; }
+  .sb-label text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); text-anchor:middle; }
+  /* 右の説明：KICKER → 見出し18px/700 → 罫線 → 本文16px → 例：注記 */
+  .sb-side { flex:1; min-width:0; }
+  .sb-side-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); }
+  .sb-ttl { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .sb-rule { margin-top:12px; height:1px; background:var(--sk-line,#e2e2e2); }
+  .sb-body { margin-top:12px; font-size:16px; line-height:1.8; }
+  .sb-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -42,16 +60,78 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝積み上げ棒2本（現在→将来。伸ばす A だけ塗り・凡例は将来の棒から引き出し）／右＝説明 -->
   <div class="content-area">
-    <div class="sb-chart">
-      <div class="sb-col col1"><div class="seg seg-c">40%</div><div class="seg seg-b">34%</div><div class="seg seg-a">26%</div><div class="sb-label">現在</div></div>
-      <div class="sb-col col2"><div class="seg seg-c">14%</div><div class="seg seg-b">26%</div><div class="seg seg-a">60%</div><div class="sb-label">3年後（目標）</div></div>
-    </div>
-    <div class="sb-legend">
-      <div class="lg-row"><div class="lg-chip lg-a"></div><div><div class="lg-name">セグメントAが入ります</div><div class="lg-desc">説明が入ります（伸ばす領域）</div></div></div>
-      <div class="lg-row"><div class="lg-chip lg-b"></div><div><div class="lg-name">セグメントBが入ります</div><div class="lg-desc">説明が入ります</div></div></div>
-      <div class="lg-row"><div class="lg-chip lg-c"></div><div><div class="lg-name">セグメントCが入ります</div><div class="lg-desc">説明が入ります（縮小する領域）</div></div></div>
+    <div class="sb-wrap">
+
+      <!-- グラフ本体：棒幅112（現在 x=48〜160・将来 x=232〜344）・棒の高さ280＋隙間2px×2（y 16〜300）・1%=2.8px -->
+      <svg class="sb-svg" width="512" height="352" viewBox="0 0 512 352" aria-hidden="true">
+        <!-- 横軸 -->
+        <line class="sb-axis" x1="24" y1="300.5" x2="368" y2="300.5"/>
+        <!-- C（上・淡い地）：現在40%=112 ／ 将来14%=39 -->
+        <g class="sb-c">
+          <rect x="48" y="16" width="112" height="112"/>
+          <rect x="232" y="16" width="112" height="39"/>
+        </g>
+        <!-- B（中・罫線色）：現在34%=95 ／ 将来26%=73（上のセグメントとの間に白2px） -->
+        <g class="sb-b">
+          <rect x="48" y="130" width="112" height="95"/>
+          <rect x="232" y="57" width="112" height="73"/>
+        </g>
+        <!-- A（下・伸ばす領域＝塗りはこれだけ）：現在26%=73 ／ 将来60%=168 -->
+        <g class="sb-a">
+          <rect x="48" y="227" width="112" height="73"/>
+          <rect x="232" y="132" width="112" height="168"/>
+        </g>
+        <!-- セグメント内の %（各セグメントの中心 +5.5） -->
+        <g class="sb-pct">
+          <text x="104" y="78">40%</text>
+          <text x="104" y="183">34%</text>
+          <text x="288" y="41">14%</text>
+          <text x="288" y="99">26%</text>
+        </g>
+        <g class="sb-pct sb-pct-w">
+          <text x="104" y="269">26%</text>
+          <text x="288" y="222">60%</text>
+        </g>
+        <!-- 凡例：将来の棒の各セグメント中心（y=35.5 / 93.5 / 216.5）から右へ 1px の引き出し線（x 344〜368）→ x=376 に KICKER＋名前 -->
+        <g class="sb-lead">
+          <line x1="344" y1="35.5" x2="368" y2="35.5"/>
+          <line x1="344" y1="93.5" x2="368" y2="93.5"/>
+          <line x1="344" y1="216.5" x2="368" y2="216.5"/>
+        </g>
+        <g class="sb-lg-k">
+          <text x="376" y="28">C ／ 縮小</text>
+          <text x="376" y="86">B ／ 維持</text>
+          <text x="376" y="208">A ／ 伸ばす</text>
+        </g>
+        <g class="sb-lg-n">
+          <text x="376" y="48">スポット対応</text>
+          <text x="376" y="106">制作案件</text>
+          <text x="376" y="228">月額サポート</text>
+        </g>
+        <!-- 棒の下：KICKER＋ラベル（矢印は置かず、ラベルで現在→将来を示す） -->
+        <g class="sb-kicker">
+          <text x="104" y="322">NOW</text>
+          <text x="288" y="322">FUTURE</text>
+        </g>
+        <g class="sb-label">
+          <text x="104" y="344">現在</text>
+          <text x="288" y="344">将来（3年後）</text>
+        </g>
+      </svg>
+
+      <!-- 説明：型（KICKER → 見出し → 罫線 → 本文 → 例：） -->
+      <div class="sb-side">
+        <div class="sb-side-kicker">PORTFOLIO ／ 構成の変化</div>
+        <div class="sb-ttl">月額サポートを6割まで伸ばす</div>
+        <div class="sb-rule"></div>
+        <div class="sb-body">単発の制作売上に頼る構成から、継続契約が土台になる構成へ3年で組み替える。</div>
+        <div class="sb-note">例：数値は売上構成比（%）。各棒の合計は100%</div>
+      </div>
+
     </div>
   </div>
 </div>

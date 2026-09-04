@@ -4,20 +4,41 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-waterfall-bridge-chart</title>
 <style>
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; padding: 32px 64px 24px; display: flex; flex-direction: column; }
-  .chart-area { flex: 1; position: relative; border-bottom: 2px solid var(--sk-accent,#999999); display: flex; }
-  .bar-col { flex: 1; position: relative; height: 100%; }
-  .bar { position: absolute; left: 20%; right: 20%; }
-  .bar.total { background: color-mix(in srgb, var(--sk-accent,#8A8A8A) 45%, #FFFFFF); }
-  .bar.total.end { background: var(--sk-accent,#333333); }
-  .bar.increase { background: var(--sk-soft,#E0E0E0); }
-  .bar.decrease { background: transparent; border: 1px solid var(--sk-accent,#999999); }
-  .bar-label { position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: bold; color: #333333; white-space: nowrap; }
-  .connector { position: absolute; height: 0; border-top: 1px dashed var(--sk-accent,#999999); }
-  .labels-row { display: flex; margin-top: 8px; flex-shrink: 0; }
-  .series-label { flex: 1; text-align: center; font-size: 13px; color: #666666; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px。中身（グラフ＋説明の2カラム）は上下中央、カラム同士は上ぞろえ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2カラム：左＝ウォーターフォールの SVG 560×352 ／ 右＝説明 272px（gap 32） */
+  .wf-wrap { width:100%; display:flex; align-items:flex-start; gap:32px; }
+  .wf-svg { display:block; flex:none; width:560px; height:352px; }
+  /* 横軸 1px 罫線色・接続線 1px 破線 罫線色 */
+  .wf-axis { stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  .wf-link line { stroke:var(--sk-line,#e2e2e2); stroke-width:1; stroke-dasharray:4 3; }
+  /* 棒：開始＝淡い地／増加＝白地に1.5pxアクセント枠／減少＝淡い地に罫線色の枠／終了＝アクセント塗り（塗りは1枚に1つ） */
+  .wf-start { fill:var(--sk-soft,#F0F0F0); }
+  .wf-up { fill:#FFFFFF; stroke:var(--sk-accent,#555555); stroke-width:1.5; }
+  .wf-down { fill:var(--sk-soft,#F0F0F0); stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  .wf-end { fill:var(--sk-accent,#555555); }
+  /* 値 16px tabular-nums（各棒の中心・上端の10px上）。終了値だけ700 */
+  .wf-val text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); font-variant-numeric:tabular-nums; text-anchor:middle; }
+  .wf-val .wf-val-end { font-weight:700; }
+  /* 棒の下：KICKER（accent2）＋ラベル 16px */
+  .wf-kicker text { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent2,#999999); text-anchor:middle; }
+  .wf-label text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); text-anchor:middle; }
+  /* 右の説明：KICKER → 見出し18px/700 → 罫線 → 本文16px → 例：注記 */
+  .wf-side { flex:1; min-width:0; }
+  .wf-side-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); }
+  .wf-ttl { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .wf-rule { margin-top:12px; height:1px; background:var(--sk-line,#e2e2e2); }
+  .wf-body { margin-top:12px; font-size:16px; line-height:1.8; }
+  .wf-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -39,46 +60,65 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：左＝ウォーターフォール（SVG 1枚。開始＝淡い地・増加＝白地にアクセント枠・減少＝淡い地に罫線枠・終了だけ塗り）／右＝説明 -->
   <div class="content-area">
-    <div class="chart-area">
-      <!-- 接続線（バー間の水平線） -->
-      <div class="connector" style="left:16%;width:8%;bottom:60%;"></div>
-      <div class="connector" style="left:36%;width:8%;bottom:85%;"></div>
-      <div class="connector" style="left:56%;width:8%;bottom:70%;"></div>
-      <div class="connector" style="left:76%;width:8%;bottom:90%;"></div>
-      <!-- 開始値バー -->
-      <div class="bar-col">
-        <div class="bar total" style="bottom:0%;height:60%;"></div>
-        <div class="bar-label" style="bottom:64%;">60</div>
+    <div class="wf-wrap">
+
+      <!-- グラフ本体：0.7px/単位・スロット96px×5（x=40〜520）・棒幅56（x=60+96i）・横軸 y=300。累計 240→360→320→380 -->
+      <svg class="wf-svg" width="560" height="352" viewBox="0 0 560 352" aria-hidden="true">
+        <!-- 横軸 -->
+        <line class="wf-axis" x1="32" y1="300.5" x2="528" y2="300.5"/>
+        <!-- 接続線：前の棒の累計の水準（増加は上端・減少は下端）から次の棒の左端まで水平に -->
+        <g class="wf-link">
+          <line x1="116" y1="132.5" x2="156" y2="132.5"/>
+          <line x1="212" y1="48.5" x2="252" y2="48.5"/>
+          <line x1="308" y1="76.5" x2="348" y2="76.5"/>
+          <line x1="404" y1="34.5" x2="444" y2="34.5"/>
+        </g>
+        <!-- 開始 240 → 高さ168（y 132〜300） -->
+        <rect class="wf-start" x="60" y="132" width="56" height="168"/>
+        <!-- 増加 +120 → 240〜360（y 48〜132）。1.5px枠の外側を枠線の位置にそろえるため 0.75 内側へ -->
+        <rect class="wf-up" x="156.75" y="48.75" width="54.5" height="82.5"/>
+        <!-- 減少 −40 → 360〜320（y 48〜76）。1px枠を鮮明にするため 0.5 ずらし -->
+        <rect class="wf-down" x="252.5" y="48.5" width="55" height="27"/>
+        <!-- 増加 +60 → 320〜380（y 34〜76）。同じく 0.75 内側へ -->
+        <rect class="wf-up" x="348.75" y="34.75" width="54.5" height="40.5"/>
+        <!-- 終了 380 → 高さ266（塗りはこれだけ） -->
+        <rect class="wf-end" x="444" y="34" width="56" height="266"/>
+        <!-- 値：各棒の上端の10px上 -->
+        <g class="wf-val">
+          <text x="88" y="122">240</text>
+          <text x="184" y="38">+120</text>
+          <text x="280" y="38">−40</text>
+          <text x="376" y="24">+60</text>
+          <text class="wf-val-end" x="472" y="24">380</text>
+        </g>
+        <!-- 棒の下：KICKER＋ラベル -->
+        <g class="wf-kicker">
+          <text x="88" y="322">START</text>
+          <text x="184" y="322">PLUS</text>
+          <text x="280" y="322">MINUS</text>
+          <text x="376" y="322">PLUS</text>
+          <text x="472" y="322">END</text>
+        </g>
+        <g class="wf-label">
+          <text x="88" y="344">期首</text>
+          <text x="184" y="344">新規案件</text>
+          <text x="280" y="344">解約</text>
+          <text x="376" y="344">単価改定</text>
+          <text x="472" y="344">期末</text>
+        </g>
+      </svg>
+
+      <!-- 説明：型（KICKER → 見出し → 罫線 → 本文 → 例：） -->
+      <div class="wf-side">
+        <div class="wf-side-kicker">BRIDGE ／ 増減の内訳</div>
+        <div class="wf-ttl">解約を吸収して+140で着地</div>
+        <div class="wf-rule"></div>
+        <div class="wf-body">新規案件の上乗せが解約分を打ち消し、単価改定が残りを押し上げた。増減3本の合計が+140。</div>
+        <div class="wf-note">例：単位は百万円。期首→期末の年間の増減</div>
       </div>
-      <!-- 増加バー：要因A -->
-      <div class="bar-col">
-        <div class="bar increase" style="bottom:60%;height:25%;"></div>
-        <div class="bar-label" style="bottom:87%;">+25</div>
-      </div>
-      <!-- 減少バー：要因B -->
-      <div class="bar-col">
-        <div class="bar decrease" style="bottom:70%;height:15%;"></div>
-        <div class="bar-label" style="bottom:87%;">-15</div>
-      </div>
-      <!-- 増加バー：要因C -->
-      <div class="bar-col">
-        <div class="bar increase" style="bottom:70%;height:20%;"></div>
-        <div class="bar-label" style="bottom:92%;">+20</div>
-      </div>
-      <!-- 終了値バー -->
-      <div class="bar-col">
-        <div class="bar total end" style="bottom:0%;height:90%;"></div>
-        <div class="bar-label" style="bottom:94%;">90</div>
-      </div>
-    </div>
-    <div class="labels-row">
-      <div class="series-label">期首</div>
-      <div class="series-label">要因A</div>
-      <div class="series-label">要因B</div>
-      <div class="series-label">要因C</div>
-      <div class="series-label">期末</div>
+
     </div>
   </div>
 </div>

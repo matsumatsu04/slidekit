@@ -4,21 +4,44 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-bar-actual-forecast</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 88px 28px; display:flex; flex-direction:column; }
-  .chart-area { flex:1; display:flex; align-items:flex-end; gap:40px; padding:48px 16px 0; border-bottom:2px solid var(--sk-accent,#999999); position:relative; }
-  .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:0; height:100%; position:relative; }
-  .bar { width:68%; background:#D8D8D8; }
-  .b1 { height:30%; } .b2 { height:40%; } .b3 { height:52%; } .b4 { height:62%; }
-  .bar.forecast { height:84%; background:var(--sk-accent,#4A4A4A); }
-  .col-value { font-size:13px; font-weight:bold; color:#888888; margin-bottom:6px; }
-  .forecast-tag { background:var(--sk-accent,#555555); color:#FFFFFF; font-size:10px; font-weight:bold; padding:2px 10px; border-radius:9px; margin-bottom:6px; }
-  .forecast-value { font-size:30px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; margin-bottom:8px; }
-  .diff-badge { position:absolute; right:6%; top:16px; background:var(--sk-accent2, var(--sk-accent,#777777)); color:#FFFFFF; font-size:12px; font-weight:bold; padding:4px 12px; border-radius:11px; }
-  .axis-labels { display:flex; gap:40px; padding:10px 16px 0; }
-  .axis-labels div { flex:1; text-align:center; font-size:12px; font-weight:bold; color:#333333; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px。中身（グラフ＋説明の2カラム）は上下中央、カラム同士は上ぞろえ */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 2カラム：左＝棒グラフ SVG 560×352 ／ 右＝説明 272px（gap 32） */
+  .bf-wrap { width:100%; display:flex; align-items:flex-start; gap:32px; }
+  .bf-svg { display:block; flex:none; width:560px; height:352px; }
+  /* 軸線 1px 罫線色 */
+  .bf-axis line { stroke:var(--sk-line,#e2e2e2); stroke-width:1; }
+  /* 目盛り値：KICKER 10px / 700 / .18em / muted・右ぞろえ */
+  .bf-tick text { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-muted,#888888); text-anchor:end; }
+  /* 実績の棒＝淡い地。予想の1本だけアクセント塗り（塗りは1枚に1つ） */
+  .bf-bar rect { fill:var(--sk-soft,#F0F0F0); }
+  .bf-bar-fc { fill:var(--sk-accent,#555555); }
+  /* 実績の値 16px tabular-nums・期ラベル 16px（棒の中心） */
+  .bf-val text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); font-variant-numeric:tabular-nums; text-anchor:middle; }
+  .bf-period text { font-size:16px; font-weight:400; fill:var(--sk-ink,#3f4a52); text-anchor:middle; }
+  /* 予想：KICKER（アクセント色）＋特大数値 28px / 700 / tabular-nums */
+  .bf-fc-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent,#555555); text-anchor:middle; }
+  .bf-fc-num { font-size:28px; font-weight:700; letter-spacing:.02em; fill:var(--sk-accent,#555555); font-variant-numeric:tabular-nums; text-anchor:middle; }
+  /* 前年比：塗りのバッジをやめ、accent2 の英字 KICKER＋数値テキスト（右上・右ぞろえ） */
+  .bf-yoy { text-anchor:end; }
+  .bf-yoy-k { font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--sk-accent2,#999999); }
+  .bf-yoy-n { font-size:16px; font-weight:700; letter-spacing:.02em; fill:var(--sk-accent2,#999999); font-variant-numeric:tabular-nums; }
+  /* 右の説明：KICKER → 見出し18px/700 → 罫線 → 本文16px → 例：注記 */
+  .bf-side { flex:1; min-width:0; }
+  .bf-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#555555); }
+  .bf-ttl { margin-top:8px; font-size:18px; font-weight:700; line-height:1.4; }
+  .bf-rule { margin-top:12px; height:1px; background:var(--sk-line,#e2e2e2); }
+  .bf-body { margin-top:12px; font-size:16px; line-height:1.8; }
+  .bf-note { margin-top:12px; font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -38,17 +61,73 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝棒グラフ（SVG 1枚。実績5本は淡い地・最終期の予想1本だけ塗り）／右＝説明（KICKER→見出し→本文→例） -->
   <div class="content-area">
-    <div class="chart-area">
-      <div class="diff-badge">前年比 +35%</div>
-      <div class="bar-col"><div class="col-value">120</div><div class="bar b1"></div></div>
-      <div class="bar-col"><div class="col-value">160</div><div class="bar b2"></div></div>
-      <div class="bar-col"><div class="col-value">210</div><div class="bar b3"></div></div>
-      <div class="bar-col"><div class="col-value">250</div><div class="bar b4"></div></div>
-      <div class="bar-col"><div class="forecast-tag">予想</div><div class="forecast-value">338</div><div class="bar forecast"></div></div>
+    <div class="bf-wrap">
+
+      <!-- グラフ本体：0.6px/単位（100=60px）・スロット80px×6（x=56〜536）・棒幅48・横軸 y=300 -->
+      <svg class="bf-svg" width="560" height="352" viewBox="0 0 560 352" aria-hidden="true">
+        <!-- 軸：縦軸 x=48.5（y 60〜300）・横軸 y=300.5（x 48〜552）・目盛り 100/200/300 の短い刻み -->
+        <g class="bf-axis">
+          <line x1="48.5" y1="60" x2="48.5" y2="300.5"/>
+          <line x1="48" y1="300.5" x2="552" y2="300.5"/>
+          <line x1="44" y1="240.5" x2="48" y2="240.5"/>
+          <line x1="44" y1="180.5" x2="48" y2="180.5"/>
+          <line x1="44" y1="120.5" x2="48" y2="120.5"/>
+        </g>
+        <!-- 目盛り値（右ぞろえ x=40・y は刻み +3.5） -->
+        <g class="bf-tick">
+          <text x="40" y="304">0</text>
+          <text x="40" y="244">100</text>
+          <text x="40" y="184">200</text>
+          <text x="40" y="124">300</text>
+        </g>
+        <!-- 実績5本：x=72+80i・幅48・高さ=値×0.6・上端 y=300−高さ -->
+        <g class="bf-bar">
+          <rect x="72" y="228" width="48" height="72"/>
+          <rect x="152" y="210" width="48" height="90"/>
+          <rect x="232" y="186" width="48" height="114"/>
+          <rect x="312" y="162" width="48" height="138"/>
+          <rect x="392" y="132" width="48" height="168"/>
+        </g>
+        <!-- 予想1本（塗りはこれだけ）：330 → 高さ198 -->
+        <rect class="bf-bar-fc" x="472" y="102" width="48" height="198"/>
+        <!-- 実績の値：棒の中心・上端の10px上 -->
+        <g class="bf-val">
+          <text x="96" y="218">120</text>
+          <text x="176" y="200">150</text>
+          <text x="256" y="176">190</text>
+          <text x="336" y="152">230</text>
+          <text x="416" y="122">280</text>
+        </g>
+        <!-- 予想：KICKER（上端の44px上）＋特大数値（上端の12px上） -->
+        <text class="bf-fc-kicker" x="496" y="58">FORECAST ／ 予想</text>
+        <text class="bf-fc-num" x="496" y="90">330</text>
+        <!-- 前年比：右上に accent2 の KICKER＋数値テキスト（バッジ塗りなし） -->
+        <text class="bf-yoy" x="552" y="18"><tspan class="bf-yoy-k">YOY ／ 前年比</tspan><tspan class="bf-yoy-n" dx="8">+18%</tspan></text>
+        <!-- 期ラベル 16px（横軸の下 32px） -->
+        <g class="bf-period">
+          <text x="96" y="332">FY21</text>
+          <text x="176" y="332">FY22</text>
+          <text x="256" y="332">FY23</text>
+          <text x="336" y="332">FY24</text>
+          <text x="416" y="332">FY25</text>
+          <text x="496" y="332">FY26</text>
+        </g>
+      </svg>
+
+      <!-- 説明：型（KICKER → 見出し → 罫線 → 本文 → 例：） -->
+      <div class="bf-side">
+        <div class="bf-kicker">GROWTH ／ 成長の見通し</div>
+        <div class="bf-ttl">5期連続の伸びを来期も続ける</div>
+        <div class="bf-rule"></div>
+        <div class="bf-body">実績は毎期20〜30%ずつ伸びている。来期は継続契約の積み上げに、紹介経由の新規案件を足して計画した。</div>
+        <div class="bf-note">例：単位は百万円。FY26は期初計画の値</div>
+      </div>
+
     </div>
-    <div class="axis-labels"><div>FY22</div><div>FY23</div><div>FY24</div><div>FY25</div><div>FY26</div></div>
   </div>
 </div>
 </body>
