@@ -5,32 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN: closing-art-brush-contact</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
-    /* 手描き画材モチーフ背景（画像アセット差し替え可）＋締めメッセージ＋連絡先カード */
-    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-handdrawn-art.jpg') center/cover no-repeat; }
-    .message { position:absolute; left:72px; top:36%; transform:translateY(-50%); font-size:34px; font-weight:bold; color:#1A1A1A; line-height:1.45; letter-spacing:0.04em; }
-    .contact-card { position:absolute; left:72px; top:55%; width:300px; background:rgba(255,255,255,0.92); border:1px solid #DDDDDD; border-radius:10px; padding:20px 24px; display:flex; flex-direction:column; gap:12px; }
-    .contact-row { display:flex; align-items:baseline; gap:14px; }
-    .contact-label { font-size:12px; font-weight:bold; color:#555555; flex-shrink:0; }
-    .contact-value { font-size:13px; color:#333333; }
-  
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; font-weight:400; }
+    /* 右に寄った筆致（水彩・画材モチーフ）の画像背景（この家族だけ画像を使う。色ティント対象外・差し替え可） */
+    .ca-bg     { position:absolute; inset:0; background:url('/assets/covers/cover-bg-handdrawn-art.jpg') center/cover no-repeat; }
+    /* v2（2026-09-04）: 半透明の白カードをやめ、左80pxの白い余白に KICKER → 見出し32px → 64pxの細い罫線 → 連絡先（ラベル｜値）を縦中央で積む。
+       共通部品は使えないので、同じ数値を ca- 接頭辞で持つ */
+    .ca-wrap   { position:absolute; left:80px; top:0; bottom:0; width:340px; display:flex; flex-direction:column; justify-content:center; gap:20px; }
+    .ca-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-ink,#3f4a52); }
+    .ca-msg    { font-size:32px; font-weight:700; letter-spacing:.06em; line-height:1.35; color:var(--sk-ink,#3f4a52); }
+    .ca-rule   { width:64px; height:1px; background:var(--sk-muted,#888888); }
+    .ca-list   { display:grid; grid-template-columns:auto 1fr; column-gap:16px; row-gap:12px; align-items:baseline; }
+    .ca-label  { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+    .ca-value  { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1; color:var(--sk-ink,#3f4a52); }
+
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
   <div class="slide">
-    <div class="bg"></div>
-    <div class="message">締めのメッセージが<br>ここに入ります</div>
-    <div class="contact-card">
-      <div class="contact-row">
-        <div class="contact-label">連絡先</div>
-        <div class="contact-value">メール・電話番号が入ります</div>
-      </div>
-      <div class="contact-row">
-        <div class="contact-label">WEB</div>
-        <div class="contact-value">URL・SNSが入ります</div>
+    <div class="ca-bg"></div>
+    <div class="ca-wrap">
+      <div class="ca-kicker">Contact</div>
+      <div class="ca-msg">ご相談はいつでも<br>お気軽に</div>
+      <div class="ca-rule"></div>
+      <div class="ca-list">
+        <div class="ca-label">Mail</div><div class="ca-value">info@example.com</div>
+        <div class="ca-label">Tel</div><div class="ca-value">03-0000-0000</div>
+        <div class="ca-label">Web</div><div class="ca-value">www.example.com</div>
       </div>
     </div>
   </div>

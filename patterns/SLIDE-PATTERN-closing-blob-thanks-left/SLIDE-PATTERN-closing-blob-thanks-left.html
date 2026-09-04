@@ -5,27 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLIDE-PATTERN: closing-blob-thanks-left</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
-    /* 有機的ブロブ背景（画像アセット差し替え可）＋左の太字締めメッセージ＋会社名・連絡先 */
-    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
-    .text-block { position:absolute; left:64px; top:46%; transform:translateY(-50%); }
-    .message { font-size:40px; font-weight:bold; color:#1A1A1A; line-height:1.4; margin-bottom:28px; }
-    .company { font-size:15px; font-weight:bold; color:#333333; }
-    .contact { position:absolute; left:64px; bottom:48px; font-size:12px; font-weight:bold; color:#555555; letter-spacing:0.04em; }
-  
+    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; font-weight:400; }
+    /* 右に寄った有機的ブロブの画像背景（この家族だけ画像を使う。色ティント対象外・差し替え可） */
+    .cb-bg     { position:absolute; inset:0; background:url('/assets/covers/cover-bg-organic-blobs.jpg') center/cover no-repeat; }
+    /* v2（2026-09-04）: 左80pxの白い余白に KICKER → お礼32px → 64pxの細い罫線 → 連絡先（ラベル｜値）を縦中央で積む。
+       共通部品は使えないので、同じ数値を cb- 接頭辞で持つ */
+    .cb-wrap   { position:absolute; left:80px; top:0; bottom:0; width:340px; display:flex; flex-direction:column; justify-content:center; gap:20px; }
+    .cb-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-ink,#3f4a52); }
+    .cb-msg    { font-size:32px; font-weight:700; letter-spacing:.06em; line-height:1.35; color:var(--sk-ink,#3f4a52); }
+    .cb-rule   { width:64px; height:1px; background:var(--sk-muted,#888888); }
+    .cb-list   { display:grid; grid-template-columns:auto 1fr; column-gap:16px; row-gap:12px; align-items:baseline; }
+    .cb-label  { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+    .cb-value  { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1; color:var(--sk-ink,#3f4a52); }
+
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
   <div class="slide">
-    <div class="bg"></div>
-    <div class="text-block">
-      <div class="message">締めのメッセージが<br>ここに入ります</div>
-      <div class="company">会社名・ブランド名が入ります</div>
+    <div class="cb-bg"></div>
+    <div class="cb-wrap">
+      <div class="cb-kicker">Thank you</div>
+      <div class="cb-msg">ご清聴ありがとう<br>ございました</div>
+      <div class="cb-rule"></div>
+      <div class="cb-list">
+        <div class="cb-label">Company</div><div class="cb-value">会社名・ブランド名</div>
+        <div class="cb-label">Mail</div><div class="cb-value">info@example.com</div>
+        <div class="cb-label">Web</div><div class="cb-value">www.example.com</div>
+      </div>
     </div>
-    <div class="contact">お問い合わせ先・URLが入ります</div>
   </div>
 </body>
 </html>
