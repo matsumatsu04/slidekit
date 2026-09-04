@@ -3,31 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-company-spec-with-story</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; align-items:center; gap:40px; padding:32px 64px; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
 
-  .sec-h { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:bold; color:#333333; margin-bottom:12px; }
-  .sec-h::before { content:""; width:10px; height:10px; background:var(--sk-accent,#555555); flex-shrink:0; }
+  /* 左55%＝会社概要テーブル、右45%＝ストーリーボックス1つ。2列は等高・上ぞろえ */
+  .cs-wrap { width:100%; display:flex; gap:32px; align-items:stretch; }
+  .cs-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .cs-ttl { margin-top:12px; font-size:18px; font-weight:700; line-height:1.4; }
 
-  /* 左55%: 会社概要テーブル */
-  .co-left { width:55%; }
-  .co-table { width:100%; border-collapse:collapse; font-size:11px; border-top:1px solid var(--sk-soft,#E4E4E4); }
-  .co-table td { padding:8px 12px; border-bottom:1px solid var(--sk-soft,#E4E4E4); vertical-align:top; }
-  .co-table .label { width:96px; background:var(--sk-soft,#F2F2F2); color:#666666; font-size:10.5px; }
-  .co-table .value { color:#333333; background:#FFFFFF; }
+  .cs-left { width:55%; flex-shrink:0; display:flex; flex-direction:column; }
+  /* 会社概要テーブル：横罫線のみ（上端と各行の下）。地色は敷かない。ラベル列は KICKER（英字＋日本語） */
+  .cs-table { width:100%; margin-top:16px; border-collapse:collapse; border-top:1px solid var(--sk-line,#e2e2e2); }
+  .cs-table td { padding:8px 0; border-bottom:1px solid var(--sk-line,#e2e2e2); vertical-align:top; }
+  .cs-table td.cs-label { width:148px; padding-right:16px; }
+  .cs-label-kicker { display:block; padding-top:8px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; white-space:nowrap; color:var(--sk-accent,#666666); }
+  .cs-val { font-size:16px; line-height:1.8; }
 
-  /* 右45%: シンボル＋枠線ボックス */
-  .co-right { flex:1; display:flex; flex-direction:column; gap:28px; }
-  .sym-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .sym-circle { width:84px; height:84px; border-radius:50%; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; color:#AAAAAA; font-size:30px; }
-  .sym-text { font-size:10.5px; color:#888888; text-align:center; line-height:1.7; }
-  .story-box { border:1.5px solid var(--sk-accent,#999999); border-radius:4px; padding:16px 20px; }
-  .story-catch { font-size:13px; font-weight:bold; color:#333333; line-height:1.6; margin-bottom:8px; }
-  .story-body { font-size:10.5px; color:#666666; line-height:1.8; }
+  /* 右：ストーリーボックス1つ（1.5px 枠・角丸12・padding24）。塗りは KICKER 横の 6px ドットだけ */
+  .cs-right { flex:1; min-width:0; box-sizing:border-box; border:1.5px solid var(--sk-line,#e2e2e2); border-radius:12px; padding:24px;
+              display:flex; flex-direction:column; align-items:flex-start; }
+  .cs-kicker-row { display:flex; align-items:center; gap:8px; }
+  .cs-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; background:var(--sk-accent,#555555); }
+  .cs-rule { width:100%; height:1px; margin:16px 0; flex-shrink:0; background:var(--sk-line,#e2e2e2); }
+  .cs-body { font-size:16px; line-height:1.8; }
+  .cs-note { width:100%; box-sizing:border-box; margin-top:auto; padding-top:16px; border-top:1px solid var(--sk-line,#e2e2e2); font-size:11.5px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -47,37 +54,56 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝会社概要テーブル（横罫線のみ）、右＝ストーリーボックス1つ。塗りは KICKER 横のドットだけ -->
   <div class="content-area">
+    <div class="cs-wrap">
 
-    <div class="co-left">
-      <div class="sec-h">小見出しが入ります</div>
-      <table class="co-table">
-        <tr><td class="label">商号</td><td class="value">会社名が入ります</td></tr>
-        <tr><td class="label">事業内容</td><td class="value">事業内容の説明が入ります</td></tr>
-        <tr><td class="label">所在地</td><td class="value">所在地が入ります</td></tr>
-        <tr><td class="label">設立</td><td class="value">設立年月が入ります</td></tr>
-        <tr><td class="label">代表者</td><td class="value">代表者名が入ります</td></tr>
-        <tr><td class="label">資本金</td><td class="value">資本金が入ります</td></tr>
-        <tr><td class="label">従業員数</td><td class="value">従業員数が入ります</td></tr>
-        <tr><td class="label">拠点</td><td class="value">拠点の一覧が入ります</td></tr>
-      </table>
-    </div>
-
-    <div class="co-right">
-      <div>
-        <div class="sec-h">小見出しが入ります</div>
-        <div class="sym-wrap">
-          <div class="sym-circle"><i class="fa-solid fa-handshake"></i></div>
-          <div class="sym-text">シンボルに添える短文が入ります。<br>会社の姿勢や特徴を2行で記述します。</div>
-        </div>
+      <div class="cs-left">
+        <div class="cs-kicker">Company ／ 会社概要</div>
+        <div class="cs-ttl">株式会社〇〇の基本情報</div>
+        <table class="cs-table">
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Name ／ 商号</span></td>
+            <td><div class="cs-val">株式会社〇〇</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Business ／ 事業</span></td>
+            <td><div class="cs-val">Webサイトの制作と、公開後の運用支援</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Address ／ 所在地</span></td>
+            <td><div class="cs-val">東京都〇〇区〇〇 1-2-3</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Founded ／ 設立</span></td>
+            <td><div class="cs-val">2020年4月</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">CEO ／ 代表者</span></td>
+            <td><div class="cs-val">山田 太郎</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Capital ／ 資本金</span></td>
+            <td><div class="cs-val">500万円</div></td>
+          </tr>
+          <tr>
+            <td class="cs-label"><span class="cs-label-kicker">Staff ／ 従業員</span></td>
+            <td><div class="cs-val">12名（うち制作8名）</div></td>
+          </tr>
+        </table>
       </div>
-      <div class="story-box">
-        <div class="story-catch">信頼につながるキャッチコピーが1〜2行で入ります</div>
-        <div class="story-body">キャッチコピーを補足する本文が入ります。創業の経緯や大切にしている価値観、お客様との向き合い方を3行ほどで記述します。</div>
-      </div>
-    </div>
 
+      <div class="cs-right">
+        <div class="cs-kicker-row"><span class="cs-dot"></span><span class="cs-kicker">Story ／ 沿革</span></div>
+        <div class="cs-ttl">直せる状態で引き渡すために</div>
+        <div class="cs-rule"></div>
+        <div class="cs-body">創業から、公開したあとにお客様自身で直せる形での引き渡しを続けています。制作の途中も、手順と判断の理由を残しながら進めます。</div>
+        <div class="cs-note">例：2020年の設立から、制作は累計120件</div>
+      </div>
+
+    </div>
   </div>
 </div>
 </body>

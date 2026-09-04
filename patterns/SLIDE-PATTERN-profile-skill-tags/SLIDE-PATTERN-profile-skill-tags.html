@@ -3,25 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-profile-skill-tags</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; display:flex; gap:48px; padding:36px 88px; align-items:center; }
-  .ps-left { width:240px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
-  .ps-photo { width:120px; height:120px; border-radius:50%; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; font-size:46px; color:var(--sk-accent,#AAAAAA); }
-  .ps-name { font-size:20px; font-weight:bold; color:#333333; }
-  .ps-role { font-size:12px; font-weight:bold; color:var(--sk-accent,#888888); }
-  .ps-right { flex:1; display:flex; flex-direction:column; gap:18px; }
-  .ps-bio { font-size:13px; color:#333333; line-height:1.9; }
-  .ps-sec-label { font-size:11px; font-weight:bold; color:#999999; letter-spacing:0.1em; margin-bottom:6px; }
-  .ps-tags { display:flex; flex-wrap:wrap; gap:8px; }
-  .ps-tag { font-size:11.5px; color:#333333; border:1px solid var(--sk-accent,#BBBBBB); border-radius:14px; padding:4px 14px; }
-  .ps-stats { display:flex; gap:32px; }
-  .ps-stat { display:flex; align-items:baseline; gap:4px; }
-  .ps-stat-num { font-size:26px; font-weight:bold; color:var(--sk-accent,#333333); }
-  .ps-stat-label { font-size:11px; color:#888888; }
+  /* デザインの規律 v2：文字の組みは .slide に集約（palt・禁則・字間.06em・行間1.8・インク色・太さは400/700のみ） */
+  .slide { width:960px; height:540px; background:#FFFFFF; overflow:hidden; position:relative; box-sizing:border-box;
+           color:var(--sk-ink,#3f4a52); font-size:16px; font-weight:400; line-height:1.8; letter-spacing:.06em;
+           font-feature-settings:"palt" 1; line-break:strict; -webkit-font-smoothing:antialiased; }
+  .slide p { margin:0; }
+  /* 本文エリア：左右48px・見出しONで上76px・中身は上下中央 */
+  .content-area { position:absolute; left:48px; right:48px; top:0; bottom:0; display:flex; align-items:center; }
+  html[data-heading="on"] .content-area { top:76px; }
+
+  /* 左＝円形写真＋氏名、右＝経歴／スキルタグ／実績。2列は等高・上ぞろえ */
+  .ps-wrap { width:100%; display:flex; gap:40px; align-items:stretch; }
+  .ps-left { width:240px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  /* 円形写真枠：soft 地のプレースホルダ120px。実装時は <img> を円形クリップ（object-fit:cover）で差し替える */
+  .ps-photo { width:120px; height:120px; border-radius:50%; flex-shrink:0; background:var(--sk-soft,#F0F0F0); display:flex; align-items:center; justify-content:center; }
+  .ps-photo-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-muted,#888888); }
+  .ps-kicker { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; line-height:1; color:var(--sk-accent,#666666); }
+  .ps-name-kicker { margin-top:20px; }
+  .ps-name { margin-top:8px; font-size:24px; font-weight:700; line-height:1.2; }
+  .ps-role { margin-top:8px; font-size:16px; line-height:1.8; color:var(--sk-muted,#888888); }
+
+  .ps-right { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .ps-block + .ps-block { margin-top:24px; }
+  /* 経歴：KICKER → 16px×3行を横罫線で区切る（上端＋各行の下） */
+  .ps-bio { margin-top:8px; border-top:1px solid var(--sk-line,#e2e2e2); }
+  .ps-bio-row { padding:9px 0; border-bottom:1px solid var(--sk-line,#e2e2e2); font-size:16px; line-height:1.8; }
+  /* スキルタグ：1.5px 枠の塗りなしピル。主要スキル1つだけアクセント塗り＋白文字（＝このスライドの塗り1つ） */
+  .ps-tags { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+  .ps-tag { box-sizing:border-box; font-size:14px; line-height:1; padding:8px 16px; border:1.5px solid var(--sk-line,#e2e2e2); border-radius:999px; }
+  .ps-tag-main { background:var(--sk-accent,#555555); border-color:var(--sk-accent,#555555); color:#FFFFFF; }
+  /* 実績ミニ数値：24px/700・等幅数字＋単位14px */
+  .ps-stats { margin-top:12px; display:flex; gap:40px; }
+  .ps-stat { display:flex; align-items:baseline; gap:6px; }
+  .ps-stat-num { font-size:24px; font-weight:700; line-height:1.2; font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+  .ps-stat-unit { font-size:14px; line-height:1.8; color:var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -41,23 +58,46 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝円形写真＋氏名・肩書、右＝経歴／スキルタグ／実績ミニ数値。塗りは主要スキルのタグ1つだけ -->
   <div class="content-area">
-    <div class="ps-left">
-      <div class="ps-photo"><i class="fa-solid fa-user"></i></div>
-      <div class="ps-name">氏名が入ります</div>
-      <div class="ps-role">肩書・役職が入ります</div>
-    </div>
-    <div class="ps-right">
-      <div class="ps-bio">経歴のテキストが入ります。これまでの経験・実績・専門領域を3行程度で記述します。数字や固有名詞を入れると説得力が増します。</div>
-      <div><div class="ps-sec-label">SKILLS / 専門領域</div>
-        <div class="ps-tags"><span class="ps-tag">スキルが入ります</span><span class="ps-tag">スキルが入ります</span><span class="ps-tag">スキルが入ります</span><span class="ps-tag">スキルが入ります</span><span class="ps-tag">スキルが入ります</span><span class="ps-tag">スキルが入ります</span></div></div>
-      <div><div class="ps-sec-label">実績</div>
-        <div class="ps-stats">
-          <div class="ps-stat"><span class="ps-stat-num">10</span><span class="ps-stat-label">年（経験年数）</span></div>
-          <div class="ps-stat"><span class="ps-stat-num">120</span><span class="ps-stat-label">件（支援実績）</span></div>
-          <div class="ps-stat"><span class="ps-stat-num">98</span><span class="ps-stat-label">%（満足度）</span></div>
-        </div></div>
+    <div class="ps-wrap">
+      <div class="ps-left">
+        <div class="ps-photo"><span class="ps-photo-label">Photo</span></div>
+        <div class="ps-kicker ps-name-kicker">Yamada Taro ／ 講師</div>
+        <div class="ps-name">山田 太郎</div>
+        <div class="ps-role">株式会社〇〇 代表取締役</div>
+      </div>
+      <div class="ps-right">
+        <div class="ps-block">
+          <div class="ps-kicker">Career ／ 経歴</div>
+          <div class="ps-bio">
+            <div class="ps-bio-row">2012年 制作会社にデザイナーとして入社</div>
+            <div class="ps-bio-row">2016年 独立。中小企業のサイトを年20件制作</div>
+            <div class="ps-bio-row">2020年 制作会社を設立し、講座を開講</div>
+          </div>
+        </div>
+        <div class="ps-block">
+          <div class="ps-kicker">Skills ／ 専門領域</div>
+          <div class="ps-tags">
+            <span class="ps-tag ps-tag-main">サイト設計</span>
+            <span class="ps-tag">ノーコード実装</span>
+            <span class="ps-tag">原稿の整理</span>
+            <span class="ps-tag">写真の選定</span>
+            <span class="ps-tag">公開後の運用</span>
+            <span class="ps-tag">検索対策</span>
+          </div>
+        </div>
+        <div class="ps-block">
+          <div class="ps-kicker">Results ／ 実績</div>
+          <div class="ps-stats">
+            <div class="ps-stat"><span class="ps-stat-num">12</span><span class="ps-stat-unit">年 ／ 制作歴</span></div>
+            <div class="ps-stat"><span class="ps-stat-num">120</span><span class="ps-stat-unit">件 ／ 制作実績</span></div>
+            <div class="ps-stat"><span class="ps-stat-num">60</span><span class="ps-stat-unit">名 ／ 受講生</span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
