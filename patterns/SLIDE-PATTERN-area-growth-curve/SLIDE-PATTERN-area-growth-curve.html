@@ -6,15 +6,41 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:36px 88px 24px; display:flex; flex-direction:column; }
-  .ag-wrap { flex:1; position:relative; }
-  .ag-wrap svg { width:100%; height:100%; }
-  .ag-end-label { position:absolute; right:0; top:10%; text-align:right; }
-  .ag-end-num { font-size:30px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
-  .ag-end-supp { font-size:11px; color:#888888; margin-top:4px; }
-  .axis-labels { display:flex; padding:8px 24px 0; border-top:2px solid var(--sk-accent,#999999); }
-  .axis-labels div { flex:1; text-align:center; font-size:12px; font-weight:bold; color:#333333; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .slide p { margin: 0; }
+  /* コンテンツエリア（見出しON時は上76px以降。グラフ＋説明を上下中央・中身は上ぞろえ） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 上：面グラフ（SVG 1枚・864×230・座標は静的計算）──
+     プロット範囲 x 40→820（6点・間隔156）／ baseline y=196。y = 196 − 52 × 値（億円） */
+  .ag-stage { position: relative; width: 864px; }
+  .ag-svg { display: block; width: 864px; height: 230px; }
+  /* 面は淡いティント（アクセントの薄面は使わない）。線は2pxアクセント色 */
+  .ag-fill { fill: var(--sk-soft,#F0F0F0); }
+  .ag-axis { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 1; shape-rendering: crispEdges; }
+  .ag-line { fill: none; stroke: var(--sk-accent,#555555); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  /* 塗りは終点ドット12pxの1つだけ */
+  .ag-end { fill: var(--sk-accent,#555555); }
+  /* 期ラベル：16px・インク色 */
+  .ag-period { font-size: 16px; font-weight: 400; letter-spacing: .06em; fill: var(--sk-ink,#3f4a52); }
+
+  /* 右上の最終値：KICKER → 28px/700 アクセント色（グラフの右上に重ねる） */
+  .ag-endlabel { position: absolute; right: 0; top: 0; text-align: right; }
+  .ag-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ag-num { margin-top: 8px; font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: .02em; color: var(--sk-accent,#555555); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── 下：説明（型: KICKER → 見出し18px/700 → 細罫線 → 本文16px → 例：注記）── */
+  .ag-desc { margin-top: 20px; width: 640px; }
+  .ag-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ag-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  .ag-body { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+  .ag-note { margin-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -34,16 +60,44 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：上＝面グラフ（右上に最終値）／下＝説明。塗りは終点ドット1つだけ -->
   <div class="content-area">
-    <div class="ag-wrap">
-      <svg viewBox="0 0 760 300" preserveAspectRatio="none">
-        <polygon points="40,280 40,262 220,240 400,196 580,120 720,52 720,280" style="fill:color-mix(in srgb, var(--sk-accent,#888888) 18%, #FFFFFF)"/>
-        <polyline points="40,262 220,240 400,196 580,120 720,52" fill="none" style="stroke:var(--sk-accent,#555555);stroke-width:4" stroke-linecap="round" stroke-linejoin="round"/>
+    <div class="ag-stage">
+      <!-- 値 0.4 / 0.6 / 0.9 / 1.4 / 1.9 / 2.4（億円）→ y = 196 − 52 × 値 -->
+      <svg class="ag-svg" viewBox="0 0 864 230" aria-hidden="true">
+        <!-- 面：折れ線の下をベースラインまで閉じた多角形（淡いティント） -->
+        <polygon class="ag-fill" points="40,196 40,175.2 196,164.8 352,149.2 508,123.2 664,97.2 820,71.2 820,196"/>
+        <!-- ベースライン：1px 罫線色（面の下端 y=196 に接する） -->
+        <path class="ag-axis" d="M40 196.5H824"/>
+        <!-- 成長線：2px アクセント色 -->
+        <polyline class="ag-line" points="40,175.2 196,164.8 352,149.2 508,123.2 664,97.2 820,71.2"/>
+        <!-- 終点：12px アクセント塗り（このスライドで塗る要素はここだけ） -->
+        <circle class="ag-end" cx="820" cy="71.2" r="6"/>
+        <!-- 期ラベル：16px -->
+        <text class="ag-period" x="40" y="222" text-anchor="middle">FY21</text>
+        <text class="ag-period" x="196" y="222" text-anchor="middle">FY22</text>
+        <text class="ag-period" x="352" y="222" text-anchor="middle">FY23</text>
+        <text class="ag-period" x="508" y="222" text-anchor="middle">FY24</text>
+        <text class="ag-period" x="664" y="222" text-anchor="middle">FY25</text>
+        <text class="ag-period" x="820" y="222" text-anchor="middle">FY26</text>
       </svg>
-      <div class="ag-end-label"><div class="ag-end-num">2.4億円</div><div class="ag-end-supp">最終期の数値・補足が入ります</div></div>
+      <!-- 右上の最終値（終点の真上） -->
+      <div class="ag-endlabel">
+        <div class="ag-kicker">FY26 ／ 最終期</div>
+        <div class="ag-num">2.4億円</div>
+      </div>
     </div>
-    <div class="axis-labels"><div>FY22</div><div>FY23</div><div>FY24</div><div>FY25</div><div>FY26</div></div>
+
+    <!-- 下：説明 -->
+    <div class="ag-desc">
+      <div class="ag-kicker">GROWTH ／ 5年の推移</div>
+      <div class="ag-ttl">5年で6倍。紹介経由の比率が伸びを支えている</div>
+      <div class="ag-rule"></div>
+      <div class="ag-body">FY21の0.4億円からFY26は2.4億円。広告費を増やさずに、既存クライアントの紹介と継続契約で積み上げた。</div>
+      <div class="ag-note">例：金額は年度末時点の売上高。FY26は見込み値</div>
+    </div>
   </div>
 </div>
 </body>

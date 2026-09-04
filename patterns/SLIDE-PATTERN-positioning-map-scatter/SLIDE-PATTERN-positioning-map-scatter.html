@@ -4,21 +4,33 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-positioning-map-scatter</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; display: flex; flex-direction: column; }
-  .content-area { flex: 1; position: relative; padding: 48px 72px; }
-  .axis-line-v { position: absolute; left: 50%; top: 28px; bottom: 28px; width: 1px; background: var(--sk-soft,#CCCCCC); }
-  .axis-line-h { position: absolute; top: 50%; left: 28px; right: 28px; height: 1px; background: var(--sk-soft,#CCCCCC); }
-  .axis-label { position: absolute; font-size: 12px; color: #888888; white-space: nowrap; }
-  .axis-label.top { top: 0; left: 50%; transform: translateX(-50%); }
-  .axis-label.bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
-  .axis-label.left { left: 0; top: 50%; transform: translateY(-50%); }
-  .axis-label.right { right: 0; top: 50%; transform: translateY(-50%); }
-  .dot-item { position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; background: #FFFFFF; border: 2px solid var(--sk-accent,#999999); }
-  .dot-label { font-size: 11px; color: #555555; white-space: nowrap; }
-  .dot-item.accent .dot { width: 16px; height: 16px; background: var(--sk-accent,#333333); border: none; }
-  .dot-item.accent .dot-label { font-size: 12px; font-weight: bold; color: #333333; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .slide p { margin: 0; }
+  /* コンテンツエリア（見出しON時は上76px以降。マップ＋注記を上下中央） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── マップ（SVG 1枚・864×360・座標は静的計算）──
+     十字軸：横 y=184.5（x 8→856）／縦 x=432.5（y 30→338）。四端に KICKER の軸ラベル */
+  .pm-stage { width: 864px; }
+  .pm-svg { display: block; width: 864px; height: 360px; }
+  .pm-axis { fill: none; stroke: var(--sk-ink,#3f4a52); stroke-width: 1; shape-rendering: crispEdges; }
+  /* 軸ラベル：KICKER（英字＋日本語）。差し色は accent2（塗りには使わない） */
+  .pm-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; fill: var(--sk-accent2,#999999); }
+  /* ドット：他社＝白地に1.5px枠の12px（r=6）／自社＝アクセント塗りの14px（r=7・塗りは1枚に1つ） */
+  .pm-dot { fill: #FFFFFF; stroke: var(--sk-muted,#888888); stroke-width: 1.5; }
+  .pm-dot-self { fill: var(--sk-accent,#555555); }
+  /* ラベル：16px（自社だけ700） */
+  .pm-label { font-size: 16px; font-weight: 400; letter-spacing: .06em; fill: var(--sk-ink,#3f4a52); }
+  .pm-label-self { font-weight: 700; }
+  .pm-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -40,39 +52,39 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 <div class="slide">
   <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
-  <!-- コンテンツエリア -->
+  <!-- コンテンツエリア：十字軸＋四端の軸ラベル＋ドット7つ。塗りは自社の1点だけ -->
   <div class="content-area">
-    <div class="axis-line-v"></div>
-    <div class="axis-line-h"></div>
-    <div class="axis-label top">軸ラベル（上）</div>
-    <div class="axis-label bottom">軸ラベル（下）</div>
-    <div class="axis-label left">軸ラベル（左）</div>
-    <div class="axis-label right">軸ラベル（右）</div>
+    <div class="pm-stage">
+      <svg class="pm-svg" viewBox="0 0 864 360" aria-hidden="true">
+        <!-- 十字軸：1px・インク色。端点は座標を一致させる -->
+        <path class="pm-axis" d="M8 184.5H856"/>
+        <path class="pm-axis" d="M432.5 30V338"/>
+        <!-- 四端の軸ラベル（英字＋日本語） -->
+        <text class="pm-kicker" x="432" y="18" text-anchor="middle">HIGH PRICE ／ 高価格</text>
+        <text class="pm-kicker" x="432" y="356" text-anchor="middle">LOW PRICE ／ 低価格</text>
+        <text class="pm-kicker" x="8" y="170">LOW SUPPORT ／ 支援が薄い</text>
+        <text class="pm-kicker" x="856" y="170" text-anchor="end">HIGH SUPPORT ／ 支援が厚い</text>
 
-    <div class="dot-item" style="left:22%;top:28%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品A</div>
+        <!-- 他社：白地に1.5px枠の12pxドット＋ラベル16px（ドットの右14px） -->
+        <circle class="pm-dot" cx="150" cy="112" r="6"/>
+        <text class="pm-label" x="164" y="112" dy=".35em">A社</text>
+        <circle class="pm-dot" cx="300" cy="150" r="6"/>
+        <text class="pm-label" x="314" y="150" dy=".35em">B社</text>
+        <circle class="pm-dot" cx="346" cy="74" r="6"/>
+        <text class="pm-label" x="360" y="74" dy=".35em">C社</text>
+        <circle class="pm-dot" cx="238" cy="272" r="6"/>
+        <text class="pm-label" x="252" y="272" dy=".35em">D社</text>
+        <circle class="pm-dot" cx="556" cy="296" r="6"/>
+        <text class="pm-label" x="570" y="296" dy=".35em">E社</text>
+        <circle class="pm-dot" cx="712" cy="232" r="6"/>
+        <text class="pm-label" x="726" y="232" dy=".35em">F社</text>
+
+        <!-- 自社：アクセント塗りの14pxドット＋ラベル16px/700（塗りはここだけ） -->
+        <circle class="pm-dot-self" cx="620" cy="100" r="7"/>
+        <text class="pm-label pm-label-self" x="636" y="100" dy=".35em">自社</text>
+      </svg>
     </div>
-    <div class="dot-item" style="left:38%;top:62%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品B</div>
-    </div>
-    <div class="dot-item accent" style="left:68%;top:22%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品C</div>
-    </div>
-    <div class="dot-item" style="left:78%;top:55%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品D</div>
-    </div>
-    <div class="dot-item" style="left:30%;top:80%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品E</div>
-    </div>
-    <div class="dot-item" style="left:62%;top:75%;">
-      <div class="dot"></div>
-      <div class="dot-label">商品F</div>
-    </div>
+    <div class="pm-note">例：位置は相対評価。ドットの大きさは意味を持たない</div>
   </div>
 </div>
 </body>

@@ -6,20 +6,44 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column; }
-  .content-area { flex:1; padding:32px 88px; display:flex; align-items:center; gap:72px; }
-  .donut-wrap { position:relative; width:260px; height:260px; flex-shrink:0; }
-  .donut { width:100%; height:100%; border-radius:50%; background:conic-gradient(var(--sk-accent,#555555) 0 62%, var(--sk-soft,#E8E8E8) 62% 100%); }
-  .donut-hole { position:absolute; inset:52px; background:#FFFFFF; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
-  .dh-num { font-size:44px; font-weight:bold; color:var(--sk-accent,#333333); line-height:1; }
-  .dh-label { font-size:11px; color:#999999; }
-  .legend { flex:1; display:flex; flex-direction:column; gap:20px; }
-  .lg-row { display:flex; align-items:flex-start; gap:14px; }
-  .lg-chip { width:16px; height:16px; border-radius:4px; flex-shrink:0; margin-top:3px; }
-  .lg-main { background:var(--sk-accent,#555555); }
-  .lg-rest { background:var(--sk-soft,#E8E8E8); }
-  .lg-title { font-size:15px; font-weight:bold; color:#333333; }
-  .lg-desc { font-size:12px; color:#666666; line-height:1.7; margin-top:2px; }
+  .slide {
+    width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden;
+    display: flex; flex-direction: column;
+    /* デザインの規律 v2: 文字の組み */
+    color: var(--sk-ink,#3f4a52); font-size: 16px; font-weight: 400; font-feature-settings: "palt" 1; line-break: strict;
+    letter-spacing: .06em; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .slide p { margin: 0; }
+  /* コンテンツエリア（見出しON時は上76px以降。ドーナツ＋説明の行を上下中央・列同士は上ぞろえ） */
+  .content-area { flex: 1; padding: 24px 48px; display: flex; flex-direction: column; justify-content: center; }
+  .ds-row { display: flex; align-items: flex-start; gap: 48px; }
+
+  /* ── 左：ドーナツ1つ（SVGのcircle 2本・太さ20px・面塗りなし）──
+     半径100 → 円周 628.319。達成分は stroke-dasharray「達成長 628.319」を静的に書き、-90°回して12時から始める */
+  .ds-chart { flex: none; position: relative; width: 240px; height: 240px; }
+  .ds-svg { display: block; width: 240px; height: 240px; }
+  .ds-track { fill: none; stroke: var(--sk-line,#e2e2e2); stroke-width: 20; }
+  .ds-value { fill: none; stroke: var(--sk-accent,#555555); stroke-width: 20; transform: rotate(-90deg); transform-origin: 120px 120px; }
+  /* 中央：KICKER → 割合 28px/700 tabular-nums */
+  .ds-center { position: absolute; left: 0; top: 0; width: 240px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ds-kicker { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; line-height: 1; color: var(--sk-accent,#555555); white-space: nowrap; }
+  .ds-num { margin-top: 8px; font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+
+  /* ── 右：見出し → 凡例2行 → 説明 → 注記 ── */
+  .ds-info { flex: 1; min-width: 0; }
+  .ds-ttl { margin-top: 12px; font-size: 18px; font-weight: 700; line-height: 1.4; }
+  .ds-rule { margin-top: 12px; height: 1px; background: var(--sk-line,#e2e2e2); }
+  /* 凡例：12pxの角チップ（1つはアクセント塗り・もう1つは罫線色）＋ラベル16px＋値。行高44pxで2行 */
+  .ds-legend { border-bottom: 1px solid var(--sk-line,#e2e2e2); }
+  .ds-lg-row { display: flex; align-items: center; height: 44px; }
+  .ds-lg-row + .ds-lg-row { border-top: 1px solid var(--sk-line,#e2e2e2); }
+  .ds-chip { flex: none; width: 12px; height: 12px; margin-right: 12px; }
+  .ds-chip-main { background: var(--sk-accent,#555555); }
+  .ds-chip-rest { background: var(--sk-line,#e2e2e2); }
+  .ds-lg-label { flex: 1; min-width: 0; font-size: 16px; line-height: 1.8; }
+  .ds-lg-val { font-size: 16px; font-weight: 700; line-height: 1.8; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .ds-body { margin-top: 16px; font-size: 16px; line-height: 1.8; }
+  .ds-note { margin-top: 8px; font-size: 11.5px; line-height: 1.8; color: var(--sk-muted,#888888); }
 
 /* === 共通見出し v5（6スタイル・固定metrics・余白=4の倍数）=== */
 .sk-head{display:none}
@@ -39,15 +63,45 @@ html[data-heading="on"][data-hstyle="d"] .sk-head::before{content:"● " attr(da
 </head>
 <body>
 <div class="slide">
+  <!-- タイトルエリア（SLIDE.mdの Slide Frame で定義） -->
   <div class="sk-head" data-label="Section"><span class="sk-head-ttl">セクションタイトル</span></div>
+  <!-- コンテンツエリア：左＝ドーナツ1つ（62%）／右＝凡例と説明。アクセントの弧が1つだけの塗り -->
   <div class="content-area">
-    <div class="donut-wrap">
-      <div class="donut"></div>
-      <div class="donut-hole"><div class="dh-num">62%</div><div class="dh-label">ラベルが入ります</div></div>
-    </div>
-    <div class="legend">
-      <div class="lg-row"><div class="lg-chip lg-main"></div><div><div class="lg-title">主要セグメント名が入ります（62%）</div><div class="lg-desc">このセグメントの説明が入ります。何を示す割合かを1〜2行で記述します。</div></div></div>
-      <div class="lg-row"><div class="lg-chip lg-rest"></div><div><div class="lg-title">その他（38%）</div><div class="lg-desc">残りのセグメントの説明が入ります。</div></div></div>
+    <div class="ds-row">
+
+      <!-- 左：ドーナツ（62% → 0.62 × 628.319 = 389.56） -->
+      <div class="ds-chart">
+        <svg class="ds-svg" viewBox="0 0 240 240" aria-hidden="true">
+          <circle class="ds-track" cx="120" cy="120" r="100"/>
+          <circle class="ds-value" cx="120" cy="120" r="100" stroke-dasharray="389.56 628.319"/>
+        </svg>
+        <div class="ds-center">
+          <div class="ds-kicker">Share</div>
+          <div class="ds-num">62%</div>
+        </div>
+      </div>
+
+      <!-- 右：見出し → 凡例 → 説明 → 注記 -->
+      <div class="ds-info">
+        <div class="ds-kicker">Breakdown ／ 受注の内訳</div>
+        <div class="ds-ttl">受注の6割は、紹介と継続契約から生まれている</div>
+        <div class="ds-rule"></div>
+        <div class="ds-legend">
+          <div class="ds-lg-row">
+            <div class="ds-chip ds-chip-main"></div>
+            <div class="ds-lg-label">紹介・継続契約</div>
+            <div class="ds-lg-val">62%</div>
+          </div>
+          <div class="ds-lg-row">
+            <div class="ds-chip ds-chip-rest"></div>
+            <div class="ds-lg-label">広告・問い合わせフォーム</div>
+            <div class="ds-lg-val">38%</div>
+          </div>
+        </div>
+        <div class="ds-body">紹介と継続契約は商談が1回で決まり、単価も高い。広告経由は件数こそ出るが、着手までの日数が2倍かかっている。</div>
+        <div class="ds-note">例：FY26上期・受注件数ベースの構成比</div>
+      </div>
+
     </div>
   </div>
 </div>
