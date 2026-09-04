@@ -59,7 +59,7 @@ SLIDE-PATTERN-section-band-middle を使って中扉を1枚生成してくださ
 - 章タイトルは24pxの1行に収める（全角22文字程度が上限）。入らなければ文言を短くする（文字を小さくしない・2行にしない）
 - 帯以外の面積は白のまま保ち、装飾を足さない。帯の中の装飾も縦罫線1本だけにする
 - 文字はすべて白（塗り帯の上に #333 系を載せない）。KICKER は半透明白で階調を付ける
-- 全面を塗って章を強く区切りたいときは section-divider、画像で世界観を持たせたいときは section-photo-overlay-left / section-geo-texture-left へ
+- 全面を塗って章を強く区切りたいときは section-divider、画像で世界観を持たせたいときは section-geo-texture-left / section-soft-3d-number-row へ
 
 ## v2 での描き直し（2026-09-04）
 - 帯の中の章番号を 40px・700 の単独表示から「英字KICKER『SECTION』（10px・字間 .2em・白82%）＋章番号 32px・700」の2段組に組み替えた

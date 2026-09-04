@@ -47,7 +47,6 @@ const GRANDFATHER = {
   // 5. HTML骨格（.slide ルート要素を持たず body を 960×540 にしている旧実装）— 0 件
   // 6. 色（グレー階調・var(--sk-*) 以外）— 画像背景系だけに残る「画像に合わせた固有色」
   'cover-soft-3d-left': { 6: '画像背景に合わせた固有色 #2E4A6B / #8A8F98（色ティント対象外）' },
-  'section-photo-overlay-left': { 6: '写真オーバーレイの固有色 rgba(15,18,24)（画像背景系・色ティント対象外）' },
   'section-geo-texture-left': { 6: '画像背景に合わせた固有色 #CCC6BA（色ティント対象外）' },
   'section-soft-3d-number-row': { 6: '画像背景に合わせた固有色 #8F9AAB（色ティント対象外）' },
 };

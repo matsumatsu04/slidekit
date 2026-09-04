@@ -58,7 +58,7 @@ SLIDE-PATTERN-closing-blob-thanks-left を使って締めを1枚生成してく�
 - 連絡先の値はダミー。実在ドメインは書かない（`example.com` は文書用の予約ドメイン）
 - 影・グラデーションのテキスト装飾は使わない。装飾は幅64pxの罫線1本まで
 - 背景に画像を敷くため、ギャラリーの色ティント（アクセント色の差し替え）は効かない
-- 表紙 `cover-blob-side-left`、中扉 `section-photo-overlay-left` などと素材のトーンを揃える
+- 表紙 `cover-blob-side-left`、中扉 `section-geo-texture-left` などと素材のトーンを揃える
 
 ## v2 での描き直し（2026-09-04）
 - 40pxの太字メッセージ＋会社名＋左下に離れた12pxの連絡先という3ブロック散らばりをやめ、左80pxの1本の縦ぞろえ（KICKER→ことば32px→64px罫線→連絡先）に組み直した
