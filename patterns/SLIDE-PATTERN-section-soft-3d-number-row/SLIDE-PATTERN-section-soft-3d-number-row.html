@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE-PATTERN: section-soft-3d-number-row</title>
-  <style>
-    body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-    .slide { width:960px; height:540px; border:1px solid #CCCCCC; overflow:hidden; position:relative; }
-    /* 半透明3Dオブジェクト背景（画像アセット差し替え可）＋特大章番号と章タイトルの横並び */
-    .bg { position:absolute; inset:0; background:url('/assets/covers/cover-bg-soft-3d.jpg') center/cover no-repeat; }
-    .row { position:absolute; left:72px; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:36px; max-width:560px; }
-    .big-number { font-size:110px; font-weight:bold; color:#8F9AAB; line-height:1; flex-shrink:0; }
-    .title-block { display:flex; flex-direction:column; gap:14px; }
-    .section-title { font-size:30px; font-weight:bold; color:#333333; line-height:1.4; }
-    .accent-line { width:56px; height:3px; background:#4A4A4A; }
-  
+<meta charset="UTF-8">
+<title>SLIDE-PATTERN-section-soft-3d-number-row</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid #CCCCCC; overflow:hidden; position:relative;
+           color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-04）: 半透明3Dオブジェクトの淡色背景の左半分に「番号の行」を置く（この構図は現行のまま）。
+     章番号（96px・400・#8F9AAB）｜KICKER「SECTION」（10px・accent2）→ 章タイトル（32px・700・インク色）→ 64px の罫線 → 補足1行。
+     行は左80pxから始め、上下中央。max-width 560px で右の3Dオブジェクト群に被せない。
+     背景画像はこの家族の識別子なので残す（色ティント対象外）。#8F9AAB は背景に合わせた固有色。
+     中扉なので共通見出し（sk-head）は持たない。共通部品は使えないので、同じ数値を s3d- 接頭辞で持つ */
+  .s3d-bg     { position:absolute; inset:0; background:url('/assets/covers/cover-bg-soft-3d.jpg') center/cover no-repeat; }
+  .s3d-row    { position:absolute; left:80px; top:50%; transform:translateY(-50%); max-width:560px; display:flex; align-items:center; gap:32px; }
+  .s3d-no     { flex-shrink:0; font-size:96px; font-weight:400; letter-spacing:.02em; line-height:1; color:#8F9AAB; }
+  .s3d-block  { display:flex; flex-direction:column; align-items:flex-start; }
+  .s3d-kicker { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:var(--sk-accent2,#999999); }
+  .s3d-title  { margin-top:14px; font-size:32px; font-weight:700; letter-spacing:.06em; line-height:1.35; color:var(--sk-ink,#3f4a52); }
+  .s3d-rule   { width:64px; height:1px; background:#8F9AAB; margin:20px 0 16px; }
+  .s3d-sub    { font-size:16px; font-weight:400; letter-spacing:.06em; line-height:1.8; color:var(--sk-muted,#888888); }
+
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
 </style>
 </head>
 <body>
-  <div class="slide">
-    <div class="bg"></div>
-    <div class="row">
-      <div class="big-number">04</div>
-      <div class="title-block">
-        <div class="section-title">セクションタイトルが<br>ここに入ります</div>
-        <div class="accent-line"></div>
-      </div>
+<div class="slide">
+  <div class="s3d-bg"></div>
+  <div class="s3d-row">
+    <div class="s3d-no">04</div>
+    <div class="s3d-block">
+      <div class="s3d-kicker">Section</div>
+      <div class="s3d-title">運用に移したあとの<br>見直しの周期</div>
+      <div class="s3d-rule"></div>
+      <div class="s3d-sub">月1回の見直しで手順を直す</div>
     </div>
   </div>
+</div>
 </body>
 </html>

@@ -4,14 +4,21 @@
 <meta charset="UTF-8">
 <title>SLIDE-PATTERN-section-band-middle</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body { margin:0; padding:0; background:#E8E8E8; font-family:sans-serif; }
-  .slide { width: 960px; height: 540px; background: #FFFFFF; border: 1px solid var(--sk-accent,#CCCCCC); overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
-  /* 帯の上：余白 */
-  .spacer { flex: 1; }
-  /* 垂直中央のアクセント色帯（全幅） */
-  .band { flex-shrink: 0; height: 120px; width: 100%; background: var(--sk-accent,#333333); box-sizing: border-box; display: flex; align-items: center; gap: 24px; padding: 0 80px; }
-  .band-number { font-size: 40px; font-weight: bold; color: #FFFFFF; line-height: 1; flex-shrink: 0; }
-  .band-title { font-size: 28px; font-weight: bold; color: #FFFFFF; line-height: 1.4; }
+  .slide { width:960px; height:540px; background:#FFFFFF; border:1px solid var(--sk-accent,#CCCCCC); overflow:hidden; display:flex; flex-direction:column;
+           color:var(--sk-ink,#3f4a52); font-weight:400; font-feature-settings:"palt" 1; line-break:strict; letter-spacing:.06em; line-height:1.8; }
+  /* v2（2026-09-04）: 白地の垂直中央に全幅120pxのアクセント塗り帯。帯の中は左80pxから
+     「KICKER『SECTION』（10px・白82%）＋章番号（32px・700・白）」｜白35%の縦罫線｜章タイトル（24px・700・白）。
+     塗りは帯の1つだけ・帯の外は白のまま。装飾は縦罫線1本だけ。中扉なので共通見出し（sk-head）は持たない。
+     グレー版のフォールバック地は白文字が読める濃さ（#555555）。共通部品は使えないので、同じ数値を sbm- 接頭辞で持つ */
+  .sbm-spacer   { flex:1; }
+  .sbm-band     { flex-shrink:0; width:100%; height:120px; background:var(--sk-accent,#555555); display:flex; align-items:center; padding:0 80px; }
+  .sbm-numblock { flex-shrink:0; display:flex; flex-direction:column; align-items:flex-start; }
+  .sbm-kicker   { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; line-height:1; color:rgba(255,255,255,.82); }
+  .sbm-no       { margin-top:10px; font-size:32px; font-weight:700; letter-spacing:.04em; line-height:1; color:#FFFFFF; }
+  .sbm-vrule    { flex-shrink:0; width:1px; height:56px; margin:0 28px; background:rgba(255,255,255,.35); }
+  .sbm-title    { font-size:24px; font-weight:700; letter-spacing:.06em; line-height:1.35; color:#FFFFFF; }
 
 /* === デザインの規律 v2 — 文字の組み（2026-09-02 第2弾で一括適用。SPEC「デザインの規律 v2」）=== */
 .slide{font-feature-settings:"palt" 1;line-break:strict;word-break:normal;letter-spacing:.06em;line-height:1.8;color:var(--sk-ink,#3f4a52);}
@@ -20,14 +27,18 @@
 <body>
 <div class="slide">
   <!-- 帯の上：余白 -->
-  <div class="spacer"></div>
+  <div class="sbm-spacer"></div>
   <!-- 垂直中央の全幅アクセント色帯 -->
-  <div class="band">
-    <div class="band-number">03</div>
-    <div class="band-title">セクションタイトルが入ります</div>
+  <div class="sbm-band">
+    <div class="sbm-numblock">
+      <div class="sbm-kicker">Section</div>
+      <div class="sbm-no">03</div>
+    </div>
+    <div class="sbm-vrule"></div>
+    <div class="sbm-title">問い合わせから受注までの流れ</div>
   </div>
   <!-- 帯の下：余白 -->
-  <div class="spacer"></div>
+  <div class="sbm-spacer"></div>
 </div>
 </body>
 </html>
