@@ -80,7 +80,7 @@ body{padding-top:80px}
   </div>
   <div class="stage">
     <div class="holder" id="holder">
-      <iframe id="frame" title="preview" onload="apply()"></iframe>
+      <iframe id="frame" title="preview"></iframe>
     </div>
   </div>
 
@@ -99,7 +99,6 @@ document.getElementById('pcat').textContent=cat;
 if(!cat) document.getElementById('pcat').style.display='none';
 document.getElementById('pid').textContent=pid;
 if(!pid) document.getElementById('pid').style.display='none';
-document.getElementById('frame').src=`${base}/SLIDE-PATTERN-${name}.html?v10`;
 document.getElementById('dl').href=`${base}/SLIDE-PATTERN-${name}.md`;
 
 // パレット状態: ?pal=キー ＞ localStorage（sk-pal）＞ 既定ネイビー。'gray'はグレー表示
@@ -109,6 +108,10 @@ let PAL=(function(){
   return skFindPalette(q) || skFindPalette('navy-gold');
 })();
 const frame=document.getElementById('frame');
+// onload をHTML属性で書くと、src未設定の初期 about:blank の load が script 評価前に走って
+// 「apply is not defined」になる（2026-09-05 実測）。リスナーを付けてから src を入れる
+frame.addEventListener('load',apply);
+frame.src=`${base}/SLIDE-PATTERN-${name}.html?v10`;
 function apply(){
   // テキストは黒#333固定。装飾=メイン(--sk-accent)、淡い面=ベース(--sk-soft)、差し色=--sk-accent2。
   try{

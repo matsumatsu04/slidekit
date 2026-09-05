@@ -156,8 +156,9 @@ body{padding-top:80px}
   var MAX_FILES=5, MAX_SIZE=10*1024*1024, OK_TYPES=['image/png','image/jpeg','image/webp','image/gif','application/pdf'];
   var FILES=[];
 
-  function fail(msg){ err.textContent=msg; err.style.display='block'; btn.disabled=false; btn.textContent='送信する'; }
-  function note(msg){ err.textContent=msg; err.style.display='block'; setTimeout(function(){ err.style.display='none'; },4000); }
+  var noteT=null; // note() の自動消去タイマー。fail() の表示を後から消さないように共有して止める
+  function fail(msg){ clearTimeout(noteT); err.textContent=msg; err.style.display='block'; btn.disabled=false; btn.textContent='送信する'; }
+  function note(msg){ clearTimeout(noteT); err.textContent=msg; err.style.display='block'; noteT=setTimeout(function(){ err.style.display='none'; },4000); }
 
   /* ---- 種別による出し分け（用途別に送りやすく） ---- */
   var byType={

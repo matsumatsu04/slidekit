@@ -88,14 +88,14 @@ if (!empty($_FILES['files']) && is_array($_FILES['files']['name'])) {
             $uploadErr = '添付の保存に失敗しました'; continue;
         }
         $orig = (string)($_FILES['files']['name'][$i] ?? '');
-        $base = preg_replace('/[^0-9A-Za-z._\-ぁ-んァ-ヶ一-龠ー]/u', '_', basename($orig));
-        $base = mb_substr($base !== '' ? $base : 'file', 0, 80);
-        if (!preg_match('/\.' . $okMime[$mime] . '$/i', $base) && !($mime === 'image/jpeg' && preg_match('/\.jpe?g$/i', $base))) {
-            $base .= '.' . $okMime[$mime];
+        $fname = preg_replace('/[^0-9A-Za-z._\-ぁ-んァ-ヶ一-龠ー]/u', '_', basename($orig));
+        $fname = mb_substr($fname !== '' ? $fname : 'file', 0, 80);
+        if (!preg_match('/\.' . $okMime[$mime] . '$/i', $fname) && !($mime === 'image/jpeg' && preg_match('/\.jpe?g$/i', $fname))) {
+            $fname .= '.' . $okMime[$mime];
         }
-        $dest = $upDir . '/' . sprintf('%02d', $i + 1) . '-' . $base;
+        $dest = $upDir . '/' . sprintf('%02d', $i + 1) . '-' . $fname;
         if (@move_uploaded_file($tmp, $dest)) {
-            $savedFiles[] = ['name' => $base, 'size' => $size, 'mime' => $mime, 'path' => $dest];
+            $savedFiles[] = ['name' => $fname, 'size' => $size, 'mime' => $mime, 'path' => $dest];
         } else {
             $uploadErr = '添付の保存に失敗しました';
         }
@@ -124,7 +124,7 @@ if (is_file($configFile)) {
     if (defined('SLIDEKIT_WEBHOOK_URL') && SLIDEKIT_WEBHOOK_URL !== '') {
         $msg = "📮 **SlideKitリクエスト**（{$type}）\n"
              . "**{$name}** さんより\n"
-             . "```\n" . mb_substr($body, 0, 1500) . "\n```";
+             . "```\n" . str_replace('```', "'''", mb_substr($body, 0, 1500)) . "\n```"; // 本文の ``` で囲みが閉じないように
         if (!empty($savedFiles)) {
             $msg .= '📎 添付 ' . count($savedFiles) . '件';
         }

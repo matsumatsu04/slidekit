@@ -1959,6 +1959,7 @@ function changeFontSize(delta,absolute){
         const i=arr.findIndex(x=>x.type==='imgadd'&&x.id===added.id);
         if(i<0) return arr;
         let next=(absolute!=null)?absolute:arr[i].w+(delta*10);
+        if(!isFinite(next)) return arr; // 幅欄が空のまま確定すると NaN が記録に残る
         next=Math.max(24,Math.min(960,Math.round(next)));
         arr[i]={...arr[i],w:next};
         el.style.width=next+'px';
@@ -2192,7 +2193,7 @@ function toggleGroup(){
       groups.push({id:gid,members});
     }
     if(groups.length) s.groups=groups; else delete s.groups;
-    if(!s.text&&!s.pattern&&!s.edits&&!s.groups) delete FB.slides[ED.iid];
+    if(!s.text&&!s.pattern&&!s.edits&&!s.groups&&typeof s.bg!=='boolean') delete FB.slides[ED.iid];
   });
   updateFormatControls();
   flashChip(g?'グループを解除しました':'グループ化しました（クリックでまとめて選択）');

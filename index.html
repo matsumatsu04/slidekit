@@ -449,7 +449,9 @@ function toggleFav(id,ev){
   if(FAVS.has(id)) FAVS.delete(id); else FAVS.add(id);
   saveFavs();
   document.getElementById('favCount').textContent=FAVS.size;
-  render();
+  // 一覧を作り直すと全サムネの iframe が読み直されて画面がちらつく（2026-09-05 修正）。
+  // 表示中の一覧から外れる「お気に入り」ビューだけ作り直し、それ以外は該当カードのボタンだけ更新する
+  if(active==='__fav') render(); else refreshCardState(id);
 }
 
 // ===== 削除予定ラベル（候補をマーク→「IDをコピー」でAIに削除依頼する運用）=====
@@ -461,7 +463,7 @@ function toggleDel(id,ev){
   if(DELS.has(id)) DELS.delete(id); else DELS.add(id);
   saveDels();
   document.getElementById('delCount').textContent=DELS.size;
-  render();
+  if(active==='__del') render(); else refreshCardState(id);
 }
 
 // ===== クリップボード共通 =====
@@ -491,14 +493,25 @@ function toggleTray(id,name,ev){
   if(ev){ev.stopPropagation();ev.preventDefault();}
   if(inTray(id)) TRAY=TRAY.filter(t=>t.id!==id);
   else TRAY.push({id,name});
-  saveTray();renderTray();render();
+  saveTray();renderTray();refreshCardState(id);
 }
 function removeFromTray(id,ev){
   if(ev){ev.stopPropagation();ev.preventDefault();}
   TRAY=TRAY.filter(t=>t.id!==id);
-  saveTray();renderTray();render();
+  saveTray();renderTray();refreshCardState(id);
 }
-function clearTray(){TRAY=[];saveTray();renderTray();render();}
+function clearTray(){TRAY=[];saveTray();renderTray();refreshAllCardStates();}
+// カード下のボタン3種（お気に入り／削除予定／構成に追加）の見た目だけを更新する。
+// render() と違って iframe を作り直さないので、押した瞬間に一覧がちらつかない
+function refreshCardState(id){
+  const card=grid.querySelector(`.card[data-id="${id}"]`); if(!card) return;
+  const fav=isFav(id), del=isDel(id), tray=inTray(id);
+  const bF=card.querySelector('.act-fav'), bD=card.querySelector('.act-del'), bT=card.querySelector('.act-tray');
+  if(bF){ bF.classList.toggle('on-fav',fav); bF.textContent=`${fav?'★':'☆'} お気に入り`; }
+  if(bD){ bD.classList.toggle('on-del',del); bD.textContent=`${del?'✓':'🗑'} 削除予定`; }
+  if(bT){ bT.classList.toggle('on-tray',tray); bT.textContent=tray?'✓ 追加済み':'＋ 構成に追加'; }
+}
+function refreshAllCardStates(){ grid.querySelectorAll('.card[data-id]').forEach(c=>refreshCardState(c.dataset.id)); }
 function renderTray(){
   const bar=document.getElementById('trayBar');
   const chips=document.getElementById('trayChips');
@@ -576,7 +589,7 @@ function render(){
   document.getElementById('delCopy').style.display=(active==='__del'&&list.length)?'inline-block':'none';
   list.forEach((p,i)=>{
     const fav=isFav(p.id), del=isDel(p.id), tray=inTray(p.id);
-    const card=document.createElement('div');card.className='card';
+    const card=document.createElement('div');card.className='card';card.dataset.id=p.id||'';
     card.innerHTML=`
       <div class="thumb" onclick="openModal(${i})">
         <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
@@ -587,9 +600,9 @@ function render(){
         <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
         <div class="sum">${p.summary||''}</div>
         <div class="actions">
-          <button class="act owner-only ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
-          <button class="act owner-only ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
-          <button class="act ${tray?'on-tray':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'✓ 追加済み':'＋ 構成に追加'}</button>
+          <button class="act act-fav owner-only ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
+          <button class="act act-del owner-only ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
+          <button class="act act-tray ${tray?'on-tray':''}" onclick="toggleTray('${p.id}','${p.name}',event)">${tray?'✓ 追加済み':'＋ 構成に追加'}</button>
         </div>
       </div>`;
     grid.appendChild(card);

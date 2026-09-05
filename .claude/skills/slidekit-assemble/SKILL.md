@@ -101,7 +101,7 @@ N. [締め]      まとめと次の一歩
 | 表紙 | cover-curve-shape-left（曲面シェイプ） / cover-blob-side-left（ブロブ） / cover-geo-texture-left（幾何学×紙質感） / cover-soft-3d-left / cover-art-brush-left（いずれも画像背景表紙。assets/covers/ の素材を使用・色ティント対象外） |
 | セクション | section-divider / section-minimal-center（ミニマル中央） / section-tag-progress（現在地タグナビ） / section-geo-texture-left / section-soft-3d-number-row（画像背景中扉は assets/covers/ の素材を使用・色ティント対象外） |
 | 目次 | agenda-toc / toc-two-column（5項目以上の2カラム） / toc-section-cards（カード型・4章） / toc-current-highlight（章再掲・現在地） |
-| 本文 | key-message-single / key-message-inverted（反転配色の山場） / two-col-text-body（左右2カラム） / quote-single-large（1名大型引用） / value-three-pillars（MVV3段） / body-callout-box（本文＋POINT囲み） / concept-keyword-three（大キーワード3つ） / two-section-stacked-text |
+| 本文 | key-message-single / key-message-inverted（反転配色の山場） / two-col-text-body（左右2カラム） / value-three-pillars（MVV3段） / body-callout-box（本文＋POINT囲み） / concept-keyword-three（大キーワード3つ） / two-section-stacked-text |
 | リスト | numbered-list-with-body / icon-left-text-list-detailed（アイコン＋説明つき） / numbered-row-full-width（全幅の番号行） / column-stacked-tag-list / checklist-two-column（チェックリスト） |
 | ステップ | four-step-card-flow / three-stage-circle-flow / horizontal-timeline-cards / vertical-step-flow / milestone-timeline / history-year-list（沿革） |
 | 図解・ダイアグラム | two-column-split-boxes / venn-diagram-three-circle（3円の重なり） / ok-ng-comparison（NG×OK対比） / flow-branch-two-outcomes（条件分岐） / business-model-three-party（3者商流） |
