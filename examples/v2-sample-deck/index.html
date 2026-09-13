@@ -27,8 +27,8 @@ html { scroll-snap-type: y mandatory; }
   background:#fff; margin:0 auto; box-shadow:0 2px 16px rgba(0,0,0,.12);
   scroll-snap-align:start;
 }
-.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 20px; font-size:24px; font-weight:700; color:#333; }
-.sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; background:var(--sk-accent); }
+.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0; display:flex; align-items:center; font-size:24px; font-weight:700; color:#333; }
+.sk-h::before { content:""; position:static; flex:none; width:4px; height:28px; margin-right:16px; background:var(--sk-accent); }
 .sk-msg { position:absolute; top:82px; left:40px; right:40px; font-size:16px; color:#333; }
 /* ページ番号。内側に寄りすぎてコンテンツと重なるため外へ寄せた。
    2026-08-21: right:40/bottom:16 → 32/12 → さらに右20px・下4px 動かして 12/8（代表指示） */
@@ -42,10 +42,10 @@ html { scroll-snap-type: y mandatory; }
 .slide ul, .slide ol { list-style:none; }
 .slide { color:var(--sk-ink); font-feature-settings:"palt" 1; line-break:strict; word-break:normal; letter-spacing:.06em; line-height:1.8; }
 .slide b, .slide strong { font-weight:700; }
-/* 見出し・リードの左端を本文の左右余白 48px に揃える。スタイルB の縦バーは v2 の 3×18px */
+/* 見出し・リードの左端を本文の左右余白 48px に揃える。スタイルB の縦バーは v2 の 3×18px（位置は flex の縦中央そろえ） */
 .sk-h { left:48px; right:48px; letter-spacing:.06em; color:var(--sk-ink); }
-.sk-h[data-v2-style="b"] { padding-left:16px; }
-.sk-h[data-v2-style="b"]::before { left:0; top:29px; width:3px; height:18px; }
+.sk-h[data-v2-style="b"] { padding-left:0; }
+.sk-h[data-v2-style="b"]::before { width:3px; height:18px; margin-right:13px; }
 .sk-msg { top:82px; left:48px; right:48px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
 .sk-msg b { color:var(--sk-accent); font-weight:700; }
 .sk-kicker { display:block; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }

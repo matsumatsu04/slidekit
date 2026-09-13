@@ -783,8 +783,9 @@ function maybeInjectPageNumber(sectionHtml, n, total, config) {
 function buildHeadingCss(style) {
   switch (style) {
     case 'b': // 縦バー（タイトル文字高に合わせた短い縦バー・左40px＋タイトルはその右16px）
-      return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0 20px; font-size:24px; font-weight:700; color:#333; }
-.sk-h::before { content:""; position:absolute; left:0; top:26px; width:4px; height:28px; background:var(--sk-accent); }`;
+      // バーは flex の縦中央そろえで文字の行に合わせる（top を固定pxで置くと、行の高さを変えたときに置き去りになる。2026-09-13 修正）
+      return `.sk-h { position:absolute; top:0; left:40px; right:auto; padding:24px 0 0; display:flex; align-items:center; font-size:24px; font-weight:700; color:#333; }
+.sk-h::before { content:""; position:static; flex:none; width:4px; height:28px; margin-right:16px; background:var(--sk-accent); }`;
     case 'c': // 塗り帯（全幅アクセント帯・白文字）
       return `.sk-h { position:absolute; top:0; left:0; right:0; height:76px; box-sizing:border-box; display:flex; align-items:center; padding:0 40px; background:var(--sk-accent); font-size:24px; font-weight:700; color:#FFFFFF; }`;
     case 'd': // ドット＋英字ラベル型（`.sk-h` に data-label 属性でラベル文言を渡す）
@@ -841,10 +842,10 @@ function buildFrameV2Css() {
 .slide ul, .slide ol { list-style:none; }
 .slide { color:var(--sk-ink); font-feature-settings:"palt" 1; line-break:strict; word-break:normal; letter-spacing:.06em; line-height:1.8; }
 .slide b, .slide strong { font-weight:700; }
-/* 見出し・リードの左端を本文の左右余白 48px に揃える。スタイルB の縦バーは v2 の 3×18px */
+/* 見出し・リードの左端を本文の左右余白 48px に揃える。スタイルB の縦バーは v2 の 3×18px（位置は flex の縦中央そろえ） */
 .sk-h { left:48px; right:48px; letter-spacing:.06em; color:var(--sk-ink); }
-.sk-h[data-v2-style="b"] { padding-left:16px; }
-.sk-h[data-v2-style="b"]::before { left:0; top:29px; width:3px; height:18px; }
+.sk-h[data-v2-style="b"] { padding-left:0; }
+.sk-h[data-v2-style="b"]::before { width:3px; height:18px; margin-right:13px; }
 .sk-msg { top:82px; left:48px; right:48px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
 .sk-msg b { color:var(--sk-accent); font-weight:700; }
 .sk-kicker { display:block; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }
