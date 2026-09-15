@@ -349,9 +349,11 @@ body{padding-top:80px}
           <h4>操作方法</h4>
           <table>
             <tr><td class="k">ダブルクリック</td><td>文字を編集（Enterで確定・Escで取消）</td></tr>
-            <tr><td class="k">クリック→ドラッグ</td><td>要素を移動（矢印キー1px・Shiftで10px）。<br>ドラッグ中は<b>中央・端・等間隔に自動スナップ</b>（ピンクのガイド表示）</td></tr>
+            <tr><td class="k">クリック→ドラッグ</td><td>要素を移動。ドラッグ中は<b>中央・端・等間隔に自動スナップ</b>（ピンクのガイド表示）</td></tr>
+            <tr><td class="k">矢印キー</td><td>選択中の要素を1px移動（<b>⇧で10px</b>）。複数選択・グループは<b>まとめて動き</b>、連打・長押しも<b>⌘Z 1回で戻る</b></td></tr>
             <tr><td class="k">余白からドラッグ</td><td><b>範囲選択</b>：囲った要素をまとめて選択</td></tr>
-            <tr><td class="k">Shift+クリック</td><td>選択に追加／除外（→「グループ化」で固定）</td></tr>
+            <tr><td class="k">Shift+クリック</td><td>選択に追加／除外</td></tr>
+            <tr><td class="k">⌘G</td><td><b>グループ化／解除</b>（「グループ化」ボタンと同じ。グループはクリックでまとめて選択）</td></tr>
             <tr><td class="k">サムネをドラッグ</td><td>スライドの並べ替え（ページ番号は自動更新）</td></tr>
             <tr><td class="k">背景画像</td><td>ツールバー／一覧カードの「背景画像」で、このスライドの最下層の淡い背景画像を ON/OFF（deck-config.json に反映）</td></tr>
             <tr><td class="k">角の●をドラッグ</td><td>追加画像・複製要素のサイズ変更</td></tr>
@@ -547,7 +549,7 @@ let COPIED=null;        // 要素コピー {srcIid,sel,nth,count,label}
 let SLIDE_CLIP=null;    // スライドコピー {iid}
 let LAST_COPY=null;     // 'el' | 'slide'
 let pasteImageHandled=false;
-const HIST={undo:[],redo:[]}; // 全体スナップショット（編集＋構成）
+const HIST={undo:[],redo:[],lastTag:null,lastAt:0}; // 全体スナップショット（編集＋構成）。lastTag/lastAt は連続操作（矢印キー連打）を1履歴にまとめる用
 const $=id=>document.getElementById(id);
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function short(s,n){s=String(s);return s.length>n?s.slice(0,n)+'…':s;}
@@ -579,10 +581,12 @@ function pruneFbKeys(){
     entries.sort((a,b)=>b.t-a.t).slice(20).forEach(e=>localStorage.removeItem(e.k));
   }catch(e){}
 }
+let PRUNE_T=null;
 function saveFb(){
   if(!DECK) return;
   try{ localStorage.setItem(storageKey(),JSON.stringify({t:Date.now(),fb:FB})); }catch(e){}
-  pruneFbKeys();
+  // 古い保存の掃除は localStorage の全走査なので、矢印キー連打中は後回しにしてまとめる
+  clearTimeout(PRUNE_T); PRUNE_T=setTimeout(pruneFbKeys,1000);
 }
 function saveImgs(){
   if(!DECK) return;
@@ -605,7 +609,7 @@ function loadFb(){
     const v=localStorage.getItem(imgStorageKey());
     if(v){ const o=JSON.parse(v); if(o&&o.imgs) IMGS=o.imgs; }
   }catch(e){}
-  HIST.undo.length=0; HIST.redo.length=0;
+  HIST.undo.length=0; HIST.redo.length=0; HIST.lastTag=null; updateHistoryButtons();
 }
 const ORDER=()=>FB.order;
 function instAt(pos){ return FB.order[pos-1]||null; }
@@ -620,13 +624,62 @@ function structChanged(){
 }
 function slideHasFb(iid){ const s=FB.slides[iid]; return !!(s&&(s.text||s.pattern||(s.edits&&s.edits.length)||typeof s.bg==='boolean')); }
 // 変更確定（スナップショット→undo/redo。編集も構成変更もこれを通す）
+//
+// 【1操作＝1履歴】（2026-09-15 代表指摘で全面見直し）
+// 旧: 複数選択で矢印キーを押すと要素ごとに commit が走り、要素数ぶんの履歴が積まれていた。
+//     → ⌘Z で1要素ずつしか戻らない／サムネの描き直しが「要素数×連打回数」走って画面がガタつく。
+// 新: 1回のユーザー操作は transact() で包む。スナップショットは最初の1回だけ積み、中の commit/mutateEdits は素通し。
+//     矢印キーの連打・長押しは、直前の操作と同じ対象なら同じ履歴にまとめる（Figma／Keynote と同じ挙動）。
 function snapshot(){ return JSON.stringify({slides:FB.slides,order:FB.order,nextId:FB.nextId}); }
-function commit(mut){
-  HIST.undo.push(snapshot());
+let TX_DEPTH=0, TX_UI=false;
+// 履歴の1段 = {j: 状態のJSON, iid: そのとき編集していたスライド, sel: そのときの選択（記述子）}
+// sel を持つのは、削除の取り消しで要素を選び直す（Canva と同じ）ため
+function histEntry(){ return {j:snapshot(),iid:MODE_EDIT?ED.iid:0,sel:MODE_EDIT?selDescs():[]}; }
+// 戻り値: 履歴を1段積んだら true、直前の操作に合流した（積まなかった）ら false
+function pushUndo(tag,force){
+  const now=Date.now();
+  // 連続操作のまとめ: 同じ tag が短時間に続いたら履歴を増やさない（矢印キーの連打）。
+  // force（キーの長押し＝e.repeat）は時間に関係なく合流する。OS のリピート開始遅延が 450ms を超える設定でも1履歴になる
+  if(tag&&HIST.lastTag===tag&&(force||(now-HIST.lastAt)<450)&&HIST.undo.length){ HIST.lastAt=now; return false; }
+  HIST.undo.push(histEntry());
   if(HIST.undo.length>80) HIST.undo.shift();
   HIST.redo.length=0;
+  HIST.lastTag=tag||null; HIST.lastAt=now;
+  updateHistoryButtons();
+  return true;
+}
+let TX_DIRTY=false;
+function commit(mut){
+  if(TX_DEPTH===0) pushUndo(null);
+  TX_DIRTY=true;
   mut();
-  saveFb();
+  if(TX_DEPTH===0) saveFb();
+}
+// 1操作をひとつの履歴にまとめる。
+//   opts.tag     : 同じ tag の直前の操作と履歴を共有する（連打のまとめ）
+//   opts.force   : tag が同じなら時間に関係なく合流（長押し）
+//   opts.deferUi : 一覧・サムネの描き直しを少し遅らせてまとめる（連打中の負荷を下げる）
+// 中で何も変更されなかった（commit が一度も来なかった）操作は、積んだ履歴を取り下げる。
+// 例: サイズ欄に文字を入れて Enter／4px だけ動かしてスナップで元位置に戻ったドラッグ → ⌘Z が空振りしない
+function transact(fn,opts){
+  opts=opts||{};
+  const outer=TX_DEPTH===0;
+  let pushed=false, bak=null;
+  if(outer){
+    bak={tag:HIST.lastTag,at:HIST.lastAt,redo:HIST.redo.slice()};
+    pushed=pushUndo(opts.tag||null,!!opts.force);
+    TX_DIRTY=false;
+  }
+  TX_DEPTH++;
+  try{ fn(); }
+  finally{
+    TX_DEPTH--;
+    if(outer){
+      if(!TX_DIRTY&&pushed){ HIST.undo.pop(); HIST.lastTag=bak.tag; HIST.lastAt=bak.at; HIST.redo=bak.redo; updateHistoryButtons(); }
+      else saveFb();
+      if(TX_UI){ TX_UI=false; if(opts.deferUi) afterEditCommitSoon(); else afterEditCommit(); }
+    }
+  }
 }
 function restore(json){
   const o=JSON.parse(json);
@@ -634,25 +687,40 @@ function restore(json){
   saveFb();
 }
 function undoEdit(){
-  if(!HIST.undo.length) return;
+  if(!HIST.undo.length){ flashChip('これ以上戻せません'); updateHistoryButtons(); return; }
   if(ED.editingEl) cancelTextEdit();
-  const prev=snapshot();
-  HIST.redo.push(prev);
-  restore(HIST.undo.pop());
-  afterStructureChange(prev);
+  const cur=histEntry();
+  const ent=HIST.undo.pop();
+  HIST.redo.push(cur);
+  restore(ent.j);
+  HIST.lastTag=null;
+  updateHistoryButtons();
+  afterStructureChange(cur.j,ent);
+  flashChip('元に戻しました');
 }
 function redoEdit(){
-  if(!HIST.redo.length) return;
-  const prev=snapshot();
-  HIST.undo.push(prev);
-  restore(HIST.redo.pop());
-  afterStructureChange(prev);
+  if(!HIST.redo.length){ flashChip('やり直す操作はありません'); updateHistoryButtons(); return; }
+  const cur=histEntry();
+  const ent=HIST.redo.pop();
+  HIST.undo.push(cur);
+  restore(ent.j);
+  HIST.lastTag=null;
+  updateHistoryButtons();
+  afterStructureChange(cur.j,ent);
+  flashChip('やり直しました');
+}
+function updateHistoryButtons(){
+  const u=$('emUndoBtn'), r=$('emRedoBtn');
+  if(u) u.disabled=!HIST.undo.length;
+  if(r) r.disabled=!HIST.redo.length;
 }
 // 取り消し／やり直しの後の描き直し。
 // 旧: レール全枚＋一覧全枚＋編集キャンバスを毎回作り直していた（12枚のデッキで iframe 26個・復帰まで1秒超）。
 // 新: 直前の状態と比べて「変わったスライドだけ」描き直す。一覧（非表示中）は編集モードを抜けるときにまとめて描く。
-function afterStructureChange(prevJson){
+function afterStructureChange(prevJson,ent){
   if(!MODE_EDIT){ renderDeck(); return; }
+  // 戻した先の履歴に「そのときの選択」があり、同じスライドなら、その要素を選び直す（削除の取り消しで復活した要素など）
+  const entSel=(ent&&ent.iid===ED.iid&&ent.sel&&ent.sel.length)?ent.sel:null;
   let prev=null; try{ prev=prevJson?JSON.parse(prevJson):null; }catch(e){}
   const orderChanged=!prev||JSON.stringify(prev.order)!==JSON.stringify(FB.order);
   const ids=new Set([...Object.keys((prev&&prev.slides)||{}),...Object.keys(FB.slides)].map(Number));
@@ -667,7 +735,7 @@ function afterStructureChange(prevJson){
   // 別のスライドの変更を戻したときは、そのスライドへ移動して見せる（Googleスライドと同じ）
   const target=changed.includes(ED.iid)?ED.iid:(changed.length===1?changed[0]:null);
   if(target!==null&&target!==ED.iid&&posOfIid(target)>0){ gotoIid(target,true); return; }
-  if(changed.includes(ED.iid)){ updateBgToolbarBtn(); rebuildEditorDoc(); }
+  if(changed.includes(ED.iid)){ updateBgToolbarBtn(); rebuildEditorDoc(entSel?{select:entSel}:{keepSel:true}); }
   else{ renderEditList(); renderLayers(); }
 }
 
@@ -972,7 +1040,7 @@ $('discardAllBtn').addEventListener('click',()=>{
   FB.nextId=DECK.sections.length+1;
   IMGS={}; saveFb(); saveImgs();
   try{ localStorage.removeItem(imgStorageKey()); }catch(e){}
-  HIST.undo.length=0; HIST.redo.length=0;
+  HIST.undo.length=0; HIST.redo.length=0; HIST.lastTag=null; updateHistoryButtons();
   afterStructureChange();
 });
 
@@ -1165,7 +1233,7 @@ function hitsInk(c,x,y,doc){
     }
     if(n.nodeType!==1) return;
     if(n!==c&&cleanClasses(n).length) return; // クラス付きの子は、それ自身が候補になるので見ない
-    if(n.classList&&/sk-(rz|rb|guide)/.test(n.className)) return;
+    if(n.classList&&/sk-(rz|rb|guide|selbox)/.test(n.className)) return;
     const cs=win.getComputedStyle(n);
     if(cs.display==='none'||cs.visibility==='hidden') return;
     if(n!==c&&(INK_TAGS.test(n.tagName)||elHasChrome(n,win))){
@@ -1183,7 +1251,7 @@ function pickTargetAt(x,y,doc){
     if(!el||el===doc.body||el===doc.documentElement) break;
     if(el.classList&&el.classList.contains('slide')) break;
     if(el.classList&&el.classList.contains('sk-rz')) return null;      // ハンドルの上
-    if(el.classList&&/sk-(rb|guide)/.test(el.className)) continue;    // 選択矩形・ガイド線は素通し
+    if(el.classList&&/sk-(rb|guide|selbox)/.test(el.className)) continue;    // 選択矩形・ガイド線・外接枠は素通し
     // 候補＝その要素自身か、最も近いクラス付きの祖先
     let c=el;
     while(c&&c!==doc.body&&!(c.classList&&c.classList.contains('slide'))&&!cleanClasses(c).length) c=c.parentElement;
@@ -1201,7 +1269,7 @@ function pickTargetAt(x,y,doc){
   for(const el of stack){
     if(!el||el===doc.body||el===doc.documentElement) break;
     if(el.classList&&el.classList.contains('slide')) break;
-    if(el.classList&&/sk-(rz|rb|guide)/.test(el.className)) continue;
+    if(el.classList&&/sk-(rz|rb|guide|selbox)/.test(el.className)) continue;
     if(isFullBleed(el,doc)) continue;
     const win=doc.defaultView;
     if((INK_TAGS.test(el.tagName)||elHasChrome(el,win)||isTextLeaf(el))&&rectHas(el.getBoundingClientRect(),x,y)) return el;
@@ -1230,7 +1298,7 @@ function rubberSelect(rect,doc){
     return cx>=rect.left&&cx<=rect.right&&cy>=rect.top&&cy<=rect.bottom;
   };
   function pick(el){
-    if(el.classList&&(el.classList.contains('sk-rb')||el.classList.contains('sk-rz'))) return [];
+    if(el.classList&&['sk-rb','sk-rz','sk-guide','sk-selbox'].some(c=>el.classList.contains(c))) return [];
     const r=el.getBoundingClientRect();
     if(r.width===0||r.height===0) return [];
     if(!inter(r)) return [];
@@ -1268,7 +1336,7 @@ function visualRect(el,doc){
       return;
     }
     if(n.nodeType!==1) return;
-    if(n.classList&&/sk-(rz|rb|guide)/.test(n.className)) return;
+    if(n.classList&&/sk-(rz|rb|guide|selbox)/.test(n.className)) return;
     const cs=win.getComputedStyle(n);
     if(cs.display==='none'||cs.visibility==='hidden') return;
     if(/^(IMG|SVG|VIDEO|CANVAS|I)$/i.test(n.tagName)||hasChrome(n)){
@@ -1450,6 +1518,9 @@ function injectEditorCss(doc){
     .sk-rzw.h-nw,.sk-rzw.h-se{cursor:nwse-resize}
     .sk-rzw.h-ne,.sk-rzw.h-sw{cursor:nesw-resize}
     .sk-rb{position:absolute;border:1.5px dashed #2f6bff;background:rgba(47,107,255,.08);z-index:998;pointer-events:none}
+    /* 複数選択・グループの外接枠（Canva／Googleスライドと同じ「ひとつのまとまり」に見せる） */
+    .sk-selbox{position:absolute;border:1.5px dashed #2f6bff;z-index:998;pointer-events:none;box-sizing:border-box}
+    .sk-selbox-lab{position:absolute;left:-1.5px;top:-18px;background:#2f6bff;color:#fff;font-size:10px;line-height:1;padding:3px 6px;font-family:ui-monospace,monospace;white-space:nowrap}
     .sk-guide{position:absolute;inset:0;pointer-events:none;z-index:997}
     .sk-guide .gv{position:absolute;top:0;bottom:0;width:0;border-left:1px solid #FF2D8D}
     .sk-guide .gv.c{border-left-style:dashed}
@@ -1639,8 +1710,14 @@ function gotoPos(pos){
   const inst=instAt(pos);
   if(inst) gotoIid(inst.id);
 }
-function rebuildEditorDoc(){
-  const fr=$('eFrame'); ED.fr=fr; SELSET=[]; ED.editingEl=null; ED.drag=null; ED.rz=null;
+// opts.keepSel : 描き直し後も同じ要素を選択したままにする（取り消し／やり直し・編集一覧の「取消」）。
+//                旧: 描き直しで選択が外れ、⌘Z の直後に矢印キーを押すと「要素の移動」のつもりが「スライド送り」になっていた
+// opts.select  : 描き直し後に選ぶ要素の記述子（追加した画像・複製をそのまま掴めるように）
+function rebuildEditorDoc(opts){
+  opts=opts||{};
+  const fr=$('eFrame'); ED.fr=fr;
+  const want=opts.select?opts.select:(opts.keepSel?selDescs():[]);
+  SELSET=[]; ED.editingEl=null; ED.drag=null; ED.rz=null; ED.rb=null;
   updateFormatControls();
   fr.onload=()=>{
     const doc=fr.contentDocument; ED.doc=doc;
@@ -1650,21 +1727,53 @@ function rebuildEditorDoc(){
     try{ renumberPageno(doc,ED.pos,FB.order.length); }catch(e){}
     wireEditor(doc);
     renderEditList();
-    renderLayers();
+    const els=want.length?resolveDescs(want,doc):[];
+    if(els.length) setSelection(els); else renderLayers();
   };
   const inst=FB.order.find(o=>o.id===ED.iid);
   fr.srcdoc=slideDocFor(inst);
 }
+// 選択中の要素を「記述子」（追加要素は id、それ以外は sel＋nth）で控える／その記述子から要素を引き直す
+function selDescs(){
+  return SELSET.filter(el=>el&&el.isConnected).map(el=>{
+    const a=findAddedRec(el); if(a) return {added:a.id};
+    const d=descFor(el); return {sel:d.sel,nth:d.nth};
+  });
+}
+function resolveDescs(descs,doc){
+  const slideEl=doc.querySelector('.slide'); if(!slideEl) return [];
+  const view=doc.defaultView;
+  return descs.map(d=>{
+    if(d.added!=null) return slideEl.querySelector('.sk-added-'+d.added);
+    try{ return [...slideEl.querySelectorAll(d.sel)][d.nth]||null; }catch(e){ return null; }
+  }).filter(el=>el&&!(view&&view.getComputedStyle(el).display==='none')); // 削除済み（display:none）は選ばない
+}
 // --- 選択（複数対応） ---
+// 自分か祖先がグループの一員なら、そのグループ。
+// グループ化した箱の「中の文字」をクリックしても、グループ全体が選ばれる（Canva と同じ）
 function groupOf(el){
-  const d=descFor(el);
-  return slideGroups(ED.iid).find(g=>g.members.some(m=>m.sel===d.sel&&m.nth===d.nth))||null;
+  const groups=slideGroups(ED.iid); if(!groups.length||!el) return null;
+  let c=el;
+  while(c&&c.nodeType===1&&!(c.classList&&c.classList.contains('slide'))){
+    const d=descFor(c);
+    const g=groups.find(g=>g.members.some(m=>m.sel===d.sel&&m.nth===d.nth));
+    if(g) return g;
+    c=c.parentElement;
+  }
+  return null;
+}
+// 選択中の要素が全部「同じひとつのグループ」に属していればそのグループ。そうでなければ null
+function sameGroupOf(els){
+  if(!els.length) return null;
+  const g=groupOf(els[0]); if(!g) return null;
+  return els.every(el=>{ const x=groupOf(el); return x&&x.id===g.id; })?g:null;
 }
 function resolveMembers(g,doc){
   const slideEl=doc.querySelector('.slide'); const out=[];
+  const view=doc.defaultView;
   g.members.forEach(m=>{
     const el=[...slideEl.querySelectorAll(m.sel)][m.nth];
-    if(el) out.push(el);
+    if(el&&(!view||view.getComputedStyle(el).display!=='none')) out.push(el); // 削除済み（display:none）は除く
   });
   return out;
 }
@@ -1672,16 +1781,62 @@ function clearSelVisual(){
   if(!ED.doc) return;
   ED.doc.querySelectorAll('.sk-selected').forEach(x=>x.classList.remove('sk-selected'));
   ED.doc.querySelectorAll('.sk-hovered').forEach(x=>x.classList.remove('sk-hovered'));
-  ED.doc.querySelectorAll('.sk-rz').forEach(x=>x.remove());
+  ED.doc.querySelectorAll('.sk-rz,.sk-selbox').forEach(x=>x.remove());
+}
+// 親と子を同時に選ばない。親が動けば子も一緒に動くので、両方に移動を記録すると子だけ2倍動く
+// （2026-09-15 代表報告「パーツごとに動く量が違う」の原因のひとつ。Shift+クリックで起きていた）
+function normalizeSelection(els){
+  const uniq=[...new Set((els||[]).filter(Boolean))];
+  return uniq.filter(el=>!uniq.some(o=>o!==el&&o.contains(el)));
 }
 function setSelection(els){
   clearSelVisual();
-  SELSET=els.filter(Boolean);
+  SELSET=normalizeSelection(els);
   SELSET.forEach(el=>el.classList.add('sk-selected'));
-  if(SELSET.length===1) placeResizeHandle(SELSET[0]);
+  refreshSelVisual();
   if(SELSET.length){ try{ ED.fr.contentWindow.focus(); }catch(e){} }
   updateFormatControls();
   renderLayers();
+}
+// 選択の飾り（1要素＝サイズ変更ハンドル／複数＝まとめて囲む外接枠）を、いまの位置に合わせて置き直す。
+// 移動・サイズ変更・取り消しの後に呼ぶ（旧: ドラッグ後にハンドルを重ね置きして、古い位置のハンドルが残っていた）
+function refreshSelVisual(){
+  if(!ED.doc) return;
+  SELSET=SELSET.filter(el=>el&&el.isConnected);
+  ED.doc.querySelectorAll('.sk-rz,.sk-selbox').forEach(x=>x.remove());
+  if(SELSET.length===1) placeResizeHandle(SELSET[0]);
+  else if(SELSET.length>1) placeSelBox();
+}
+// 複数選択・グループの外接枠
+function placeSelBox(){
+  const slideEl=ED.doc.querySelector('.slide'); if(!slideEl) return;
+  const sr=slideEl.getBoundingClientRect();
+  let l=1e9,t=1e9,r=-1e9,b=-1e9;
+  SELSET.forEach(el=>{ const x=el.getBoundingClientRect(); if(x.width<=0&&x.height<=0) return; l=Math.min(l,x.left);t=Math.min(t,x.top);r=Math.max(r,x.right);b=Math.max(b,x.bottom); });
+  if(l>r||t>b) return;
+  const box=ED.doc.createElement('div'); box.className='sk-selbox';
+  box.style.left=(l-sr.left-3)+'px'; box.style.top=(t-sr.top-3)+'px';
+  box.style.width=(r-l+6)+'px'; box.style.height=(b-t+6)+'px';
+  if(sameGroupOf(SELSET)){
+    const lab=ED.doc.createElement('span'); lab.className='sk-selbox-lab'; lab.textContent='グループ';
+    if(t-sr.top<22) lab.style.top='2px'; // 上端ぎりぎりのときは枠の内側に出す
+    box.appendChild(lab);
+  }
+  slideEl.appendChild(box);
+}
+// 選択の中身を文字列にしたもの（矢印キー連打を「同じ対象への連続操作」としてまとめる判定に使う）
+function selSignature(){
+  return SELSET.map(el=>{ const a=findAddedRec(el); if(a) return 'a'+a.id; const d=descFor(el); return d.sel+'#'+d.nth; }).join('|');
+}
+// グループの一員が含まれていたら、そのグループの全員に広げる（クリック・範囲選択・レイヤー一覧で共通）。
+// Canva／Googleスライドと同じで、グループの「一部だけ」が選ばれることはない
+function expandGroups(els){
+  const out=[];
+  (els||[]).forEach(el=>{
+    const g=groupOf(el);
+    (g?resolveMembers(g,ED.doc):[el]).forEach(x=>{ if(!out.includes(x)) out.push(x); });
+  });
+  return out;
 }
 function selectEl(t,additive){
   if(!t){ setSelection([]); return; }
@@ -1789,8 +1944,9 @@ function updateFormatControls(){
   $('ffSel').disabled=!textOn;
   $('bwSel').disabled=!on;
   ['zFront','zForward','zBackward','zBack'].forEach(id=>{$(id).disabled=!on;});
-  $('grpBtn').disabled=!(SELSET.length>=2||(one&&groupOf(one)));
-  $('grpBtn').textContent=(one&&groupOf(one))||SELSET.length>1&&SELSET.every(x=>groupOf(x))?'グループ解除':'グループ化';
+  const sameG=sameGroupOf(SELSET);
+  $('grpBtn').disabled=!(SELSET.length>=2||sameG);
+  $('grpBtn').textContent=sameG?'グループ解除':'グループ化';
   if(on&&one){
     const cs=ED.doc.defaultView.getComputedStyle(one);
     if(isImg){
@@ -1837,7 +1993,7 @@ function findEdit(type,el,prop){
   const d=descFor(el);
   return slideEdits(ED.iid).find(x=>x.type===type&&x.sel===d.sel&&x.nth===d.nth&&(type!=='style'||x.prop===prop))||null;
 }
-function mutateEdits(mut){ // 現スライドのedits配列を変更して確定
+function mutateEdits(mut){ // 現スライドのedits配列を変更して確定（transact の中なら履歴は増えず、画面更新は最後に1回）
   commit(()=>{
     const s=FB.slides[ED.iid]||(FB.slides[ED.iid]={});
     const arr=(s.edits||[]).slice();
@@ -1845,10 +2001,29 @@ function mutateEdits(mut){ // 現スライドのedits配列を変更して確定
     if(out.length) s.edits=out; else delete s.edits;
     if(!s.text&&!s.pattern&&!s.edits&&!(s.groups&&s.groups.length)&&typeof s.bg!=='boolean') delete FB.slides[ED.iid];
   });
+  if(TX_DEPTH>0){ TX_UI=true; return; }
   afterEditCommit();
 }
+let AFTER_T=null, THUMB_T={};
 function afterEditCommit(){
-  renderEditList(); refreshCardBadge(ED.iid); updateRailDot(ED.iid); refreshRailThumb(ED.iid); renderLayers();
+  clearTimeout(AFTER_T); AFTER_T=null;
+  renderEditList(); refreshCardBadge(ED.iid); updateRailDot(ED.iid); refreshRailThumbSoon(ED.iid); renderLayers();
+  refreshSelVisual();
+}
+// 連打中（矢印キー）は一覧・サムネの描き直しを少し遅らせてまとめる
+function afterEditCommitSoon(){
+  clearTimeout(AFTER_T);
+  const iid=ED.iid;
+  AFTER_T=setTimeout(()=>{
+    if(iid!==ED.iid){ refreshCardBadge(iid); updateRailDot(iid); refreshRailThumbSoon(iid); } // 120ms 以内に別スライドへ移った
+    afterEditCommit();
+  },120);
+}
+// レールのサムネは iframe の再読込なので、連続する更新は1回にまとめる
+// （旧: 要素ごと・キー1回ごとに再読込していた＝5要素を長押しで動かすと毎秒100回超）
+function refreshRailThumbSoon(iid){
+  clearTimeout(THUMB_T[iid]);
+  THUMB_T[iid]=setTimeout(()=>{ delete THUMB_T[iid]; refreshRailThumb(iid); },200);
 }
 function upsertMove(arr,el,dx,dy){
   const d=descFor(el);
@@ -1870,7 +2045,6 @@ function commitMove(el,dx,dy){
     el.style.translate='';
     const rec=findAddedRec(el);
     if(rec){ el.style.left=rec.x+'px'; el.style.top=rec.y+'px'; }
-    if(SELSET.length===1){ clearSelVisual(); setSelection([el]); }
     return;
   }
   mutateEdits(arr=>upsertMove(arr,el,dx,dy));
@@ -1940,19 +2114,24 @@ function cancelTextEdit(){
   rebuildEditorDoc();
 }
 // --- 配置・書式（複数選択対応） ---
-function nudgeSel(ddx,ddy){
-  SELSET.forEach(el=>{
-    const added=findAddedRec(el);
-    if(added){ commitMove(el,ddx,ddy); return; }
-    const cur=findEdit('move',el);
-    const dx=(cur?cur.dx:0)+ddx, dy=(cur?cur.dy:0)+ddy;
-    el.style.translate=`${dx}px ${dy}px`;
-    mutateEdits(arr=>upsertMove(arr,el,dx,dy));
-  });
+function nudgeSel(ddx,ddy,repeat){
+  if(!SELSET.length||!ED.doc) return;
+  // 選択中の全要素を「1回の操作」として動かす。履歴は1つ。連打・長押しは同じ履歴にまとまる（⌘Z 1回で戻る）
+  transact(()=>{
+    SELSET.forEach(el=>{
+      const added=findAddedRec(el);
+      if(added){ commitMove(el,ddx,ddy); return; }
+      const cur=findEdit('move',el);
+      const dx=(cur?cur.dx:0)+ddx, dy=(cur?cur.dy:0)+ddy;
+      el.style.translate=`${dx}px ${dy}px`;
+      mutateEdits(arr=>upsertMove(arr,el,dx,dy));
+    });
+  },{tag:'nudge:'+ED.iid+':'+selSignature(),force:!!repeat,deferUi:true});
+  refreshSelVisual();
 }
 function changeFontSize(delta,absolute){
   if(!SELSET.length||!ED.doc) return;
-  SELSET.forEach(el=>{
+  transact(()=>SELSET.forEach(el=>{
     const added=findAddedRec(el);
     if(added&&added.type==='imgadd'){
       mutateEdits(arr=>{
@@ -1976,7 +2155,7 @@ function changeFontSize(delta,absolute){
     next=Math.max(6,Math.min(200,Math.round(next)));
     setStyleEditRec(el,'font-size',before,next+'px');
     if(SELSET.length===1) $('fsInput').value=next;
-  });
+  }));
 }
 // ================= 重ね順（z-index） =================
 // 既存の style 編集レコードに乗せる。undo/redo・編集一覧・修正プロンプト出力がそのまま効く。
@@ -2029,7 +2208,8 @@ function layerEls(){
   const slide=ED.doc.querySelector('section.slide');
   if(!slide) return [];
   return [...slide.children].filter(el=>el.nodeType===1
-    && !el.classList.contains('sk-pageno') && !el.classList.contains('sk-rz'));
+    && !el.classList.contains('sk-pageno')
+    && !/(^|\s)sk-(rz|rb|guide|selbox)(\s|$)/.test(el.getAttribute('class')||''));
 }
 function stackOrder(els){ // 前面が先頭
   return els.map((el,i)=>({el,z:zIndexOf(el),i}))
@@ -2053,7 +2233,7 @@ function renderLayers(){
     const z=zIndexOf(el);
     row.querySelector('.lyz').textContent=z?String(z):'';
     row.title=lab;
-    row.addEventListener('click',()=>{ setSelection([el]); });
+    row.addEventListener('click',()=>{ setSelection(expandGroups([el])); });
     row.addEventListener('dragstart',e=>{ LY_DRAG=idx; row.classList.add('dragging'); try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','');}catch(_){} });
     row.addEventListener('dragend',()=>{ LY_DRAG=null; box.querySelectorAll('.ly').forEach(x=>x.classList.remove('dragging','drop-before','drop-after')); });
     row.addEventListener('dragover',e=>{
@@ -2094,7 +2274,7 @@ function applyLayerOrder(from,to,before){
 function changeZOrder(mode){ // 'front' | 'forward' | 'backward' | 'back'
   if(!SELSET.length||!ED.doc) return;
   const doc=ED.doc, view=doc.defaultView;
-  const zs=[...doc.querySelectorAll('section.slide *')].map(zIndexOf);
+  const zs=[...doc.querySelectorAll('section.slide *')].filter(el=>!/(^|\s)sk-(rz|rb|guide|selbox)/.test(el.getAttribute('class')||'')).map(zIndexOf);
   const maxZ=zs.length?Math.max(...zs):0;
   const minZ=zs.length?Math.min(...zs):0;
   const targets=SELSET.slice();
@@ -2122,24 +2302,24 @@ function changeZOrder(mode){ // 'front' | 'forward' | 'backward' | 'back'
 }
 function toggleBold(){
   if(!SELSET.length||!ED.doc) return;
-  SELSET.forEach(el=>{
+  transact(()=>SELSET.forEach(el=>{
     const ex=findEdit('style',el,'font-weight');
     const cur=String(ED.doc.defaultView.getComputedStyle(el).fontWeight);
     const isB=parseInt(cur,10)>=600;
     const before=ex?ex.before:cur;
     setStyleEditRec(el,'font-weight',before,isB?'400':'700');
-  });
+  }));
   updateFormatControls();
 }
 function changeColorProp(prop,hex){
   if(!SELSET.length||!ED.doc) return;
-  SELSET.forEach(el=>{
+  transact(()=>SELSET.forEach(el=>{
     const ex=findEdit('style',el,prop);
     const cs=ED.doc.defaultView.getComputedStyle(el);
     const curV=prop==='color'?cs.color:cs.backgroundColor;
     const before=ex?ex.before:(rgbToHex(curV)||(prop==='background-color'?'transparent':'#333333'));
     setStyleEditRec(el,prop,before,hex);
-  });
+  }));
   updateFormatControls();
 }
 function currentBorderBefore(cs){
@@ -2152,13 +2332,13 @@ function changeBorder(){
   if(!SELSET.length||!ED.doc) return;
   const wSel=$('bwSel').value;
   if(wSel==='') return;
-  SELSET.forEach(el=>{
+  transact(()=>SELSET.forEach(el=>{
     const ex=findEdit('style',el,'border');
     const cs=ED.doc.defaultView.getComputedStyle(el);
     const before=ex?ex.before:currentBorderBefore(cs);
     const after=(wSel==='none')?'none':`${wSel}px solid ${BC}`;
     setStyleEditRec(el,'border',before,after);
-  });
+  }));
   updateFormatControls();
 }
 function changeFontFamily(){
@@ -2169,34 +2349,40 @@ function changeFontFamily(){
     const l=ED.doc.createElement('link'); l.rel='stylesheet'; l.href=EXTRA_FONT_LINKS[v];
     ED.doc.head.appendChild(l);
   }
-  SELSET.forEach(el=>{
+  transact(()=>SELSET.forEach(el=>{
     const ex=findEdit('style',el,'font-family');
     const cs=ED.doc.defaultView.getComputedStyle(el);
     const before=ex?ex.before:cs.fontFamily;
     setStyleEditRec(el,'font-family',before,v);
-  });
+  }));
 }
 // --- グループ化 ---
 function toggleGroup(){
-  if(!ED.doc) return;
-  const one=SELSET.length===1?SELSET[0]:null;
-  const g=one?groupOf(one):(SELSET.length&&SELSET.every(x=>groupOf(x))?groupOf(SELSET[0]):null);
+  if(!ED.doc||!SELSET.length) return;
+  const g=sameGroupOf(SELSET);   // 全員が同じグループ → 解除
+  if(!g&&SELSET.length<2){ flashChip('グループ化は2つ以上の要素を選んでから（Shift+クリック／範囲選択）'); return; }
+  const keep=SELSET.slice();
   commit(()=>{
     const s=FB.slides[ED.iid]||(FB.slides[ED.iid]={});
-    const groups=(s.groups||[]).slice();
+    let groups=(s.groups||[]).slice();
     if(g){
-      const i=groups.findIndex(x=>x.id===g.id);
-      if(i>=0) groups.splice(i,1);
-    }else if(SELSET.length>=2){
-      const members=SELSET.map(el=>{const d=descFor(el);return {sel:d.sel,nth:d.nth};});
+      groups=groups.filter(x=>x.id!==g.id);
+    }else{
+      // 新しいグループを作る。選択中の要素が別のグループに入っていたら、そのグループは吸収して1つにする
+      // （旧: グループ同士が重なって「どれをクリックしても違う集合が選ばれる」状態になっていた）
+      const members=keep.map(el=>{const d=descFor(el);return {sel:d.sel,nth:d.nth};});
+      const inSel=m=>members.some(x=>x.sel===m.sel&&x.nth===m.nth);
+      // 吸収する旧グループの残りのメンバーも新グループに取り込む（置き去りにして単独要素に戻さない）
+      groups.filter(x=>x.members.some(inSel)).forEach(x=>x.members.forEach(m=>{ if(!inSel(m)) members.push({sel:m.sel,nth:m.nth}); }));
+      groups=groups.filter(x=>!x.members.some(inSel));
       const gid=1+groups.reduce((a,x)=>Math.max(a,x.id),0);
       groups.push({id:gid,members});
     }
     if(groups.length) s.groups=groups; else delete s.groups;
     if(!s.text&&!s.pattern&&!s.edits&&!s.groups&&typeof s.bg!=='boolean') delete FB.slides[ED.iid];
   });
-  updateFormatControls();
-  flashChip(g?'グループを解除しました':'グループ化しました（クリックでまとめて選択）');
+  setSelection(expandGroups(keep)); // 吸収した要素も含めて選び直し、外接枠のラベルとボタンの表示を更新
+  flashChip(g?'グループを解除しました（⌘Zで戻せます）':'グループ化しました（クリックでまとめて選択・⌘Gで解除）');
 }
 // --- 画像・複製・削除 ---
 function nextAddedId(){
@@ -2215,7 +2401,8 @@ function addImageRecord(dataUrl,origName){
     const ext=(dataUrl.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
     const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
     mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:origName||'',w,x:Math.round((960-w)/2),y:160}); return arr; });
-    rebuildEditorDoc();
+    rebuildEditorDoc({select:[{added:id}]});
+    flashChip('画像を追加しました（ドラッグで位置・角の●でサイズ）');
   };
   img.src=dataUrl;
 }
@@ -2318,13 +2505,15 @@ function duplicateFromCopied(){
     }
   }
   mutateEdits(arr=>{ arr.push(rec); return arr; });
-  rebuildEditorDoc();
+  rebuildEditorDoc({select:[{added:id}]});
+  flashChip('複製しました（ドラッグで位置を調整・⌘Zで戻せます）');
 }
 function deleteSelectedEls(){
   if(!SELSET.length) return;
   const targets=SELSET.slice();
-  setSelection([]);
-  targets.forEach(el=>{
+  // 複数選択の削除は1つの履歴（⌘Z 1回で全部戻る）。
+  // 選択を外すのは transact の中で（履歴に「削除前の選択」を残し、⌘Z で復活した要素を選び直せるように）
+  transact(()=>{ setSelection([]); targets.forEach(el=>{
     const added=findAddedRec(el);
     if(added){
       mutateEdits(arr=>arr.filter(x=>{
@@ -2332,14 +2521,16 @@ function deleteSelectedEls(){
         if(x.sel&&x.sel.includes(`sk-added-${added.id}`)) return false;
         return true;
       }));
-      delete IMGS[`${ED.iid}:${added.id}`]; saveImgs();
+      // 画像データ（IMGS）はここでは消さない。消すと ⌘Z でレコードは戻っても画像が「プレビュー切れ」になる。
+      // 「全編集を破棄」で丸ごと消えるので、それまでは残しておく
     }else{
       const d=descFor(el);
       const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
       mutateEdits(arr=>{ arr.push({type:'remove',sel:d.sel,nth:d.nth,count:d.count,label}); return arr; });
     }
-  });
+  }); });
   rebuildEditorDoc();
+  flashChip(`${targets.length}個の要素を削除しました（⌘Zで戻せます）`);
 }
 // --- スライド操作（コピー／ペースト／削除／新規） ---
 function copySlide(){
@@ -2450,6 +2641,7 @@ function wireEditor(doc){
       const fx=dx+s.sx, fy=dy+s.sy;
       d.cur={dx:fx,dy:fy};
       d.items.forEach(it=>{ it.el.style.translate=`${it.bx+fx}px ${it.by+fy}px`; });
+      refreshSelVisual();
       try{ drawGuides(d.snap,s,fx,fy); }catch(err){}
       return;
     }
@@ -2475,18 +2667,20 @@ function wireEditor(doc){
       e.preventDefault();
       return;
     }
-    if(t&&SELSET.includes(t)){
-      // 選択済み要素はそのままドラッグ開始（複数選択を保持）
-    }else{
-      selectEl(t,false);
-    }
+    // 選択中の要素（やその中の文字）を押した → 選択を保ったままドラッグ開始（Canva／Googleスライドと同じ）。
+    // 旧: 複数選択したカードの「文字の上」で押すと、その瞬間に中の文字へ選択が切り替わり、複数選択が崩れていた。
+    // 動かさずに離したときだけ、押した要素そのものを選ぶ（中の要素への掘り下げ）
+    const within=t?SELSET.find(s=>s===t||s.contains(t)):null;
+    let drill=null;
+    if(within){ if(within!==t||SELSET.length>1) drill=t; }
+    else selectEl(t,false);
     if(t){
       const items=SELSET.map(el=>{
         const added=findAddedRec(el);
         const cur=added?null:findEdit('move',el);
         return {el,added,bx:added?0:(cur?cur.dx:0),by:added?0:(cur?cur.dy:0)};
       });
-      ED.drag={items,sx:e.clientX,sy:e.clientY,moved:false,cur:null};
+      ED.drag={items,sx:e.clientX,sy:e.clientY,moved:false,cur:null,drill};
       e.preventDefault();
     }
   });
@@ -2495,9 +2689,9 @@ function wireEditor(doc){
       const b=ED.rb; ED.rb=null;
       b.box.remove();
       if(!b.moved||!b.rect){ setSelection([]); return; }
-      const els=rubberSelect(b.rect,doc);
+      const els=expandGroups(rubberSelect(b.rect,doc));
       setSelection(els);
-      if(els.length) flashChip(`${els.length}個の要素を選択しました（「グループ化」でまとめられます）`);
+      if(els.length>1) flashChip(`${els.length}個の要素を選択しました（⌘G または「グループ化」でまとめられます）`);
       return;
     }
     if(ED.rz){
@@ -2541,12 +2735,16 @@ function wireEditor(doc){
     const d=ED.drag; ED.drag=null;
     if(d&&d.snap&&d.snap.layer) d.snap.layer.remove();
     if(d&&d.moved&&d.cur){
-      d.items.forEach(it=>{
-        if(it.added) commitMove(it.el,Math.round(d.cur.dx),Math.round(d.cur.dy));
-        else mutateEdits(arr=>upsertMove(arr,it.el,Math.round(it.bx+d.cur.dx),Math.round(it.by+d.cur.dy)));
+      // 選択中の全要素の移動を1つの履歴にまとめる（旧: 要素ごとに履歴が積まれ、⌘Z が1要素ずつしか戻らなかった）
+      transact(()=>{
+        d.items.forEach(it=>{
+          if(it.added) commitMove(it.el,Math.round(d.cur.dx),Math.round(d.cur.dy));
+          else mutateEdits(arr=>upsertMove(arr,it.el,Math.round(it.bx+d.cur.dx),Math.round(it.by+d.cur.dy)));
+        });
       });
-      if(SELSET.length===1) placeResizeHandle(SELSET[0]);
     }
+    if(d&&!d.moved&&d.drill){ selectEl(d.drill,false); return; } // 動かさずに離した＝押した要素だけを選ぶ
+    if(d) refreshSelVisual();
   });
   doc.addEventListener('dblclick',e=>{
     if(ED.editingEl) return;
@@ -2565,6 +2763,7 @@ function handleEditorKey(e){
   }
   if(meta&&(e.key==='z'||e.key==='Z')){ e.preventDefault(); if(e.shiftKey) redoEdit(); else undoEdit(); return; }
   if(meta&&(e.key==='y'||e.key==='Y')){ e.preventDefault(); redoEdit(); return; }
+  if(meta&&(e.key==='g'||e.key==='G')){ e.preventDefault(); if(SELSET.length) toggleGroup(); return; }
   // 重ね順。割り当ては ZKEYS 一箇所で決まる（下の定義を差し替えれば全部追従する）
   for(const k of ZKEYS){ if(k.match(e)){ e.preventDefault(); changeZOrder(k.mode); return; } }
   if(meta&&(e.key==='c'||e.key==='C')){
@@ -2604,7 +2803,7 @@ function handleEditorKey(e){
     else if(e.key==='Escape'){ setSelection([]); return; }
     else return;
     e.preventDefault();
-    nudgeSel(dx,dy);
+    nudgeSel(dx,dy,!!e.repeat);
     return;
   }
   handleNavKey(e);
@@ -2707,7 +2906,7 @@ function renderEditList(){
     const btn=document.createElement('button'); btn.className='btn mini'; btn.textContent='取消';
     btn.addEventListener('click',()=>{
       mutateEdits(arr=>{ arr.splice(i,1); return arr; });
-      rebuildEditorDoc();
+      rebuildEditorDoc({keepSel:true});
     });
     div.appendChild(btn);
     list.appendChild(div);
@@ -2748,6 +2947,7 @@ $('imgFile').addEventListener('change',e=>{
 });
 $('emUndoBtn').addEventListener('click',undoEdit);
 $('emRedoBtn').addEventListener('click',redoEdit);
+updateHistoryButtons();
 $('emReset').addEventListener('click',()=>{
   if(!slideEdits(ED.iid).length&&bgOverrideOf(ED.iid)===null){ rebuildEditorDoc(); return; }
   if(!confirm('このスライドの画面編集（背景画像の切替を含む）をすべて破棄しますか？')) return;
