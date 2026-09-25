@@ -133,6 +133,8 @@
   .em-stagewrap{flex:1;display:flex;min-width:0;padding:16px;overflow:auto}
   .e-stage{position:relative;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.18);margin:auto;flex-shrink:0}
   .e-stage iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left}
+  /* 画像ファイルをキャンバスにドラッグ中（落とせば置ける）の表示。控えめな破線の外枠だけ */
+  .e-stage.drop-on{outline:2px dashed var(--brand);outline-offset:6px}
   .em-panel{width:284px;background:#fff;border-left:1px solid var(--line);display:none;flex-direction:column;min-height:0;flex-shrink:0}
   .em-panel.open{display:flex}
   .em-panel .ph{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
@@ -336,7 +338,7 @@ body{padding-top:80px}
         <button class="colbtn dis" id="bcBtn" title="枠線の色"><span style="font-size:11px">□</span><span class="swatch" id="bcSw"></span></button>
       </span>
       <span class="em-sep"></span>
-      <button class="btn" id="imgAddBtn" title="画像をアップロードしてスライドに配置（⌘Vで貼り付けも可）">🖼 画像</button>
+      <button class="btn" id="imgAddBtn" title="画像をアップロードしてスライドに配置（⌘Vで貼り付け・キャンバスへのドラッグ＆ドロップも可）">🖼 画像</button>
       <input type="file" id="imgFile" accept="image/*" style="display:none">
       <button class="btn bgtog" id="bgTogBtn" title="このスライドの背景画像（最下層の淡い画像）を ON/OFF。deck-config.json の slides[].bg として修正プロンプトに含まれます">背景画像: -</button>
       <button class="btn" id="grpBtn" disabled title="複数選択（Shift+クリック）した要素をグループ化／解除">グループ化</button>
@@ -370,6 +372,7 @@ body{padding-top:80px}
             <tr><td class="k">⌘Z / ⇧⌘Z</td><td>元に戻す／やり直す（構成変更も対象）</td></tr>
             <tr><td class="k">⌘C → ⌘V</td><td>要素を複製。<b>未選択ならスライドを複製</b></td></tr>
             <tr><td class="k">⌘V（画像）</td><td>コピーした画像・スクショを貼り付け</td></tr>
+            <tr><td class="k">画像をドラッグ</td><td>画像ファイルをキャンバスに落とすと<b>その位置に配置</b>（複数可・⌘Z 1回で戻る）</td></tr>
             <tr><td class="k">Delete</td><td>要素を削除。<b>未選択ならスライドを削除</b></td></tr>
             <tr><td class="k">⌘＋ホイール</td><td>キャンバスをズーム</td></tr>
             <tr><td class="k">←→（未選択時）</td><td>スライドを移動</td></tr>
@@ -2472,27 +2475,112 @@ function nextAddedId(){
   slideEdits(ED.iid).forEach(e=>{ if((e.type==='imgadd'||e.type==='dup')&&e.id>mx) mx=e.id; });
   return mx+1;
 }
+// 画像の読み込み（data URL → 寸法）。読めなければ null
+function decodeImage(dataUrl){
+  return new Promise(res=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=()=>res(null); img.src=dataUrl; });
+}
+function readFileAsDataUrl(f){
+  return new Promise(res=>{ const rd=new FileReader(); rd.onload=()=>res(rd.result); rd.onerror=()=>res(null); rd.readAsDataURL(f); });
+}
+// 書き出すファイルの拡張子（data URL の種類から。svg+xml → svg など）
+function imgExtOf(dataUrl){
+  const m=(dataUrl.match(/^data:image\/([a-z0-9.+-]+)/i)||[])[1];
+  if(!m) return 'png';
+  const t=m.toLowerCase();
+  return t==='jpeg'?'jpg':t==='svg+xml'?'svg':t.replace(/[^a-z0-9]/g,'')||'png';
+}
+// 追加画像をまとめて置く（貼り付け・「🖼 画像」・キャンバスへのドロップの共通処理）。
+//   items: [{dataUrl,img,name}]（読み込み済み）／at: 置く中心のスライド座標 {x,y}。無ければ従来の既定位置
+// 何枚でも1回の mutateEdits＝履歴1つ（⌘Z 1回で全部消える）。置いた画像を選択状態にする
+function placeImages(items,at){
+  if(!MODE_EDIT||!items.length) return;
+  if(ED.editingEl) commitTextEdit();
+  // 番号は読み込み完了の時点で振る。旧: 読み込み前に振っていたため、2枚を続けて貼ると同じ番号になり、
+  // 1枚目の画像データが2枚目で上書きされていた
+  const base=nextAddedId();
+  const recs=items.map((it,k)=>{
+    const id=base+k;
+    IMGS[`${ED.iid}:${id}`]=it.dataUrl;
+    const w=Math.max(48,Math.min(320,it.img.naturalWidth||320));
+    const h=(it.img.naturalWidth&&it.img.naturalHeight)?Math.round(w*it.img.naturalHeight/it.img.naturalWidth):w;
+    let x,y;
+    if(at){
+      // 落とした位置が画像の中心に来るように置き、2枚目以降は少しずつ右下へずらす。スライドからはみ出す分は内側へ収める
+      // （端に落として収めた結果が重なるときは、ずらす向きを左上に返す）
+      const mx=960-w, my=Math.max(0,540-h), d=k*24;
+      x=Math.max(0,Math.min(mx,Math.round(at.x-w/2))); y=Math.max(0,Math.min(my,Math.round(at.y-h/2)));
+      x=(x+d<=mx)?x+d:Math.max(0,x-d); y=(y+d<=my)?y+d:Math.max(0,y-d);
+    }else{
+      x=Math.round((960-w)/2)+k*24; y=160+k*24;
+    }
+    return {type:'imgadd',id,name:`sk-img-s${ED.pos}-${id}.${imgExtOf(it.dataUrl)}`,orig:it.name||'',w,x,y};
+  });
+  const stored=saveImgs();
+  mutateEdits(arr=>{ recs.forEach(r=>arr.push(r)); return arr; });
+  rebuildEditorDoc({select:recs.map(r=>({added:r.id}))});
+  const what=recs.length>1?`画像を${recs.length}枚追加しました`:'画像を追加しました';
+  if(stored) flashChip(`${what}（ドラッグで位置・角の●でサイズ・⌘Zで戻せます）`);
+  else flashChip(`${what}。ただし画像が大きく、ブラウザに保存できませんでした（再読み込みで消えます）。先に「修正プロンプトを出力」で画像を保存してください`,8000,true);
+}
 function addImageRecord(dataUrl,origName){
   if(!MODE_EDIT) return;
-  const img=new Image();
-  img.onerror=()=>flashChip('この画像は読み込めませんでした（PNG・JPEG・GIF・WebP を使ってください）');
-  img.onload=()=>{
-    if(!MODE_EDIT) return;
-    // 番号は読み込み完了の時点で振る。旧: 読み込み前に振っていたため、2枚を続けて貼ると同じ番号になり、
-    // 1枚目の画像データが2枚目で上書きされていた
-    const id=nextAddedId();
-    IMGS[`${ED.iid}:${id}`]=dataUrl;
-    const stored=saveImgs();
-    const w=Math.max(48,Math.min(320,img.naturalWidth||320));
-    const ext=(dataUrl.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
-    const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
-    mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:origName||'',w,x:Math.round((960-w)/2),y:160}); return arr; });
-    rebuildEditorDoc({select:[{added:id}]});
-    if(stored) flashChip('画像を追加しました（ドラッグで位置・角の●でサイズ）');
-    else flashChip('画像を追加しました。ただし画像が大きく、ブラウザに保存できませんでした（再読み込みで消えます）。先に「修正プロンプトを出力」で画像を保存してください',8000,true);
-  };
-  img.src=dataUrl;
+  const iid=ED.iid;
+  decodeImage(dataUrl).then(img=>{
+    if(!img){ flashChip('この画像は読み込めませんでした（PNG・JPEG・GIF・WebP を使ってください）'); return; }
+    if(!MODE_EDIT||ED.iid!==iid) return; // 読み込み中にスライドを移った・編集モードを抜けた
+    placeImages([{dataUrl,img,name:origName}],null);
+  });
 }
+// --- キャンバスへの画像ドロップ（Canva／Googleスライドと同じ。2026-09-25 代表依頼） ---
+// 受け付け中の表示は、dragover が来ている間だけ点ける（dragover は重なっている間ずっと届くので、
+// 途切れたら短いタイマーで消す）。dragenter/dragleave の数合わせは子要素と iframe の境目でちらつくので使わない
+let DROP_T=null;
+function dragHasImage(e){
+  const items=e.dataTransfer&&e.dataTransfer.items;
+  if(!items||!items.length) return true; // 種類が分からないブラウザでは受け付け表示を出しておく（落としたときに判定する）
+  return [...items].some(it=>it.kind==='file'&&/^image\//i.test(it.type||''));
+}
+function showDropHint(on){
+  $('eStage').classList.toggle('drop-on',!!on);
+  clearTimeout(DROP_T);
+  if(on) DROP_T=setTimeout(()=>$('eStage').classList.remove('drop-on'),160);
+}
+function canvasDragOver(e){
+  if(!hasFiles(e)) return;
+  e.preventDefault();
+  const ok=MODE_EDIT&&!modalOpen()&&dragHasImage(e);
+  try{ e.dataTransfer.dropEffect=ok?'copy':'none'; }catch(_){}
+  showDropHint(ok);
+}
+// pt: 落とした位置のスライド座標（960×540）
+async function canvasDrop(e,pt){
+  if(!hasFiles(e)) return;
+  e.preventDefault(); e.stopPropagation();
+  showDropHint(false);
+  if(!MODE_EDIT||modalOpen()) return;
+  const files=[...(e.dataTransfer.files||[])].filter(f=>/^image\//i.test(f.type||''));
+  if(!files.length) return; // 画像以外のファイルは無視（ページからも離れない）
+  const iid=ED.iid;
+  const items=[]; let bad=0;
+  for(const f of files){
+    const dataUrl=await readFileAsDataUrl(f);
+    const img=dataUrl?await decodeImage(dataUrl):null;
+    if(img) items.push({dataUrl,img,name:f.name}); else bad++;
+  }
+  if(!MODE_EDIT||ED.iid!==iid) return;
+  if(items.length) placeImages(items,pt);
+  if(bad) setTimeout(()=>flashChip(`${bad}件の画像は読み込めませんでした（PNG・JPEG・GIF・WebP を使ってください）`,3000),items.length?1700:0);
+}
+// キャンバスの外側（灰色の余白）に落としたとき用: 画面座標 → スライド座標
+function stagePointToSlide(cx,cy){
+  const fr=$('eFrame'), r=fr.getBoundingClientRect();
+  const sc=r.width/960||1;
+  let ox=0, oy=0;
+  try{ const s=ED.doc.querySelector('.slide').getBoundingClientRect(); ox=s.left; oy=s.top; }catch(_){}
+  return {x:(cx-r.left)/sc-ox, y:(cy-r.top)/sc-oy};
+}
+$('eStageWrap').addEventListener('dragover',canvasDragOver);
+$('eStageWrap').addEventListener('drop',e=>canvasDrop(e,stagePointToSlide(e.clientX,e.clientY)));
 // --- 追加画像の自動保存 ---
 // File System Access API: 初回だけ保存先フォルダ（推奨: ダウンロード）を選ぶと、
 // 以後は保存ダイアログなしで直接書き込む。フォルダ権限はIndexedDBに記憶。
@@ -2608,8 +2696,7 @@ function duplicateFromCopied(){
     if(!COPIED.img.data){ flashChip('コピーした画像のデータが見つかりません（再読み込みで消えた画像です）'); return; }
     IMGS[`${ED.iid}:${id}`]=COPIED.img.data;
     const stored=saveImgs();
-    const ext=(COPIED.img.data.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
-    const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
+    const name=`sk-img-s${ED.pos}-${id}.${imgExtOf(COPIED.img.data)}`;
     mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:COPIED.img.orig||'',w:COPIED.img.w,x,y}); return arr; });
     rebuildEditorDoc({select:[{added:id}]});
     flashChip(stored?'画像を複製しました（⌘Zで戻せます）':'画像を複製しました。ただしブラウザに保存できませんでした（再読み込みで消えます）',stored?1600:6000,!stored);
@@ -2702,9 +2789,14 @@ function deleteSlide(){
 // --- キャンバス配線 ---
 function wireEditor(doc){
   doc.addEventListener('dragstart',e=>e.preventDefault());
-  // キャンバスにファイルを落とすと、編集用の iframe がそのファイルに移動してスライドが消えるので止める
-  doc.addEventListener('dragover',e=>{ if(hasFiles(e)) e.preventDefault(); });
-  doc.addEventListener('drop',e=>{ if(hasFiles(e)) e.preventDefault(); });
+  // キャンバスにファイルを落とすと、編集用の iframe がそのファイルに移動してスライドが消えるので止める。
+  // 画像ファイルなら、落とした位置に追加画像として置く（iframe の中の座標は 960×540 のスライド座標そのまま）
+  doc.addEventListener('dragover',canvasDragOver);
+  doc.addEventListener('drop',e=>{
+    let pt={x:e.clientX,y:e.clientY};
+    try{ const s=doc.querySelector('.slide').getBoundingClientRect(); pt={x:e.clientX-s.left,y:e.clientY-s.top}; }catch(_){}
+    canvasDrop(e,pt);
+  });
   // スライドからはみ出した文字を編集すると、ブラウザが文字カーソルを見せようとして overflow:hidden の箱
   // （スライド本体など）を勝手にスクロールし、スライド全体が横にずれて見えていた（確定後もずれたまま）。
   // スライドはスクロールしない前提なので、その分を戻す。ユーザーがスクロールできる箱（overflow:auto/scroll）は触らない
