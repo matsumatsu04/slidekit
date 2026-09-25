@@ -126,13 +126,14 @@ body{padding-top:80px}
         <label>このフィールドは空のままにしてください<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
       </div>
       <button class="send" type="submit" id="sendBtn">送信する</button>
-      <div class="err" id="errMsg"></div>
+      <div class="err" id="errMsg" role="status" aria-live="polite"></div>
     </form>
 
     <div class="done" id="doneBox">
       <div class="big">送信しました。ありがとうございます！</div>
       <p>いただいたリクエストは確認のうえ、今後の更新に反映していきます。<br>
       続けて送りたい場合は<a href="/request.html">もう一度開いて</a>ください。</p>
+      <p class="warn" id="doneWarn" style="display:none;color:#C0392B;margin-top:10px"></p>
     </div>
 
     <div class="note">
@@ -198,7 +199,7 @@ body{padding-top:80px}
     for(var i=0;i<fileList.length;i++){
       var f=fileList[i];
       if(FILES.length>=MAX_FILES){ note('添付は最大'+MAX_FILES+'つまでです'); break; }
-      if(OK_TYPES.indexOf(f.type)<0){ note('「'+(f.name||'ファイル')+'」は添付できない形式です（画像かPDFのみ）'); continue; }
+      if(OK_TYPES.indexOf(f.type)<0){ note('「'+(f.name||'ファイル')+'」は添付できない形式です（PNG/JPG/WebP/GIF/PDFのみ）'); continue; }
       if(f.size>MAX_SIZE){ note('「'+(f.name||'ファイル')+'」は10MBを超えています'); continue; }
       FILES.push(f); added++;
     }
@@ -234,23 +235,45 @@ body{padding-top:80px}
   });
 
   /* ---- 送信 ---- */
+  var sending=false; // 送信中の再送を止める（ボタンの disabled だけだと submit イベントの直呼びは素通りする）
+  var TIMEOUT_MS=120000; // 応答が返らないまま「送信中…」で固まらないように（添付50MBの送信も収まる長さ）
   form.addEventListener('submit', function(e){
-    e.preventDefault(); err.style.display='none';
+    e.preventDefault();
+    if(sending) return;
+    err.style.display='none';
     var name=document.getElementById('fName').value.trim();
     var body=document.getElementById('fBody').value.trim();
     if(!name){ fail('お名前を入力してください'); document.getElementById('fName').focus(); return; }
     if(!body){ fail('内容を入力してください'); document.getElementById('fBody').focus(); return; }
-    btn.disabled=true; btn.textContent='送信中…';
+    sending=true; btn.disabled=true; btn.textContent='送信中…';
     var fd=new FormData(form);
     FILES.forEach(function(f,i){ fd.append('files[]', f, f.name||('pasted-'+(i+1)+'.png')); });
-    fetch('/api/request.php',{method:'POST', body:fd})
-      .then(function(r){ return r.json().catch(function(){ throw new Error('bad'); }); })
-      .then(function(d){
-        if(d && d.ok){ form.style.display='none'; document.getElementById('doneBox').style.display='block';
-          window.scrollTo({top:0,behavior:'smooth'}); }
-        else{ fail(d && d.error ? d.error : '送信に失敗しました。時間をおいてもう一度お試しください'); }
+    var ctl=window.AbortController ? new AbortController() : null;
+    var timer=ctl ? setTimeout(function(){ ctl.abort(); }, TIMEOUT_MS) : null;
+    function end(msg){ sending=false; clearTimeout(timer); fail(msg); }
+    fetch('/api/request.php',{method:'POST', body:fd, signal:ctl ? ctl.signal : undefined})
+      .then(function(r){
+        return r.json().catch(function(){
+          // JSONでない応答（Webサーバー側の413・500など）。状態コードで案内を分ける
+          var ex=new Error('bad'); ex.status=r.status; throw ex;
+        });
       })
-      .catch(function(){ fail('送信に失敗しました。通信環境を確認して、もう一度お試しください'); });
+      .then(function(d){
+        clearTimeout(timer);
+        if(d && d.ok){
+          form.style.display='none'; document.getElementById('doneBox').style.display='block';
+          if(d.warn){ var w=document.getElementById('doneWarn'); w.textContent='添付の一部は届きませんでした: '+d.warn+'（本文は届いています。必要ならファイルを小さくしてもう一度送ってください）'; w.style.display='block'; }
+          window.scrollTo({top:0,behavior:'smooth'});
+        }
+        else{ end(d && d.error ? d.error : '送信に失敗しました。時間をおいてもう一度お試しください'); }
+      })
+      .catch(function(ex){
+        if(ex && ex.name==='AbortError'){ end('応答がありませんでした。通信環境を確認して、もう一度お試しください（添付が大きい場合は減らすと送りやすくなります）'); }
+        else if(ex && ex.status===413){ end('送信サイズが大きすぎます。添付を減らす・小さくするなどして再度お試しください'); }
+        else if(ex && ex.status>=500){ end('サーバーでエラーが起きました（'+ex.status+'）。時間をおいてもう一度お試しください'); }
+        else if(ex && ex.status){ end('送信に失敗しました（'+ex.status+'）。時間をおいてもう一度お試しください'); }
+        else{ end('送信に失敗しました。通信環境を確認して、もう一度お試しください'); }
+      });
   });
 })();
 </script>

@@ -5,7 +5,7 @@
 #   → 差分があれば github-actions[bot] で commit → push（差分なしなら何もしない）
 #
 # GITHUB_TOKEN による push は新しい workflow 実行を起こさないので無限ループにはならない。
-# Vercel は通常どおり main の更新を検知して再デプロイする。
+# 公開（https://slide.macminol.com/・Xserver）は push では更新されない。macminol 側の scripts/slidekit-publish.sh で行う。
 # 失敗したときの手動フォールバック: 手元で `node tools/build-manifest.mjs --assign` → commit → push。
 
 name: assign-id
@@ -46,11 +46,13 @@ jobs:
             node tools/build-manifest.mjs --assign | tee assign.log
             ids="$(sed -nE 's/^採番: .* → (P[0-9]+)$/\1/p' assign.log | tr '\n' ',' | sed -E 's/,$//; s/,/, /g')"
             rm -f assign.log
-            if git diff --quiet -- patterns README.md gallery/index.html; then
+            # ギャラリーは 2026-08-20 に gallery/ からルートの index.html へ移った（tools/lib/pattern-lib.mjs の GENERATED.gallery）。
+            # 旧パス gallery/index.html のままだと git add が「pathspec did not match」で落ち、件数の更新もコミットされない
+            if git diff --quiet -- patterns README.md index.html; then
               echo "差分なし（採番対象も再生成の変更もありません）"
               exit 0
             fi
-            git add -A -- patterns README.md gallery/index.html
+            git add -A -- patterns README.md index.html
             if [ -n "${ids}" ]; then
               git commit -m "chore: 採番＋manifest/INDEX再生成（${ids}）"
             else

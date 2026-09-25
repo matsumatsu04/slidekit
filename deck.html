@@ -101,7 +101,8 @@
   /* 文言が「グループ化」⇄「グループ解除」で変わってもバーの折り返しが動かないよう幅を固定 */
   #grpBtn{min-width:88px}
   .em-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,8px);z-index:80;
-    background:#20242C;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;white-space:nowrap;
+    background:#20242C;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;
+    width:max-content;max-width:calc(100vw - 32px);line-height:1.6;text-align:center; /* 長い警告は画面幅で折り返す */
     opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.24)}
   .em-toast.show{opacity:1;transform:translate(-50%,0)}
   .fmt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap}
@@ -194,6 +195,11 @@
   @media (max-width:900px){
     .em-rail{width:120px}
     .em-panel.open{position:fixed;right:0;top:0;bottom:0;z-index:40;box-shadow:-6px 0 24px rgba(0,0,0,.2)}
+  }
+  /* スマホ幅ではレイヤー一覧を畳む（レール120px＋レイヤー224pxでキャンバスが約50pxまで潰れていた） */
+  @media (max-width:700px){
+    .em-layers{display:none}
+    .em-rail{width:96px}
   }
   .hidden-print{position:fixed;left:-99999px;top:0;width:960px;height:540px;border:0}
 /* ===================================================== 共通ヘッダー（macminol.com 準拠）
@@ -581,16 +587,23 @@ function pruneFbKeys(){
     entries.sort((a,b)=>b.t-a.t).slice(20).forEach(e=>localStorage.removeItem(e.k));
   }catch(e){}
 }
-let PRUNE_T=null;
+let PRUNE_T=null, SAVE_WARNED=false;
+// localStorage の容量（ブラウザごとに約5MB）を超えると保存が黙って失敗し、再読み込みで編集が消えていた。
+// 失敗したら1回だけ知らせる（2026-09-25 点検で発見）
+function warnSaveFailed(){
+  if(SAVE_WARNED) return; SAVE_WARNED=true;
+  flashChip('ブラウザの保存容量がいっぱいで、編集内容を保存できませんでした。閉じる前に「修正プロンプトを出力」してください',7000,true);
+}
 function saveFb(){
   if(!DECK) return;
-  try{ localStorage.setItem(storageKey(),JSON.stringify({t:Date.now(),fb:FB})); }catch(e){}
+  try{ localStorage.setItem(storageKey(),JSON.stringify({t:Date.now(),fb:FB})); }catch(e){ warnSaveFailed(); }
   // 古い保存の掃除は localStorage の全走査なので、矢印キー連打中は後回しにしてまとめる
   clearTimeout(PRUNE_T); PRUNE_T=setTimeout(pruneFbKeys,1000);
 }
+// 戻り値: 保存できたら true（画像は大きいので容量超過で失敗しやすい）
 function saveImgs(){
-  if(!DECK) return;
-  try{ localStorage.setItem(imgStorageKey(),JSON.stringify({t:Date.now(),imgs:IMGS})); }catch(e){}
+  if(!DECK) return true;
+  try{ localStorage.setItem(imgStorageKey(),JSON.stringify({t:Date.now(),imgs:IMGS})); return true; }catch(e){ return false; }
 }
 function loadFb(){
   FB={global:'',slides:{},order:null,nextId:1}; IMGS={};
@@ -681,14 +694,31 @@ function transact(fn,opts){
     }
   }
 }
+// フィードバック欄（text／pattern）は取り消しの対象外。いまの記入内容をそのまま引き継ぐ。
+// 旧: 編集モードで操作 → 一覧でフィードバックを書く → 編集モードで ⌘Z、の順だと、
+//     履歴の古い状態で FB.slides ごと上書きされ、書いたフィードバックが消えていた（2026-09-25 点検で発見）
 function restore(json){
   const o=JSON.parse(json);
-  FB.slides=o.slides; FB.order=o.order; FB.nextId=o.nextId;
+  const slides=o.slides||{}, cur=FB.slides||{};
+  Object.keys(slides).forEach(k=>{ if(slides[k]){ delete slides[k].text; delete slides[k].pattern; } });
+  Object.keys(cur).forEach(k=>{
+    const c=cur[k]; if(!c||!(c.text||c.pattern)) return;
+    const s=slides[k]||(slides[k]={});
+    if(c.text) s.text=c.text;
+    if(c.pattern) s.pattern=c.pattern;
+  });
+  Object.keys(slides).forEach(k=>{
+    const s=slides[k];
+    if(!s||(!s.text&&!s.pattern&&!(s.edits&&s.edits.length)&&!(s.groups&&s.groups.length)&&typeof s.bg!=='boolean')) delete slides[k];
+  });
+  FB.slides=slides; FB.order=o.order; FB.nextId=o.nextId;
   saveFb();
 }
 function undoEdit(){
+  // 文字の編集中に「元に戻す」ボタン → まず入力中の文字だけを取り消す（Googleスライドと同じ）。
+  // 旧: 入力中の文字を捨てたうえで、さらに1つ前の操作まで戻していた（1回で2段戻る）
+  if(ED.editingEl){ cancelTextEdit(); flashChip('入力中の文字を取り消しました'); return; }
   if(!HIST.undo.length){ flashChip('これ以上戻せません'); updateHistoryButtons(); return; }
-  if(ED.editingEl) cancelTextEdit();
   const cur=histEntry();
   const ent=HIST.undo.pop();
   HIST.redo.push(cur);
@@ -699,6 +729,7 @@ function undoEdit(){
   flashChip('元に戻しました');
 }
 function redoEdit(){
+  if(ED.editingEl) commitTextEdit(); // 入力中の文字を確定してから（文字が変わっていれば、やり直しの履歴は消える）
   if(!HIST.redo.length){ flashChip('やり直す操作はありません'); updateHistoryButtons(); return; }
   const cur=histEntry();
   const ent=HIST.redo.pop();
@@ -778,7 +809,10 @@ function applyEditsToDoc(doc,edits,iid){
   // 背景画像の ON/OFF 上書き（属性を変えるだけで、ビルド済みCSSがそのまま効く）
   const bgo=bgOverrideOf(iid);
   if(bgo!==null) slideEl.setAttribute('data-sk-bg',bgo?'on':'off');
-  edits.forEach(e=>{
+  // 1件ずつ try で包む。壊れた記録（不正なセレクタ等）が1件あっても、残りの編集と描き直しは止めない
+  edits.forEach(e=>{ try{ applyOneEdit(e); }catch(err){ console.warn('edit skipped:',e,err); } });
+  if(doc.querySelectorAll) wireImgFallback(doc);
+  function applyOneEdit(e){
     if(e.type==='imgadd'){
       const data=IMGS[`${iid}:${e.id}`];
       let el;
@@ -810,6 +844,9 @@ function applyEditsToDoc(doc,edits,iid){
       clone.classList.add('sk-added',`sk-added-${e.id}`);
       clone.style.position='absolute'; clone.style.left=e.x+'px'; clone.style.top=e.y+'px';
       clone.style.margin='0'; clone.style.zIndex='59';
+      // 複製元に【配置調整】の translate が先に当たっていると、複製にもそれが写って位置(x,y)からずれる
+      // （記録の順番しだいで、画面・印刷で置き場所が変わっていた）。位置は x,y だけで決める
+      clone.style.translate='';
       if(e.w) clone.style.width=e.w+'px'; else if(w) clone.style.width=Math.round(w)+'px';
       slideEl.appendChild(clone);
       return;
@@ -820,8 +857,7 @@ function applyEditsToDoc(doc,edits,iid){
     else if(e.type==='move') el.style.translate=`${e.dx}px ${e.dy}px`;
     else if(e.type==='style') el.style.setProperty(e.prop,e.after);
     else if(e.type==='remove') el.style.display='none';
-  });
-  if(doc.querySelectorAll) wireImgFallback(doc);
+  }
 }
 function applyPal(){
   document.querySelectorAll('.s-thumb iframe, .em-frame iframe').forEach(fr=>{
@@ -917,6 +953,7 @@ function loadDeck(html){
     DECK=parseDeck(html);RAW=html;
   }catch(e){ err.textContent=e.message;err.style.display='inline';return; }
   PAL=null; COPIED=null; SLIDE_CLIP=null; LAST_COPY=null;
+  ED.iid=0; ED.pos=0; SAVE_WARNED=false; // 前のデッキのスライド番号を持ち越さない（「✎ 編集モード」が別デッキの途中から開いていた）
   $('emRail').innerHTML='';
   loadFb();
   $('inputPanel').style.display='none';
@@ -939,6 +976,18 @@ $('drop').addEventListener('drop',e=>{
   if(f){ f.text().then(t=>{$('src').value=t;loadDeck(t);}); return; }
   const t=e.dataTransfer.getData('text/plain');
   if(looksLikePath(t)) openFromPath(t);
+});
+// 枠の外にファイルを落としても、ブラウザがそのファイルを開いてこのページから離れないようにする
+// （旧: 点線の枠を少し外すと index.html が素のまま開き、確認ページが閉じていた）。
+// 読み込み画面のときは、枠の外に落としたファイルもそのまま読み込む
+const hasFiles=e=>!!(e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files'));
+window.addEventListener('dragover',e=>{ if(hasFiles(e)) e.preventDefault(); });
+window.addEventListener('drop',e=>{
+  if(!hasFiles(e)) return;
+  e.preventDefault();
+  if(e.target.closest&&e.target.closest('#drop')) return; // 枠の中は上の処理が受ける
+  const f=e.dataTransfer.files[0];
+  if(f&&$('inputPanel').style.display!=='none'&&/\.html?$/i.test(f.name)) f.text().then(t=>{$('src').value=t;loadDeck(t);});
 });
 
 /* ===== ローカルのファイルパスから開く（File System Access API・Chrome/Edge） =====
@@ -1051,7 +1100,8 @@ function allExtraFontLinks(){
   return [...out].join('\n');
 }
 function printableHtml(){
-  const pal=PAL?`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};}</style>`:'';
+  // 画面側（skApplyPaletteVars）と同じ5変数を入れる（旧: ink/line が抜けて、印刷だけ本文色・罫線色がデッキの既定に戻っていた）
+  const pal=PAL?`<style>:root{--sk-accent:${PAL.main};--sk-soft:${PAL.base};--sk-accent2:${PAL.accent};--sk-ink:${PAL.ink||'#3f4a52'};--sk-line:${PAL.line||'#e2e2e2'};}</style>`:'';
   const head=DECK.links.join('\n')+'\n'+allExtraFontLinks()+'\n'+DECK.styles.join('\n')+bgStyleTag()+pal;
   const body=FB.order.map((inst,idx)=>{
     const tpl=document.createElement('template');
@@ -1065,8 +1115,13 @@ function printableHtml(){
   return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>${escapeHtml(DECK.title)}</title>${head}</head><body>${body}</body></html>`;
 }
 $('printBtn').addEventListener('click',()=>{
+  if(MODE_EDIT) commitTextEdit(); // 入力中の文字も含めて印刷する
   const fr=$('printFrame');
-  fr.onload=()=>{ try{ fr.contentWindow.focus();fr.contentWindow.print(); }catch(e){ openInTab(); } };
+  fr.onload=async()=>{
+    // Webフォントの読み込みを待ってから印刷する（待たないと代替フォントのままPDFになることがある）
+    try{ await Promise.race([fr.contentDocument.fonts.ready,new Promise(r=>setTimeout(r,3000))]); }catch(e){}
+    try{ fr.contentWindow.focus();fr.contentWindow.print(); }catch(e){ openInTab(); }
+  };
   fr.srcdoc=printableHtml();
 });
 function openInTab(){ // 印刷が開けない環境向けのフォールバック（ボタンは廃止・内部利用のみ）
@@ -1095,6 +1150,7 @@ function pvShow(i){
 }
 function openPresent(){
   if(!DECK||PV.on) return;
+  if(MODE_EDIT) commitTextEdit(); // 入力中の文字も発表に反映する
   const st=$('pvStage');st.innerHTML='';PV.frames=[];
   FB.order.forEach((inst,idx)=>{
     const fr=document.createElement('iframe');
@@ -1160,13 +1216,16 @@ function findAddedRec(el){
 function descFor(el){
   const slideEl=el.closest('.slide');
   let sel;
+  // クラス名に「:」「/」や先頭の数字など CSS で特別な意味の文字があるとセレクタが壊れて描き直しが止まるので、エスケープする
+  // （SlideKit のパターンのクラス名は該当しないので、既存の記録の sel は変わらない）
+  const cssId=c=>(window.CSS&&CSS.escape)?CSS.escape(c):c;
   const own=cleanClasses(el);
-  if(own.length){ sel='.'+own.join('.'); }
+  if(own.length){ sel='.'+own.map(cssId).join('.'); }
   else{
     let a=el.parentElement, asel='';
     while(a&&!(a.classList&&a.classList.contains('slide'))){
       const ac=cleanClasses(a);
-      if(ac.length){ asel='.'+ac.join('.'); break; }
+      if(ac.length){ asel='.'+ac.map(cssId).join('.'); break; }
       a=a.parentElement;
     }
     sel=(asel?asel+' ':'')+el.tagName.toLowerCase();
@@ -1586,8 +1645,11 @@ function buildRail(){
     const pos=idx+1, iid=inst.id;
     const d=document.createElement('div');d.className='em-thumb';d.id=`emthumb-${iid}`;
     d.draggable=true;
-    const tag=inst.src===0?'新規':(FB.order.filter(o=>o.src===inst.src).length>1?'複製':'');
-    d.innerHTML=`<span class="em-no">${pos}</span><div class="em-frame"><iframe sandbox="allow-same-origin" title="スライド${pos}サムネ"></iframe></div><span class="em-dot" id="emdot-${iid}" style="display:none"></span>${tag&&inst.src!==pos?`<span class="em-tag">${tag}</span>`:''}`;
+    // 元のスライドは id＝元番号（loadFb）。複製・新規は nextId から振るので id≠src になる。
+    // 旧: 「元番号と今の位置が違う」で判定していたため、複製を挿入すると後ろにずれた元スライドの方に「複製」が付き、
+    //     並べ替えただけの元スライドにも付いていた（2026-09-25 点検で発見）
+    const tag=inst.src===0?'新規':(inst.id!==inst.src?'複製':'');
+    d.innerHTML=`<span class="em-no">${pos}</span><div class="em-frame"><iframe sandbox="allow-same-origin" title="スライド${pos}サムネ"></iframe></div><span class="em-dot" id="emdot-${iid}" style="display:none"></span>${tag?`<span class="em-tag">${tag}</span>`:''}`;
     rail.appendChild(d);
     const fr=d.querySelector('iframe');
     fr.onload=()=>{
@@ -1719,6 +1781,9 @@ function rebuildEditorDoc(opts){
   const want=opts.select?opts.select:(opts.keepSel?selDescs():[]);
   SELSET=[]; ED.editingEl=null; ED.drag=null; ED.rz=null; ED.rb=null;
   updateFormatControls();
+  // 描き直しの間はキー入力を親ページで受ける。iframe にフォーカスが残ったままだと、読み込み中に押したキー
+  // （⌘Z の連打など）が捨てられていた（8回押して7回しか戻らない）。選択が戻れば setSelection が iframe に戻す
+  try{ if(document.activeElement===fr){ fr.blur(); window.focus(); } }catch(e){}
   fr.onload=()=>{
     const doc=fr.contentDocument; ED.doc=doc;
     try{ skApplyPaletteVars(doc.documentElement,PAL); }catch(e){}
@@ -1918,6 +1983,8 @@ function placeWidthHandles(el,slideEl){
         beforeW:Math.round(parseFloat(cs.width))+'px',
         beforeH:Math.round(parseFloat(cs.height))+'px',
         beforeML:cs.marginLeft, beforeMT:cs.marginTop,
+        // ドラッグ前のインライン指定。変わらなかった方向（四隅で横だけ動かした等）は離したときにこれへ戻す
+        inl:{width:el.style.width,height:el.style.height,marginLeft:el.style.marginLeft,marginTop:el.style.marginTop,flex:el.style.flex},
         // 親がflexだと flex-grow/shrink が効いて、指定した幅がそのまま描画されない。
         // その場合は flex:none を当てて指定を優先させる（2026-08-21 実測で判明）
         parentFlex:/flex|grid/.test(view.getComputedStyle(el.parentElement||el).display),
@@ -1970,6 +2037,7 @@ function updateFormatControls(){
     setColBtn('bcBtn','bcSw',BC,on);
   }else if(on){
     $('fsInput').value='';
+    $('fwBold').classList.toggle('on',SELSET.every(isBoldEl)); // 複数選択は「全部が太字」のときだけ押された表示
     setColBtn('fcBtn','fcSw','#333333',true);
     setColBtn('bgBtn','bgSw',null,true);
     setColBtn('bcBtn','bcSw','#333333',true);
@@ -2032,6 +2100,8 @@ function upsertMove(arr,el,dx,dy){
   const label=(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16);
   const rec={type:'move',sel:d.sel,nth:d.nth,count:d.count,label,dx,dy};
   if(i>=0) arr[i]=rec; else arr.push(rec);
+  // 見た目も記録した整数pxにそろえる（旧: ドラッグ中の小数pxのまま残り、再読込・取り消し後の表示と1pxずれていた）
+  el.style.translate=`${dx}px ${dy}px`;
   return arr;
 }
 function commitMove(el,dx,dy){
@@ -2050,6 +2120,15 @@ function commitMove(el,dx,dy){
   mutateEdits(arr=>upsertMove(arr,el,dx,dy));
 }
 function setTextEditRec(el,before,after,afterHtml){
+  // 何も変わっていないときは記録に触らない（履歴も積まない）。
+  // 旧: ダブルクリックして何も打たずに離れる（スライド移動・印刷・発表・プロンプト出力・↷）だけで空の履歴が1段積まれ、
+  //     やり直しの履歴まで消えていた（2026-09-25 検証役の指摘）
+  {
+    const d=descFor(el);
+    const ex=slideEdits(ED.iid).find(x=>x.type==='text'&&x.sel===d.sel&&x.nth===d.nth);
+    if(!ex&&after===before) return;
+    if(ex&&ex.after===after&&(afterHtml==null||ex.afterHtml===afterHtml)) return;
+  }
   mutateEdits(arr=>{
     const d=descFor(el);
     const i=arr.findIndex(x=>x.type==='text'&&x.sel===d.sel&&x.nth===d.nth);
@@ -2300,14 +2379,17 @@ function changeZOrder(mode){ // 'front' | 'forward' | 'backward' | 'back'
   flashChip(`${label}移動しました（⌘Zで戻せます）`);
   updateFormatControls();
 }
+function isBoldEl(el){ return parseInt(ED.doc.defaultView.getComputedStyle(el).fontWeight,10)>=600; }
 function toggleBold(){
   if(!SELSET.length||!ED.doc) return;
+  // 複数選択は「全部が太字なら全部を標準に、1つでも標準があれば全部を太字に」（Canva／Googleスライドと同じ）。
+  // 旧: 要素ごとに反転していたので、太字と標準が混ざった選択だと太さが入れ替わるだけだった
+  const toBold=!SELSET.every(isBoldEl);
   transact(()=>SELSET.forEach(el=>{
     const ex=findEdit('style',el,'font-weight');
     const cur=String(ED.doc.defaultView.getComputedStyle(el).fontWeight);
-    const isB=parseInt(cur,10)>=600;
     const before=ex?ex.before:cur;
-    setStyleEditRec(el,'font-weight',before,isB?'400':'700');
+    setStyleEditRec(el,'font-weight',before,toBold?'700':'400');
   }));
   updateFormatControls();
 }
@@ -2392,17 +2474,22 @@ function nextAddedId(){
 }
 function addImageRecord(dataUrl,origName){
   if(!MODE_EDIT) return;
-  const id=nextAddedId();
-  IMGS[`${ED.iid}:${id}`]=dataUrl;
-  saveImgs();
   const img=new Image();
+  img.onerror=()=>flashChip('この画像は読み込めませんでした（PNG・JPEG・GIF・WebP を使ってください）');
   img.onload=()=>{
+    if(!MODE_EDIT) return;
+    // 番号は読み込み完了の時点で振る。旧: 読み込み前に振っていたため、2枚を続けて貼ると同じ番号になり、
+    // 1枚目の画像データが2枚目で上書きされていた
+    const id=nextAddedId();
+    IMGS[`${ED.iid}:${id}`]=dataUrl;
+    const stored=saveImgs();
     const w=Math.max(48,Math.min(320,img.naturalWidth||320));
     const ext=(dataUrl.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
     const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
     mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:origName||'',w,x:Math.round((960-w)/2),y:160}); return arr; });
     rebuildEditorDoc({select:[{added:id}]});
-    flashChip('画像を追加しました（ドラッグで位置・角の●でサイズ）');
+    if(stored) flashChip('画像を追加しました（ドラッグで位置・角の●でサイズ）');
+    else flashChip('画像を追加しました。ただし画像が大きく、ブラウザに保存できませんでした（再読み込みで消えます）。先に「修正プロンプトを出力」で画像を保存してください',8000,true);
   };
   img.src=dataUrl;
 }
@@ -2491,22 +2578,56 @@ async function saveAddedImages(){
   });
   return {n:jobs.length,mode:'dl'};
 }
+// ⌘C: 選択中の1要素を控える。
+// 幅と位置はコピーした時点の見た目で控える（幅は複製の記録に入れて、印刷・発表・別スライドでも同じ幅で描くため）。
+// 旧: 複製した要素・追加画像をもう一度 ⌘C→⌘V すると、元をたどれない記録（.sk-added-N）が積まれ、画面には何も出なかった。
+//     → 複製ならその複製元を、追加画像なら画像データを控える（2026-09-25 点検で発見）
+function copySelectedEl(el){
+  const inst=FB.order.find(o=>o.id===ED.iid);
+  const slideEl=ED.doc.querySelector('.slide');
+  const r=el.getBoundingClientRect(), pr=slideEl.getBoundingClientRect();
+  const base={fromIid:ED.iid,x:Math.round(r.left-pr.left),y:Math.round(r.top-pr.top),w:Math.round(r.width)||0,
+    label:(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16)};
+  const a=findAddedRec(el);
+  if(a&&a.type==='imgadd'){
+    COPIED={...base,img:{data:IMGS[`${ED.iid}:${a.id}`]||null,orig:a.orig||a.name,w:a.w}};
+  }else if(a&&a.type==='dup'){
+    COPIED={...base,srcIid:a.srcIid,srcOrig:a.srcOrig,sel:a.sel,nth:a.nth,count:a.count,label:a.label};
+  }else{
+    const d=descFor(el);
+    COPIED={...base,srcIid:ED.iid,srcOrig:inst?inst.src:0,sel:d.sel,nth:d.nth,count:d.count};
+  }
+}
 function duplicateFromCopied(){
   if(!COPIED) return;
   const id=nextAddedId();
-  const rec={type:'dup',id,srcIid:COPIED.srcIid,srcOrig:COPIED.srcOrig,sel:COPIED.sel,nth:COPIED.nth,count:COPIED.count,label:COPIED.label,x:120,y:120};
-  if(COPIED.srcIid===ED.iid&&ED.doc){
-    const slideEl=ED.doc.querySelector('.slide');
-    const list=[...slideEl.querySelectorAll(COPIED.sel)].filter(x=>!x.classList.contains('sk-added'));
-    const src=list[COPIED.nth];
-    if(src){
-      const sr=src.getBoundingClientRect(), pr=slideEl.getBoundingClientRect();
-      rec.x=Math.round(sr.left-pr.left+24); rec.y=Math.round(sr.top-pr.top+24);
-    }
+  // 同じスライドに貼るときはコピーした要素の右下に少しずらして置く。別のスライドは従来どおり (120,120)
+  const same=COPIED.fromIid===ED.iid;
+  const x=same?COPIED.x+24:120, y=same?COPIED.y+24:120;
+  if(COPIED.img){
+    if(!COPIED.img.data){ flashChip('コピーした画像のデータが見つかりません（再読み込みで消えた画像です）'); return; }
+    IMGS[`${ED.iid}:${id}`]=COPIED.img.data;
+    const stored=saveImgs();
+    const ext=(COPIED.img.data.match(/^data:image\/(png|jpe?g|gif|webp)/i)||[])[1]||'png';
+    const name=`sk-img-s${ED.pos}-${id}.${ext.replace('jpeg','jpg')}`;
+    mutateEdits(arr=>{ arr.push({type:'imgadd',id,name,orig:COPIED.img.orig||'',w:COPIED.img.w,x,y}); return arr; });
+    rebuildEditorDoc({select:[{added:id}]});
+    flashChip(stored?'画像を複製しました（⌘Zで戻せます）':'画像を複製しました。ただしブラウザに保存できませんでした（再読み込みで消えます）',stored?1600:6000,!stored);
+    return;
   }
+  const rec={type:'dup',id,srcIid:COPIED.srcIid,srcOrig:COPIED.srcOrig,sel:COPIED.sel,nth:COPIED.nth,count:COPIED.count,label:COPIED.label,x,y};
+  // 幅を記録に残す。旧: 記録に幅が無く、描くたびに元要素の幅を測っていたため、
+  // レイアウトの無い印刷用の組み立てや非表示の発表スライドでは幅0と測れて、複製だけ別の幅（折り返し）で出ていた
+  if(COPIED.w) rec.w=COPIED.w;
   mutateEdits(arr=>{ arr.push(rec); return arr; });
   rebuildEditorDoc({select:[{added:id}]});
   flashChip('複製しました（ドラッグで位置を調整・⌘Zで戻せます）');
+}
+// 追加要素（画像・複製）の記録と、その要素に付けた書式・移動などの記録をまとめて外す。
+// 旧: sel.includes('sk-added-1') で判定していたため、#1 を消すと #10〜#19 の書式まで消えていた
+function selHasAdded(sel,id){ return new RegExp('sk-added-'+id+'(?![\\w-])').test(sel||''); }
+function dropAddedRecs(arr,id){
+  return arr.filter(x=>!(((x.type==='imgadd'||x.type==='dup')&&x.id===id)||selHasAdded(x.sel,id)));
 }
 function deleteSelectedEls(){
   if(!SELSET.length) return;
@@ -2516,11 +2637,7 @@ function deleteSelectedEls(){
   transact(()=>{ setSelection([]); targets.forEach(el=>{
     const added=findAddedRec(el);
     if(added){
-      mutateEdits(arr=>arr.filter(x=>{
-        if((x.type==='imgadd'||x.type==='dup')&&x.id===added.id) return false;
-        if(x.sel&&x.sel.includes(`sk-added-${added.id}`)) return false;
-        return true;
-      }));
+      mutateEdits(arr=>dropAddedRecs(arr,added.id));
       // 画像データ（IMGS）はここでは消さない。消すと ⌘Z でレコードは戻っても画像が「プレビュー切れ」になる。
       // 「全編集を破棄」で丸ごと消えるので、それまでは残しておく
     }else{
@@ -2585,6 +2702,21 @@ function deleteSlide(){
 // --- キャンバス配線 ---
 function wireEditor(doc){
   doc.addEventListener('dragstart',e=>e.preventDefault());
+  // キャンバスにファイルを落とすと、編集用の iframe がそのファイルに移動してスライドが消えるので止める
+  doc.addEventListener('dragover',e=>{ if(hasFiles(e)) e.preventDefault(); });
+  doc.addEventListener('drop',e=>{ if(hasFiles(e)) e.preventDefault(); });
+  // スライドからはみ出した文字を編集すると、ブラウザが文字カーソルを見せようとして overflow:hidden の箱
+  // （スライド本体など）を勝手にスクロールし、スライド全体が横にずれて見えていた（確定後もずれたまま）。
+  // スライドはスクロールしない前提なので、その分を戻す。ユーザーがスクロールできる箱（overflow:auto/scroll）は触らない
+  doc.addEventListener('scroll',e=>{
+    const t=(e.target===doc)?doc.scrollingElement:e.target;
+    if(!t||t.nodeType!==1||!(t.scrollLeft||t.scrollTop)) return;
+    if(t!==doc.scrollingElement){
+      const cs=doc.defaultView.getComputedStyle(t);
+      if(/auto|scroll/.test(cs.overflowX+' '+cs.overflowY)) return;
+    }
+    t.scrollLeft=0; t.scrollTop=0;
+  },true);
   doc.addEventListener('wheel',wheelZoom,{passive:false});
   doc.addEventListener('mousemove',e=>{
     if(ED.rb){
@@ -2699,6 +2831,13 @@ function wireEditor(doc){
       if(r.side){ // 通常要素のサイズ変更
         const changedW=r.curW!=null&&Math.round(r.curW)!==Math.round(r.startW);
         const changedH=r.curH!=null&&Math.round(r.curH)!==Math.round(r.startH);
+        // 変わらなかった方向の見た目をドラッグ前に戻す。旧: 四隅を横にだけ動かすと、ドラッグ中に入れた高さ（px固定）が
+        // 記録されないまま画面に残り、再読込・取り消しの後と見た目が食い違っていた（2026-09-25 点検の総当たりで発見）
+        if(r.inl){
+          if(!changedW){ r.el.style.width=r.inl.width; r.el.style.marginLeft=r.inl.marginLeft; }
+          if(!changedH){ r.el.style.height=r.inl.height; r.el.style.marginTop=r.inl.marginTop; }
+          if(!changedW&&!changedH) r.el.style.flex=r.inl.flex;
+        }
         if(changedW||changedH){
           const el=r.el, d=descFor(el), ml=el.style.marginLeft, mt=el.style.marginTop;
           const pick=(arr,prop)=>arr.find(x=>x.type==='style'&&x.sel===d.sel&&x.nth===d.nth&&x.prop===prop);
@@ -2722,7 +2861,7 @@ function wireEditor(doc){
         if(SELSET.length===1){ clearSelVisual(); setSelection([r.el]); }
         return;
       }
-      if(r.cur){
+      if(r.cur&&r.cur!==r.rec.w){ // 元の幅に戻して離したときは履歴に残さない（空振りの ⌘Z を作らない）
         mutateEdits(arr=>{
           const i=arr.findIndex(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===r.rec.id);
           if(i>=0) arr[i]={...arr[i],w:r.cur};
@@ -2755,6 +2894,7 @@ function wireEditor(doc){
   doc.addEventListener('paste',e=>handlePaste(e));
 }
 function handleEditorKey(e){
+  if(modalOpen()) return; // キャンバス（iframe）側にフォーカスが残っていても、モーダル・発表中は編集しない
   const meta=e.metaKey||e.ctrlKey;
   if(ED.editingEl){
     if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); commitTextEdit(); }
@@ -2768,9 +2908,7 @@ function handleEditorKey(e){
   for(const k of ZKEYS){ if(k.match(e)){ e.preventDefault(); changeZOrder(k.mode); return; } }
   if(meta&&(e.key==='c'||e.key==='C')){
     if(SELSET.length===1){
-      const el=SELSET[0]; const d=descFor(el);
-      const inst=FB.order.find(o=>o.id===ED.iid);
-      COPIED={srcIid:ED.iid,srcOrig:inst?inst.src:0,sel:d.sel,nth:d.nth,count:d.count,label:(el.innerText||'').trim().replace(/\s+/g,' ').slice(0,16)};
+      copySelectedEl(SELSET[0]);
       LAST_COPY='el';
       flashChip('要素をコピーしました（⌘Vで配置）');
     }else if(SELSET.length===0){
@@ -2809,7 +2947,7 @@ function handleEditorKey(e){
   handleNavKey(e);
 }
 function handlePaste(e){
-  if(!MODE_EDIT) return;
+  if(!MODE_EDIT||modalOpen()) return;
   const items=(e.clipboardData&&e.clipboardData.items)||[];
   for(const it of items){
     if(it.kind==='file'&&it.type.startsWith('image/')){
@@ -2828,12 +2966,17 @@ function handlePaste(e){
 // 通知はツールバーの外に浮かせる。バーの中に置くと文字数でバーが折り返し、
 // 編集画面の高さが動いて気持ち悪い（2026-08-21 代表指摘）
 let TOAST_T=null;
-function flashChip(msg){
+// important=true の通知（保存できなかった等の警告）は、表示中にほかの通知で上書きしない。
+// 旧: 容量オーバーの警告が直後の「削除しました」「元に戻しました」ですぐ消え、1回しか出さない作りなので二度と見えなかった
+let TOAST_LOCK=0;
+function flashChip(msg,ms,important){
+  if(!important&&Date.now()<TOAST_LOCK) return;
   let t=$('emToast');
   if(!t){ t=document.createElement('div'); t.id='emToast'; t.className='em-toast'; document.body.appendChild(t); }
   t.textContent=msg; t.classList.add('show');
   clearTimeout(TOAST_T);
-  TOAST_T=setTimeout(()=>t.classList.remove('show'),1600);
+  TOAST_T=setTimeout(()=>{ t.classList.remove('show'); TOAST_LOCK=0; },ms||1600);
+  TOAST_LOCK=important?Date.now()+(ms||1600):0;
 }
 function handleNavKey(e){
   if(!MODE_EDIT||!DECK) return false;
@@ -2841,8 +2984,23 @@ function handleNavKey(e){
   if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault&&e.preventDefault(); gotoPos(ED.pos-1); return true; }
   return false;
 }
+// 画面の上にモーダル（修正プロンプト・パスの許可）や発表モードが出ているか
+function modalOpen(){
+  return PV.on||$('pOverlay').classList.contains('show')||$('pathModal').style.display==='flex';
+}
 window.addEventListener('keydown',e=>{
+  // Esc で修正プロンプトの画面・カラーピッカー・操作方法を閉じる（発表モードの Esc は発表側が先に受ける）
+  if(e.key==='Escape'){
+    if($('pOverlay').classList.contains('show')){ $('pOverlay').classList.remove('show'); return; }
+    if($('cPop').classList.contains('show')||$('helpPop').classList.contains('show')){
+      $('cPop').classList.remove('show'); $('helpPop').classList.remove('show'); return;
+    }
+  }
   if(!MODE_EDIT) return;
+  // モーダル・発表中のキーを編集画面に通さない。
+  // 旧: 修正プロンプトを開いたまま矢印キーで裏のスライドが切り替わり、Backspace でスライドが消えていた。
+  //     発表モードでも Delete で編集中のスライドが削除されていた（2026-09-25 点検で発見）
+  if(modalOpen()) return;
   const t=e.target;
   if(t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable)) return;
   handleEditorKey(e);
@@ -2862,6 +3020,21 @@ function styleValJa(prop,v){
 }
 function editTargetLabel(e){
   return `${e.sel}${e.count>1?`（${e.nth+1}個目）`:''}`;
+}
+// 修正プロンプト用の宛先。画面で追加した要素（画像・複製）への書式・移動は、セレクタが
+// 「.s5-card.sk-added.sk-added-3」のようなビューアー内部の名前になり、フラグメントでは見つからない。
+// → 「追加要素#3（【要素複製】の…）」と、同じプロンプト内の追加の行を指す書き方にする
+function promptTargetLabel(e,edits){
+  const m=(e.sel||'').match(/^(\S*\bsk-added-(\d+))(?![\w-])(.*)$/);
+  if(m){
+    const a=edits.find(x=>(x.type==='imgadd'||x.type==='dup')&&x.id===+m[2]);
+    if(a){
+      const rest=m[3].trim();
+      const base=a.type==='imgadd'?`追加要素#${a.id}（【画像追加】の「${a.name}」）`:`追加要素#${a.id}（【要素複製】で置いた ${a.sel} の複製）`;
+      return base+(rest?` の中の ${rest}`:'')+(e.count>1&&rest?`（${e.nth+1}個目）`:'');
+    }
+  }
+  return editTargetLabel(e);
 }
 function renderEditList(){
   const list=$('eList'); const edits=slideEdits(ED.iid);
@@ -2905,7 +3078,9 @@ function renderEditList(){
     }
     const btn=document.createElement('button'); btn.className='btn mini'; btn.textContent='取消';
     btn.addEventListener('click',()=>{
-      mutateEdits(arr=>{ arr.splice(i,1); return arr; });
+      // 追加画像・複製を取り消すときは、その要素に付けた書式・移動の記録も一緒に外す（残ると宛先の無い指示がプロンプトに出る）
+      if(e.type==='imgadd'||e.type==='dup') mutateEdits(arr=>dropAddedRecs(arr,e.id));
+      else mutateEdits(arr=>{ arr.splice(i,1); return arr; });
       rebuildEditorDoc({keepSel:true});
     });
     div.appendChild(btn);
@@ -3087,6 +3262,9 @@ function buildPrompt(){
     lines.push('- 【要素複製】は元要素をコピーし、指定位置（スライド左上基準px）に絶対配置で追加する。');
     lines.push('- 【要素削除】は該当要素をフラグメントから削除する。');
     lines.push('- 対象のセレクタは各スライドのフラグメント内のクラス。（n個目）は同セレクタの出現順（1始まり）。');
+    if(allEdits.some(e=>e.type==='imgadd'||e.type==='dup')){
+      lines.push('- 「追加要素#N」は、同じスライドの【画像追加】【要素複製】の行で置く要素を指す（その要素への書式・配置の指示も同じ名前で出る）。');
+    }
     if(anyBg){
       lines.push('- 【背景画像】は deck-config.json の "slides" 配列で該当スライドの bg を true/false にして再ビルドする');
       lines.push('  （フラグメントは触らない）。エントリが無ければ { "file": "<フラグメント名>", "bg": false } のように追加する。');
@@ -3147,20 +3325,24 @@ function buildPrompt(){
         lines.push(`- 【背景画像】背景画像を ${fb.bg?'ON':'OFF'} にする（${where}。slides[${pos-1}].bg 相当）`);
       }
       if(fb.text) fb.text.split('\n').filter(Boolean).forEach(l=>lines.push(`- ${l}`));
-      (fb.edits||[]).forEach(e=>{
+      const eds=Array.isArray(fb.edits)?fb.edits:[];
+      eds.forEach(e=>{
+        const tgt=promptTargetLabel(e,eds);
         if(e.type==='text'){
-          lines.push(`- 【文言修正】${editTargetLabel(e)}：「${e.before.replace(/\n/g,'⏎')}」→「${e.after.replace(/\n/g,'⏎')}」`);
+          lines.push(`- 【文言修正】${tgt}：「${e.before.replace(/\n/g,'⏎')}」→「${e.after.replace(/\n/g,'⏎')}」`);
         }else if(e.type==='move'){
-          lines.push(`- 【配置調整】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を ${moveText(e)}`);
+          lines.push(`- 【配置調整】${tgt}${e.label?`（${e.label}…）`:''} を ${moveText(e)}`);
         }else if(e.type==='style'){
-          lines.push(`- 【書式変更】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''}：${e.prop} を ${styleValJa(e.prop,e.before)} → ${styleValJa(e.prop,e.after)}`);
+          lines.push(`- 【書式変更】${tgt}${e.label?`（${e.label}…）`:''}：${e.prop} を ${styleValJa(e.prop,e.before)} → ${styleValJa(e.prop,e.after)}`);
         }else if(e.type==='imgadd'){
-          lines.push(`- 【画像追加】「${e.name}」${e.orig?`（元ファイル名: ${e.orig}）`:''}を 位置(${e.x}, ${e.y})・幅${e.w}px で配置（実ファイルは ~/Downloads/${e.name}）`);
+          lines.push(`- 【画像追加】追加要素#${e.id}：「${e.name}」${e.orig?`（元ファイル名: ${e.orig}）`:''}を 位置(${e.x}, ${e.y})・幅${e.w}px で配置（実ファイルは ~/Downloads/${e.name}）`);
         }else if(e.type==='dup'){
-          const from=(e.srcIid!==iid)?`スライド${posOfIid(e.srcIid)||'元'}の`:'';
-          lines.push(`- 【要素複製】${from}${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を複製し、位置(${e.x}, ${e.y})${e.w?`・幅${e.w}px`:''}に配置`);
+          const sp=posOfIid(e.srcIid);
+          // 複製元のスライドが削除済みのときは元ファイル名で示す（旧:「スライド元の」と出ていた）
+          const from=(e.srcIid!==iid)?(sp?`スライド${sp}の`:`削除した元スライド（${e.srcOrig>0?(srcFileOf(DECK.sections[e.srcOrig-1])||'元'+e.srcOrig):'新規スライド'}）の`):'';
+          lines.push(`- 【要素複製】追加要素#${e.id}：${from}${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を複製し、位置(${e.x}, ${e.y})${e.w?`・幅${e.w}px`:''}に配置`);
         }else if(e.type==='remove'){
-          lines.push(`- 【要素削除】${editTargetLabel(e)}${e.label?`（${e.label}…）`:''} を削除`);
+          lines.push(`- 【要素削除】${tgt}${e.label?`（${e.label}…）`:''} を削除`);
         }
       });
     });
@@ -3171,6 +3353,8 @@ function buildPrompt(){
   return lines.join('\n');
 }
 $('promptBtn').addEventListener('click',async()=>{
+  // 文字を編集中のまま押された場合は、入力中の文字を確定してから出力する（旧: 入力中の文言がプロンプトから漏れていた）
+  if(MODE_EDIT) commitTextEdit();
   const p=buildPrompt();
   if(!p){ alert('フィードバックがまだ入力されていません。編集モードで直接編集するか、フィードバック欄に記入してから出力してください。'); return; }
   const r=await saveAddedImages();

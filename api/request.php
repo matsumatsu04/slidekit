@@ -25,20 +25,30 @@ if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && empty($_POST) && empty($_FILES
     out(['ok' => false, 'error' => '送信サイズが大きすぎます。添付を減らす・小さくするなどして再度お試しください'], 413);
 }
 
+// $_POST の値を文字列で取る。name[]=... のように配列で送られると trim() が TypeError で
+// 500（JSONでない応答）になるので、文字列以外は空として扱う
+function post_str($key) {
+    $v = $_POST[$key] ?? '';
+    return is_string($v) ? $v : '';
+}
+
 // honeypot（人間には見えない欄。埋まっていたらbot）
-if (trim($_POST['website'] ?? '') !== '') {
+if (trim(post_str('website')) !== '') {
     out(['ok' => true]); // botには成功したように見せる
 }
 
-$name = trim($_POST['name'] ?? '');
-$type = trim($_POST['type'] ?? '');
-$body = trim($_POST['body'] ?? '');
+// ブラウザは textarea の改行を CRLF で送るが、画面の maxlength（4000）は改行を1文字で数える。
+// そのまま数えると改行の数だけ多くなり、画面では収まっているのに弾かれるので LF にそろえてから数える
+$name = trim(preg_replace('/[\x00-\x1F\x7F]+/', ' ', post_str('name'))); // 名前に改行・制御文字は要らない
+$type = trim(post_str('type'));
+$body = trim(str_replace(["\r\n", "\r"], "\n", post_str('body')));
 
 $types = ['機能の要望', '不具合・気になる点', '欲しい構図パターン', 'その他'];
 if ($name === '' || $body === '') {
     out(['ok' => false, 'error' => 'お名前と内容は必須です'], 400);
 }
-if (mb_strlen($name) > 100 || mb_strlen($body) > 4000 || !in_array($type, $types, true)) {
+if (!mb_check_encoding($name . $body, 'UTF-8')
+    || mb_strlen($name) > 100 || mb_strlen($body) > 4000 || !in_array($type, $types, true)) {
     out(['ok' => false, 'error' => '入力内容を確認してください'], 400);
 }
 
@@ -112,8 +122,12 @@ $rec = [
     'ip'    => $ip,
     'ua'    => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200),
 ];
-$line = json_encode($rec, JSON_UNESCAPED_UNICODE) . "\n";
-if (@file_put_contents($dataDir . '/requests.jsonl', $line, FILE_APPEND | LOCK_EX) === false) {
+if ($uploadErr !== null) {
+    $rec['upload_error'] = $uploadErr; // 添付の一部を受け取れなかった（本文は保存する）
+}
+// UA などに壊れたUTF-8が混じると json_encode が false を返し、空行だけ保存されて記録が消えるので置換して書く
+$json = json_encode($rec, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+if ($json === false || @file_put_contents($dataDir . '/requests.jsonl', $json . "\n", FILE_APPEND | LOCK_EX) === false) {
     out(['ok' => false, 'error' => '保存に失敗しました'], 500);
 }
 
@@ -122,31 +136,73 @@ $configFile = $dataDir . '/config.php';
 if (is_file($configFile)) {
     include $configFile;
     if (defined('SLIDEKIT_WEBHOOK_URL') && SLIDEKIT_WEBHOOK_URL !== '') {
+        // 名前は Discord の書式記号をエスケープする（* や _ で太字が崩れる・` で囲みが壊れるのを防ぐ）
+        $nameMd = preg_replace('/([\\\\*_~`|>])/', '\\\\$1', $name);
+        $bodyMd = str_replace('```', "'''", mb_substr($body, 0, 1500)); // 本文の ``` で囲みが閉じないように
+        if (mb_strlen($body) > 1500) {
+            $bodyMd .= "\n…（続きは requests.jsonl）";
+        }
         $msg = "📮 **SlideKitリクエスト**（{$type}）\n"
-             . "**{$name}** さんより\n"
-             . "```\n" . str_replace('```', "'''", mb_substr($body, 0, 1500)) . "\n```"; // 本文の ``` で囲みが閉じないように
-        if (!empty($savedFiles)) {
-            $msg .= '📎 添付 ' . count($savedFiles) . '件';
+             . "**{$nameMd}** さんより\n"
+             . "```\n" . $bodyMd . "\n```";
+        if ($uploadErr !== null) {
+            $msg .= "\n⚠ " . $uploadErr;
         }
+
         // 添付はDiscordにもそのまま転送する（まつつがDiscord上で直接見られるように）。
-        // Discord側の上限（10MB/ファイル）はアップロード時の上限と同じなので基本すべて送れる。
-        $post  = ['payload_json' => json_encode(['content' => $msg], JSON_UNESCAPED_UNICODE)];
-        $n = 0;
+        // Discord は1回の送信の合計が 25MiB を超えると本文ごと失敗する（10MB×5枚＝最大50MBになり得る）。
+        // 合計 24MiB までを載せ、残りはサーバー保存のみ（件数を本文に書く）
+        $files = [];
+        $total = 0;
         foreach ($savedFiles as $f) {
-            if ($n >= 10) { break; }
-            $post['files[' . $n . ']'] = new CURLFile($f['path'], $f['mime'], $f['name']);
-            $n++;
+            if (count($files) >= 10 || $total + $f['size'] > 24 * 1024 * 1024) { continue; }
+            $files[] = $f;
+            $total += $f['size'];
         }
-        $ch = curl_init(SLIDEKIT_WEBHOOK_URL);
-        curl_setopt_array($ch, [
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $post, // multipart/form-data（添付なしでも可）
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 15,
-        ]);
-        @curl_exec($ch);
-        @curl_close($ch);
+        if (!empty($savedFiles)) {
+            $msg .= "\n📎 添付 " . count($savedFiles) . '件';
+            if (count($files) < count($savedFiles)) {
+                $msg .= '（容量の都合で ' . (count($savedFiles) - count($files)) . '件はDiscordに載せず・サーバーに保存済み）';
+            }
+        }
+
+        // 送信。@everyone やロールのメンションが本文・名前に書かれていても通知が飛ばないよう allowed_mentions で全て無効にする
+        $send = function ($content, $withFiles) use ($files) {
+            $post = ['payload_json' => json_encode(
+                ['content' => $content, 'allowed_mentions' => ['parse' => []]],
+                JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+            )];
+            if ($withFiles) {
+                foreach ($files as $n => $f) {
+                    $post['files[' . $n . ']'] = new CURLFile($f['path'], $f['mime'], $f['name']);
+                }
+            }
+            $ch = curl_init(SLIDEKIT_WEBHOOK_URL);
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $post, // multipart/form-data（添付なしでも可）
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 15,
+            ]);
+            $res  = @curl_exec($ch);
+            $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $cerr = curl_error($ch);
+            @curl_close($ch);
+            return [$code >= 200 && $code < 300, $code, $cerr, is_string($res) ? mb_substr($res, 0, 300) : ''];
+        };
+        $r = $send($msg, !empty($files));
+        if (!$r[0] && !empty($files)) {
+            // 添付のせいで失敗した可能性があるので、本文だけでもう一度送る
+            $r2 = $send($msg . "\n（添付の転送に失敗。サーバーに保存済み）", false);
+            if ($r2[0]) { $r = $r2; } else { $r[3] .= ' / retry: HTTP ' . $r2[1] . ' ' . $r2[2]; }
+        }
+        if (!$r[0]) {
+            // 保存はできているので利用者には成功を返す。通知が止まっていることに気づけるよう記録だけ残す
+            @file_put_contents($dataDir . '/notify-errors.log',
+                date('c') . " HTTP {$r[1]} {$r[2]} {$r[3]}\n", FILE_APPEND | LOCK_EX);
+        }
     }
 }
 
-out(['ok' => true]);
+// 添付の一部を受け取れなかったときは、送信自体は成功として理由を添える（画面の完了表示に出す）
+out($uploadErr !== null ? ['ok' => true, 'warn' => $uploadErr] : ['ok' => true]);

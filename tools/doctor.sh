@@ -133,7 +133,8 @@ fi
 
 echo
 if [ "$NG" = "0" ]; then
-  echo "✓ 準備OK。このフォルダで claude を起動して「スライドを作って」と話しかけてください。"
+  # 2026-08-16 から「どの作業フォルダでも使う」運用（install-skills.sh）。このフォルダで起動させる案内はしない
+  echo "✓ 準備OK。Claude Codeで「スライドを作って」と話しかけてください（どの作業フォルダでも使うには、先に1回 bash tools/install-skills.sh を実行）。"
 else
   echo "✗ 上の ✗ を解消してから、もう一度 bash tools/doctor.sh を実行してください。"
 fi

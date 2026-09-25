@@ -24,10 +24,17 @@
   .app{display:flex;align-items:flex-start;min-height:100vh}
 
   /* ===== sidebar ===== */
-  .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:80px;height:calc(100vh - 80px);
+  /* --tray-h: 構成トレイ表示中のバーの高さ（renderTray が入れる）。下の「スライド確認」等がトレイに隠れないよう差し引く */
+  .sidebar{width:var(--side-w);flex:0 0 var(--side-w);position:sticky;top:80px;height:calc(100vh - 80px - var(--tray-h,0px));
     display:flex;flex-direction:column;justify-content:space-between;background:#fff;
     border-right:1px solid var(--line);padding:22px 14px 16px;z-index:25}
   .side-nav{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
+  /* サイドバーが低くなったとき（トレイ表示中・低い画面）はカテゴリ一覧の側を縮めてスクロールさせ、
+     下の「スライド確認」「導入手順」は常に見える位置に残す。包みの div が縮まないと下のリンクがはみ出していた */
+  @media (min-width:901px){
+    .sidebar > div:first-child{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+    .side-nav{min-height:0}
+  }
   .nav-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
     border:none;background:none;font-size:13.5px;color:#444;padding:9px 11px;border-radius:9px;cursor:pointer;white-space:nowrap}
   .nav-item:hover{background:var(--surf)}
@@ -98,15 +105,21 @@
 
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
     transition:transform .18s ease,box-shadow .18s ease}
-  .card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,20,30,.09)}
   .thumb{position:relative;width:100%;overflow:hidden;background:#e8e8e8;border-bottom:1px solid var(--line);cursor:pointer}
   .thumb iframe{position:absolute;top:0;left:0;width:960px;height:540px;border:0;transform-origin:top left;pointer-events:none;
     background:#e8e8e8;transform:scale(var(--fit-scale,1));transition:transform .25s ease}
-  .thumb:hover iframe{transform:scale(calc(var(--fit-scale,1) * 1.02))}
   .tintlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color;background:transparent;z-index:2}
   .thumb .open{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;
         opacity:0;transition:opacity .15s;background:linear-gradient(transparent 60%,rgba(0,0,0,.18));z-index:2}
-  .thumb:hover .open{opacity:1}
+  /* ホバー演出はマウス環境だけ。スマホではタップ後にカードが浮いたまま・「拡大してプレビュー」が残ったままになっていた（2026-09-25） */
+  @media (hover:hover){
+    .card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,20,30,.09)}
+    .thumb:hover iframe{transform:scale(calc(var(--fit-scale,1) * 1.02))}
+    .thumb:hover .open{opacity:1}
+  }
+  /* キーボードでサムネイルを選んだとき（Tab→Enter で拡大プレビュー）*/
+  .thumb:focus-visible{outline:3px solid var(--brand);outline-offset:-3px}
+  .thumb:focus-visible .open{opacity:1}
   .thumb .open span{background:#fff;border-radius:6px;font-size:11px;padding:3px 8px;color:#333}
 
   .card .body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
@@ -141,7 +154,9 @@
     align-items:center;justify-content:center;transition:bottom .2s}
   .totop:hover{border-color:var(--brand);color:var(--brand)}
   .totop.raised{bottom:78px}
-  body.has-tray{padding-bottom:64px}
+  /* トレイ分の余白は .main 側に取る（body に取ると、最下部までスクロールしたとき固定サイドバーが押し上げられていた）。
+     実際の値は renderTray() がバーの高さに合わせて上書きする */
+  body.has-tray .main{padding-bottom:64px}
 
   /* ===== deck tray ===== */
   .tray-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);
@@ -155,6 +170,16 @@
   .tray-x:hover{color:#c0392b;background:#fff}
   .tray-actions{display:flex;gap:8px;flex:0 0 auto}
   .tray-actions .btn{margin-right:0}
+  /* 追加が多いときにバーが画面を覆わないよう、チップ欄は3行まで（それ以上は欄の中でスクロール）*/
+  .tray-chips{max-height:96px;overflow-y:auto}
+  @media (max-width:560px){
+    /* スマホ幅では「ラベル＋ボタン」を1行目、チップを2行目の横スクロールに分ける
+       （従来はチップ欄が潰れて「IDをコピー」ボタンがチップに重なっていた）*/
+    .tray-bar{padding:8px 16px;gap:8px 10px}
+    .tray-actions{margin-left:auto}
+    .tray-chips{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-height:none;padding-bottom:2px}
+    .tray-x{padding:4px 8px}
+  }
   .btn.copy-ok{background:#0d7a43;color:#fff;border-color:#0d7a43}
 
   /* ===== プレビューモーダル（ライトボックス＋カルーセル） ===== */
@@ -174,18 +199,20 @@
   .modal-close:hover{background:rgba(255,255,255,.3)}
   .modal-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 76px}
   .modal-holder{position:relative;width:960px;height:540px;transform-origin:center center;box-shadow:0 20px 70px rgba(0,0,0,.45);flex:0 0 auto}
-  .modal-holder iframe{position:absolute;inset:0;width:960px;height:540px;border:0;background:#e8e8e8}
+  /* プレビューは見るだけ。クリックでiframeにフォーカスが移ると Esc・←→ が効かなくなっていたので操作を受けない */
+  .modal-holder iframe{position:absolute;inset:0;width:960px;height:540px;border:0;background:#e8e8e8;pointer-events:none}
   .modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;flex:0 0 auto;border-radius:50%;
     border:none;background:rgba(255,255,255,.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s}
-  .modal-nav:hover{background:rgba(255,255,255,.3)}
+    display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s;
+    z-index:2} /* スマホ幅ではプレビュー枠と重なり、「前へ」が枠の下に隠れて押せなかった（2026-09-25）*/
+  @media (hover:hover){ .modal-nav:hover{background:rgba(255,255,255,.3)} } /* タップ後に明るいまま残り、白いスライド上で矢印が消えるため */
   .modal-nav:active{transform:translateY(-50%) scale(.92)}
   .modal-nav.prev{left:14px}
   .modal-nav.next{right:14px}
   .modal-pos{flex:0 0 auto;text-align:center;color:#cfd2d8;font-size:12px;padding:8px 0 18px}
   @media (max-width:900px){
     .modal-stage{padding:0 8px}
-    .modal-nav{width:40px;height:40px;font-size:22px}
+    .modal-nav{width:40px;height:40px;font-size:22px;background:rgba(0,0,0,.45)} /* 白いスライドの上でも矢印が見えるように */
   }
 
   /* ===== responsive ===== */
@@ -332,7 +359,7 @@ body{padding-top:80px}
   <div class="modal-stage" id="mStage">
     <button class="modal-nav prev" id="mPrev" title="前へ（←）" aria-label="前のパターンへ">‹</button>
     <div class="modal-holder" id="mHolder">
-      <iframe id="mFrame" title="パターンプレビュー"></iframe>
+      <iframe id="mFrame" title="パターンプレビュー" tabindex="-1"></iframe>
     </div>
     <button class="modal-nav next" id="mNext" title="次へ（→）" aria-label="次のパターンへ">›</button>
   </div>
@@ -345,6 +372,13 @@ body{padding-top:80px}
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+// 保存値が壊れていると JSON.parse が例外を投げ、以降のスクリプトが止まって一覧が空になっていた（2026-09-25 実測）。
+// 配列として読めないときは空配列に戻す
+function lsArray(k){
+  try{ const v=JSON.parse(lsGet(k)||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; }
+}
+// innerHTML に差し込む文字列のエスケープ（manifest・保存値由来の文字列用）
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 // ===== 所有者モード（お気に入り・削除予定は所有者だけが使う）=====
 // URL に ?owner=1 が付いていれば localStorage に保存（以後は無印URLでも所有者）。?owner=0 で解除。判定はここで1回だけ。
@@ -441,7 +475,7 @@ for(const d of DESIGNS){
 }
 
 // ===== お気に入り =====
-let FAVS=new Set(JSON.parse(lsGet('sk-favs')||'[]'));
+let FAVS=new Set(lsArray('sk-favs'));
 function saveFavs(){lsSet('sk-favs',JSON.stringify([...FAVS]));}
 function isFav(id){return FAVS.has(id);}
 function toggleFav(id,ev){
@@ -455,7 +489,7 @@ function toggleFav(id,ev){
 }
 
 // ===== 削除予定ラベル（候補をマーク→「IDをコピー」でAIに削除依頼する運用）=====
-let DELS=new Set(JSON.parse(lsGet('sk-dels')||'[]'));
+let DELS=new Set(lsArray('sk-dels'));
 function saveDels(){lsSet('sk-dels',JSON.stringify([...DELS]));}
 function isDel(id){return DELS.has(id);}
 function toggleDel(id,ev){
@@ -483,7 +517,7 @@ async function copyText(text){
 }
 
 // ===== デッキ構成トレイ（カート）=====
-let TRAY=JSON.parse(lsGet('sk-tray')||'[]');
+let TRAY=lsArray('sk-tray').filter(t=>t&&typeof t.id==='string'); // {id,name} 以外の要素は捨てる
 function saveTray(){
   lsSet('sk-tray',JSON.stringify(TRAY));
   document.body.classList.toggle('has-tray',TRAY.length>0);
@@ -522,33 +556,40 @@ function renderTray(){
     bar.classList.remove('show');
     chips.innerHTML='';
     totop.classList.remove('raised');
+    document.querySelector('.main').style.paddingBottom=''; totop.style.bottom='';
+    document.documentElement.style.removeProperty('--tray-h');
     return;
   }
   bar.classList.add('show');
   totop.classList.add('raised');
-  chips.innerHTML=TRAY.map(t=>`<span class="tray-chip">${t.id} ${t.name}<button class="tray-x" title="削除" onclick="removeFromTray('${t.id}',event)">×</button></span>`).join('');
+  chips.innerHTML=TRAY.map(t=>`<span class="tray-chip">${esc(t.id)} ${esc(t.name)}<button class="tray-x" title="削除" aria-label="${esc(t.id)} を構成から外す" onclick="removeFromTray('${esc(t.id)}',event)">×</button></span>`).join('');
+  // バーが2行以上になると固定の余白（64px）では最後のカードが隠れていた。実際の高さに合わせる
+  const h=bar.offsetHeight;
+  document.querySelector('.main').style.paddingBottom=h+'px';
+  document.documentElement.style.setProperty('--tray-h',h+'px'); // PC幅のサイドバーをバーの分だけ縮める（スマホ幅は高さ auto なので影響なし）
+  totop.style.bottom=(h+14)+'px';
 }
-async function copyTrayIds(){
-  const ok=await copyText(TRAY.map(t=>t.id).join(', '));
-  const btn=document.getElementById('trayCopy');
+// コピー結果の表示（連打したとき前のタイマーが新しい表示を早く消さないよう、ボタンごとにタイマーを持つ）
+async function copyWithFeedback(btn,text,label){
+  const ok=await copyText(text);
   btn.textContent = ok ? 'コピーしました ✓' : 'コピーに失敗しました';
   btn.classList.toggle('copy-ok',ok);
-  setTimeout(()=>{btn.textContent='IDをコピー';btn.classList.remove('copy-ok');},1800);
+  clearTimeout(btn._t);
+  btn._t=setTimeout(()=>{btn.textContent=label;btn.classList.remove('copy-ok');},1800);
+}
+function copyTrayIds(){
+  copyWithFeedback(document.getElementById('trayCopy'), TRAY.map(t=>t.id).join(', '), 'IDをコピー');
 }
 document.getElementById('trayCopy').addEventListener('click',copyTrayIds);
 document.getElementById('trayClear').addEventListener('click',clearTray);
-document.getElementById('delCopy').addEventListener('click',async()=>{
+document.getElementById('delCopy').addEventListener('click',()=>{
   // 表示順（カテゴリ順）でコピーする。DATA未取得時はSetの登録順。
   const ids=(DATA.length?DATA.filter(p=>isDel(p.id)).map(p=>p.id):[...DELS]).join(', ');
-  const ok=await copyText(ids);
-  const btn=document.getElementById('delCopy');
-  btn.textContent = ok ? 'コピーしました ✓' : 'コピーに失敗しました';
-  btn.classList.toggle('copy-ok',ok);
-  setTimeout(()=>{btn.textContent='削除予定のIDをコピー';btn.classList.remove('copy-ok');},1800);
+  copyWithFeedback(document.getElementById('delCopy'), ids, '削除予定のIDをコピー');
 });
 
 // ===== 表示密度 =====
-let DENSITY=lsGet('sk-density')||'3';
+let DENSITY=['2','3','4'].includes(lsGet('sk-density'))?lsGet('sk-density'):'3'; // 想定外の保存値だと列指定が外れて1列になるため
 function setDensity(d){
   DENSITY=d; lsSet('sk-density',d);
   document.getElementById('grid').dataset.density=d;
@@ -566,9 +607,11 @@ function matches(p){
   else if(active!=='all' && p.category!==active) return false;
   if(!QUERY) return true;
   // 部分一致（ID含む）。スペース区切りは全語含むものだけに絞るAND検索
-  const hay=`${p.id||''} ${p.name} ${p.category} ${p.summary||''}`.toLowerCase();
-  return QUERY.toLowerCase().split(/\s+/).filter(Boolean).every(t=>hay.includes(t));
+  // 全角英数（ｐ００５・ＫＰＩ）でも当たるように NFKC で半角にそろえてから比べる（2026-09-25）
+  const hay=normQ(`${p.id||''} ${p.name} ${p.category} ${p.summary||''}`);
+  return normQ(QUERY).split(/\s+/).filter(Boolean).every(t=>hay.includes(t));
 }
+function normQ(s){ s=String(s); try{ s=s.normalize('NFKC'); }catch(e){} return s.toLowerCase(); }
 function fit(){
   document.querySelectorAll('.thumb').forEach(t=>{
     const w=t.clientWidth,s=w/960;
@@ -590,15 +633,16 @@ function render(){
   list.forEach((p,i)=>{
     const fav=isFav(p.id), del=isDel(p.id), tray=inTray(p.id);
     const card=document.createElement('div');card.className='card';card.dataset.id=p.id||'';
+    // サムネイルはキーボードでも開けるように（Tab で選んで Enter／Space）。iframe 自体はフォーカス対象から外す
     card.innerHTML=`
-      <div class="thumb" onclick="openModal(${i})">
-        <iframe loading="lazy" src="${htmlPath(p.name)}" title="${p.name}" onload="skInk(this)"></iframe>
+      <div class="thumb" role="button" tabindex="0" aria-label="${esc((p.id?p.id+' ':'')+p.name)} を拡大してプレビュー" onclick="openModal(${i},this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(${i},this);}">
+        <iframe loading="lazy" src="${htmlPath(p.name)}" title="${esc(p.name)}" tabindex="-1" aria-hidden="true" onload="skInk(this)"></iframe>
         <div class="open"><span>拡大してプレビュー</span></div>
       </div>
       <div class="body">
-        <div><span class="cat">${p.category}</span></div>
-        <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${p.id||''}</span>${p.name}</div>
-        <div class="sum">${p.summary||''}</div>
+        <div><span class="cat">${esc(p.category)}</span></div>
+        <div class="name"><span class="pid" title="恒久ID（追加・削除があっても変わりません）">${esc(p.id)}</span>${esc(p.name)}</div>
+        <div class="sum">${esc(p.summary)}</div>
         <div class="actions">
           <button class="act act-fav owner-only ${fav?'on-fav':''}" onclick="toggleFav('${p.id}',event)">${fav?'★':'☆'} お気に入り</button>
           <button class="act act-del owner-only ${del?'on-del':''}" onclick="toggleDel('${p.id}',event)">${del?'✓':'🗑'} 削除予定</button>
@@ -623,20 +667,26 @@ document.getElementById('navDel').onclick=()=>{active='__del';syncNavActive();re
 
 // ===== プレビューモーダル（ページ内ライトボックス＋カルーセル）=====
 // カルーセルは「現在の絞り込み結果リスト」（LAST_LIST、renderのたびに更新）の範囲内を移動する。
-function openModal(idx){
+let MODAL_OPENER=null; // 閉じたときにフォーカスを戻す先（開いたサムネイル）
+function openModal(idx,opener){
   if(!LAST_LIST.length) return;
   MODAL_LIST=LAST_LIST;
   MODAL_IDX=((idx%MODAL_LIST.length)+MODAL_LIST.length)%MODAL_LIST.length;
   MODAL_OPEN=true;
+  MODAL_OPENER=opener||null;
   document.getElementById('modalOverlay').classList.add('show');
   document.body.style.overflow='hidden';
   renderModal();
+  // フォーカスをモーダル内へ（従来は背面のページに残り、Tab で見えない一覧を移動していた）
+  document.getElementById('mClose').focus({preventScroll:true});
 }
 function closeModal(){
   MODAL_OPEN=false;
   document.getElementById('modalOverlay').classList.remove('show');
   document.body.style.overflow='';
   document.getElementById('mFrame').src='about:blank'; // 閉じたら読み込みを止める
+  if(MODAL_OPENER && document.contains(MODAL_OPENER)) MODAL_OPENER.focus({preventScroll:true});
+  MODAL_OPENER=null;
 }
 function moveModal(delta){
   if(!MODAL_LIST.length) return;
@@ -698,13 +748,22 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){ closeModal(); }
   else if(e.key==='ArrowLeft'){ e.preventDefault(); moveModal(-1); }
   else if(e.key==='ArrowRight'){ e.preventDefault(); moveModal(1); }
+  else if(e.key==='Tab'){
+    // Tab をモーダル内のボタンだけで循環させる（背面の一覧へ抜けない）
+    const f=[...document.querySelectorAll('#modalOverlay a[href], #modalOverlay button')].filter(el=>el.offsetParent!==null);
+    if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(!document.getElementById('modalOverlay').contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  }
 });
 window.addEventListener('resize',()=>{ if(MODAL_OPEN) requestAnimationFrame(fitModal); });
 
 // 表示はカテゴリ順（下記の固定順）でグルーピングし、カテゴリ内はID順。
 // IDは「参照用の恒久コード」であり並び順の約束ではない（追加パターンも正しいカテゴリ位置に収まる）。
 const CAT_ORDER=['表紙','セクション','目次','本文','リスト','ステップ','図解・ダイアグラム','カード','グラフ','テーブル','KPI','まとめ','FAQ','プロフィール'];
-fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
+fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }).then(j=>{
   DATA=j.patterns.slice().sort((a,b)=>{
     const ca=CAT_ORDER.indexOf(a.category), cb=CAT_ORDER.indexOf(b.category);
     if(ca!==cb) return (ca<0?99:ca)-(cb<0?99:cb);
@@ -717,6 +776,11 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   DELS=new Set([...DELS].filter(id=>validIds.has(id)));
   if(FAVS.size!==favBefore) saveFavs();
   if(DELS.size!==delBefore) saveDels();
+  // 構成トレイも同じく掃除する（削除済みIDが残ると「IDをコピー」で存在しないIDを渡してしまう）。名前は最新に合わせる
+  const byId=new Map(DATA.map(p=>[p.id,p]));
+  const trayBefore=JSON.stringify(TRAY);
+  TRAY=TRAY.filter(t=>byId.has(t.id)).map(t=>({id:t.id,name:byId.get(t.id).name}));
+  if(JSON.stringify(TRAY)!==trayBefore){ saveTray(); renderTray(); }
   document.getElementById('loading').style.display='none';
   document.getElementById('allCount').textContent=DATA.length;
   document.getElementById('favCount').textContent=FAVS.size; // 初回表示時点のお気に入り件数を反映
@@ -730,18 +794,34 @@ fetch('/patterns/manifest.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
     b.onclick=()=>{active=c;syncNavActive();render();};
     sideNav.appendChild(b);
   });
-  document.getElementById('q').addEventListener('input',e=>{QUERY=e.target.value.trim();render();});
+  const qEl=document.getElementById('q');
+  qEl.addEventListener('input',e=>{QUERY=e.target.value.trim();render();});
+  // 「戻る」で来たときブラウザが検索語・見出しチェックを復元するが、変数は初期値のままで
+  // 「検索欄に語があるのに全件表示」「チェックは外れているのに見出しあり」になっていた（2026-09-25）。画面の値に合わせる
+  QUERY=qEl.value.trim();
+  HEADING=document.getElementById('headOn').checked;
   const totop=document.getElementById('totop');
   window.addEventListener('scroll',()=>{totop.style.display=window.scrollY>600?'flex':'none'});
   totop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   render();
   setDensity(DENSITY);
   applyPalette(); // 保存済みパレット（既定: ネイビー）を初回描画に反映
-}).catch(e=>{document.getElementById('loading').textContent='マニフェストの読み込みに失敗しました。';});
+  // 他ページのヘッダー「デザインテーマ」（/#designs）から来ると、一覧を描く前の位置へ飛んだまま
+  // 一覧に押し下げられ、パターンの先頭が表示されていた（2026-09-25）。描画後に目的の位置へ合わせ直す
+  if(location.hash==='#designs'||location.hash==='#patterns'){
+    requestAnimationFrame(()=>{ const t=document.querySelector(location.hash); if(t) t.scrollIntoView(); });
+  }
+}).catch(e=>{
+  document.getElementById('loading').textContent='パターン一覧の読み込みに失敗しました。時間をおいてページを再読み込みしてください。';
+  document.getElementById('allCount').textContent='–';
+});
 
 renderTray();
-window.addEventListener('resize',()=>requestAnimationFrame(fit));
+function onResize(){ requestAnimationFrame(fit); if(TRAY.length) renderTray(); }
+window.addEventListener('resize',onResize);
 window.addEventListener('load',()=>requestAnimationFrame(fit));
+// ウィンドウの大きさが同じでも一覧の幅が変わる場合（スクロールバーの出入り等）に縮尺を合わせ直す
+if(window.ResizeObserver) new ResizeObserver(()=>requestAnimationFrame(fit)).observe(grid);
 </script>
 <script>
 (function(){

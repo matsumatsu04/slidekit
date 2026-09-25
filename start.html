@@ -136,12 +136,13 @@ body{padding-top:80px}
    - フォルダが無ければ作る（例: mkdir -p ~/slidekit-assets）
    - 場所を登録する（~/slidekit-assets 以外を選んだ場合は必ず実行する）:
      mkdir -p ~/.slidekit &amp;&amp; printf &#x27;{"assetsDir":"%s"}\n&#x27; "&lt;選ばれたフォルダの絶対パス&gt;" &gt; ~/.slidekit/config.json
+     Windows（Git Bash）では C:/Users/名前/... のように「ドライブ名＋/区切り」で書く（/c/Users/... の形や \ 区切りはビルドツールが読めない。cygpath -m &lt;パス&gt; でこの形に変換できる）。
    - 使い方を伝える: そのフォルダに置いた logo.png は、スライドを作るときに assets/logo.png で呼び出せる。
      サブフォルダを作った場合は assets/&lt;サブフォルダ&gt;/&lt;ファイル名&gt; で呼び出せる。
 
 5. 動作確認（サンプルを1本ビルドする）
    リポジトリの中には作らず、一時フォルダで試す。作業フォルダがどこでも同じコマンドで動く:
-   rm -rf /tmp/slidekit-setup-check &amp;&amp; cp -R ~/slidekit/examples/html-deck-demo /tmp/slidekit-setup-check &amp;&amp; node ~/slidekit/tools/html-deck/build-html-deck.mjs /tmp/slidekit-setup-check &amp;&amp; bash ~/slidekit/tools/html-deck/export-pdf.sh /tmp/slidekit-setup-check
+   rm -rf /tmp/slidekit-setup-check &amp;&amp; cp -R ~/slidekit/examples/html-deck-demo /tmp/slidekit-setup-check &amp;&amp; rm -f /tmp/slidekit-setup-check/index.html /tmp/slidekit-setup-check/deck.pdf &amp;&amp; node ~/slidekit/tools/html-deck/build-html-deck.mjs /tmp/slidekit-setup-check &amp;&amp; bash ~/slidekit/tools/html-deck/export-pdf.sh /tmp/slidekit-setup-check
    - index.html と deck.pdf ができれば成功。QA画像（qa-*.jpg）は無くてもよい。
    - node が古いと言われたら、手順2で案内された新しいNode.jsのパスで同じコマンドを実行する。
    - 確認できたら rm -rf /tmp/slidekit-setup-check で片付ける。
@@ -175,7 +176,7 @@ body{padding-top:80px}
         <span style="color:#6b7280">（Claude Codeが表示した<b>ファイルパスの貼り付け</b>でも開けます。初回だけフォルダの許可が要ります・Chrome/Edge対応）</span></li>
       <li>スライドが一覧表示されるので、直したいスライドの下の欄に修正指示を書く（構図を変えたい場合は<a href="/">ギャラリー</a>で探したパターンID（P045等）を記入）</li>
       <li>「修正プロンプトを出力」を押してコピーし、そのままClaude Codeに貼り付けると修正版が生成される</li>
-      <li>仕上がったら「PDFとして保存（印刷）」からPDF化（印刷ダイアログで「PDFに保存」を選択）</li>
+      <li>仕上がったら「PDFとして保存」ボタンからPDF化（開いた印刷ダイアログで「PDFに保存」を選択）</li>
       <li>そのまま発表するときは「▶ 発表」でスライドをウィンドウいっぱいに表示（→キーやクリックで送り・Escで終了。タブ・URLバーは残るので、発表中に他のタブへ切り替えて見せることもできます）</li>
     </ol>
     <div class="note">
@@ -197,8 +198,8 @@ body{padding-top:80px}
     </div>
 
     <h2>更新（新しいパターンを受け取る）</h2>
-    <p>パターンは随時増えます。<code>slidekit</code> フォルダで次を実行するだけです。</p>
-    <pre>git pull</pre>
+    <p>パターンは随時増えます。次を実行するだけです（本体の <code>~/slidekit</code> を更新します）。</p>
+    <pre>cd ~/slidekit &amp;&amp; git pull</pre>
     <p>自分で実行しなくても、「スライドを作って」と言った最初にClaude Codeが更新の有無を確認し、
     新しいパターンがあれば「更新しますか？」と聞いてくれます（「はい」で反映）。</p>
 
@@ -258,8 +259,9 @@ body{padding-top:80px}
       navigator.clipboard.writeText(text).then(function(){
         done('Claude Codeのデスクトップアプリに貼り付けてEnter', true);
       }).catch(function(){
-        done(fallback(text) ? 'Claude Codeのデスクトップアプリに貼り付けてEnter'
-                            : '下の枠を全選択してコピーしてください', fallback(text));
+        var ok=fallback(text); // 1回だけ試す（結果を文言と表示の両方に使う）
+        done(ok ? 'Claude Codeのデスクトップアプリに貼り付けてEnter'
+                : '下の枠を全選択してコピーしてください', ok);
       });
     } else {
       var ok=fallback(text);

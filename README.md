@@ -39,21 +39,27 @@ SlideKit は **「色・フォント」と「構図」を別々のファイル�
 | [`slidekit-layout`](./.claude/skills/slidekit-layout) | キャプチャ等から**構図パターン**を抽出・定義（グレースケール確認HTML付き） |
 | [`slidekit-assemble`](./.claude/skills/slidekit-assemble) | 内容をヒアリングし、デザイン×構図を組み合わせて**HTMLデッキ（index.html＋PDF）**と設計書 SLIDEKIT-DECK.md を生成 |
 
-スキルは `.claude/skills/` にプロジェクトスキルとして入っているため、**このリポジトリのフォルダで Claude Code を起動するだけ**で使えます（コピー不要）。
+スキルは `.claude/skills/` にプロジェクトスキルとして入っているため、このリポジトリのフォルダで Claude Code を起動すればそのまま使えます。
+`tools/install-skills.sh` を1回実行すると、**普段使っているどの作業フォルダでも**使えるようになります（`~/.claude/skills/` に「本体はこのリポジトリ」とだけ書いた薄い入口を置くので、`git pull` の更新もそのまま反映されます）。
 
-## クイックスタート（2ステップ）
+## クイックスタート
+
+いちばん簡単なのは、[導入手順ページ](https://slide.macminol.com/start.html)のセットアップ用の文章を Claude Code に貼り付ける方法です（取得・環境チェック・入口の設置・動作確認まで進みます）。手で行う場合は次の3ステップです。
 
 ### 1. リポジトリを取得する
 
 ```bash
-git clone https://github.com/matsumatsu04/slidekit.git
+git clone https://github.com/matsumatsu04/slidekit.git ~/slidekit
 ```
 
-### 2. そのフォルダで Claude Code を起動して話しかける
+### 2. 環境チェックと入口の設置（どの作業フォルダでも使えるようにする）
 
 ```bash
-cd slidekit && claude
+cd ~/slidekit && bash tools/doctor.sh
+bash ~/slidekit/tools/install-skills.sh
 ```
+
+### 3. Claude Code で話しかける（作業フォルダはどこでもよい）
 
 ```
 スライドを作って
@@ -63,14 +69,14 @@ cd slidekit && claude
 構成案とパターン割り当てを承認 → `index.html`（そのまま画面表示できるスライド）と `deck.pdf` が生成されます。
 設計書 `SLIDEKIT-DECK.md` も併せて出力されるので、他のスライド生成AIに渡すこともできます。
 
-> 以前の手順で `~/.claude/skills/` にスキルをコピーした方は、二重登録を避けるため削除してください:
-> `rm -rf ~/.claude/skills/slidekit-*`
+> 以前の手順で `~/.claude/skills/` にスキル本体をコピーした方は、`bash ~/slidekit/tools/install-skills.sh` を実行すると薄い入口で上書きされます
+> （古いコピーが残っていると `git pull` しても古い手順が使われ続けます）。取り外すときは `bash ~/slidekit/tools/install-skills.sh --uninstall`。
 
 > オリジナルのデザインを作りたいときは `slidekit-design`、
 > 好きな構図を追加したいときは `slidekit-layout` を使います。
 
 ### 更新する
-構図パターンは随時増えます。`slidekit` フォルダで `git pull` するだけです
+構図パターンは随時増えます。`cd ~/slidekit && git pull` するだけです
 （「スライドを作って」の最初に Claude Code が更新の有無を確認し、あれば「更新しますか？」と聞きます）。
 
 ## 同梱物
@@ -89,10 +95,11 @@ slidekit/
 ├─ .claude/skills/         # 3つのスキル（SKILL.md）— プロジェクトスキルとして自動で有効
 ├─ design-systems/         # デザインテーマ + sample.html
 ├─ patterns/               # 構図パターン + グレースケール確認（manifest.json / INDEX.md は生成物）
-├─ tools/                  # デッキビルド・lint・manifest生成・更新確認スクリプト
+├─ tools/                  # デッキビルド・lint・manifest生成・更新確認・環境チェック・入口の設置スクリプト
 ├─ docs/                   # 生成ガイド・装飾ルール
 ├─ examples/               # SLIDEKIT-DECK.md の例
-└─ index.html / deck.html / start.html / view.html / palettes.js
+├─ api/                    # リクエストフォームの受け口（request.php）
+└─ index.html / deck.html / start.html / view.html / request.html / palettes.js
                            # 公開ギャラリー（静的サイト。サイトのルートがそのまま入口）
 ```
 

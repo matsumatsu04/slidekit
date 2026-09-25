@@ -59,13 +59,14 @@ if [ "$AHEAD" != "0" ]; then
   exit 1
 fi
 
-# 1) 生成物のローカル変更を復元（manifest / INDEX は完全な生成物。README / gallery は件数の行だけが生成物）
+# 1) 生成物のローカル変更を復元（manifest / INDEX は完全な生成物。README / ギャラリーは件数の行だけが生成物）
+#    ギャラリーは 2026-08-20 に gallery/index.html → ルートの index.html へ移った（tools/lib/pattern-lib.mjs の GENERATED.gallery）
 for f in patterns/manifest.json patterns/SLIDE-PATTERN-INDEX.md; do
   git checkout --quiet -- "$f" 2>/dev/null || true
 done
-for f in README.md gallery/index.html; do
+for f in README.md index.html; do
   git diff --quiet -- "$f" 2>/dev/null && continue
-  if git diff -U0 -- "$f" 2>/dev/null | grep -E '^[-+][^-+]' | grep -vqE '(14カテゴリ・[0-9]+種|構図パターン[0-9]+種)'; then
+  if git diff -U0 -- "$f" 2>/dev/null | grep -E '^[-+][^-+]' | grep -vqE '(14カテゴリ・[0-9]+種|パターン[0-9]+種)'; then
     echo "⚠ $f に件数以外のローカル変更があるため復元しませんでした（取り込みに失敗したら手動で対処してください）"
   else
     git checkout --quiet -- "$f" 2>/dev/null || true
