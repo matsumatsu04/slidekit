@@ -846,6 +846,10 @@ function buildFrameV2Css() {
 .sk-h { left:48px; right:48px; letter-spacing:.06em; color:var(--sk-ink); }
 .sk-h[data-v2-style="b"] { padding-left:0; }
 .sk-h[data-v2-style="b"]::before { width:3px; height:18px; margin-right:13px; }
+/* スタイルC は「全幅の塗り帯＋白文字」（SPEC「共通見出し」）。上の v2 上書き（左右48px・インク色）が
+   そのまま効くと帯が内側に縮んで濃色文字になり読めなくなるため、C のときだけ打ち消す。
+   帯は全幅に戻し、文字だけ padding で本文の左右余白 48px にそろえる。 */
+.sk-h[data-v2-style="c"] { left:0; right:0; padding:0 48px; color:#FFFFFF; }
 .sk-msg { top:82px; left:48px; right:48px; font-size:15px; font-weight:400; letter-spacing:.1em; line-height:1.9; color:var(--sk-ink); }
 .sk-msg b { color:var(--sk-accent); font-weight:700; }
 .sk-kicker { display:block; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--sk-accent); line-height:1; }
